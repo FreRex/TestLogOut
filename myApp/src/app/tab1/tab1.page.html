@@ -13,5 +13,7 @@
     </ion-toolbar>
   </ion-header>
 
-  <app-explore-container name="Prova modifica tab1"></app-explore-container>
+  <app-explore-container name="Prova modifica tab1 {{testodinamico}}"></app-explore-container>
+  <input type="text" [(ngModel)]="name">
+  <p>{{name}}</p>
 </ion-content>

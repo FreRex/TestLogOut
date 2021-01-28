@@ -7,6 +7,8 @@ import { Component } from '@angular/core';
 })
 export class Tab1Page {
 
-  constructor() {}
+  testodinamico="prova testo dinamicoooo"
+  name="inserisci il tuo nome"
+  //constructor() {}
 
 }
