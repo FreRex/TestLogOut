@@ -1,4 +1,6 @@
 export interface Project {
     usermobile: string,
-    progetto: string
+    progetto: string,
+    linkprogetto: string,
+    collaudatore: string
 }

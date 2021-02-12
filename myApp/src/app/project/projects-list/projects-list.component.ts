@@ -11,7 +11,7 @@ import { ProjectService } from '../project.service';
 export class ProjectsListComponent implements OnInit {
   
   projects: Project[];
-
+  
   constructor(private projectService: ProjectService) { }
 
   ngOnInit() {
@@ -19,7 +19,8 @@ export class ProjectsListComponent implements OnInit {
     this.projectService.fetchProjects()
     .subscribe(
       res => {
-        this.projects = this.projectService.getProjects();
+        // this.projects = this.projectService.getProjects();
+        this.projects = this.projectService.getProjectsFiltered("Desire Peci");
         console.log(this.projects);
 
       }

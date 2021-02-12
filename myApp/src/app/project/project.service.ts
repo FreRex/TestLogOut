@@ -13,11 +13,17 @@ export class ProjectService {
 
   constructor(private http: HttpClient) { }
 
-  getProjects(){
+  getProjects() {
     return this.projects.slice();
   }
 
-  fetchProjects(){
+  getProjectsFiltered(filter: string) {
+    return this.projects.filter(proj => {
+      return proj.collaudatore === filter;
+    });
+  }
+
+  fetchProjects() {
     return this.http
       .get<Project>(
         'http://www.collaudolive.com:9082/'
@@ -28,7 +34,7 @@ export class ProjectService {
             for (const key in resData) {
               console.log(key);
               console.log(resData[key]);
-              
+
               if (resData.hasOwnProperty(key)) {
                 this.projects.push({ ...resData[key], id: key });
               }
