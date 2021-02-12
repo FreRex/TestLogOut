@@ -26,7 +26,7 @@ export class ProjectService {
   fetchProjects() {
     return this.http
       .get<Project>(
-        'https://www.collaudolive.com:9083/ApiSsl111'
+        'https://www.collaudolive.com:9083/ApiSsl'
       )
       .pipe(
         map(
