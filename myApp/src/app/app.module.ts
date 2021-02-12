@@ -7,9 +7,11 @@ import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { AppComponent } from './app.component';
+import { ProjectItemComponent } from './project/project-item/project-item.component';
+import { ProjectsListComponent } from './project/projects-list/projects-list.component';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, ProjectItemComponent, ProjectsListComponent],
   entryComponents: [],
   imports: [BrowserModule, IonicModule.forRoot(), HttpClientModule],
   providers: [
