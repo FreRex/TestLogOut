@@ -3,7 +3,7 @@
 Fino ad oggi implementati i seguenti punti:
 - BACKEND: 
      * creata api statica in Php senza ssl;
-     * creata api statica in Nodejs senza ss;
+     * creata api statica in Nodejs senza ssl;
      * creata api statica in Nodejs con ssl e posizionata in directory definitiva;
      * attivata api in pm2 in modo definitivo.
   
