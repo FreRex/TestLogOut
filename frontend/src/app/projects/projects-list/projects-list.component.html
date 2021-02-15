@@ -17,17 +17,19 @@
                     <div class="ion-margin-vertical ion-text-right">
                         <ion-button fill="outline" color="danger">
                             <ion-icon slot="start" name="close"></ion-icon>
-                            Button 1</ion-button>
+                            Button 1
+                        </ion-button>
                         <ion-button>
                             <ion-icon slot="start" name="add"></ion-icon>
-                            Button 2</ion-button>
+                            Button 2
+                        </ion-button>
                     </div>
                 </ion-card-content>
             </ion-card>
         </ion-col>
     </ion-row>
     <ion-row>
-        <ion-col>
+        <ion-col size-md="6" offset-md="3">
             <ion-list>
                 <app-project-item *ngFor="let project of projects" [project]="project"></app-project-item>
             </ion-list>
