@@ -1,0 +1,30 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{project ? project.progetto : 'gg'}}</ion-title>
+    <ion-buttons slot="primary">
+      <ion-button (click)="onCancel()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-text-center ion-padding">
+  <ion-item>
+    <ion-label position="stacked">Nome Progetto</ion-label>
+    <ion-input placeholder="progetto" type="text" [(ngModel)]="progetto"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label position="stacked">Usermobile</ion-label>
+    <ion-input placeholder="usermobile" type="text" [(ngModel)]="usermobile"></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label position="stacked">Link Progetto</ion-label>
+    <ion-input placeholder="linkprogetto" type="text" [(ngModel)]="linkprogetto"></ion-input>
+  </ion-item>  
+  <ion-item>
+    <ion-label position="stacked">Collaudatore</ion-label>
+    <ion-input placeholder="collaudatore" type="text" [(ngModel)]="collaudatore"></ion-input>
+  </ion-item>
+  <ion-button color="primary" (click)="onSave()">Save</ion-button>
+</ion-content>

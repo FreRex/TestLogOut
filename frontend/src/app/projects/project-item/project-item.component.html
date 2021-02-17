@@ -1,5 +1,11 @@
-<ion-item>
+<ion-item detail [routerLink]="['./', projectItem.usermobile]">
     <ion-icon slot="start" name="add"></ion-icon>
-    <p> {{ project.usermobile }} - {{ project.progetto }} - {{ project.linkprogetto }} - {{ project.collaudatore }}</p>
+    <ion-label>
+        <h2>Progetto: {{ projectItem.progetto }}</h2>
+        <p> USERMOBILE: {{ projectItem.usermobile }}
+            - LINK: {{ projectItem.linkprogetto }}
+            - COLLUDATORE: {{ projectItem.collaudatore}}</p>
+    </ion-label>
+
     <!-- <h3 *ngIf="project.collaudatore === 'Desire Peci'"> {{ project.usermobile }} - {{ project.progetto }} - {{ project.linkprogetto }} - {{ project.collaudatore }}</h3> -->
 </ion-item>
