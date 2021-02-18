@@ -1,25 +1,23 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { AlertController, ModalController, NavController } from '@ionic/angular';
-import { EditProjectModalComponent } from '../edit-project/edit-project-modal/edit-project-modal.component';
+import { ActivatedRoute } from '@angular/router';
+import { AlertController, NavController } from '@ionic/angular';
 import { Project } from '../project.model';
 import { ProjectsService } from '../projects.service';
 
 @Component({
-  selector: 'app-project-detail',
-  templateUrl: './project-detail.page.html',
-  styleUrls: ['./project-detail.page.scss'],
+  selector: 'app-edit-project',
+  templateUrl: './edit-project.page.html',
+  styleUrls: ['./edit-project.page.scss'],
 })
-export class ProjectDetailPage implements OnInit {
+export class EditProjectPage implements OnInit {
 
-  loadedProject: Project;
+  project: Project;
 
   constructor(
     private activatedRouter: ActivatedRoute,
+    private navController: NavController,
     private projectsService: ProjectsService,
     private alertController: AlertController,
-    private navController:  NavController,
-    private modalController: ModalController
   ) { }
 
   ngOnInit() {
@@ -29,23 +27,26 @@ export class ProjectDetailPage implements OnInit {
         return;
       }
       const projectId = paramMap.get('projectId');
-      this.loadedProject = this.projectsService.getProjectById(projectId);
+      console.log(projectId);
+
+      this.project = this.projectsService.getProjectById(projectId);
+      console.log(this.project.usermobile);
+
     });
   }
 
-  onEditProject() {
-    this.modalController
-      .create({
-        component: EditProjectModalComponent,
-        componentProps: {
-          projectId: this.loadedProject.usermobile,
-          isEditMode: true
-        }
-      })
-      .then(modalEl => { modalEl.present(); });
+  onDownload() {
+    // TODO: logica download foto
+    console.log("Foto scaricate");
   }
 
-  onDeleteProject() {
+  onSave() {
+    console.log("Progetto salvato");
+    this.projectsService.saveProject(this.project);
+    this.navController.navigateBack(['/projects']);
+  }
+
+  onDelete() {
     this.alertController.create(
       {
         header: 'Sei sicuro?',
@@ -58,7 +59,7 @@ export class ProjectDetailPage implements OnInit {
           {
             text: 'Elimina',
             handler: () => {
-              this.projectsService.deleteProject(this.loadedProject.usermobile);
+              this.projectsService.deleteProject(this.project.usermobile);
               this.navController.navigateBack(['/projects']);
             }
           }
@@ -66,5 +67,4 @@ export class ProjectDetailPage implements OnInit {
       }
     ).then(alertEl => { alertEl.present(); });
   }
-
 }

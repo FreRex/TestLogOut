@@ -7,7 +7,8 @@ export class AuthService {
 
   private _user: string = '';
   
-  private _userIsAutenticated = false;
+  // TODO: set to false
+  private _userIsAutenticated = true;
   get userIsAthenticated(){
     return this._userIsAutenticated;
   }

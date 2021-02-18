@@ -11,6 +11,10 @@ const routes: Routes = [
   {
     path: ':projectId',
     loadChildren: () => import('./project-detail/project-detail.module').then( m => m.ProjectDetailPageModule)
+  },
+  {
+    path: 'edit/:projectId',
+    loadChildren: () => import('./edit-project/edit-project.module').then( m => m.EditProjectPageModule)
   }
 ];
 

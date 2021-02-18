@@ -8,7 +8,7 @@ import { ProjectsPageRoutingModule } from './projects-routing.module';
 
 import { ProjectsPage } from './projects.page';
 import { ProjectItemComponent } from './project-item/project-item.component';
-import { CreateProjectComponent } from './create-project/create-project.component';
+import { EditProjectModalComponent } from './edit-project/edit-project-modal/edit-project-modal.component';
 
 @NgModule({
   imports: [
@@ -20,8 +20,8 @@ import { CreateProjectComponent } from './create-project/create-project.componen
   declarations: [
     ProjectsPage, 
     ProjectItemComponent, 
-    CreateProjectComponent
+    EditProjectModalComponent
   ],
-  entryComponents: [CreateProjectComponent] // <-- Serve per i componenti che non sono dichiarati all'interno di altri template (es. modal)
+  entryComponents: [EditProjectModalComponent] // <-- Serve per i componenti che non sono dichiarati all'interno di altri template (es. modal)
 })
 export class ProjectsPageModule {}

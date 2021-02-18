@@ -18,13 +18,10 @@ export class AuthPage implements OnInit {
   ngOnInit() {
   }
 
-  onLogin(user: string){
+  onLogin(){
     console.log(this.username);    
-    this.authService.login(user);
-    this.router.navigateByUrl('/projects')
+    this.authService.login(this.username);
+    this.router.navigateByUrl('/projects');
   }
 
-  onLogout(){
-
-  }
 }
