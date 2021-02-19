@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from './auth.service';
 
@@ -10,6 +11,9 @@ import { AuthService } from './auth.service';
 export class AuthPage implements OnInit {
 
   username: string;
+  password: string;
+  isLogin: boolean = true;
+
   constructor(
     private authService: AuthService,
     private router: Router
@@ -18,10 +22,31 @@ export class AuthPage implements OnInit {
   ngOnInit() {
   }
 
-  onLogin(){
-    console.log(this.username);    
-    this.authService.login(this.username);
-    this.router.navigateByUrl('/projects');
+  onSwitchMode(){
+    this.isLogin = !this.isLogin;
   }
 
+  // onLogin(){
+  //   console.log(this.username);   
+  //   this.authService.login(this.username);
+  //   this.router.navigateByUrl('/projects'); 
+  // }
+
+  onSubmit(form: NgForm){
+    if(!form.valid){
+      return;
+    }
+    const email = form.value.username;
+    const password = form.value.password;
+
+    console.log(email, password);
+
+    if(this.isLogin){
+      //TODO: logica login
+      this.authService.login(this.username);
+      this.router.navigateByUrl('/projects');
+    } else {
+      //TODO: logica sign up
+    }
+  }
 }
