@@ -3,11 +3,10 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/projects"></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ isEditMode ? 'Edit Project Page' : 'New Project Page'}}</ion-title>
+    <ion-title>Crea Nuovo Progetto</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<!-- Reactive Form -->
 <ion-content>
   <form [formGroup]="form">
     <ion-grid>
@@ -55,7 +54,7 @@
           expand="block" 
           shape="round" 
           [disabled]="!form.valid" 
-          (click)="onSave()">{{ isEditMode ? 'Salva' : 'Crea'}}</ion-button>
+          (click)="onCreateProject()">Crea</ion-button>
         </ion-col>
       </ion-row>
     </ion-grid>

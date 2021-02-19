@@ -4,17 +4,17 @@ import { ReactiveFormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { EditProjectPageRoutingModule } from './edit-project-routing.module';
+import { NewProjectPageRoutingModule } from './new-project-routing.module';
 
-import { EditProjectPage } from './edit-project.page';
+import { NewProjectPage } from './new-project.page';
 
 @NgModule({
   imports: [
     CommonModule,
     ReactiveFormsModule,
     IonicModule,
-    EditProjectPageRoutingModule
+    NewProjectPageRoutingModule
   ],
-  declarations: [EditProjectPage]
+  declarations: [NewProjectPage]
 })
-export class EditProjectPageModule {}
+export class NewProjectPageModule {}

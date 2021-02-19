@@ -25,6 +25,17 @@
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
 
+/*
+*  Applica uno stile globale alla toolbar
+*/
+ion-toolbar {
+    --background: var(--ion-color-primary);
+    --color: var(--ion-color-primary-contrast);
+}
+
+/*
+*  Applica uno stile globale a tutti i campi input-label non validi
+*/
 .ion-invalid.ion-touched ion-label {
     color: var(--ion-color-danger);
 }
