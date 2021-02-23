@@ -1,0 +1,17 @@
+{
+  "name": "chopdef1",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./build/index.js",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1"
+  },
+  
+  "devDependencies": {},
+  "scripts": {
+    "start": "npm run && node ./build/index.js"
+  },
+  "author": "",
+  "license": "ISC"
+}
