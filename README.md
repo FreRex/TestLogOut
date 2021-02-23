@@ -12,3 +12,6 @@ Fino ad oggi implementati i seguenti punti:
     * Lettura e visualizzazione tutti dati da api esterna;
     * Lettura e visualizzazione parziale dei dati da api esterna;
     * Riordine directory applicazione.
+    
+23 febbraio 2021
+Impostato backend con frontend incluso.
