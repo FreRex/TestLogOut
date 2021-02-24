@@ -1,5 +1,5 @@
 {
-  "name": "chopdef1",
+  "name": "chat-operativa",
   "version": "1.0.0",
   "description": "",
   "main": "./build/index.js",
@@ -8,8 +8,8 @@
     "express": "^4.17.1"
   },
   "devDependencies": {},
-  "scripts": {
-    "start": "npm run && node ./build/index.js"
+  "scripts": {    
+    "start": "cd frontend && ionic build --prod && cd .. && npm run && node ./build/index.js"
   },
   "author": "",
   "license": "ISC"
