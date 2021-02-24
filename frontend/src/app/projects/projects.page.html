@@ -1,7 +1,7 @@
 <ion-header>
     <ion-toolbar color="primary">
 
-        <ion-searchbar *ngIf="isSearchMode" showCancelButton="always" 
+        <ion-searchbar *ngIf="isSearchMode" showCancelButton="always"
         (ionInput)="onFilter($event)" (ionCancel)="isSearchMode = false" ></ion-searchbar>
 
         <ion-title *ngIf="!isSearchMode" >Projects</ion-title>
@@ -15,7 +15,9 @@
             <!-- <ion-button (click)="onCreateProjectModal()">
                 <ion-icon name="add" slot="icon-only"></ion-icon>
             </ion-button> -->
+
             <ion-button routerLink="new">
+
                 <!-- <ion-button (click)="onNewProjectPage()"> -->
                 <ion-icon name="add" slot="icon-only"></ion-icon>
             </ion-button>

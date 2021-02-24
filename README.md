@@ -1,4 +1,43 @@
-# PannAdmin
+# ChatOperativa - SmartCollaudo
+
+Info progetto
+
+## Primo accesso alla repository
+
+```shell
+# clona la repository
+git clone https://github.com/tinatotty91/chat-operativa.git
+
+# crea un branch locale "sviluppo" e aggiorna il progetto
+git checkout -b sviluppo
+git pull origin sviluppo
+
+# entra nella cartella creata
+cd chat-operativa
+
+# DENTRO CHAT-OPERATIVA: installa i node_modules del backend
+npm i
+
+# entra nella cartella frontend
+cd frontend
+
+# DENTRO FRONTEND: installa node_modules del frontend
+npm i
+
+# apri VSCode
+code .
+
+# Se non ci sono errori, servi l'app
+ionic serve
+```
+
+## Project Settings
+
+- **Versione Node**: *...*
+- **Versione Angular**: *...*
+- **Versione Ionic**: *...*
+
+## Sviluppi
 12 febbraio 2021
 Fino ad oggi implementati i seguenti punti:
 - BACKEND: 
@@ -22,3 +61,10 @@ BACKEND:
 Aggiunto in build/index.js: 
 - parte path e __dirname;
 - aggiunto http://localhost per test in locale.
+
+
+## Endpoints
+
+```xml
+<!-- ESEMPIO -->
+```
