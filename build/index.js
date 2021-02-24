@@ -8,7 +8,7 @@ const port = 9081;
 
 //app.use(cors());
 
-app.use('/PannAdmin',express.static(path.join(__dirname, '../frontend/www')))
+app.use('/PannAdmin',express.static(path.join(__dirname, '../frontend/www')));
 
 
 app.get('/ApiSsl', function(req, res) {
