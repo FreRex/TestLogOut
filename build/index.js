@@ -1,13 +1,15 @@
 const express = require('express');
-//let cors = require('cors')
+const path = require("path");
+//const cors = require('cors')
 const https = require('https');
-let app = express();
-let fs = require('fs');
+const app = express();
+const fs = require('fs');
 const port = 9089;
 
 //app.use(cors());
 
-app.use('/PannAdmin',express.static('/var/www/html/CHOPDEF1/frontend/www'))
+app.use('/PannAdmin',express.static(path.join(__dirname, '../frontend/www')))
+app.use('/*', (req, res) => { res.sendFile(path.join(__dirname, '../frontend/www/index.html')); });
 
 app.get('/ApiSsl', function(req, res) {
 
@@ -23,10 +25,7 @@ app.get('/ApiSsl', function(req, res) {
 
 });
 
-app.use('/MyApp',express.static('/var/www/html/CHOPDEF1/frontend/www'))
-
-app.use('/*', (req, res) => { res.sendFile('/var/www/html/CHOPDEF1/frontend/www/index.html'); });
-
+/*
 https.createServer({
     key: fs.readFileSync('/etc/letsencrypt/live/www.collaudolive.com/privkey.pem'),
     cert: fs.readFileSync('/etc/letsencrypt/live/www.collaudolive.com/cert.pem')
@@ -35,4 +34,8 @@ https.createServer({
   .listen(port, () => {
       console.log(`https://www.collaudolive.com:${port}/PannAdmin`)        
   })
+*/
 
+app.listen(port, () => {
+  console.log(`Example app listening at http://localhost:${port}/PannAdmin`)
+})
