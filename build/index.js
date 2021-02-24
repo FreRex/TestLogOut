@@ -7,7 +7,7 @@ const port = 9089;
 
 //app.use(cors());
 
-app.use('/PannAdmin',express.static('/var/www/html/CHOPDEF1/frontend/www'))
+app.use('/PannAdmin',express.static('/var/www/html/chat-operativa/frontend/www'));
 
 app.get('/ApiSsl', function(req, res) {
 
@@ -23,9 +23,9 @@ app.get('/ApiSsl', function(req, res) {
 
 });
 
-app.use('/MyApp',express.static('/var/www/html/CHOPDEF1/frontend/www'))
+//app.use('/MyApp',express.static('/var/www/html/CHOPDEF1/frontend/www'))
 
-app.use('/*', (req, res) => { res.sendFile('/var/www/html/CHOPDEF1/frontend/www/index.html'); });
+app.use('/*', (req, res) => { res.sendFile('/var/www/html/chat-operativa/frontend/www/index.html'); });
 
 https.createServer({
     key: fs.readFileSync('/etc/letsencrypt/live/www.collaudolive.com/privkey.pem'),
