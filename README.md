@@ -6,23 +6,23 @@ Info progetto
 
 ```shell
 # clona la repository
-$ git clone https://github.com/tinatotty91/chat-operativa.git
+> git clone https://github.com/tinatotty91/chat-operativa.git
 # entra nella cartella del progetto
-$ cd chat-operativa
-# crea un branch locale "sviluppo"
-chat-operativa> git checkout -b sviluppo
-# aggiorna il progetto all'ultima versione disponibile
-chat-operativa> git pull origin sviluppo
-# installa i node_modules del progetto nodejs
-chat-operativa> npm i
-# entra nel progetto ionic/angular
-chat-operativa> cd frontend
-# installa  node_modules del progetto ionic/angular
-chat-operativa\frontend> npm i
-# serve l'app su http://localhost:8100
-chat-operativa\frontend> ionic serve
-# apre VSCode
-chat-operativa\frontend> code .
+> cd chat-operativa
+# chat-operativa: crea un branch locale "sviluppo"
+> git checkout -b sviluppo
+# chat-operativa: aggiorna il progetto all'ultima versione disponibile
+> git pull origin sviluppo
+# chat-operativa: installa i node_modules del progetto nodejs
+> npm i
+# chat-operativa: entra nel progetto ionic/angular
+> cd frontend
+# chat-operativa\frontend: installa node_modules del progetto ionic/angular
+> npm i
+# chat-operativa\frontend: apri VSCode 
+> code .
+# chat-operativa\frontend: servi l'app
+> ionic serve
 ```
 
 ## Project Settings
