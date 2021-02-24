@@ -4,12 +4,12 @@ const path = require("path");
 const https = require('https');
 const app = express();
 const fs = require('fs');
-const port = 9089;
+const port = 9081;
 
 //app.use(cors());
 
 app.use('/PannAdmin',express.static(path.join(__dirname, '../frontend/www')))
-app.use('/*', (req, res) => { res.sendFile(path.join(__dirname, '../frontend/www/index.html')); });
+
 
 app.get('/ApiSsl', function(req, res) {
 
@@ -24,6 +24,8 @@ app.get('/ApiSsl', function(req, res) {
     ));
 
 });
+
+app.use('/*', (req, res) => { res.sendFile(path.join(__dirname, '../frontend/www/index.html')); });
 
 /*
 https.createServer({
