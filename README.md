@@ -33,11 +33,9 @@ ionic serve
 
 ## Project Settings
 
-- **SDK**: *5.1 Lollipop (requested)* + 7.1.1 Nougat (optional) + 10.0 Q (optional)
-- **NDK** (Side by side): *21.0.6113669*
-- Android SDK Build-Tools: 30.0.0 or most recent
-- Android SDK Platform-Tools: 30.0.3 or most recent
-- Google USB Driver: 12 or most recent
+- **Versione Node**: *...*
+- **Versione Angular**: *...*
+- **Versione Ionic**: *...*
 
 ## Sviluppi
 12 febbraio 2021
