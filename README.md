@@ -14,4 +14,11 @@ Fino ad oggi implementati i seguenti punti:
     * Riordine directory applicazione.
     
 23 febbraio 2021
+BACKEND:
 Impostato backend con frontend incluso.
+
+24 febbraio 2021
+BACKEND: 
+Aggiunto in build/index.js: 
+- parte path e __dirname;
+- aggiunto http://localhost per test in locale.
