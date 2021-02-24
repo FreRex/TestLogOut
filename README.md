@@ -27,7 +27,7 @@ npm i
 # apri VSCode
 code .
 
-# Se non ci sono errori, servi l'app
+# Se non ci sono errori, servi l'app del frontend
 ionic serve
 ```
 
