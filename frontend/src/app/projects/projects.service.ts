@@ -3,13 +3,14 @@ import { Injectable } from '@angular/core';
 import { Project } from './project.model';
 import { map } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProjectsService {
 
-  private projects: Project[] = [
+  private _projects: Project[] = [
     {
       usermobile: '1',
       progetto: 'Progetto 1',
@@ -29,59 +30,67 @@ export class ProjectsService {
       collaudatore: 'Collaudatore 3'
     },
   ];
-
   projectsChanged = new Subject<Project[]>();
-  
-  constructor(private http: HttpClient) { }
+
+  constructor(
+    private http: HttpClient,
+    private authService: AuthService
+  ) { }
 
   getProjects() {
-    return this.projects.slice();  // <-- slice() = crea una copia dell'array
+    return this._projects.slice();  // <-- slice() = crea una copia dell'array
     // return [...this.projects];        // <-- Spread Operator = ritorna i singoli valori dell'array = crea una copia dell'array
+  }
+
+  getProjectsFiltered(collaudatore: string) {
+    return {
+      ...this._projects.filter(proj => {
+        return proj.collaudatore === collaudatore;
+      })
+    };
   }
 
   // TODO : sostituire proprietà id del progetto a usermobile
   getProjectById(id: string): Project {
     return {
-      ...this.projects.find(proj => {   // <-- ritorna una copia del progetto con lo spread operator
+      ...this._projects.find(proj => {   // <-- ritorna una copia del progetto con lo spread operator
         return proj.usermobile === id;  // <-- ritorna vero quando trova il progeto giusto
       })
     };
   }
 
   deleteProject(id: string) {
-    this.projects = this.projects.filter(proj => {  // <-- filter() = filtra un array in base a una regola ("se è vero")
+    this._projects = this._projects.filter(proj => {  // <-- filter() = filtra un array in base a una regola ("se è vero")
       return proj.usermobile !== id;                // <-- ritrorna vero per tutte le ricette tranne quella che voglio scartare
     });
-    this.projectsChanged.next(this.projects.slice());
+    this.projectsChanged.next(this._projects.slice());
   }
 
   saveProject(newProject: Project) {
-    const id = this.projects.findIndex(proj => {   
-        return proj.usermobile === newProject.usermobile;  
-      });
-    this.projects[id] = newProject;
-    this.projectsChanged.next(this.projects.slice());
+    const id = this._projects.findIndex(proj => {
+      return proj.usermobile === newProject.usermobile;
+    });
+    this._projects[id] = newProject;
+    this.projectsChanged.next(this._projects.slice());
   }
 
   createProject(newProject: Project) {
-    this.projects.push(newProject);
-    this.projectsChanged.next(this.projects.slice());
+    this._projects.push(newProject);
+    this.projectsChanged.next(this._projects.slice());
   }
 
-  getProjectsFiltered(collaudatore: string) {
-    return {
-      ...this.projects.filter(proj => {
-        return proj.collaudatore === collaudatore;
-      })
-    };
+  addProject(progetto: string, usermobile: string, linkprogetto: string) {
+    const newProject = new Project(progetto, usermobile, linkprogetto, this.authService.user);
+    this._projects.push(newProject);
+    this.projectsChanged.next(this._projects.slice());
   }
 
   /**
    * Aggiorna e sostituisce i progetti con quelli restituiti dal server
    */
   fetchProjects() {
-    this.projects = [];
-    
+    this._projects = [];
+
     return this.http
       .get<Project>(
         'https://www.collaudolive.com:9083/ApiSsl'
@@ -94,7 +103,7 @@ export class ProjectsService {
               console.log(resData[key]);
 
               if (resData.hasOwnProperty(key)) {
-                this.projects.push({ ...resData[key], id: key });
+                this._projects.push({ ...resData[key], id: key });
               }
             }
           }

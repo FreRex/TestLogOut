@@ -5,9 +5,9 @@
     </ion-buttons>
     <ion-title>Progetto: {{ loadedProject.progetto }}</ion-title>
     <ion-buttons slot="primary">
-      <ion-button (click)="onEditProject()">
+      <!-- <ion-button (click)="onEditProject()">
         <ion-icon name="create-outline" slot="icon-only"></ion-icon>
-      </ion-button>
+      </ion-button> -->
       <ion-button (click)="onDeleteProject()">
         <ion-icon name="trash" slot="icon-only"></ion-icon>
       </ion-button>
@@ -23,6 +23,7 @@
           <h3>Usermobile: {{ loadedProject.usermobile }}</h3>
           <h3>LinkProgetto: {{ loadedProject.linkprogetto }}</h3>
           <h3>Collaudatore: {{ loadedProject.collaudatore }}</h3>
+          <!-- Default Searchbar -->
         </div>
       </ion-col>
     </ion-row>

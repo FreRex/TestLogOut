@@ -2,7 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertController, NavController } from '@ionic/angular';
+import { AuthService } from 'src/app/auth/auth.service';
 import { Project } from '../project.model';
+import { Storage } from '@ionic/storage';
 import { ProjectsService } from '../projects.service';
 
 @Component({
@@ -13,7 +15,7 @@ import { ProjectsService } from '../projects.service';
 export class EditProjectPage implements OnInit {
 
   form: FormGroup;
-  project: Project = { progetto: '', usermobile: '', linkprogetto: '', collaudatore: ''};
+  project: Project = { progetto: '', usermobile: '', linkprogetto: '', collaudatore: '' };
   projectId: string;
   isEditMode: boolean;
 
@@ -21,14 +23,37 @@ export class EditProjectPage implements OnInit {
     private activatedRouter: ActivatedRoute,
     private navController: NavController,
     private projectsService: ProjectsService,
+    private authService: AuthService,
     private alertController: AlertController,
-    private router: Router
+    private router: Router,
+    private storage: Storage
   ) { }
 
   ngOnInit() {
+    
+    // this.createForm();
+    // this.storage.get('edit').then(edit => {
+    //   if(edit) {
+    //     this.isEditMode = true;
+    //     this.storage.get('usermobile').then(usermobile => {
+    //       this.project = this.projectsService.getProjectById(usermobile);
+    //       console.log(this.project);
+    //       this.form.patchValue({
+    //         progetto: this.project.progetto,
+    //         usermobile: this.project.usermobile,
+    //         collaudatore: this.project.collaudatore,
+    //         linkprogetto: this.project.linkprogetto,
+    //       });
+    //     });
+    //   } else {
+    //     this.isEditMode = false;
+    //   }
+    // });
+
+    this.createForm();
     console.log(this.router.url);
-    //FIXME: si rompe inserendo a mano l'indirizzo http://localhost:8100/projects/edit
-    if(this.router.url.endsWith('new')){
+    // FIXME: si rompe inserendo a mano l'indirizzo http://localhost:8100/projects/edit
+    if (this.router.url.endsWith('new')) {
       this.isEditMode = false;
     } else {
       this.isEditMode = true;
@@ -39,31 +64,32 @@ export class EditProjectPage implements OnInit {
         }
         const projectId = paramMap.get('projectId');
         this.project = this.projectsService.getProjectById(projectId);
-        //TODO: this.createForm(); //dentro al subscribe?
+        this.form.patchValue({
+          progetto: this.project.progetto,
+          usermobile: this.project.usermobile,
+          collaudatore: this.project.collaudatore,
+          linkprogetto: this.project.linkprogetto,
+        });
       });
     }
-    this.createForm();
+
   }
 
-  createForm(){
+  createForm() {
     this.form = new FormGroup({
-      progetto: new FormControl(this.project.progetto, {
+      progetto: new FormControl(null, {
         updateOn: 'blur',
         validators: [Validators.required, Validators.maxLength(30)]
       }),
-      usermobile: new FormControl(this.project.usermobile, {
+      usermobile: new FormControl(null, {
         updateOn: 'blur',
         validators: [Validators.required, Validators.maxLength(12)]
       }),
-      collaudatore: new FormControl(this.project.collaudatore, {
+      collaudatore: new FormControl(this.authService.user, {
         updateOn: 'blur',
         validators: [Validators.required, Validators.maxLength(30)]
       }),
-      // data: new FormControl(null, {
-      //   updateOn: 'blur',
-      //   validators: [Validators.required]
-      // }),
-      linkprogetto: new FormControl(this.project.linkprogetto, {
+      linkprogetto: new FormControl(null, {
         updateOn: 'blur',
         validators: [Validators.required]
       }),
@@ -80,20 +106,25 @@ export class EditProjectPage implements OnInit {
   }
 
   onSave() {
-    if(!this.form.valid){
+    if (!this.form.valid) {
       return;
     }
-    
+
     this.project.progetto = this.form.value.progetto;
     this.project.usermobile = this.form.value.usermobile;
     this.project.linkprogetto = this.form.value.linkprogetto;
     this.project.collaudatore = this.form.value.collaudatore;
 
-    if(this.isEditMode) {
+    if (this.isEditMode) {
       this.projectsService.saveProject(this.project);
       this.navController.navigateBack(['/projects']);
     } else {
-      this.projectsService.createProject(this.project);
+      // this.projectsService.createProject(this.project);
+      this.projectsService.addProject(
+        this.form.value.progetto,
+        this.form.value.usermobile,
+        this.form.value.linkprogetto);
+      this.form.reset();
       this.navController.navigateBack(['/projects']);
     }
     console.log("Progetto salvato");

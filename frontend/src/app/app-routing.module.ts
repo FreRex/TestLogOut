@@ -13,6 +13,10 @@ const routes: Routes = [
     loadChildren: () => import('./projects/projects.module').then(m => m.ProjectsPageModule),
     canLoad: [AuthGuard]
   },
+  {
+    path: 'backoffice',
+    loadChildren: () => import('./backoffice/backoffice.module').then( m => m.BackofficePageModule)
+  },
 ];
 
 @NgModule({

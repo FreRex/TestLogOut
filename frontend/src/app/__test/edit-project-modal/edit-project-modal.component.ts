@@ -1,13 +1,14 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { AlertController, ModalController } from '@ionic/angular';
-import { Project } from '../../project.model';
-import { ProjectsService } from '../../projects.service';
+import { Project } from '../../projects/project.model';
+import { ProjectsService } from '../../projects/projects.service';
 
 @Component({
-  selector: 'app-edit-project-modal',
-  templateUrl: './edit-project-modal.component.html',
-  styleUrls: ['./edit-project-modal.component.scss'],
+  template: ''
+  // selector: 'app-edit-project-modal',
+  // templateUrl: './edit-project-modal.component.html',
+  // styleUrls: ['./edit-project-modal.component.scss'],
 })
 export class EditProjectModalComponent implements OnInit {
 
