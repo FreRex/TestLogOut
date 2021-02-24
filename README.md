@@ -4,11 +4,11 @@ Info progetto
 
 ## Primo accesso alla repository
 
-```properties
+```shell
 # clona la repository
-> git clone https://github.com/tinatotty91/chat-operativa.git
+$ git clone https://github.com/tinatotty91/chat-operativa.git
 # entra nella cartella del progetto
-> cd chat-operativa
+$ cd chat-operativa
 # crea un branch locale "sviluppo"
 chat-operativa> git checkout -b sviluppo
 # aggiorna il progetto all'ultima versione disponibile
