@@ -8,7 +8,7 @@ import { ProjectsPageRoutingModule } from './projects-routing.module';
 
 import { ProjectsPage } from './projects.page';
 import { ProjectItemComponent } from './project-item/project-item.component';
-import { EditProjectModalComponent } from './edit-project/edit-project-modal/edit-project-modal.component';
+// import { EditProjectModalComponent } from '../angular_components/edit-project-modal/edit-project-modal.component';
 
 @NgModule({
   imports: [
@@ -20,8 +20,8 @@ import { EditProjectModalComponent } from './edit-project/edit-project-modal/edi
   declarations: [
     ProjectsPage, 
     ProjectItemComponent, 
-    EditProjectModalComponent
+    // EditProjectModalComponent
   ],
-  entryComponents: [EditProjectModalComponent] // <-- Serve per i componenti che non sono dichiarati all'interno di altri template (es. modal)
+  // entryComponents: [EditProjectModalComponent] // <-- Serve per i componenti che non sono dichiarati all'interno di altri template (es. modal)
 })
 export class ProjectsPageModule {}

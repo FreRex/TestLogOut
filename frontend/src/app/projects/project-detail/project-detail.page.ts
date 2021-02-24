@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertController, ModalController, NavController } from '@ionic/angular';
-import { EditProjectModalComponent } from '../edit-project/edit-project-modal/edit-project-modal.component';
+// import { EditProjectModalComponent } from '../../angular_components/edit-project-modal/edit-project-modal.component';
 import { Project } from '../project.model';
 import { ProjectsService } from '../projects.service';
 
@@ -33,17 +33,17 @@ export class ProjectDetailPage implements OnInit {
     });
   }
 
-  onEditProject() {
-    this.modalController
-      .create({
-        component: EditProjectModalComponent,
-        componentProps: {
-          projectId: this.loadedProject.usermobile,
-          isEditMode: true
-        }
-      })
-      .then(modalEl => { modalEl.present(); });
-  }
+  // onEditProject() {
+  //   this.modalController
+  //     .create({
+  //       component: EditProjectModalComponent,
+  //       componentProps: {
+  //         projectId: this.loadedProject.usermobile,
+  //         isEditMode: true
+  //       }
+  //     })
+  //     .then(modalEl => { modalEl.present(); });
+  // }
 
   onDeleteProject() {
     this.alertController.create(

@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
+import { IonicStorageModule } from '@ionic/storage';
 
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 
@@ -12,12 +13,13 @@ import { HttpClientModule } from '@angular/common/http';
   declarations: [AppComponent],
   entryComponents: [],
   imports: [
-    BrowserModule, 
-    IonicModule.forRoot(), 
+    BrowserModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    IonicModule.forRoot(),
+    IonicStorageModule.forRoot(),
   ],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule { }
