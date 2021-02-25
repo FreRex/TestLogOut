@@ -1,16 +1,13 @@
-const express = require('express');
+import express from 'express';
+import path from 'path';
+import https from 'https';
+import fs from 'fs';
 
-const path = require("path");
-//const cors = require('cors')
-const https = require('https');
+// rest of the code remains same
 const app = express();
-const fs = require('fs');
 const port = 9083;
 
-//app.use(cors());
-
 app.use('/PannAdmin',express.static(path.join(__dirname, '../frontend/www')));
-
 
 app.get('/ApiSsl', function(req, res) {
 
@@ -28,6 +25,7 @@ app.get('/ApiSsl', function(req, res) {
 
 app.use('/*', (req, res) => { res.sendFile(path.join(__dirname, '../frontend/www/index.html')); });
 
+/*
 //-------------------------------------------------------------------------------
 // PARTE PER PRODUZIONE
 //-------------------------------------------------------------------------------
@@ -41,8 +39,8 @@ https.createServer({
   })
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
+*/
 
-/*
 //---------------------------------------------------------------------------
 // PARTE PER SVILUPPO
 //---------------------------------------------------------------------------
@@ -51,4 +49,3 @@ app.listen(port, () => {
 })
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-*/
