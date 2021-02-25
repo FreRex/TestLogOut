@@ -15,9 +15,9 @@
   },
   "scripts": {
     "build": "tsc --project ./",
-    "start_1": "tsc --project ./ && npm run && node ./build/indexbis.js",
+    "start_1": "tsc --project ./ && npm run && node ./build/index.js",
     "start_2": "cd frontend && ionic build --prod && cd .. && npm run && node ./build/index.js",
-    "start_3": "tsc --project ./ && cd frontend && ionic build --prod && cd .. && npm run && node ./build/indexbis.js"
+    "start_3": "tsc --project ./ && cd frontend && ionic build --prod && cd .. && npm run && node ./build/index.js"
   },
   "author": "",
   "license": "ISC"
