@@ -7,7 +7,6 @@ import { IonicModule } from '@ionic/angular';
 import { ProjectDetailPageRoutingModule } from './project-detail-routing.module';
 
 import { ProjectDetailPage } from './project-detail.page';
-import { ProjectFormComponent } from '../components/project-form/project-form.component';
 
 @NgModule({
   imports: [

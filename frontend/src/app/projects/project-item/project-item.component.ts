@@ -12,6 +12,7 @@ import { Project } from '../project.model';
 export class ProjectItemComponent implements OnInit {
 
   @Input() projectItem: Project;
+  isFavourite: boolean;
   
   constructor(
     // private modalController: ModalController,
@@ -20,18 +21,6 @@ export class ProjectItemComponent implements OnInit {
 
   ngOnInit() {  }
 
-  // onOpenEditModal() {
-  //   this.modalController
-  //     .create({
-  //       component: EditProjectModalComponent,
-  //       componentProps: {
-  //         projectId: this.projectItem.usermobile,
-  //         isEditMode: true
-  //       }
-  //     })
-  //     .then(modalEl => { modalEl.present(); });
-  // }
-
   onDownload() {
     // TODO: logica download foto
     console.log("Foto scaricate");
@@ -39,13 +28,9 @@ export class ProjectItemComponent implements OnInit {
 
   onOpenEditPage(slidingItem: IonItemSliding){
     slidingItem.close();
-    // this.storage.set('usermobile', this.projectItem.usermobile );
-    // this.storage.set('edit', true);
-    // this.router.navigate(['/', 'projects', 'edit']);
     this.router.navigate(['/', 'projects', 'edit', this.projectItem.usermobile]);
   }
 
-  isFavourite: boolean;
   onFavoutite(){
     console.log("My favourite project!");
     this.isFavourite = !this.isFavourite;
