@@ -1,7 +1,8 @@
 export class Project {
     constructor(
-        public progetto: string,
         public usermobile: string,
+        public progetto: string,
+        public collaudatore: string,
         public linkprogetto: string,
-        public collaudatore: string) { };
+        ) { };
 }

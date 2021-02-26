@@ -22,10 +22,6 @@ export class AuthPage implements OnInit {
   ngOnInit() {
   }
 
-  onSwitchMode(){
-    this.isLogin = !this.isLogin;
-  }
-
   // onLogin(){
   //   console.log(this.username);   
   //   this.authService.login(this.username);

@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { NavController } from '@ionic/angular';
-import { ProjectsService } from '../../projects/projects.service';
+import { AuthService } from 'src/app/auth/auth.service';
+import { ProjectsService } from '../projects.service';
 
 @Component({
   selector: 'app-new-project',
@@ -11,13 +12,20 @@ import { ProjectsService } from '../../projects/projects.service';
 export class NewProjectPage implements OnInit {
 
   form: FormGroup;
+  creator: string;
 
-  constructor(    
+  constructor(
     private navController: NavController,
-    private projectsService: ProjectsService
-    ) { }
+    private projectsService: ProjectsService,
+    private authService: AuthService,
+  ) { }
 
   ngOnInit() {
+    this.creator = this.authService.user;
+    this.createForm();
+  }
+
+  createForm() {
     this.form = new FormGroup({
       progetto: new FormControl(null, {
         updateOn: 'blur',
@@ -27,13 +35,9 @@ export class NewProjectPage implements OnInit {
         updateOn: 'blur',
         validators: [Validators.required, Validators.maxLength(12)]
       }),
-      collaudatore: new FormControl(null, {
+      collaudatore: new FormControl(this.creator ? this.creator : null, {
         updateOn: 'blur',
         validators: [Validators.required, Validators.maxLength(30)]
-      }),
-      data: new FormControl(null, {
-        updateOn: 'blur',
-        validators: [Validators.required]
       }),
       linkprogetto: new FormControl(null, {
         updateOn: 'blur',
@@ -42,16 +46,14 @@ export class NewProjectPage implements OnInit {
     });
   }
 
-  onCreateProject(){
-    console.log("Progetto salvato");
-    this.projectsService.saveProject(
-      {
-        progetto: this.form.value.get('progetto'),
-        usermobile: this.form.value.get('usermobile'),
-        linkprogetto: this.form.value.get('linkprogetto'),
-        collaudatore: this.form.value.get('collaudatore'),
-      }
-      );
+  onCreateProject() {
+    this.projectsService.addProject(
+      this.form.value.usermobile,
+      this.form.value.progetto,
+      this.form.value.collaudatore,
+      this.form.value.linkprogetto);
+    this.form.reset();
+    console.log("Progetto creato");
     this.navController.navigateBack(['/projects']);
   }
 }

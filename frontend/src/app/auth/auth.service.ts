@@ -6,9 +6,10 @@ import { Injectable } from '@angular/core';
 export class AuthService {
 
   // TODO: set to false
-  private _userIsAutenticated = true;
+  private _userIsAutenticated = false;
   private _user: string = '';
 
+  // TODO: rendere userIsAthenticated un BehaviourSubject e ritornare un Osservabile
   get userIsAthenticated(){
     return this._userIsAutenticated;
   }

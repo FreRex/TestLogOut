@@ -1,14 +1,4 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-back-button defaultHref="/projects"></ion-back-button>
-    </ion-buttons>
-    <ion-title>Modifica Progetto</ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <!-- Reactive Form -->
-<ion-content>
   <form [formGroup]="form">
     <ion-grid>
       <ion-row>
@@ -40,15 +30,16 @@
           <p>usermobile è una stringa con al massimo 12 caratteri!</p>
         </ion-col>
       </ion-row> -->
-      <ion-row>
+      <!-- <ion-row>
         <ion-col size-sm="6" offset-sm="3">
           <ion-item>
             <ion-label position="stacked">LINK</ion-label>
             <ion-input formControlName="linkprogetto" type="text" autocomplete autocorrect></ion-input>
           </ion-item>
         </ion-col>
-      </ion-row>
-      <ion-row>
+      </ion-row> -->
+
+      <ion-row *ngIf="isEditMode">
         <ion-col size-sm="3" offset-sm="3">
           <ion-button type="button" color="primary" expand="block" shape="round" fill="outline" (click)="onDownload()">Download Foto
           </ion-button>
@@ -60,9 +51,11 @@
       </ion-row>
       <ion-row >
         <ion-col size-sm="6" offset-sm="3">
-          <ion-button [disabled]="!form.valid" type="submit" color="primary" expand="block" shape="round" (click)="onSave()">Salva</ion-button>
+          <ion-button [disabled]="!form.valid" type="submit" color="primary" expand="block" shape="round" (click)="onSave()">{{ isEditMode ? 'Salva' : 'Crea'}}
+          </ion-button>
         </ion-col>
       </ion-row>
+
       <!-- <ion-row>
         <ion-col size-sm="6" offset-sm="3">
           <ion-button 
@@ -73,6 +66,6 @@
           (click)="onSave()">{{ isEditMode ? 'Salva' : 'Crea'}}</ion-button>
         </ion-col>
       </ion-row> -->
+
     </ion-grid>
   </form>
-</ion-content>

@@ -11,7 +11,7 @@ const routes: Routes = [
   },
   {
     path: 'new',
-    loadChildren: () => import('./edit-project/edit-project.module').then( m => m.EditProjectPageModule),
+    loadChildren: () => import('./new-project/new-project.module').then( m => m.NewProjectPageModule),
     canLoad: [AuthGuard]
   },
   {
