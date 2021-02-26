@@ -17,6 +17,8 @@ export class ProjectsPage implements OnInit, OnDestroy {
   projects: Project[];
   subscription: Subscription;
   isSearchMode: boolean = false;
+  filteredProjects = [];
+  filter: string = 'progetto';
 
   constructor(
     private projectService: ProjectsService,
@@ -40,21 +42,21 @@ export class ProjectsPage implements OnInit, OnDestroy {
 
   ionViewWillEnter() {
     this.projects = this.projectService.getProjects();
+    this.filteredProjects = this.projects;
   }
 
-  onUpdateProjects() {
+  doRefresh(event) {
     this.projectService.fetchProjects()
       .subscribe(
         res => {
           this.projects = this.projectService.getProjects();
+          this.filteredProjects = this.projects;
+          event.target.complete();
         }
       );
   }
 
-  filteredProjects = [];
-  filter: string = 'progetto';
-
-  onFilter(event: Event){
+  onFilter(event: Event) {
     let searchTerm = (<HTMLInputElement>event.target).value;
     switch (this.filter) {
       case "collaudatore": {
@@ -76,14 +78,13 @@ export class ProjectsPage implements OnInit, OnDestroy {
         break;
       }
       default: {
-        this.filteredProjects = this.projects; 
+        this.filteredProjects = this.projects;
         break;
       }
     }
   }
 
   onNewProjectPage() {
-    this.storage.set('edit', false);
     this.router.navigate(['/', 'projects', 'new']);
   }
 

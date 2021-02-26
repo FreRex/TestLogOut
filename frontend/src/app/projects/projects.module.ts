@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
@@ -14,12 +14,13 @@ import { ProjectItemComponent } from './project-item/project-item.component';
   imports: [
     CommonModule,
     FormsModule,
+    ReactiveFormsModule,
     IonicModule,
     ProjectsPageRoutingModule
   ],
   declarations: [
     ProjectsPage, 
-    ProjectItemComponent, 
+    ProjectItemComponent
     // EditProjectModalComponent
   ],
   // entryComponents: [EditProjectModalComponent] // <-- Serve per i componenti che non sono dichiarati all'interno di altri template (es. modal)

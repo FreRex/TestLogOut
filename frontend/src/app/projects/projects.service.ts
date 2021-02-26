@@ -14,20 +14,20 @@ export class ProjectsService {
     {
       usermobile: '1',
       progetto: 'Progetto 1',
+      collaudatore: 'Collaudatore 1',
       linkprogetto: 'Link progetto 1',
-      collaudatore: 'Collaudatore 1'
     },
     {
       usermobile: '2',
       progetto: 'Progetto 2',
+      collaudatore: 'Collaudatore 2',
       linkprogetto: 'Link progetto 2',
-      collaudatore: 'Collaudatore 2'
     },
     {
       usermobile: '3',
       progetto: 'Progetto 3',
+      collaudatore: 'Collaudatore 3',
       linkprogetto: 'Link progetto 3',
-      collaudatore: 'Collaudatore 3'
     },
   ];
   projectsChanged = new Subject<Project[]>();
@@ -66,11 +66,11 @@ export class ProjectsService {
     this.projectsChanged.next(this._projects.slice());
   }
 
-  saveProject(newProject: Project) {
+  saveProject(usermobile: string, progetto: string, collaudatore?: string, linkprogetto?: string) {
     const id = this._projects.findIndex(proj => {
-      return proj.usermobile === newProject.usermobile;
+      return proj.usermobile === usermobile;
     });
-    this._projects[id] = newProject;
+    this._projects[id] = new Project(usermobile, progetto, collaudatore, linkprogetto);
     this.projectsChanged.next(this._projects.slice());
   }
 
@@ -79,8 +79,8 @@ export class ProjectsService {
     this.projectsChanged.next(this._projects.slice());
   }
 
-  addProject(progetto: string, usermobile: string, linkprogetto: string) {
-    const newProject = new Project(progetto, usermobile, linkprogetto, this.authService.user);
+  addProject(usermobile: string, progetto: string, collaudatore?: string, linkprogetto?: string) {
+    const newProject = new Project(usermobile, progetto, collaudatore, linkprogetto);
     this._projects.push(newProject);
     this.projectsChanged.next(this._projects.slice());
   }

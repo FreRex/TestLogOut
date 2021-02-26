@@ -22,10 +22,6 @@ export class AuthPage implements OnInit {
   ngOnInit() {
   }
 
-  onSwitchMode(){
-    this.isLogin = !this.isLogin;
-  }
-
   // onLogin(){
   //   console.log(this.username);   
   //   this.authService.login(this.username);
@@ -39,13 +35,12 @@ export class AuthPage implements OnInit {
     const email = form.value.username;
     const password = form.value.password;
 
-    console.log(email, password);
-
     if(this.isLogin){
-      //TODO: logica login
       this.authService.login(this.username);
       this.router.navigateByUrl('/projects');
-    } else {
+      form.reset();
+    } 
+    else {
       //TODO: logica sign up
     }
   }
