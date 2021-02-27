@@ -5,7 +5,10 @@
   "main": "./build/index.js",
   "dependencies": {
     "cors": "^2.8.5",
-    "express": "^4.17.1"
+    "crypto-js": "^4.0.0",
+    "express": "^4.17.1",
+    "https": "^1.0.0",
+    "mysql": "^2.18.1"
   },
   "devDependencies": {
     "@types/express": "^4.17.11",
@@ -17,7 +20,7 @@
     "build": "tsc --project ./",
     "start_1": "tsc --project ./ && npm run && node ./build/index.js",
     "start_2": "cd frontend && ionic build --prod && cd .. && npm run && node ./build/index.js",
-    "start_3": "tsc --project ./ && cd frontend && ionic build --prod && cd .. && npm run && node ./build/index.js"
+    "start_3": "tsc --project ./ && cd frontend && ionic build --prod && cd .. && npm run && node ./build/server.js"
   },
   "author": "",
   "license": "ISC"

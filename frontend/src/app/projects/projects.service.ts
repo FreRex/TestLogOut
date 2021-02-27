@@ -93,7 +93,7 @@ export class ProjectsService {
 
     return this.http
       .get<Project>(
-        'https://www.collaudolive.com:9083/ApiSsl'
+        'https://www.collaudolive.com:9083/apimultistreaming'
       )
       .pipe(
         map(
