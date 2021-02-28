@@ -13,7 +13,7 @@ const port = 9083;
 //--------------------
 
 //Tirare su il FrontEnd (verso PannAdmin settato su Angular)
-app.use('/PannAdmin',express.static(path.join(__dirname, '../frontend/www')));
+app.use('/projects',express.static(path.join(__dirname, '../frontend/www')));
 
 //Tirare su il FrontEnd (verso backoffice settato su Angular)
 app.use('/backoffice', (req, res) => { res.sendFile(path.join(__dirname, '../frontend/www')); });
