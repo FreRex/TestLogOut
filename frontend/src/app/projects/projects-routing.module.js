@@ -28,6 +28,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProjectsPageRoutingModule = void 0;
 const core_1 = require("@angular/core");
 const router_1 = require("@angular/router");
+const auth_guard_1 = require("../auth/auth.guard");
 const projects_page_1 = require("./projects.page");
 const routes = [
     {
@@ -36,15 +37,18 @@ const routes = [
     },
     {
         path: 'new',
-        loadChildren: () => Promise.resolve().then(() => __importStar(require('./edit-project/edit-project.module'))).then(m => m.EditProjectPageModule)
+        loadChildren: () => Promise.resolve().then(() => __importStar(require('./new-project/new-project.module'))).then(m => m.NewProjectPageModule),
+        canLoad: [auth_guard_1.AuthGuard]
     },
     {
         path: ':projectId',
-        loadChildren: () => Promise.resolve().then(() => __importStar(require('./project-detail/project-detail.module'))).then(m => m.ProjectDetailPageModule)
+        loadChildren: () => Promise.resolve().then(() => __importStar(require('./project-detail/project-detail.module'))).then(m => m.ProjectDetailPageModule),
+        canLoad: [auth_guard_1.AuthGuard]
     },
     {
         path: 'edit/:projectId',
-        loadChildren: () => Promise.resolve().then(() => __importStar(require('./edit-project/edit-project.module'))).then(m => m.EditProjectPageModule)
+        loadChildren: () => Promise.resolve().then(() => __importStar(require('./edit-project/edit-project.module'))).then(m => m.EditProjectPageModule),
+        canLoad: [auth_guard_1.AuthGuard]
     },
 ];
 let ProjectsPageRoutingModule = class ProjectsPageRoutingModule {

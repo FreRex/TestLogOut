@@ -6,42 +6,30 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AuthPage = void 0;
+exports.MenuComponent = void 0;
 const core_1 = require("@angular/core");
-let AuthPage = class AuthPage {
+let MenuComponent = class MenuComponent {
     constructor(authService, router) {
         this.authService = authService;
         this.router = router;
-        this.isLogin = true;
     }
     ngOnInit() {
+        this.isLoggedIn = this.authService.userIsAthenticated;
     }
-    // onLogin(){
-    //   console.log(this.username);   
-    //   this.authService.login(this.username);
-    //   this.router.navigateByUrl('/projects'); 
-    // }
-    onSubmit(form) {
-        if (!form.valid) {
-            return;
-        }
-        const email = form.value.username;
-        const password = form.value.password;
-        if (this.isLogin) {
-            this.authService.login(this.username);
-            this.router.navigateByUrl('/projects');
-            form.reset();
-        }
-        else {
-            //TODO: logica sign up
-        }
+    onLogout() {
+        this.authService.logout();
+        this.router.navigateByUrl('/auth');
+        this.isLoggedIn = this.authService.userIsAthenticated;
+    }
+    onLogin() {
+        this.router.navigateByUrl('/auth');
     }
 };
-AuthPage = __decorate([
+MenuComponent = __decorate([
     core_1.Component({
-        selector: 'app-auth',
-        templateUrl: './auth.page.html',
-        styleUrls: ['./auth.page.scss'],
+        selector: 'app-menu',
+        templateUrl: './menu.component.html',
+        styleUrls: ['./menu.component.scss'],
     })
-], AuthPage);
-exports.AuthPage = AuthPage;
+], MenuComponent);
+exports.MenuComponent = MenuComponent;

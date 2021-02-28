@@ -14,6 +14,7 @@ let AuthService = class AuthService {
         this._userIsAutenticated = true;
         this._user = '';
     }
+    // TODO: rendere userIsAthenticated un BehaviourSubject e ritornare un Osservabile
     get userIsAthenticated() {
         return this._userIsAutenticated;
     }
@@ -23,10 +24,12 @@ let AuthService = class AuthService {
     login(user) {
         this._userIsAutenticated = true;
         this._user = user;
+        console.log("is logged in: " + this._userIsAutenticated);
     }
     logout() {
         this._userIsAutenticated = false;
         this._user = '';
+        console.log("is logged out: " + this._userIsAutenticated);
     }
 };
 AuthService = __decorate([

@@ -2,11 +2,11 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Project = void 0;
 class Project {
-    constructor(progetto, usermobile, linkprogetto, collaudatore) {
-        this.progetto = progetto;
+    constructor(usermobile, progetto, collaudatore, linkprogetto) {
         this.usermobile = usermobile;
-        this.linkprogetto = linkprogetto;
+        this.progetto = progetto;
         this.collaudatore = collaudatore;
+        this.linkprogetto = linkprogetto;
     }
     ;
 }

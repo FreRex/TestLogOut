@@ -19,20 +19,20 @@ let ProjectsService = class ProjectsService {
             {
                 usermobile: '1',
                 progetto: 'Progetto 1',
+                collaudatore: 'Collaudatore 1',
                 linkprogetto: 'Link progetto 1',
-                collaudatore: 'Collaudatore 1'
             },
             {
                 usermobile: '2',
                 progetto: 'Progetto 2',
+                collaudatore: 'Collaudatore 2',
                 linkprogetto: 'Link progetto 2',
-                collaudatore: 'Collaudatore 2'
             },
             {
                 usermobile: '3',
                 progetto: 'Progetto 3',
+                collaudatore: 'Collaudatore 3',
                 linkprogetto: 'Link progetto 3',
-                collaudatore: 'Collaudatore 3'
             },
         ];
         this.projectsChanged = new rxjs_1.Subject();
@@ -42,15 +42,19 @@ let ProjectsService = class ProjectsService {
         // return [...this.projects];        // <-- Spread Operator = ritorna i singoli valori dell'array = crea una copia dell'array
     }
     getProjectsFiltered(collaudatore) {
-        return Object.assign({}, this._projects.filter(proj => {
-            return proj.collaudatore === collaudatore;
-        }));
+        return {
+            ...this._projects.filter(proj => {
+                return proj.collaudatore === collaudatore;
+            })
+        };
     }
     // TODO : sostituire proprietà id del progetto a usermobile
     getProjectById(id) {
-        return Object.assign({}, this._projects.find(proj => {
-            return proj.usermobile === id; // <-- ritorna vero quando trova il progeto giusto
-        }));
+        return {
+            ...this._projects.find(proj => {
+                return proj.usermobile === id; // <-- ritorna vero quando trova il progeto giusto
+            })
+        };
     }
     deleteProject(id) {
         this._projects = this._projects.filter(proj => {
@@ -58,19 +62,19 @@ let ProjectsService = class ProjectsService {
         });
         this.projectsChanged.next(this._projects.slice());
     }
-    saveProject(newProject) {
+    saveProject(usermobile, progetto, collaudatore, linkprogetto) {
         const id = this._projects.findIndex(proj => {
-            return proj.usermobile === newProject.usermobile;
+            return proj.usermobile === usermobile;
         });
-        this._projects[id] = newProject;
+        this._projects[id] = new project_model_1.Project(usermobile, progetto, collaudatore, linkprogetto);
         this.projectsChanged.next(this._projects.slice());
     }
     createProject(newProject) {
         this._projects.push(newProject);
         this.projectsChanged.next(this._projects.slice());
     }
-    addProject(progetto, usermobile, linkprogetto) {
-        const newProject = new project_model_1.Project(progetto, usermobile, linkprogetto, this.authService.user);
+    addProject(usermobile, progetto, collaudatore, linkprogetto) {
+        const newProject = new project_model_1.Project(usermobile, progetto, collaudatore, linkprogetto);
         this._projects.push(newProject);
         this.projectsChanged.next(this._projects.slice());
     }
@@ -80,13 +84,13 @@ let ProjectsService = class ProjectsService {
     fetchProjects() {
         this._projects = [];
         return this.http
-            .get('https://www.collaudolive.com:9083/ApiSsl')
+            .get('https://www.collaudolive.com:9083/apimultistreaming')
             .pipe(operators_1.map(resData => {
             for (const key in resData) {
                 console.log(key);
                 console.log(resData[key]);
                 if (resData.hasOwnProperty(key)) {
-                    this._projects.push(Object.assign(Object.assign({}, resData[key]), { id: key }));
+                    this._projects.push({ ...resData[key], id: key });
                 }
             }
         }));

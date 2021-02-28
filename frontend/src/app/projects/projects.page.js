@@ -30,11 +30,14 @@ let ProjectsPage = class ProjectsPage {
     }
     ionViewWillEnter() {
         this.projects = this.projectService.getProjects();
+        this.filteredProjects = this.projects;
     }
-    onUpdateProjects() {
+    doRefresh(event) {
         this.projectService.fetchProjects()
             .subscribe(res => {
             this.projects = this.projectService.getProjects();
+            this.filteredProjects = this.projects;
+            event.target.complete();
         });
     }
     onFilter(event) {
@@ -65,7 +68,6 @@ let ProjectsPage = class ProjectsPage {
         }
     }
     onNewProjectPage() {
-        this.storage.set('edit', false);
         this.router.navigate(['/', 'projects', 'new']);
     }
 };

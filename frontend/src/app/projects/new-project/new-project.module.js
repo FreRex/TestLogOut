@@ -6,32 +6,24 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ProjectsPageModule = void 0;
+exports.NewProjectPageModule = void 0;
 const core_1 = require("@angular/core");
 const common_1 = require("@angular/common");
 const forms_1 = require("@angular/forms");
 const angular_1 = require("@ionic/angular");
-const projects_routing_module_1 = require("./projects-routing.module");
-const projects_page_1 = require("./projects.page");
-const project_item_component_1 = require("./project-item/project-item.component");
-// import { EditProjectModalComponent } from '../angular_components/edit-project-modal/edit-project-modal.component';
-let ProjectsPageModule = class ProjectsPageModule {
+const new_project_routing_module_1 = require("./new-project-routing.module");
+const new_project_page_1 = require("./new-project.page");
+let NewProjectPageModule = class NewProjectPageModule {
 };
-ProjectsPageModule = __decorate([
+NewProjectPageModule = __decorate([
     core_1.NgModule({
         imports: [
             common_1.CommonModule,
-            forms_1.FormsModule,
             forms_1.ReactiveFormsModule,
             angular_1.IonicModule,
-            projects_routing_module_1.ProjectsPageRoutingModule
+            new_project_routing_module_1.NewProjectPageRoutingModule
         ],
-        declarations: [
-            projects_page_1.ProjectsPage,
-            project_item_component_1.ProjectItemComponent
-            // EditProjectModalComponent
-        ],
-        // entryComponents: [EditProjectModalComponent] // <-- Serve per i componenti che non sono dichiarati all'interno di altri template (es. modal)
+        declarations: [new_project_page_1.NewProjectPage]
     })
-], ProjectsPageModule);
-exports.ProjectsPageModule = ProjectsPageModule;
+], NewProjectPageModule);
+exports.NewProjectPageModule = NewProjectPageModule;

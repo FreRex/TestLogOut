@@ -8,20 +8,21 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
 const core_1 = require("@angular/core");
+const angular_1 = require("@ionic/angular");
+const service_worker_1 = require("@angular/service-worker");
 const platform_browser_1 = require("@angular/platform-browser");
+const http_1 = require("@angular/common/http");
 const router_1 = require("@angular/router");
 const storage_1 = require("@ionic/storage");
-const angular_1 = require("@ionic/angular");
 const app_component_1 = require("./app.component");
 const app_routing_module_1 = require("./app-routing.module");
-const http_1 = require("@angular/common/http");
-const service_worker_1 = require("@angular/service-worker");
 const environment_1 = require("../environments/environment");
+const menu_component_1 = require("./shared/menu/menu.component");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
     core_1.NgModule({
-        declarations: [app_component_1.AppComponent],
+        declarations: [app_component_1.AppComponent, menu_component_1.MenuComponent],
         entryComponents: [],
         imports: [
             platform_browser_1.BrowserModule,

@@ -42,7 +42,8 @@ const routes = [
     },
     {
         path: 'backoffice',
-        loadChildren: () => Promise.resolve().then(() => __importStar(require('./backoffice/backoffice.module'))).then(m => m.BackofficePageModule)
+        loadChildren: () => Promise.resolve().then(() => __importStar(require('./backoffice/backoffice.module'))).then(m => m.BackofficePageModule),
+        canLoad: [auth_guard_1.AuthGuard]
     },
 ];
 let AppRoutingModule = class AppRoutingModule {
