@@ -1,9 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { IonInput, IonSearchbar, IonSelect, ModalController } from '@ionic/angular';
+import { IonSelect } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
-import { Storage } from '@ionic/storage';
-// import { EditProjectModalComponent } from '../angular_components/edit-project-modal/edit-project-modal.component';
 import { Project } from './project.model';
 import { ProjectsService } from './projects.service';
 
@@ -37,6 +35,7 @@ export class ProjectsPage implements OnInit, OnDestroy {
     }
   }
 
+  // ??? mi serve ancora o posso accorparlo al ngOnInit?
   ionViewWillEnter() {
     this.projects = this.projectService.getProjects();
     this.filteredProjects = this.projects;
@@ -53,12 +52,13 @@ export class ProjectsPage implements OnInit, OnDestroy {
       );
   }
 
-  onFilter(event: Event, filter: string) {
-    let searchTerm = (<HTMLInputElement>event.target).value;
-    switch (filter) {
+  /** Funzione che filtra i progetti in base al fitro impostato e all'input */
+  onFilter(eventValue: Event, filterValue: string) {
+    let searchTerm = (<HTMLInputElement>eventValue.target).value;
+    switch (filterValue) {
       case "collaudatore": {
         this.filteredProjects = this.projects.filter((project) => {
-          return project.collaudatore.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1;
+          return project.nome_collaudatore.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1;
         });
         break;
       }
@@ -70,10 +70,11 @@ export class ProjectsPage implements OnInit, OnDestroy {
       }
       case "progetto": {
         this.filteredProjects = this.projects.filter((project) => {
-          return project.progetto.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1;
+          return project.nome_progetto.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1;
         });
         break;
       }
+      // TODO : case "all" = filtro multiplo
       default: {
         this.filteredProjects = this.projects;
         break;
@@ -81,10 +82,12 @@ export class ProjectsPage implements OnInit, OnDestroy {
     }
   }
 
-  openSelect(filter: IonSelect){
-    filter.open();
+  /** Apre il poppever per la selezione del filtro */
+  openSelect(event: UIEvent, filterSelectRef: IonSelect){
+    filterSelectRef.open(event);
   }
-  
+
+  /** Apre la pagina "Crea Progetto" */
   onNewProjectPage() {
     this.router.navigate(['/', 'projects', 'new']);
   }

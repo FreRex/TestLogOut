@@ -1,7 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { IonItemSliding, ModalController } from '@ionic/angular';
-// import { EditProjectModalComponent } from '../../angular_components/edit-project-modal/edit-project-modal.component';
+import { IonItemSliding } from '@ionic/angular';
 import { Project } from '../project.model';
 
 @Component({
@@ -15,7 +14,6 @@ export class ProjectItemComponent implements OnInit {
   isFavourite: boolean;
   
   constructor(
-    // private modalController: ModalController,
     private router: Router
     ) { }
 

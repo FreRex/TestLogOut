@@ -14,7 +14,7 @@ import { ProjectsService } from '../projects.service';
 export class EditProjectPage implements OnInit {
 
   form: FormGroup;
-  project: Project = { progetto: '', usermobile: '', linkprogetto: '', collaudatore: '' };
+  project: Project;
   projectId: string;
 
   constructor(
@@ -38,32 +38,27 @@ export class EditProjectPage implements OnInit {
       this.project = this.projectsService.getProjectById(projectId);
 
       this.form.patchValue({
-        progetto: this.project.progetto,
         usermobile: this.project.usermobile,
-        collaudatore: this.project.collaudatore,
-        linkprogetto: this.project.linkprogetto,
+        nome_progetto: this.project.nome_progetto,
+        nome_collaudatore: this.project.nome_collaudatore
       });
     });
   }
 
   createForm() {
     this.form = new FormGroup({
-      progetto: new FormControl(null, {
-        updateOn: 'blur',
-        validators: [Validators.required, Validators.maxLength(30)]
-      }),
       usermobile: new FormControl(null, {
         updateOn: 'blur',
         validators: [Validators.required, Validators.maxLength(12)]
       }),
-      collaudatore: new FormControl(this.authService.user, {
+      nome_progetto: new FormControl(null, {
         updateOn: 'blur',
         validators: [Validators.required, Validators.maxLength(30)]
       }),
-      linkprogetto: new FormControl(null, {
+      nome_collaudatore: new FormControl(this.authService.user, {
         updateOn: 'blur',
-        validators: [Validators.required]
-      }),
+        validators: [Validators.required, Validators.maxLength(30)]
+      })
     });
   }
 
@@ -81,10 +76,10 @@ export class EditProjectPage implements OnInit {
       return;
     }
     this.projectsService.saveProject(
+      this.project.id,
       this.form.value.usermobile,
-      this.form.value.progetto,
-      this.form.value.collaudatore,
-      this.form.value.linkprogetto);
+      this.form.value.nome_progetto,
+      this.form.value.nome_collaudatore);
     this.form.reset();
     console.log("Progetto salvato");
     this.navController.navigateBack(['/projects']);

@@ -3,11 +3,10 @@
         <!-- <div class="ion-padding">
             <ion-icon size="large" color="medium" name="create-outline" (click)="onOpenEditModal()"></ion-icon>
         </div> -->
-        <ion-label [routerLink]="['./', projectItem.usermobile]">
-            <h2>Progetto: {{ projectItem.progetto }}</h2>
-            <p> USERMOBILE: {{ projectItem.usermobile }}
-                - LINK: {{ projectItem.linkprogetto }}
-                - COLLUDATORE: {{ projectItem.collaudatore}}</p>
+        <ion-label [routerLink]="['./', projectItem.id]">
+            <h2>{{ projectItem.nome_progetto }} ({{ projectItem.usermobile }})</h2>
+            <p> ID: {{projectItem.id}} - USERMOBILE: {{ projectItem.usermobile }}
+                - COLLUDATORE: {{ projectItem.nome_collaudatore}}</p>
         </ion-label>
         <ion-icon [color]="isFavourite ? 'warning' : 'light'" 
         name="star" slot="end" (click)="onFavoutite()"></ion-icon>

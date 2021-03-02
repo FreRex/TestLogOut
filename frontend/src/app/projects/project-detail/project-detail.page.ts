@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertController, ModalController, NavController } from '@ionic/angular';
-// import { EditProjectModalComponent } from '../../angular_components/edit-project-modal/edit-project-modal.component';
 import { Project } from '../project.model';
 import { ProjectsService } from '../projects.service';
 
@@ -19,7 +18,6 @@ export class ProjectDetailPage implements OnInit {
     private projectsService: ProjectsService,
     private alertController: AlertController,
     private navController:  NavController,
-    private modalController: ModalController
   ) { }
 
   ngOnInit() {

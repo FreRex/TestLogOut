@@ -36,7 +36,7 @@
             </ion-searchbar>
         </ion-col>
         <ion-col size-md="0.5" size-xs="2">
-            <ion-button (click)="openSelect(filter)" fill="clear" size="small">
+            <ion-button (click)="openSelect($event, filter)" fill="clear" size="small">
                 <ion-icon name="filter" slot="icon-only"></ion-icon>
             </ion-button>
             <ion-select hidden="true" #filter cancelText="Annulla" interface="popover">

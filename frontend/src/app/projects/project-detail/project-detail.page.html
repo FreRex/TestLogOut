@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/projects"></ion-back-button>
     </ion-buttons>
-    <ion-title>Progetto: {{ loadedProject.progetto }}</ion-title>
+    <ion-title>Progetto: {{ loadedProject.nome_progetto }}</ion-title>
     <ion-buttons slot="primary">
       <!-- <ion-button (click)="onEditProject()">
         <ion-icon name="create-outline" slot="icon-only"></ion-icon>
@@ -21,8 +21,7 @@
       <ion-col>
         <div>
           <h3>Usermobile: {{ loadedProject.usermobile }}</h3>
-          <h3>LinkProgetto: {{ loadedProject.linkprogetto }}</h3>
-          <h3>Collaudatore: {{ loadedProject.collaudatore }}</h3>
+          <h3>Collaudatore: {{ loadedProject.nome_collaudatore }}</h3>
           <!-- Default Searchbar -->
         </div>
       </ion-col>

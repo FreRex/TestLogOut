@@ -1,8 +1,11 @@
 export class Project {
     constructor(
+        public id: number,
         public usermobile: string,
-        public progetto: string,
-        public collaudatore: string,
-        public linkprogetto: string,
+        public nome_progetto: string,
+        public nome_collaudatore: string,
+        public data_inserimento?: string,
+        public pk_project?: number,
+        public commessa?: string,
         ) { };
 }

@@ -12,24 +12,25 @@ export class ProjectsService {
 
   private _projects: Project[] = [
     {
+      id: 1,
       usermobile: '1',
-      progetto: 'Progetto 1',
-      collaudatore: 'Collaudatore 1',
-      linkprogetto: 'Link progetto 1',
+      nome_progetto: 'Progetto 1',
+      nome_collaudatore: 'Collaudatore 1',
     },
     {
+      id: 2,
       usermobile: '2',
-      progetto: 'Progetto 2',
-      collaudatore: 'Collaudatore 2',
-      linkprogetto: 'Link progetto 2',
+      nome_progetto: 'Progetto 2',
+      nome_collaudatore: 'Collaudatore 2',
     },
     {
+      id: 3,
       usermobile: '3',
-      progetto: 'Progetto 3',
-      collaudatore: 'Collaudatore 3',
-      linkprogetto: 'Link progetto 3',
+      nome_progetto: 'Progetto 3',
+      nome_collaudatore: 'Collaudatore 3',
     },
   ];
+
   projectsChanged = new Subject<Project[]>();
 
   constructor(
@@ -37,18 +38,19 @@ export class ProjectsService {
     private authService: AuthService
   ) { }
 
+  /** Ritorna tutti i progetti */
   getProjects() {
     return this._projects.slice();  // <-- slice() = crea una copia dell'array
     // return [...this.projects];        // <-- Spread Operator = ritorna i singoli valori dell'array = crea una copia dell'array
   }
 
-  getProjectsFiltered(collaudatore: string) {
-    return {
-      ...this._projects.filter(proj => {
-        return proj.collaudatore === collaudatore;
-      })
-    };
-  }
+  // getProjectsFiltered(collaudatore: string) {
+  //   return {
+  //     ...this._projects.filter(proj => {
+  //       return proj.nome_collaudatore === collaudatore;
+  //     })
+  //   };
+  // }
 
   // TODO : sostituire proprietà id del progetto a usermobile
   getProjectById(id: string): Project {
@@ -59,6 +61,7 @@ export class ProjectsService {
     };
   }
 
+  /** Cancella un progetto */
   deleteProject(id: string) {
     this._projects = this._projects.filter(proj => {  // <-- filter() = filtra un array in base a una regola ("se è vero")
       return proj.usermobile !== id;                // <-- ritrorna vero per tutte le ricette tranne quella che voglio scartare
@@ -66,28 +69,28 @@ export class ProjectsService {
     this.projectsChanged.next(this._projects.slice());
   }
 
-  saveProject(usermobile: string, progetto: string, collaudatore?: string, linkprogetto?: string) {
-    const id = this._projects.findIndex(proj => {
+  /** Salva un progetto dopo una modifica */
+  saveProject(id: number, usermobile: string, nome_progetto: string, nome_collaudatore: string) {
+    const index = this._projects.findIndex(proj => {
       return proj.usermobile === usermobile;
     });
-    this._projects[id] = new Project(usermobile, progetto, collaudatore, linkprogetto);
+    this._projects[index] = new Project(id, usermobile, nome_progetto, nome_collaudatore);
     this.projectsChanged.next(this._projects.slice());
   }
 
-  createProject(newProject: Project) {
+  // createProject(newProject: Project) {
+  //   this._projects.push(newProject);
+  //   this.projectsChanged.next(this._projects.slice());
+  // }
+
+  /** Aggiunge un nuovo progetto alla lista */
+  addProject(id: number, usermobile: string, nome_progetto: string, nome_collaudatore: string) {
+    const newProject = new Project(id, usermobile, nome_progetto, nome_collaudatore);
     this._projects.push(newProject);
     this.projectsChanged.next(this._projects.slice());
   }
 
-  addProject(usermobile: string, progetto: string, collaudatore?: string, linkprogetto?: string) {
-    const newProject = new Project(usermobile, progetto, collaudatore, linkprogetto);
-    this._projects.push(newProject);
-    this.projectsChanged.next(this._projects.slice());
-  }
-
-  /**
-   * Aggiorna e sostituisce i progetti con quelli restituiti dal server
-   */
+  /** Aggiorna e sostituisce i progetti con quelli restituiti dal server */
   fetchProjects() {
     this._projects = [];
 
@@ -103,7 +106,15 @@ export class ProjectsService {
               console.log(resData[key]);
 
               if (resData.hasOwnProperty(key)) {
-                this._projects.push({ ...resData[key], id: key });
+                this._projects.push(
+                  new Project(
+                    resData[key].id,
+                    resData[key].usermobile,
+                    resData[key].progettoselezionato,
+                    resData[key].collaudatoreufficio,
+                    resData[key].DataInsert,
+                    )
+                  );
               }
             }
           }
