@@ -29,19 +29,21 @@
     <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
         <ion-refresher-content></ion-refresher-content>
     </ion-refresher>
-    <ion-row *ngIf="isSearchMode">
-        <ion-col size-md="5" offset-md="3">
-            <ion-searchbar (ionInput)="onFilter($event)" (ionCancel)="isSearchMode = false">
+    <ion-row *ngIf="isSearchMode" class="ion-align-items-center">
+        <ion-col size-md="5.5" offset-md="3" size-xs="10">
+            <ion-searchbar [placeholder]="filter.value" (ionInput)="onFilter($event, filter.value)"
+                (ionCancel)="isSearchMode = false">
             </ion-searchbar>
         </ion-col>
-        <ion-col size-md="1" size-xs="4" >
-            <ion-item class="ion-text-end">
-                <ion-select [(ngModel)]="filter" cancelText="Annulla" interface="popover">
-                    <ion-select-option value="usermobile">usermobile</ion-select-option>
-                    <ion-select-option value="collaudatore">collaudatore</ion-select-option>
-                    <ion-select-option value="progetto">progetto</ion-select-option>
-                </ion-select>
-            </ion-item>
+        <ion-col size-md="0.5" size-xs="2">
+            <ion-button (click)="openSelect(filter)" fill="clear" size="small">
+                <ion-icon name="filter" slot="icon-only"></ion-icon>
+            </ion-button>
+            <ion-select hidden="true" #filter cancelText="Annulla" interface="popover">
+                <ion-select-option value="usermobile">usermobile</ion-select-option>
+                <ion-select-option value="collaudatore">collaudatore</ion-select-option>
+                <ion-select-option value="progetto">progetto</ion-select-option>
+            </ion-select>
         </ion-col>
     </ion-row>
     <ion-row>

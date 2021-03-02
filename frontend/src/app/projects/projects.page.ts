@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { IonInput, ModalController } from '@ionic/angular';
+import { IonInput, IonSearchbar, IonSelect, ModalController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { Storage } from '@ionic/storage';
@@ -18,13 +18,10 @@ export class ProjectsPage implements OnInit, OnDestroy {
   subscription: Subscription;
   isSearchMode: boolean = false;
   filteredProjects = [];
-  filter: string = 'progetto';
 
   constructor(
     private projectService: ProjectsService,
-    private modalController: ModalController,
     private router: Router,
-    private storage: Storage
   ) { }
 
   ngOnInit() {
@@ -56,9 +53,9 @@ export class ProjectsPage implements OnInit, OnDestroy {
       );
   }
 
-  onFilter(event: Event) {
+  onFilter(event: Event, filter: string) {
     let searchTerm = (<HTMLInputElement>event.target).value;
-    switch (this.filter) {
+    switch (filter) {
       case "collaudatore": {
         this.filteredProjects = this.projects.filter((project) => {
           return project.collaudatore.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1;
@@ -84,6 +81,10 @@ export class ProjectsPage implements OnInit, OnDestroy {
     }
   }
 
+  openSelect(filter: IonSelect){
+    filter.open();
+  }
+  
   onNewProjectPage() {
     this.router.navigate(['/', 'projects', 'new']);
   }
