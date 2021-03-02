@@ -8,7 +8,7 @@ db.connect(
   else
   {
      console.log("Connection established.");     
-     db.query("SELECT * FROM multistreaming", function (err: any, result: any, fields: any) {
+     db.query("SELECT multistreaming.id AS id, multistreaming.usermobile AS usermobile, multistreaming.progettoselezionato AS progettoselezionato, utenti.collaudatoreufficio AS collaudatoreufficio, multistreaming.DataInsert AS DataInsert FROM multistreaming INNER JOIN utenti ON utenti.id = multistreaming.collaudatoreufficio ORDER BY multistreaming.id DESC", function (err: any, result: any, fields: any) {
       if (err){
         console.log('Errore query');
       }
