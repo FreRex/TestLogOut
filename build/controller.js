@@ -11,7 +11,7 @@ db.connect(function (err) {
                 console.log('Errore query');
             }
             else {
-                module.exports.multistreamingQuery = result;
+                exports.multistreamingQuery = result;
             }
         });
         db.query("SELECT * FROM rappre_prog_gisfo ORDER BY rappre_prog_gisfo.id DESC", function (err, result, fields) {
@@ -19,7 +19,7 @@ db.connect(function (err) {
                 console.log('Errore query');
             }
             else {
-                module.exports.progettiQuery = result;
+                exports.progettiQuery = result;
             }
         });
     }

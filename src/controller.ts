@@ -1,5 +1,6 @@
 const db = require('./conf/db');
 
+
 db.connect(
   function (err: any) { 
   if (err) { 
@@ -15,7 +16,7 @@ db.connect(
        }
        else
        {
-        module.exports.multistreamingQuery = result;
+        exports.multistreamingQuery = result;
        }      
       });
       
@@ -26,7 +27,7 @@ db.connect(
        }
        else
        {
-        module.exports.progettiQuery = result;
+        exports.progettiQuery = result;
        }      
       });
 
