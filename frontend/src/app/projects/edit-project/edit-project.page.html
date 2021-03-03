@@ -12,10 +12,22 @@
   <form [formGroup]="form">
     <ion-grid>
       <ion-row>
+        <ion-col  size-sm="6" offset-sm="3">
+          <ion-item lines="none">
+            <ion-label class="ion-text-wrap">
+              <ion-text color="primary"><h1>{{ project.nome_progetto }}</h1></ion-text>
+              <ion-text color="primary"><h4>Id: {{ project.id }}</h4></ion-text>
+              <ion-text color="primary"><h4>Data creazione: {{ project.data_inserimento | date:'dd MMMM yyyy' }}</h4></ion-text>
+            </ion-label>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
         <ion-col size-sm="6" offset-sm="3">
           <ion-item>
             <ion-label position="stacked">USERMOBILE</ion-label>
             <ion-input formControlName="usermobile" type="text" autocomplete autocorrect></ion-input>
+            <ion-icon name="pencil-outline" slot="end" class="ion-align-self-center"></ion-icon>
           </ion-item>
         </ion-col>
       </ion-row>
@@ -24,6 +36,7 @@
           <ion-item>
             <ion-label position="stacked">NOME PROGETTO</ion-label>
             <ion-input formControlName="nome_progetto" type="text" autocomplete autocorrect></ion-input>
+            <ion-icon name="pencil-outline" slot="end" class="ion-align-self-center"></ion-icon>
           </ion-item>
         </ion-col>
       </ion-row>
@@ -32,9 +45,18 @@
           <ion-item>
             <ion-label position="stacked">COLLAUDATORE</ion-label>
             <ion-input formControlName="nome_collaudatore" type="text" autocomplete autocorrect></ion-input>
+            <ion-icon name="pencil-outline" slot="end" class="ion-align-self-center"></ion-icon>
           </ion-item>
         </ion-col>
       </ion-row>
+      <!-- <ion-row>
+        <ion-col size-sm="6" offset-sm="3">
+          <ion-item>
+            <ion-label position="stacked">DATA INSERIMENTO</ion-label>
+            <ion-datetime formControlName="data_inserimento" displayFormat="DD MMMM YYYY" pickerFormat="DD MMMM YYYY"></ion-datetime>
+          </ion-item>
+        </ion-col>
+      </ion-row> -->
       <ion-row>
         <ion-col size="6" size-sm="3" offset-sm="3">
           <ion-button type="button" color="primary" expand="block" shape="round" fill="outline" (click)="onDownload()">Download Foto

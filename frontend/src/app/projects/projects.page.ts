@@ -82,7 +82,7 @@ export class ProjectsPage implements OnInit, OnDestroy {
     }
   }
 
-  /** Apre il poppever per la selezione del filtro */
+  /** Apre il popover per la selezione del filtro */
   openSelect(event: UIEvent, filterSelectRef: IonSelect){
     filterSelectRef.open(event);
   }
