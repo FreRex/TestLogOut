@@ -4,7 +4,7 @@ export class Project {
         public usermobile: string,
         public nome_progetto: string,
         public nome_collaudatore: string,
-        public data_inserimento?: string,
+        public data_inserimento: Date,
         public pk_project?: number,
         public commessa?: string,
         ) { };

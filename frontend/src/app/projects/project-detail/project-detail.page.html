@@ -20,9 +20,12 @@
     <ion-row>
       <ion-col>
         <div>
-          <h3>Usermobile: {{ loadedProject.usermobile }}</h3>
-          <h3>Collaudatore: {{ loadedProject.nome_collaudatore }}</h3>
-          <!-- Default Searchbar -->
+          <h2>{{ loadedProject.nome_progetto }} ({{ loadedProject.usermobile }})</h2>
+          <p> ID: {{loadedProject.id}} 
+              - USERMOBILE: {{ loadedProject.usermobile }}
+              - COLLUDATORE: {{ loadedProject.nome_collaudatore}} 
+              - DATA: {{ loadedProject.data_inserimento | date:'MM/dd/yy, hh:mm:ss'}}
+          </p>
         </div>
       </ion-col>
     </ion-row>
