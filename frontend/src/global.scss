@@ -39,3 +39,20 @@ ion-toolbar {
 .ion-invalid.ion-touched ion-label {
     color: var(--ion-color-danger);
 }
+
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px #407dae;
+  border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #407dae;
+  border-radius: 10px;
+}

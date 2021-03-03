@@ -7,5 +7,168 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
+<ion-grid>
+  <ion-row>
+    <!--
+      PRIMA COLONNA - IMPORT FROM GISFO
+     -->
+    <ion-col size-md="3" offset-md="0">
+      <ion-card>
+        <div class="ion-margin-vertical ion-text-center">
+          <ion-button shape="round" fill="outline" color="primary" onclick="createLink()">
+              <ion-icon slot="start" name="caret-forward-circle-outline"></ion-icon>Aggiungi Collaudatore
+          </ion-button>
+      </div>
+      </ion-card>
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title color="primary">GisFo Sync</ion-card-title>
+          <ion-card-subtitle color="primary">Importa da GisFo</ion-card-subtitle>
+        </ion-card-header>
+        <ion-card-content>
+          Seleziona un collaudatore e inserisci il PK Project per importare un progetto da GisFo
+          <ion-item>
+            <ion-label><h6>Collaudatore</h6></ion-label>
+            <ion-select interface="popover">
+              <ion-select-option ><h6>test</h6></ion-select-option>
+              <ion-select-option ><h6>test</h6></ion-select-option>
+              <ion-select-option ><h6>test</h6></ion-select-option>
+              <ion-select-option ><h6>test</h6></ion-select-option>
+              <ion-select-option ><h6>test</h6></ion-select-option>
+              <ion-select-option ><h6>test</h6></ion-select-option>
+              <ion-select-option ><h6>test</h6></ion-select-option>
+              <ion-select-option ><h6>test</h6></ion-select-option>
+              <ion-select-option ><h6>test</h6></ion-select-option>
+              <ion-select-option ><h6>test</h6></ion-select-option>
+              <ion-select-option ><h6>test</h6></ion-select-option>
+              <ion-select-option ><h6>test</h6></ion-select-option>
+            </ion-select>
+          </ion-item>
+        <ion-item>
+          <ion-label position="floating" class="ion-margin"><h6>Inserisci il PK Projects</h6></ion-label>
+          <ion-input type="text" id="pkProj"><h6></h6></ion-input>
+        </ion-item>
 
+        <div class="ion-margin-vertical ion-text-right ">
+          <ion-button shape="round" fill="outline" color="primary" onclick="createLink()">
+              <ion-icon slot="start" name="caret-forward-circle-outline"></ion-icon>GisFo Sync
+          </ion-button>
+      </div>
+    </ion-card-content>
+      </ion-card>
+    </ion-col>
+<!--
+  SECONDA COLONNA LINK GEOSERVER
+ -->
+    <ion-col size-md="3" offset-md="0">
+      <ion-card class="shp">
+        <ion-card-header>
+          <ion-card-title color="primary">Carica SHP</ion-card-title>
+          <ion-card-subtitle color="primary">Incolla link GeoWeb</ion-card-subtitle>
+        </ion-card-header>
+        <ion-card-content>
+
+          <ion-item>
+            <ion-label><h6>Collaudatore</h6></ion-label>
+            <ion-select interface="popover">
+              <ion-select-option ><h6>test</h6></ion-select-option>
+              <ion-select-option ><h6>test</h6></ion-select-option>
+              <ion-select-option ><h6>test</h6></ion-select-option>
+              <ion-select-option ><h6>test</h6></ion-select-option>
+              <ion-select-option ><h6>test</h6></ion-select-option>
+              <ion-select-option ><h6>test</h6></ion-select-option>
+              <ion-select-option ><h6>test</h6></ion-select-option>
+              <ion-select-option ><h6>test</h6></ion-select-option>
+              <ion-select-option ><h6>test</h6></ion-select-option>
+              <ion-select-option ><h6>test</h6></ion-select-option>
+              <ion-select-option ><h6>test</h6></ion-select-option>
+              <ion-select-option ><h6>test</h6></ion-select-option>
+            </ion-select>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="floating" class="ion-margin"><h6>Località</h6></ion-label>
+            <ion-input type="text" id="localita"><h6></h6></ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="floating" class="ion-margin"><h6>Connessione OPTA-Civici</h6></ion-label>
+            <ion-input type="text" id="OPTA-C"><h6></h6></ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="floating" class="ion-margin"><h6>Nodi Fisici</h6></ion-label>
+            <ion-input type="text" id="pkProj"><h6></h6></ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="floating" class="ion-margin"><h6>Nodi Ottici</h6></ion-label>
+            <ion-input type="text" id="nodiOttici"><h6></h6></ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="floating" class="ion-margin"><h6>Tratte</h6></ion-label>
+            <ion-input type="text" id="tratte"><h6></h6></ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="floating" class="ion-margin"><h6>Latitudine</h6></ion-label>
+            <ion-input type="text" id="lat"><h6></h6></ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="floating" class="ion-margin"><h6>Longitudine</h6></ion-label>
+            <ion-input type="text" id="lng"><h6></h6></ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="floating" class="ion-margin"><h6>PK Project</h6></ion-label>
+            <ion-input type="text" id="pkProject"><h6></h6></ion-input>
+          </ion-item>
+
+        <div class="ion-margin-vertical ion-text-right ">
+          <ion-button shape="round" fill="outline" color="primary" onclick="createLink()">
+              <ion-icon slot="start" name="caret-forward-circle-outline"></ion-icon>CREA LINK
+          </ion-button>
+      </div>
+    </ion-card-content>
+      </ion-card>
+    </ion-col>
+<!--
+  TERZA COLONNA LISTA DEI PROGETTI
+ -->
+    <ion-col size-md="6" offset-md="0">
+      <ion-card class="proj-card">
+        <ion-card-header>
+          <ion-card-title color="primary">Lista Progetti</ion-card-title>
+        </ion-card-header>
+        <ion-card-content >
+
+
+          <ion-item *ngFor="let proj of projects">
+            <ion-grid>
+              <ion-row>
+                <ion-col>
+                  <ion-label color="primary">{{ proj.name}}</ion-label>
+                  <ion-label color="primary">{{ proj.pkProj}}</ion-label>
+                </ion-col>
+                <ion-col>
+                  <ion-label color="primary">Collaudatore:</ion-label>
+                  <ion-label color="primary">Nome Collaudatore</ion-label>
+                </ion-col>
+                <ion-col>
+                  <ion-label color="primary">Lat: cose a caso,1515151</ion-label>
+                  <ion-label color="primary">Lng: cose a caso,1515151</ion-label>
+                </ion-col>
+            </ion-row>
+            </ion-grid>
+
+          </ion-item>
+
+        </ion-card-content>
+      </ion-card>
+    </ion-col>
+  </ion-row>
+
+</ion-grid>
 </ion-content>
