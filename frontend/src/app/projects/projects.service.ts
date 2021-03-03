@@ -16,18 +16,21 @@ export class ProjectsService {
       usermobile: '1',
       nome_progetto: 'Progetto 1',
       nome_collaudatore: 'Collaudatore 1',
+      data_inserimento: new Date(2021, 3, 1),
     },
     {
       id: 2,
       usermobile: '2',
       nome_progetto: 'Progetto 2',
       nome_collaudatore: 'Collaudatore 2',
+      data_inserimento: new Date(2021, 3, 2),
     },
     {
       id: 3,
       usermobile: '3',
       nome_progetto: 'Progetto 3',
       nome_collaudatore: 'Collaudatore 3',
+      data_inserimento: new Date(2021, 3, 3),
     },
   ];
 
@@ -74,7 +77,7 @@ export class ProjectsService {
     const index = this._projects.findIndex(proj => {
       return proj.usermobile === usermobile;
     });
-    this._projects[index] = new Project(id, usermobile, nome_progetto, nome_collaudatore);
+    this._projects[index] = new Project(id, usermobile, nome_progetto, nome_collaudatore, new Date());
     this.projectsChanged.next(this._projects.slice());
   }
 
@@ -85,7 +88,7 @@ export class ProjectsService {
 
   /** Aggiunge un nuovo progetto alla lista */
   addProject(id: number, usermobile: string, nome_progetto: string, nome_collaudatore: string) {
-    const newProject = new Project(id, usermobile, nome_progetto, nome_collaudatore);
+    const newProject = new Project(id, usermobile, nome_progetto, nome_collaudatore, new Date());
     this._projects.push(newProject);
     this.projectsChanged.next(this._projects.slice());
   }
@@ -104,7 +107,6 @@ export class ProjectsService {
             for (const key in resData) {
               console.log(key);
               console.log(resData[key]);
-
               if (resData.hasOwnProperty(key)) {
                 this._projects.push(
                   new Project(

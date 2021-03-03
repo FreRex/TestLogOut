@@ -40,7 +40,8 @@ export class EditProjectPage implements OnInit {
       this.form.patchValue({
         usermobile: this.project.usermobile,
         nome_progetto: this.project.nome_progetto,
-        nome_collaudatore: this.project.nome_collaudatore
+        nome_collaudatore: this.project.nome_collaudatore,
+        // data_inserimento: new Date(this.project.data_inserimento).toISOString(),
       });
     });
   }
@@ -58,7 +59,11 @@ export class EditProjectPage implements OnInit {
       nome_collaudatore: new FormControl(this.authService.user, {
         updateOn: 'blur',
         validators: [Validators.required, Validators.maxLength(30)]
-      })
+      }),
+      // data_inserimento: new FormControl(null, {
+      //   updateOn: 'blur',
+      //   validators: [Validators.required]
+      // }),
     });
   }
 

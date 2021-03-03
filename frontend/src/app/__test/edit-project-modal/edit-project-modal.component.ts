@@ -12,7 +12,7 @@ import { ProjectsService } from '../../projects/projects.service';
 })
 export class EditProjectModalComponent implements OnInit {
 
-  project: Project = { nome_progetto: '', usermobile: '', linkprogetto: '', nome_collaudatore: '' };
+  project: Project;
   projectId: string;
   isEditMode: boolean;
 
@@ -42,14 +42,13 @@ export class EditProjectModalComponent implements OnInit {
 
     this.project.nome_progetto = form.value.progetto;
     this.project.usermobile = form.value.usermobile;
-    this.project.linkprogetto = form.value.linkprogetto;
     this.project.nome_collaudatore = form.value.collaudatore;
 
     if (this.isEditMode) {
-      this.projectsService.saveProject(this.project);
+      // this.projectsService.saveProject(this.project);
       this.modalController.dismiss({ message: 'project saved' }, 'save');
     } else {
-      this.projectsService.createProject(this.project);
+      // this.projectsService.createProject(this.project);
       this.modalController.dismiss({ message: 'project created' }, 'create');
     }
     console.log("Progetto salvato");

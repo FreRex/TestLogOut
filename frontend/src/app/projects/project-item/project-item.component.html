@@ -5,8 +5,11 @@
         </div> -->
         <ion-label [routerLink]="['./', projectItem.id]">
             <h2>{{ projectItem.nome_progetto }} ({{ projectItem.usermobile }})</h2>
-            <p> ID: {{projectItem.id}} - USERMOBILE: {{ projectItem.usermobile }}
-                - COLLUDATORE: {{ projectItem.nome_collaudatore}}</p>
+            <p> ID: {{projectItem.id}} 
+                - USERMOBILE: {{ projectItem.usermobile }}
+                - COLLUDATORE: {{ projectItem.nome_collaudatore}} 
+                - DATA: {{ projectItem.data_inserimento | date:'dd MMMM yyyy' }}
+            </p>
         </ion-label>
         <ion-icon [color]="isFavourite ? 'warning' : 'light'" 
         name="star" slot="end" (click)="onFavoutite()"></ion-icon>
