@@ -16,7 +16,6 @@ exports.dbhost = dbhostDecryp;
 const dbusernameciphertext = 'U2FsdGVkX1/5vpnPZssh6hBUK/NojuvucRartdIvut0=';
 const bytesdbusername = CryptoJS.AES.decrypt(dbusernameciphertext, 'Ke8u/*fY66&//yoojsk2UUqs2W');
 const dbusernameDecryp = bytesdbusername.toString(CryptoJS.enc.Utf8);
-console.log(dbusernameDecryp);
 exports.dbusername = dbusernameDecryp;
 //Db Password
 const dbpasswordciphertext = 'U2FsdGVkX18V+P/XMCSTXIFKqin2Of/RhvGFYDmaqGE=';

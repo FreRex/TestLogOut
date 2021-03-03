@@ -13,10 +13,6 @@ const port = 9083;
 //--------------------
 //SEZIONE ROUTE NODEJS
 //--------------------
-//app.use('/projects',express.static('/var/www/html/chat-operativa/frontend/www/index.html'));
-//app.use('/projects',express.static(path.join(__dirname, '../frontend/www')));
-//app.use('/projects', (req, res) => { res.sendFile(path.join(__dirname, '../frontend/www')); });
-//app.use('/*', (req, res) => { res.sendFile(path.join(__dirname, '../frontend/www/index.html')); });
 app.use('/', routes);
 app.use('/', express_1.default.static(path_1.default.join(__dirname, '../frontend/www')));
 app.use('/*', (req, res) => { res.sendFile(path_1.default.join(__dirname, '../frontend/www/index.html')); });
@@ -28,6 +24,10 @@ https_1.default.createServer({
     cert: fs_1.default.readFileSync('/etc/letsencrypt/live/www.collaudolive.com/cert.pem')
 }, app)
     .listen(port, () => {
+    console.log(`https://www.collaudolive.com:${port}/apiprogetti`);
     console.log(`https://www.collaudolive.com:${port}/apimultistreaming`);
+    console.log(`--------------------------------------------------------`);
+    console.log(`https://www.collaudolive.com:${port}/auth`);
     console.log(`https://www.collaudolive.com:${port}/backoffice`);
+    console.log(`https://www.collaudolive.com:${port}/projects`);
 });

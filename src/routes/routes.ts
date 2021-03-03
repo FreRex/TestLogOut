@@ -4,7 +4,13 @@ const resDb = require('../controller');
 const router = express.Router();
 import bodyParser from "body-parser";
 
+router.get('/apiprogetti', function(req, res) {
 
+    res.setHeader("Access-Control-Allow-Origin", "*"); 
+    res.setHeader('Content-Type', 'application/json');    
+    res.end(JSON.stringify(resDb.progettiQuery));
+
+});
 
 router.get('/apimultistreaming', function(req, res) {
 

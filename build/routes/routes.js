@@ -6,6 +6,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const resDb = require('../controller');
 const router = express_1.default.Router();
+router.get('/apiprogetti', function (req, res) {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader('Content-Type', 'application/json');
+    res.end(JSON.stringify(resDb.progettiQuery));
+});
 router.get('/apimultistreaming', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader('Content-Type', 'application/json');
