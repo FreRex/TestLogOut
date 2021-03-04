@@ -31,6 +31,17 @@ db.connect(
        }      
       });
 
+      db.query("SELECT * FROM utenti ORDER BY utenti.id DESC",
+      function (err: any, result: any, fields: any) {
+       if (err){
+        console.log('Errore query');
+       }
+       else
+       {
+        exports.utenti = result;
+       }      
+      });
+
     }
   }
 );

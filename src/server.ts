@@ -5,7 +5,7 @@ import fs from 'fs';
 
 const routes = require('./routes/routes');
 const app = express();
-const port = 9084;
+const port = 9083;
 
 //--------------------
 //SEZIONE ROUTE NODEJS
@@ -30,8 +30,10 @@ https.createServer({
   }, app)
     
   .listen(port, () => { 
+      console.log(`--------------------------------------------------------`);
       console.log(`https://www.collaudolive.com:${port}/apiprogetti`);       
       console.log(`https://www.collaudolive.com:${port}/apimultistreaming`);
+      console.log(`https://www.collaudolive.com:${port}/apiutenti`);
       console.log(`--------------------------------------------------------`);
       console.log(`https://www.collaudolive.com:${port}/auth`); 
       console.log(`https://www.collaudolive.com:${port}/backoffice`);

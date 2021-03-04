@@ -22,5 +22,13 @@ db.connect(function (err) {
                 exports.progettiQuery = result;
             }
         });
+        db.query("SELECT * FROM utenti ORDER BY utenti.id DESC", function (err, result, fields) {
+            if (err) {
+                console.log('Errore query');
+            }
+            else {
+                exports.utenti = result;
+            }
+        });
     }
 });

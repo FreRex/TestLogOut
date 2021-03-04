@@ -20,6 +20,14 @@ router.get('/apimultistreaming', function(req, res) {
 
 });
 
+router.get('/apiutenti', function(req, res) {
+
+    res.setHeader("Access-Control-Allow-Origin", "*"); 
+    res.setHeader('Content-Type', 'application/json');    
+    res.end(JSON.stringify(resDb.utenti));
+
+});
+
 
 //se dovessimo prendere un solo oggetto prova con parametro.
 //router.get('/prove/:id/',provaController.getProve);
