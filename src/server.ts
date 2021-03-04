@@ -3,9 +3,9 @@ import path from 'path';
 import https from 'https';
 import fs from 'fs';
 
-const routes = require('./routes/routes');
+const routes = require('./routes');
 const app = express();
-const port = 9083;
+const port = 9081;
 
 //--------------------
 //SEZIONE ROUTE NODEJS
@@ -30,8 +30,10 @@ https.createServer({
   }, app)
     
   .listen(port, () => { 
-      console.log(`https://www.collaudolive.com:${port}/apiprogetti`);       
-      console.log(`https://www.collaudolive.com:${port}/apimultistreaming`);
+      console.log(`--------------------------------------------------------`);
+      console.log(`https://www.collaudolive.com:${port}/room`);
+      console.log(`https://www.collaudolive.com:${port}/progetti`);      
+      console.log(`https://www.collaudolive.com:${port}/utenti`); 
       console.log(`--------------------------------------------------------`);
       console.log(`https://www.collaudolive.com:${port}/auth`); 
       console.log(`https://www.collaudolive.com:${port}/backoffice`);

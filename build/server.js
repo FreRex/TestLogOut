@@ -7,9 +7,9 @@ const express_1 = __importDefault(require("express"));
 const path_1 = __importDefault(require("path"));
 const https_1 = __importDefault(require("https"));
 const fs_1 = __importDefault(require("fs"));
-const routes = require('./routes/routes');
+const routes = require('./routes');
 const app = express_1.default();
-const port = 9083;
+const port = 9081;
 //--------------------
 //SEZIONE ROUTE NODEJS
 //--------------------
@@ -24,8 +24,10 @@ https_1.default.createServer({
     cert: fs_1.default.readFileSync('/etc/letsencrypt/live/www.collaudolive.com/cert.pem')
 }, app)
     .listen(port, () => {
-    console.log(`https://www.collaudolive.com:${port}/apiprogetti`);
-    console.log(`https://www.collaudolive.com:${port}/apimultistreaming`);
+    console.log(`--------------------------------------------------------`);
+    console.log(`https://www.collaudolive.com:${port}/room`);
+    console.log(`https://www.collaudolive.com:${port}/progetti`);
+    console.log(`https://www.collaudolive.com:${port}/utenti`);
     console.log(`--------------------------------------------------------`);
     console.log(`https://www.collaudolive.com:${port}/auth`);
     console.log(`https://www.collaudolive.com:${port}/backoffice`);
