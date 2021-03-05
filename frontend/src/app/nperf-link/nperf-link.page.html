@@ -1,0 +1,43 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>NPerf-link</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-grid>
+      <ion-row>
+          <ion-col size-md="6" offset-md="3">
+              <ion-card>
+                  <ion-card-header>
+                      <ion-card-title color="primary">Crea nuovo Link</ion-card-title>
+                  </ion-card-header>
+                  <ion-card-content>
+                      <ion-item>
+                          <ion-label position="floating" class="ion-text-wrap">Inserisci qui le coordinate separate dalla virgola
+                          </ion-label>
+                          <ion-input type="text" id="coords"></ion-input>
+                      </ion-item>
+                      <div class="ion-margin-vertical ion-text-right ">
+                          <ion-button shape="round" fill="outline" color="primary" (click)="createLink()">
+                              <ion-icon slot="start" name="caret-forward-circle-outline"></ion-icon>CREA
+                          </ion-button>
+                      </div>
+                  </ion-card-content>
+              </ion-card>
+          </ion-col>
+      </ion-row>
+
+      <ion-row>
+          <ion-col size-md="6" offset-md="3">
+                  <ion-title class="ion-margin-vertical" color="primary">Link NPerf</ion-title>
+                  <div class="ion-margin-vertical ion-text-center ">
+                  <ion-text>
+                      <h6 id="link1" class="ion-text-wrap"></h6>
+                  </ion-text>
+              </div>
+          </ion-col>
+      </ion-row>
+  </ion-grid>
+</ion-content>

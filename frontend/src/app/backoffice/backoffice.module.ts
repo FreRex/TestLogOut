@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { BackofficePageRoutingModule } from './backoffice-routing.module';
 
 import { BackofficePage } from './backoffice.page';
+import { GisfoSyncModalComponent } from './gisfo-sync-modal/gisfo-sync-modal.component';
 
 @NgModule({
   imports: [
@@ -15,6 +16,7 @@ import { BackofficePage } from './backoffice.page';
     IonicModule,
     BackofficePageRoutingModule
   ],
-  declarations: [BackofficePage]
+  declarations: [BackofficePage, GisfoSyncModalComponent],
+  entryComponents:[GisfoSyncModalComponent]
 })
 export class BackofficePageModule {}

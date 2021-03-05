@@ -18,6 +18,11 @@ const routes: Routes = [
     loadChildren: () => import('./backoffice/backoffice.module').then( m => m.BackofficePageModule),
     canLoad: [AuthGuard]
   },
+  {
+    path: 'NPerfLink',
+    loadChildren: () => import('./nperf-link/nperf-link.module').then(m => m.NPerfLinkPageModule),
+    canLoad: [AuthGuard]
+  },
 ];
 
 @NgModule({

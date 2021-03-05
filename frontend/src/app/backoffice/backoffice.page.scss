@@ -1,6 +1,9 @@
-.proj-card
-{
+.card-out{
   max-height: 80vh;
+}
+
+.card-inside{
+  max-height: 50vh;
   overflow: hidden;
   overflow-y: auto;
 }
@@ -10,5 +13,3 @@
   overflow: hidden;
   overflow-y: auto;
 }
-
-
