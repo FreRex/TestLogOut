@@ -4,10 +4,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const Controller = require('./controller');
+const controllerSelect = require('./controllerSelect');
 const router = express_1.default.Router();
-router.get('/room/', Controller.getRoom);
-router.get('/progetti/', Controller.getProgetti);
-router.get('/utenti/', Controller.getUtenti);
-router.get('/utenti/:id/', Controller.getUtenti);
+//Verso API di lettura (SELECT)
+router.get('/select/:table/', controllerSelect.getSelect);
+router.get('/select/:table/:id/', controllerSelect.getSelect);
 module.exports = router;

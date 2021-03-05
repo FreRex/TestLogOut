@@ -13,7 +13,9 @@ const port = 9083;
 //--------------------
 //SEZIONE ROUTE NODEJS
 //--------------------
+// Indirizzamento verso route API
 app.use('/', routes);
+//Indirizzamento verso route FRONTEND
 app.use('/', express_1.default.static(path_1.default.join(__dirname, '../frontend/www')));
 app.use('/*', (req, res) => { res.sendFile(path_1.default.join(__dirname, '../frontend/www/index.html')); });
 //-------------------------------------
@@ -25,9 +27,9 @@ https_1.default.createServer({
 }, app)
     .listen(port, () => {
     console.log(`--------------------------------------------------------`);
-    console.log(`https://www.collaudolive.com:${port}/room`);
-    console.log(`https://www.collaudolive.com:${port}/progetti`);
-    console.log(`https://www.collaudolive.com:${port}/utenti`);
+    console.log(`https://www.collaudolive.com:${port}/select/room`);
+    console.log(`https://www.collaudolive.com:${port}/select/progetti`);
+    console.log(`https://www.collaudolive.com:${port}/select/utenti`);
     console.log(`--------------------------------------------------------`);
     console.log(`https://www.collaudolive.com:${port}/auth`);
     console.log(`https://www.collaudolive.com:${port}/backoffice`);

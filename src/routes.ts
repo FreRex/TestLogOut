@@ -1,10 +1,9 @@
 import express from 'express';
-const Controller = require('./controller');
+const controllerSelect = require('./controllerSelect');
 const router = express.Router();
 
-router.get('/room/',Controller.getRoom);
-router.get('/progetti/',Controller.getProgetti);
-router.get('/utenti/',Controller.getUtenti);
-router.get('/utenti/:id/',Controller.getUtenti);
+//Verso API di lettura (SELECT)
+router.get('/select/:table/',controllerSelect.getSelect);
+router.get('/select/:table/:id/',controllerSelect.getSelect);
 
 module.exports = router;
