@@ -29,11 +29,11 @@ https.createServer({
   }, app)
     
   .listen(port, () => { 
-    console.log(`--------------------------------------------------------`);
+    console.log(`-------------------- API -----------------------------------`);
     console.log(`https://www.collaudolive.com:${port}/select/room`);
     console.log(`https://www.collaudolive.com:${port}/select/progetti`);
     console.log(`https://www.collaudolive.com:${port}/select/utenti`);
-    console.log(`--------------------------------------------------------`);
+    console.log(`-------------------- FRONTEND ------------------------------`);
     console.log(`https://www.collaudolive.com:${port}/auth`); 
     console.log(`https://www.collaudolive.com:${port}/backoffice`);
     console.log(`https://www.collaudolive.com:${port}/projects`);     

@@ -5,11 +5,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const path_1 = __importDefault(require("path"));
-const https_1 = __importDefault(require("https"));
-const fs_1 = __importDefault(require("fs"));
 const routes = require('./routes');
 const app = express_1.default();
-const port = 9083;
+const port = 9084;
 //--------------------
 //SEZIONE ROUTE NODEJS
 //--------------------
@@ -21,17 +19,13 @@ app.use('/*', (req, res) => { res.sendFile(path_1.default.join(__dirname, '../fr
 //-------------------------------------
 //-------------------------------------
 //-------------------------------------
-https_1.default.createServer({
-    key: fs_1.default.readFileSync('/etc/letsencrypt/live/www.collaudolive.com/privkey.pem'),
-    cert: fs_1.default.readFileSync('/etc/letsencrypt/live/www.collaudolive.com/cert.pem')
-}, app)
-    .listen(port, () => {
+app.listen(port, () => {
     console.log(`-------------------- API -----------------------------------`);
-    console.log(`https://www.collaudolive.com:${port}/select/room`);
-    console.log(`https://www.collaudolive.com:${port}/select/progetti`);
-    console.log(`https://www.collaudolive.com:${port}/select/utenti`);
-    console.log(`-------------------- FRONTEND ------------------------------`);
-    console.log(`https://www.collaudolive.com:${port}/auth`);
-    console.log(`https://www.collaudolive.com:${port}/backoffice`);
-    console.log(`https://www.collaudolive.com:${port}/projects`);
+    console.log(`http://localhost:${port}/select/room`);
+    console.log(`http://localhost:${port}/select/progetti`);
+    console.log(`http://localhost:${port}/select/utenti`);
+    console.log(`---------------------FRONTEND-------------------------------`);
+    console.log(`http://localhost:${port}/auth`);
+    console.log(`http://localhost:${port}/backoffice`);
+    console.log(`http://localhost:${port}/projects`);
 });

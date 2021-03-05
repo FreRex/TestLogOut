@@ -58,7 +58,7 @@ Impostato backend con frontend incluso.
 
 24 febbraio 2021
 BACKEND: 
-Aggiunto in build/index.js: 
+Aggiunto in build/server.js: 
 - parte path e __dirname;
 - aggiunto http://localhost per test in locale.
 

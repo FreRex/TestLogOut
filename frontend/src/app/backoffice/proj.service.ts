@@ -31,7 +31,7 @@ export class ProjService {
   fetchProjects():Observable<any> {
     return this.http
       .get<Proj>(
-        'https://www.collaudolive.com:9083/select/progetti/'
+        '/select/progetti/'
       )
       .pipe(
         map(
@@ -58,7 +58,7 @@ export class ProjService {
   }
 
   fetchUsers():Observable<User[]>{
-    return this.http.get<User[]>("https://www.collaudolive.com:9083/select/utenti/");
+    return this.http.get<User[]>("/select/utenti/");
   }
 
   addUser(user:User):Observable<any>{

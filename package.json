@@ -18,6 +18,8 @@
     "ts-node-dev": "^1.1.3"
   },
   "scripts": {
+    "ionic_tot": "tsc --build && cd frontend && ionic build --prod && cd .. && npm run && node ./build/serverDev.js",
+    "ionic": "cd frontend && ionic build --prod && cd .. && npm run && node ./build/serverDev.js",
     "sdev": "tsc --build && npm run && node ./build/server.js",
     "sprod": "tsc --build && cd frontend && ionic build --prod && cd .. && npm run && node ./build/server.js"
   },

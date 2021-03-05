@@ -51,7 +51,7 @@ exports.getSelect = (req: any, res: any, next: any) => {
             db.query(sql + " ORDER BY id DESC", (err: any, rows: any, fields: any) => {
                 if(err){
                     res.send('Query error: ' + err.sqlMessage);
-                }else{
+                }else{                    
                     res.json(rows);
                 }
             });
@@ -62,11 +62,12 @@ exports.getSelect = (req: any, res: any, next: any) => {
             res.send('Parameter error: invalid parameters');
         }        
     }else{
+        
         //Parametro valido presente => query 'con' WHERE
         db.query(sql + " WHERE " + idWh + " ORDER BY id DESC", (err: any, rows: any, fields: any) => {
             if(err){
                 res.send('Query error: ' + err.sqlMessage);
-            }else{
+            }else{                
                 res.json(rows);
             }
         });
