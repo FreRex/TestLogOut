@@ -1,14 +1,16 @@
 import express from 'express';
-const controllerSelect = require('./controllerSelect');
+const controllerSelect = require('./ctrl/controllerSelect');
+const controllerUpdate = require('./ctrl/controllerUpdate');
 const router = express.Router();
 
+
 //Indirizzamento API di lettura (SELECT)
-router.get('/select/:table/',controllerSelect.getSelect);
-router.get('/select/:table/:id/',controllerSelect.getSelect);
+router.get('/s/:table/',controllerSelect.getSelect);
+router.get('/s/:table/:id/',controllerSelect.getSelect);
 
 //Indirizzamento API di modifica (UPDATE)
-//router.put('/update/:table/',controllerSelect.getSelect);
-//router.put('/update/:table/:id/',controllerSelect.getSelect);
+//router.put('/u/:table/',controllerUpdate.getUpdate);
+//router.put('/u/:table/:id/',controllerUpdate.getUpdate);
 
 //Indirizzamento API di lettura (SELECT)
 /*

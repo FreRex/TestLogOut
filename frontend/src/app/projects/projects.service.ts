@@ -99,7 +99,7 @@ export class ProjectsService {
 
     return this.http
       .get<Project>(
-        '/select/room/'
+        '/s/room/'
       )
       .pipe(
         map(

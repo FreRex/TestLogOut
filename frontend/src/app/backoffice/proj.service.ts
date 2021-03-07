@@ -31,7 +31,7 @@ export class ProjService {
   fetchProjects():Observable<any> {
     return this.http
       .get<Proj>(
-        '/select/progetti/'
+        '/s/progetti/'
       )
       .pipe(
         map(
@@ -58,7 +58,7 @@ export class ProjService {
   }
 
   fetchUsers():Observable<User[]>{
-    return this.http.get<User[]>("/select/utenti/");
+    return this.http.get<User[]>("/s/utenti/");
   }
 
   addUser(user:User):Observable<any>{

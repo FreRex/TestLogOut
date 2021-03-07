@@ -1,7 +1,7 @@
-const db = require('./conf/db');
-const validator = require('validator');
-
-exports.getSelect = (req: any, res: any, next: any) => {    
+exports.getSelect = (req: any, res: any, next: any) => {  
+    
+    const db = require('../conf/db');
+    const validator = require('validator'); 
     
     let table = req.params.table;
     let sql;

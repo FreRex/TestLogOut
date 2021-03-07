@@ -1,7 +1,7 @@
 "use strict";
-const db = require('./conf/db');
-const validator = require('validator');
-exports.getSelect = (req, res, next) => {
+exports.getUpdate = (req, res, next) => {
+    const db = require('../conf/db');
+    const validator = require('validator');
     let table = req.params.table;
     let sql;
     let id;

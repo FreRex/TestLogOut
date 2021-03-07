@@ -1,15 +1,16 @@
 "use strict";
-const db = require('./conf/db');
-const validator = require('validator');
 exports.getSelect = (req, res, next) => {
-    //Verifica se parametri passati da url sono indefiniti
+    const db = require('../conf/db');
+    const validator = require('validator');
     let table = req.params.table;
     let sql;
     let id;
     let idWh;
-    //Verifica paramentro 'id'
+    //-------------------------
+    //Verifica parametro 'id'
+    //-------------------------
     if (typeof (req.params.id) !== 'undefined') {
-        id = req.params.id; //se dovessimo recuperare il parametro id in GEt dall'URL, altrimenti metto solo il codice per effettuare la query
+        id = req.params.id;
         if (table == 'room') {
             idWh = "multistreaming.id = " + id;
         }
@@ -20,8 +21,9 @@ exports.getSelect = (req, res, next) => {
     else {
         id = '';
     }
-    console.log('id: ' + id);
-    //Selezione query
+    //---------------------
+    //Selezione tipo query  
+    //---------------------  
     switch (table) {
         case "room":
             sql = 'SELECT multistreaming.id AS id, multistreaming.usermobile AS usermobile, multistreaming.progettoselezionato AS progettoselezionato, utenti.collaudatoreufficio AS collaudatoreufficio, multistreaming.DataInsert AS DataInsert FROM multistreaming INNER JOIN utenti ON utenti.id = multistreaming.collaudatoreufficio';
@@ -33,12 +35,13 @@ exports.getSelect = (req, res, next) => {
             sql = 'SELECT * FROM utenti ';
             break;
     }
-    console.log(table);
-    console.log(sql);
     //----------------------------------
+    //-------------------
+    // Esecuzione query
+    //-------------------
     if (!validator.isNumeric(id) || id == 0) {
         if (id == '') {
-            //In caso di assenza di alcun parametro si esegue la query senza WHERE
+            //In caso di assenza di parametri si esegue la query 'senza' WHERE
             db.query(sql + " ORDER BY id DESC", (err, rows, fields) => {
                 if (err) {
                     res.send('Query error: ' + err.sqlMessage);
@@ -54,7 +57,7 @@ exports.getSelect = (req, res, next) => {
         }
     }
     else {
-        //Parametro valido presente => query con WHERE
+        //Parametro valido presente => query 'con' WHERE
         db.query(sql + " WHERE " + idWh + " ORDER BY id DESC", (err, rows, fields) => {
             if (err) {
                 res.send('Query error: ' + err.sqlMessage);

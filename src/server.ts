@@ -30,9 +30,9 @@ https.createServer({
     
   .listen(port, () => { 
     console.log(`-------------------- API -----------------------------------`);
-    console.log(`https://www.collaudolive.com:${port}/select/room`);
-    console.log(`https://www.collaudolive.com:${port}/select/progetti`);
-    console.log(`https://www.collaudolive.com:${port}/select/utenti`);
+    console.log(`https://www.collaudolive.com:${port}/s/room`);
+    console.log(`https://www.collaudolive.com:${port}/s/progetti`);
+    console.log(`https://www.collaudolive.com:${port}/s/utenti`);
     console.log(`-------------------- FRONTEND ------------------------------`);
     console.log(`https://www.collaudolive.com:${port}/auth`); 
     console.log(`https://www.collaudolive.com:${port}/backoffice`);

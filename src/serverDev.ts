@@ -25,9 +25,9 @@ app.use('/*', (req, res) => { res.sendFile(path.join(__dirname, '../frontend/www
 
 app.listen(port, () => { 
     console.log(`-------------------- API -----------------------------------`);
-    console.log(`http://localhost:${port}/select/room`);
-    console.log(`http://localhost:${port}/select/progetti`);
-    console.log(`http://localhost:${port}/select/utenti`);
+    console.log(`http://localhost:${port}/s/room`);
+    console.log(`http://localhost:${port}/s/progetti`);
+    console.log(`http://localhost:${port}/s/utenti`);
     console.log(`---------------------FRONTEND-------------------------------`);
     console.log(`http://localhost:${port}/auth`); 
     console.log(`http://localhost:${port}/backoffice`);
