@@ -26,10 +26,12 @@ https_1.default.createServer({
     cert: fs_1.default.readFileSync('/etc/letsencrypt/live/www.collaudolive.com/cert.pem')
 }, app)
     .listen(port, () => {
-    console.log(`-------------------- API -----------------------------------`);
+    console.log(`-------------------- API SELECT-----------------------------------`);
     console.log(`https://www.collaudolive.com:${port}/s/room`);
     console.log(`https://www.collaudolive.com:${port}/s/progetti`);
     console.log(`https://www.collaudolive.com:${port}/s/utenti`);
+    console.log(`-------------------- API UPDATE-----------------------------------`);
+    console.log(`https://www.collaudolive.com:${port}/u/room/988/pak1`);
     console.log(`-------------------- FRONTEND ------------------------------`);
     console.log(`https://www.collaudolive.com:${port}/auth`);
     console.log(`https://www.collaudolive.com:${port}/backoffice`);

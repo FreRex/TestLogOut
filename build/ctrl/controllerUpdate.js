@@ -1,8 +1,9 @@
 "use strict";
-exports.getUpdate = (req, res, next) => {
+exports.putUpdate = (req, res, next) => {
     const db = require('../conf/db');
     const validator = require('validator');
     let table = req.params.table;
+    let usermobile = req.params.usermobile;
     let sql;
     let id;
     let idWh;
@@ -21,15 +22,18 @@ exports.getUpdate = (req, res, next) => {
     else {
         id = '';
     }
+    console.log(table);
+    console.log(id);
+    console.log(usermobile);
     //---------------------
     //Selezione tipo query  
     //---------------------  
     switch (table) {
         case "room":
-            sql = 'SELECT multistreaming.id AS id, multistreaming.usermobile AS usermobile, multistreaming.progettoselezionato AS progettoselezionato, utenti.collaudatoreufficio AS collaudatoreufficio, multistreaming.DataInsert AS DataInsert FROM multistreaming INNER JOIN utenti ON utenti.id = multistreaming.collaudatoreufficio';
+            sql = 'UPDATE multistreaming ';
             break;
         case "progetti":
-            sql = 'SELECT * FROM rappre_prog_gisfo';
+            sql = 'UPDATE rappre_prog_gisfo ';
             break;
         case "utenti":
             sql = 'SELECT * FROM utenti ';
@@ -58,12 +62,14 @@ exports.getUpdate = (req, res, next) => {
     }
     else {
         //Parametro valido presente => query 'con' WHERE
-        db.query(sql + " WHERE " + idWh + " ORDER BY id DESC", (err, rows, fields) => {
+        sql = sql + "SET usermobile = '" + usermobile + "' WHERE " + idWh;
+        console.log(sql);
+        db.query(sql, (err, rows, fields) => {
             if (err) {
                 res.send('Query error: ' + err.sqlMessage);
             }
             else {
-                res.json(rows);
+                console.log(rows);
             }
         });
     }

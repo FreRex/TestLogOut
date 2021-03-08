@@ -11,8 +11,8 @@ const router = express_1.default.Router();
 router.get('/s/:table/', controllerSelect.getSelect);
 router.get('/s/:table/:id/', controllerSelect.getSelect);
 //Indirizzamento API di modifica (UPDATE)
-//router.put('/u/:table/',controllerUpdate.getUpdate);
-//router.put('/u/:table/:id/',controllerUpdate.getUpdate);
+router.put('/u/:table/', controllerUpdate.putUpdate);
+router.put('/u/:table/:id/:usermobile', controllerUpdate.putUpdate);
 //Indirizzamento API di lettura (SELECT)
 /*
 router.get('/select/:table/', function (req, res) {
