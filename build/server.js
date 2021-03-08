@@ -31,9 +31,9 @@ https_1.default.createServer({
     console.log(`https://www.collaudolive.com:${port}/s/progetti`);
     console.log(`https://www.collaudolive.com:${port}/s/utenti`);
     console.log(`-------------------- API UPDATE-----------------------------------`);
-    console.log(`https://www.collaudolive.com:${port}/u/room/988/pak1`);
+    console.log(`https://www.collaudolive.com:${port}/u/room/987/biqq2`);
     console.log(`-------------------- FRONTEND ------------------------------`);
     console.log(`https://www.collaudolive.com:${port}/auth`);
     console.log(`https://www.collaudolive.com:${port}/backoffice`);
-    console.log(`https://www.collaudolive.com:${port}/projects`);
+    console.log(`https://www.collaudolive.com:${port}/rooms`);
 });

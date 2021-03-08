@@ -8,17 +8,6 @@ const controllerSelect = require('./ctrl/controllerSelect');
 const controllerUpdate = require('./ctrl/controllerUpdate');
 const router = express_1.default.Router();
 const cors = require('cors');
-//Indirizzamento API di modifica (UPDATE)
-router.put('/u/:table/', controllerUpdate.putUpdate);
-router.put('/u/:table/:id/:usermobile', controllerUpdate.putUpdate);
-//Indirizzamento API di lettura (SELECT)
-/*
-router.get('/select/:table/', function (req, res) {
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader('Content-Type', 'application/json');
-    res.end(controllerSelect.getSelect);
-});
-*/
 router.use(function (req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', '*');
     // Request methods you wish to allow
@@ -34,12 +23,7 @@ router.use(function (req, res, next) {
 //Indirizzamento API di lettura (SELECT)
 router.get('/s/:table/', controllerSelect.getSelect);
 router.get('/s/:table/:id/', controllerSelect.getSelect);
-/*
-router.get('/select/:table/:id/', function (req, res) {
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader('Content-Type', 'application/json');
-    res.end(controllerSelect.getSelect);
-});
-*/
-//router.get('/select/:table/:id/',controllerSelect.getSelect);
+//Indirizzamento API di modifica (UPDATE)
+router.get('/u/:table/', controllerUpdate.putUpdate);
+router.get('/u/:table/:id/:usermobile', controllerUpdate.putUpdate);
 module.exports = router;
