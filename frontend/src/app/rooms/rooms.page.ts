@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { Room } from './room.model';
 import { RoomService } from './room.service';
 import { EditRoomModalComponent } from './edit-room-modal/edit-room-modal.component';
+import { SIZE_TO_MEDIA } from '@ionic/core/dist/collection/utils/media'
 
 @Component({
   selector: 'app-room',
@@ -85,7 +86,7 @@ export class RoomsPage implements OnInit, OnDestroy {
   }
 
   /** Apre il popover per la selezione del filtro */
-  openSelect(event: UIEvent, filterSelectRef: IonSelect){
+  openSelect(event: UIEvent, filterSelectRef: IonSelect) {
     filterSelectRef.open(event);
   }
 
@@ -107,6 +108,13 @@ export class RoomsPage implements OnInit, OnDestroy {
       .then(resultData => {
         console.log(resultData.data, resultData.role);
       });
+  }
+
+  toggleMenu() {
+    const splitPane = document.querySelector('ion-split-pane')
+    if (window.matchMedia(SIZE_TO_MEDIA[splitPane.when] || splitPane.when).matches) {
+      splitPane.classList.toggle('split-pane-visible');
+    }
   }
 
 }

@@ -80,14 +80,18 @@ export class EditRoomPage implements OnInit {
     if (!this.form.valid) {
       return;
     }
-    this.roomsService.saveRoom(
-      this.room.id,
-      this.form.value.usermobile,
-      this.form.value.nome_progetto,
-      this.form.value.nome_collaudatore);
-    this.form.reset();
-    console.log("Progetto salvato");
-    this.navController.navigateBack(['/rooms']);
+    this.roomsService.updateRoom(this.room.id, this.room.usermobile).subscribe(
+      res => {
+        this.roomsService.saveRoom(
+          this.room.id,
+          this.form.value.usermobile,
+          this.form.value.nome_progetto,
+          this.form.value.nome_collaudatore);
+        this.form.reset();
+        console.log("Progetto salvato");
+        this.navController.navigateBack(['/rooms']);
+      }
+    );
   }
 
   onDelete() {
