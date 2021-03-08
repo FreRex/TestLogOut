@@ -99,7 +99,7 @@ export class ProjectsService {
 
     return this.http
       .get<Project>(
-        '/s/room/'
+        'https://www.collaudolive.com:9083/s/room/'
       )
       .pipe(
         map(
