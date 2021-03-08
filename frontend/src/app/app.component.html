@@ -1,6 +1,47 @@
 <ion-app>
   <!-- <ion-split-pane contentId="main"> -->
-  <app-menu></app-menu>
-  <ion-router-outlet id="main"></ion-router-outlet>
-  <!-- </ion-split-pane>  -->
+        <!-- <app-menu></app-menu> -->
+    <!-- <ion-router-outlet id="main"></ion-router-outlet> -->
+  <!-- </ion-split-pane> -->
+  <ion-split-pane contentId="main">
+    <!--  the side menu  -->
+    <ion-menu contentId="main">
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Menu</ion-title>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content>
+        <ion-list>
+          <ion-menu-toggle auto-hide="false">
+            <ion-item lines="none" button="true" routerLink="rooms">
+              <ion-icon name="create" slot="start"></ion-icon>
+              <ion-label>Rooms</ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+          <ion-menu-toggle auto-hide="false">
+            <ion-item lines="none" button="true" routerLink="backoffice">
+              <ion-icon name="lock-open" slot="start"></ion-icon>
+              <ion-label>Backoffice</ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+          <ion-menu-toggle auto-hide="false">
+            <ion-item lines="none" button="true" routerLink="NPerfLink">
+              <ion-icon name="link" slot="start"></ion-icon>
+              <ion-label>Crea Link nPerf</ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+          <ion-menu-toggle auto-hide="false">
+            <ion-item lines="none" button="true">
+              <ion-icon name="exit" slot="start"></ion-icon>
+              <ion-label>Logout</ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+        </ion-list>
+      </ion-content>
+    </ion-menu>
+  
+    <!-- the main content -->
+    <ion-router-outlet id="main"></ion-router-outlet>
+  </ion-split-pane>
 </ion-app>

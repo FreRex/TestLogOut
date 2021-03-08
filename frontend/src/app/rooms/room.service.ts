@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Room } from './room.model';
 import { map } from 'rxjs/operators';
@@ -64,7 +64,7 @@ export class RoomService {
     };
   }
 
-  /** Cancella un progetto */
+  /** Cancella una room */
   deleteRoom(id: string) {
     this._rooms = this._rooms.filter(room => {  // <-- filter() = filtra un array in base a una regola ("se è vero")
       return room.usermobile !== id;                // <-- ritrorna vero per tutte le ricette tranne quella che voglio scartare
@@ -72,7 +72,7 @@ export class RoomService {
     this.roomsChanged.next(this._rooms.slice());
   }
 
-  /** Salva un progetto dopo una modifica */
+  /** Salva una room dopo una modifica */
   saveRoom(id: number, usermobile: string, nome_progetto: string, nome_collaudatore: string) {
     const index = this._rooms.findIndex(room => {
       return room.usermobile === usermobile;
@@ -86,14 +86,14 @@ export class RoomService {
   //   this.roomsChanged.next(this._rooms.slice());
   // }
 
-  /** Aggiunge un nuovo progetto alla lista */
+  /** Aggiunge una nuova room alla lista */
   addRoom(id: number, usermobile: string, nome_progetto: string, nome_collaudatore: string) {
     const newRoom = new Room(id, usermobile, nome_progetto, nome_collaudatore, new Date());
     this._rooms.push(newRoom);
     this.roomsChanged.next(this._rooms.slice());
   }
 
-  /** Aggiorna e sostituisce i progetti con quelli restituiti dal server */
+  /** Aggiorna e sostituisce le room con quelle restituiti dal server */
   fetchRooms() {
     this._rooms = [];
 
@@ -124,4 +124,8 @@ export class RoomService {
       );
   }
 
+  updateRoom(id: number, usermobile: string) {
+    const headers = new HttpHeaders().set("Content-Type", "application/json");
+    return this.http.put<Room>('https://www.collaudolive.com:9083/u/multistreaming/' + id + '/' + usermobile, {headers});
+  }
 }

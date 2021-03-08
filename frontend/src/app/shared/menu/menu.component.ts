@@ -13,7 +13,9 @@ export class MenuComponent implements OnInit {
   // TODO: non si aggiorna quando faccio login, rendere this.authService.userIsAthenticated un osservabile
   isLoggedIn: boolean;
 
-  constructor(private authService: AuthService, private router: Router) { }
+  constructor(
+    private authService: AuthService, 
+    private router: Router) { }
 
   ngOnInit() {
     this.isLoggedIn = this.authService.userIsAthenticated;
