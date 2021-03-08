@@ -25,7 +25,7 @@ export class AuthPage implements OnInit {
   // onLogin(){
   //   console.log(this.username);   
   //   this.authService.login(this.username);
-  //   this.router.navigateByUrl('/projects'); 
+  //   this.router.navigateByUrl('/rooms'); 
   // }
 
   onSubmit(form: NgForm){
@@ -37,7 +37,7 @@ export class AuthPage implements OnInit {
 
     if(this.isLogin){
       this.authService.login(this.username);
-      this.router.navigateByUrl('/projects');
+      this.router.navigateByUrl('/rooms');
       form.reset();
     } 
     else {
