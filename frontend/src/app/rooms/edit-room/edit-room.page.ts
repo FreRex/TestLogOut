@@ -1,17 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { AlertController, NavController } from '@ionic/angular';
+import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
-import { Room } from '../room.model';
-import { RoomService } from '../room.service';
+import { Room, RoomService } from '../room.service';
 
 @Component({
   selector: 'app-edit-room',
   templateUrl: './edit-room.page.html',
   styleUrls: ['./edit-room.page.scss'],
 })
-export class EditRoomPage implements OnInit {
+export class EditRoomPage implements OnInit, OnDestroy {
+  private sub: Subscription;
 
   form: FormGroup;
   room: Room;
@@ -34,8 +35,13 @@ export class EditRoomPage implements OnInit {
         this.navController.navigateBack(['/rooms']);
         return;
       }
-      const roomId = paramMap.get('roomId');
-      this.room = this.roomsService.getRoomById(roomId);
+      const roomId = +paramMap.get('roomId');
+      // this.room = this.roomsService.getRoomById(roomId);
+
+      // mi sottoscrivo all'osservabile "getRoom()" che restituisce una singola room per ID
+      this.sub = this.roomsService.getRoom(roomId).subscribe(
+        (room: Room) => { this.room = room; }
+      );
 
       this.form.patchValue({
         usermobile: this.room.usermobile,
@@ -46,6 +52,10 @@ export class EditRoomPage implements OnInit {
     });
   }
 
+  ngOnDestroy() {
+    if(this.sub) { this.sub.unsubscribe; }
+  }
+  
   createForm() {
     this.form = new FormGroup({
       usermobile: new FormControl(null, {

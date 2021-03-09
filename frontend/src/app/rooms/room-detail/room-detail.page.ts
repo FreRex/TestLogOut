@@ -1,23 +1,24 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertController, ModalController, NavController } from '@ionic/angular';
-import { Room } from '../room.model';
-import { RoomService } from '../room.service';
+import { Subscription } from 'rxjs';
+import { Room, RoomService } from '../room.service';
 
 @Component({
   selector: 'app-room-detail',
   templateUrl: './room-detail.page.html',
   styleUrls: ['./room-detail.page.scss'],
 })
-export class RoomDetailPage implements OnInit {
+export class RoomDetailPage implements OnInit, OnDestroy {
 
-  loadedRoom: Room;
+  private sub: Subscription;
+  room: Room;
 
   constructor(
     private activatedRouter: ActivatedRoute,
     private roomsService: RoomService,
     private alertController: AlertController,
-    private navController:  NavController,
+    private navController: NavController,
   ) { }
 
   ngOnInit() {
@@ -26,9 +27,19 @@ export class RoomDetailPage implements OnInit {
         this.navController.navigateBack(['/rooms']);
         return;
       }
-      const roomId = paramMap.get('roomId');
-      this.loadedRoom = this.roomsService.getRoomById(roomId);
+      const roomId = +paramMap.get('roomId');
+      // this.loadedRoom = this.roomsService.getRoomById(roomId);
+
+      // mi sottoscrivo all'osservabile "getRoom()" che restituisce una singola room per ID
+      this.sub = this.roomsService.getRoom(roomId).subscribe(
+        (room: Room) => { this.room = room; }
+      );
+
     });
+  }
+
+  ngOnDestroy() {
+    if(this.sub) { this.sub.unsubscribe; }
   }
 
   // onEditRoom() {
@@ -56,7 +67,7 @@ export class RoomDetailPage implements OnInit {
           {
             text: 'Elimina',
             handler: () => {
-              this.roomsService.deleteRoom(this.loadedRoom.usermobile);
+              this.roomsService.deleteRoom(this.room.usermobile);
               this.navController.navigateBack(['/rooms']);
             }
           }

@@ -1,8 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { AlertController, ModalController } from '@ionic/angular';
-import { Room } from '../room.model';
-import { RoomService } from '../room.service';
+import { Subscription } from 'rxjs';
+import { Room, RoomService } from '../room.service';
 
 @Component({
   template: ''
@@ -10,10 +10,11 @@ import { RoomService } from '../room.service';
   // templateUrl: './edit-room-modal.component.html',
   // styleUrls: ['./edit-room-modal.component.scss'],
 })
-export class EditRoomModalComponent implements OnInit {
+export class EditRoomModalComponent implements OnInit, OnDestroy {
+  private sub: Subscription;
 
   room: Room;
-  roomId: string;
+  roomId: number;
   isEditMode: boolean;
 
   constructor(
@@ -23,7 +24,16 @@ export class EditRoomModalComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.room = this.roomsService.getRoomById(this.roomId);
+    // this.room = this.roomsService.getRoomById(this.roomId);
+    
+    // mi sottoscrivo all'osservabile "getRoom()" che restituisce una singola room per ID
+    this.sub = this.roomsService.getRoom(this.roomId).subscribe(
+      (room: Room) => { this.room = room; }
+    );
+  }
+
+  ngOnDestroy() {
+    if(this.sub) { this.sub.unsubscribe; }
   }
 
   onCancel() {

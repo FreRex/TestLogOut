@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { IonItemSliding } from '@ionic/angular';
-import { Room } from '../room.model';
+import { Room } from '../room.service';
 
 @Component({
   selector: 'app-room-item',

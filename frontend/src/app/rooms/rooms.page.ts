@@ -2,8 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { IonSelect, ModalController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
-import { Room } from './room.model';
-import { RoomService } from './room.service';
+import { Room, RoomService } from './room.service';
 import { EditRoomModalComponent } from './edit-room-modal/edit-room-modal.component';
 import { SIZE_TO_MEDIA } from '@ionic/core/dist/collection/utils/media'
 
@@ -13,9 +12,9 @@ import { SIZE_TO_MEDIA } from '@ionic/core/dist/collection/utils/media'
   styleUrls: ['./rooms.page.scss'],
 })
 export class RoomsPage implements OnInit, OnDestroy {
-
+  
+  private sub: Subscription;
   rooms: Room[];
-  subscription: Subscription;
   isSearchMode: boolean = false;
   filteredRooms = [];
 
@@ -26,33 +25,23 @@ export class RoomsPage implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.subscription = this.roomService.roomsChanged.subscribe(
-      (rooms: Room[]) => {
-        this.rooms = rooms;
-      });
+    // mi sottoscrivo all'osservabile "get rooms()" che restituisce la lista di room
+    this.sub = this.roomService.rooms.subscribe(
+      // questa funzione viene eseguita qualsiasi volta la lista di room cambia
+      (rooms: Room[]) => { 
+        this.rooms = rooms; 
+        this.filteredRooms = this.rooms;
+      } 
+    );
   }
 
   ngOnDestroy() {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-    }
-  }
-
-  // ??? mi serve ancora o posso accorparlo al ngOnInit?
-  ionViewWillEnter() {
-    this.rooms = this.roomService.getRooms();
-    this.filteredRooms = this.rooms;
+    // distruggo la subscription se viene distrutto il componente, per evitare memory leaks
+    if (this.sub) { this.sub.unsubscribe(); }
   }
 
   doRefresh(event) {
-    this.roomService.fetchRooms()
-      .subscribe(
-        res => {
-          this.rooms = this.roomService.getRooms();
-          this.filteredRooms = this.rooms;
-          event.target.complete();
-        }
-      );
+    this.roomService.fetchRooms().subscribe(res => { event.target.complete(); } );
   }
 
   /** Funzione che filtra i progetti in base al fitro impostato e all'input */
@@ -77,10 +66,12 @@ export class RoomsPage implements OnInit, OnDestroy {
         });
         break;
       }
-      // TODO : case "all" = filtro multiplo
       default: {
-        this.filteredRooms = this.rooms;
-        break;
+        this.filteredRooms = this.rooms.filter((room) => {
+          return (room.nome_progetto.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1 ||
+            room.usermobile.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1 ||
+            room.nome_collaudatore.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1);
+        }); break;
       }
     }
   }

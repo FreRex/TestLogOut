@@ -5,7 +5,7 @@ import { map } from 'rxjs/operators';
 import { Proj } from './proj.model';
 
 export interface User{
-  collaudatoreufficio: string,
+  nome_collaudatore: string,
   username: string,
   password: string,
   autorizzazioni: number,
