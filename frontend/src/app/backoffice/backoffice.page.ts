@@ -16,6 +16,9 @@ export class BackofficePage implements OnInit {
   users:User[];
   showProjects:boolean = true;
 
+  filteredProj:Proj[];
+  filteredUser:User[];
+
   constructor(
     private projService: ProjService,
     private modalCtrl: ModalController
@@ -25,11 +28,31 @@ export class BackofficePage implements OnInit {
 
     this.projService.fetchProjects().subscribe(
       res => {
-    /*console.log(Object.values(res)); */
         this.reloadProj();
       }
     );
   }
+
+  search(eventValue: Event, view: boolean){
+    this.filteredProj = this.shpProjects;
+    this.filteredUser = this.users;
+
+    let searchTerm = (<HTMLInputElement>eventValue.target).value;
+    if (view == this.showProjects){
+
+      this.filteredProj = this.shpProjects.filter((Proj) => {
+        return Proj.nome_progetto.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1;
+      }
+      );}
+          else{
+
+            this.filteredUser = this.users.filter((User) => {
+              return User.collaudatoreufficio.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1;
+            })
+    }
+  }
+
+
 
   onDelete(){
     console.log("progetto eliminato");
@@ -37,6 +60,7 @@ export class BackofficePage implements OnInit {
 
   reloadProj(){
     this.shpProjects = this.projService.getProjects();
+    this.filteredProj=this.shpProjects.slice();
   }
 
   openGisfoUpload() {
@@ -59,7 +83,10 @@ export class BackofficePage implements OnInit {
   showUsers(){
     this.showProjects = false;
     this.projService.fetchUsers().subscribe(
-      users => this.users = users
+      users => {
+        this.users = users;
+        this.filteredUser = this.users.slice();
+      }
     );
   }
 }
