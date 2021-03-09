@@ -2,9 +2,10 @@
   display: block;
   margin-left: auto;
   margin-right: auto;
-  width: 10%;
+  height: 20%;
   animation-name: startLogo;
-  animation-duration: 1s;
+  animation-duration: 1.5s;
+  animation-timing-function: ease-out;
 }
 
 @keyframes startLogo{
