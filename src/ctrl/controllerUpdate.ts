@@ -1,86 +1,94 @@
-exports.putUpdate = (req: any, res: any, next: any) => {   
-    
+exports.putUpdateRoom = (req: any, res: any, next: any) => {   
     const db = require('../conf/db');
-    const validator = require('validator');
-    
-    let table = req.params.table;
-    let usermobile = req.params.usermobile;
+    let usermobile;
+    let id;  
 
-    let sql;
-    let id;
-    let idWh;
-
-    //-------------------------
-    //Verifica parametro 'id'
-    //-------------------------
-    if (typeof(req.params.id) !== 'undefined') {
-        id = req.params.id;
-        if(table=='room'){
-            idWh = "multistreaming.id = "+ id;
+    //Controllo parametri    
+    if(typeof(req.body.id) !== 'undefined' && req.body.id !== null && typeof(req.body.id)==='number' && req.body.id !== ''){
+        id = req.body.id;       
+        if(typeof(req.body.usermobile) !== 'undefined' && req.body.usermobile !== null && req.body.usermobile !== ''){
+            usermobile = req.body.usermobile;
+            //Richiamo funzione per esecuzione query
+            esecuzioneQuery(usermobile,id);
         }
         else
-        {
-            idWh = "id = "+ id;
-        }        
+        { res.send('Errore: parametro id vuoto, non numero , "undefined" o "null"'); }
     }
     else
-    {
-        id = '';
-    } 
-
-    console.log(table);
-    console.log(id);
-    console.log(usermobile);
-
-    //---------------------
-    //Selezione tipo query  
-    //---------------------  
-    switch (table) {        
-        case "room":          
-          sql='UPDATE multistreaming '; 
-          break;  
-        case "progetti":
-          sql='UPDATE rappre_prog_gisfo ';   
-          break;
-        case "utenti":          
-          sql='SELECT * FROM utenti ';          
-          break;
-      }      
-    //----------------------------------
+    { res.send('Errore: parametro table vuoto, "undefined" o "null"');}
+    //-----------------------    
     
     //-------------------
     // Esecuzione query
-    //-------------------
-    if(!validator.isNumeric(id) || id == 0){
-        if(id==''){
-            //In caso di assenza di parametri si esegue la query 'senza' WHERE
-            db.query(sql + " ORDER BY id DESC", (err: any, rows: any, fields: any) => {
-                if(err){
-                    res.send('Query error: ' + err.sqlMessage);
-                }else{                    
-                    res.json(rows);
-                }
-            });
-        }
-        else
-        {
-            //Parametri non validi (NON numerici o uguali a ZERO)
-            res.send('Parameter error: invalid parameters');
-        }        
-    }else{
-        
-        //Parametro valido presente => query 'con' WHERE
-
-        sql = sql + "SET usermobile = '" + usermobile + "' WHERE " + idWh;
-        console.log(sql)
+    //-------------------   
+    function esecuzioneQuery(usermobile: any, id: Number){
+        let sql;
+        sql="UPDATE multistreaming SET usermobile = '" + usermobile + "' WHERE id=" +id;
         db.query(sql, (err: any, rows: any, fields: any) => {
             if(err){
                 res.send('Query error: ' + err.sqlMessage);
-            }else{                
-                console.log(rows);
+            }else{           
+                res.send(rows);
             }
         });
     }
    
 };
 
+exports.putUpdateUtenti = (req: any, res: any, next: any) => {   
+    const db = require('../conf/db');
+    let id: Number;   
+    let collaudatoreufficio: any;;
+    let username: any;
+    let password: any;
+    let sql: any = '';       
+
+    //Controllo parametri e creazione query   
+    if(typeof(req.body.id) !== 'undefined' && req.body.id !== null && typeof(req.body.id)==='number' && req.body.id !== ''){
+        id = req.body.id;       
+        if(typeof(req.body.collaudatoreufficio) !== 'undefined' && req.body.collaudatoreufficio !== null && req.body.collaudatoreufficio !== ''){
+            collaudatoreufficio = req.body.collaudatoreufficio;
+            sql = sql + "collaudatoreufficio = '" + collaudatoreufficio + "' ";
+        }
+        if(typeof(req.body.username) !== 'undefined' && req.body.username !== null && req.body.username !== ''){
+            username = req.body.username;
+            if(sql===''){
+                sql = sql + "username = '" + username + "' ";
+            }
+            else
+            {
+                sql = sql + ", username = '" + username + "' "; 
+            }
+        }
+        if(typeof(req.body.password) !== 'undefined' && req.body.password !== null && req.body.password !== ''){
+            password = req.body.password;
+            if(sql===''){
+                sql = sql + "password = '" + password + "' ";
+            }
+            else
+             {
+                sql = sql + ", password = '" + password + "' ";
+             }
+        }
+       
+        sql = "UPDATE utenti SET " + sql + " WHERE id = " + id;
+    }
+    else
+    { res.send('Errore: parametro id vuoto, non numero , "undefined" o "null"');}
+    //-----------------------    
+    
+    //-------------------
+    // Esecuzione query
+    //-------------------   
+    function esecuzioneQuery(usermobile: any, id: Number, sqlUpdate: any){        
+        
+        db.query(sqlUpdate, (err: any, rows: any, fields: any) => {
+            if(err){
+                res.send('Query error: ' + err.sqlMessage);
+            }else{           
+                res.send(rows);
+            }
+        });
+    }
+   
+};
