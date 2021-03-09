@@ -35,10 +35,11 @@ exports.putUpdateRoom = (req: any, res: any, next: any) => {
    
 };
 
+
 exports.putUpdateUtenti = (req: any, res: any, next: any) => {   
     const db = require('../conf/db');
     let id: Number;   
-    let collaudatoreufficio: any;;
+    let collaudatoreufficio: any;
     let username: any;
     let password: any;
     let sql: any = '';       
@@ -72,6 +73,9 @@ exports.putUpdateUtenti = (req: any, res: any, next: any) => {
         }
        
         sql = "UPDATE utenti SET " + sql + " WHERE id = " + id;
+        
+        esecuzioneQuery(sql);
+
     }
     else
     { res.send('Errore: parametro id vuoto, non numero , "undefined" o "null"');}
@@ -80,7 +84,7 @@ exports.putUpdateUtenti = (req: any, res: any, next: any) => {
     //-------------------
     // Esecuzione query
     //-------------------   
-    function esecuzioneQuery(usermobile: any, id: Number, sqlUpdate: any){        
+    function esecuzioneQuery(sqlUpdate: any){        
         
         db.query(sqlUpdate, (err: any, rows: any, fields: any) => {
             if(err){

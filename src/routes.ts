@@ -31,8 +31,8 @@ router.get('/s/:table/:id/', controllerSelect.getSelect);
 //Indirizzamento API di modifica (UPDATE)
 //router.get('/u/:table/',controllerUpdate.putUpdate);
 //router.get('/u/:table/:id/:usermobile',controllerUpdate.putUpdate);
-router.put('/ur',controllerUpdate.putUpdateRoom);
-router.put('/uu',controllerUpdate.putUpdateUtenti);
+router.put('/ur/',controllerUpdate.putUpdateRoom);
+router.put('/uu/',controllerUpdate.putUpdateUtenti);
 
 
 module.exports = router;
