@@ -44,50 +44,6 @@
           <ion-card-content>
 
             <ion-item>
-              <ion-label>
-                <h6>Collaudatore</h6>
-              </ion-label>
-              <ion-select interface="popover">
-                <ion-select-option>
-                  <h6>test</h6>
-                </ion-select-option>
-                <ion-select-option>
-                  <h6>test</h6>
-                </ion-select-option>
-                <ion-select-option>
-                  <h6>test</h6>
-                </ion-select-option>
-                <ion-select-option>
-                  <h6>test</h6>
-                </ion-select-option>
-                <ion-select-option>
-                  <h6>test</h6>
-                </ion-select-option>
-                <ion-select-option>
-                  <h6>test</h6>
-                </ion-select-option>
-                <ion-select-option>
-                  <h6>test</h6>
-                </ion-select-option>
-                <ion-select-option>
-                  <h6>test</h6>
-                </ion-select-option>
-                <ion-select-option>
-                  <h6>test</h6>
-                </ion-select-option>
-                <ion-select-option>
-                  <h6>test</h6>
-                </ion-select-option>
-                <ion-select-option>
-                  <h6>test</h6>
-                </ion-select-option>
-                <ion-select-option>
-                  <h6>test</h6>
-                </ion-select-option>
-              </ion-select>
-            </ion-item>
-
-            <ion-item>
               <ion-label position="floating" class="ion-margin">
                 <h6>Località</h6>
               </ion-label>
@@ -173,6 +129,7 @@
       <ion-col size-md="7" offset-md="0">
         <ion-card class="card-out">
           <div class="ion-margin-vertical ion-text-right ">
+
             <ion-button shape="round" fill="outline" color="primary" (click)="showProjectsClick()">
               <ion-icon slot="start" name="file-tray-full-outline"></ion-icon>Lista Progetti
             </ion-button>
@@ -181,9 +138,11 @@
             </ion-button>
           </div>
           <ion-card-content>
-
+<!-- TODO / INSERIRE LOGICA RICERCA -->
+              <ion-searchbar placeholder="Cerca" (ionInput)="search($event, true)" ></ion-searchbar>
+<!-- INSERIRE LOGICA RICERCA / TODO -->
             <ion-card class="card-inside" *ngIf="showProjects">
-              <ion-item-sliding *ngFor="let proj of shpProjects">
+              <ion-item-sliding *ngFor="let proj of filteredProj">
                 <ion-item>
                   <div class="ion-margin-vertical">
                     <ion-icon name="map-outline" color="secondary"></ion-icon>
@@ -205,12 +164,14 @@
                   <ion-item-option color="danger" (click)="onDelete()">
                     <ion-icon name="trash" slot="icon-only"></ion-icon>
                   </ion-item-option>
+                  <ion-item-option color="warning">
+                    <ion-icon name="pencil-outline" slot="icon-only"></ion-icon>
+                  </ion-item-option>
                 </ion-item-options>
               </ion-item-sliding>
             </ion-card>
-
             <ion-card class="card-inside" *ngIf="!showProjects">
-              <ion-item-sliding *ngFor="let user of users">
+              <ion-item-sliding *ngFor="let user of filteredUser">
                 <ion-item>
                   <div class="ion-margin-vertical">
                     <ion-icon name="person-outline" color="secondary"></ion-icon>
@@ -231,6 +192,9 @@
                 <ion-item-options>
                   <ion-item-option color="danger" (click)="onDelete()">
                     <ion-icon name="trash" slot="icon-only"></ion-icon>
+                  </ion-item-option>
+                  <ion-item-option color="warning">
+                    <ion-icon name="pencil-outline" slot="icon-only"></ion-icon>
                   </ion-item-option>
                 </ion-item-options>
               </ion-item-sliding>
