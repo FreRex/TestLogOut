@@ -46,7 +46,7 @@ export class BackofficePage implements OnInit {
       );}
           else{
 
-            this.filteredUser = this.users.filter((User) => {
+            this.filteredUser = this.users.filter((User: User) => {
               return User.collaudatoreufficio.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1;
             })
     }

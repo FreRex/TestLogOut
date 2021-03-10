@@ -1,14 +1,13 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { AlertController, ModalController } from '@ionic/angular';
+import { AlertController, ModalController, ToastController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { Room, RoomService } from '../room.service';
 
 @Component({
-  template: ''
-  // selector: 'app-edit-room-modal',
-  // templateUrl: './edit-room-modal.component.html',
-  // styleUrls: ['./edit-room-modal.component.scss'],
+  selector: 'app-edit-room-modal',
+  templateUrl: './edit-room-modal.component.html',
+  styleUrls: ['./edit-room-modal.component.scss'],
 })
 export class EditRoomModalComponent implements OnInit, OnDestroy {
   private sub: Subscription;
@@ -21,11 +20,10 @@ export class EditRoomModalComponent implements OnInit, OnDestroy {
     private modalController: ModalController,
     private roomsService: RoomService,
     private alertController: AlertController,
+    private toastController: ToastController
   ) { }
 
   ngOnInit() {
-    // this.room = this.roomsService.getRoomById(this.roomId);
-    
     // mi sottoscrivo all'osservabile "getRoom()" che restituisce una singola room per ID
     this.sub = this.roomsService.getRoom(this.roomId).subscribe(
       (room: Room) => { this.room = room; }
@@ -64,6 +62,15 @@ export class EditRoomModalComponent implements OnInit, OnDestroy {
     console.log("Progetto salvato");
   }
 
+  async presentToast(message: string) {
+    const toast = await this.toastController.create({
+      message: message,
+      color: 'secondary',
+      duration: 2000
+    });
+    toast.present();
+  }
+
   onDelete() {
     this.alertController.create(
       {
@@ -77,8 +84,10 @@ export class EditRoomModalComponent implements OnInit, OnDestroy {
           {
             text: 'Elimina',
             handler: () => {
-              this.roomsService.deleteRoom(this.room.usermobile);
-              this.modalController.dismiss({ message: 'room deleted' }, 'delete');
+              this.roomsService.deleteRoom(this.room.id).subscribe(res => {
+                this.presentToast('Room Eliminata');
+                this.modalController.dismiss({ message: 'room deleted' }, 'delete');
+              });
             }
           }
         ]

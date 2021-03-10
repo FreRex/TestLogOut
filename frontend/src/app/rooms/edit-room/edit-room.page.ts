@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { AlertController, NavController } from '@ionic/angular';
+import { AlertController, NavController, ToastController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
 import { Room, RoomService } from '../room.service';
@@ -22,8 +22,8 @@ export class EditRoomPage implements OnInit, OnDestroy {
     private activatedRouter: ActivatedRoute,
     private navController: NavController,
     private roomsService: RoomService,
-    private authService: AuthService,
     private alertController: AlertController,
+    private toastController: ToastController
   ) { }
 
   ngOnInit() {
@@ -36,7 +36,6 @@ export class EditRoomPage implements OnInit, OnDestroy {
         return;
       }
       const roomId = +paramMap.get('roomId');
-      // this.room = this.roomsService.getRoomById(roomId);
 
       // mi sottoscrivo all'osservabile "getRoom()" che restituisce una singola room per ID
       this.sub = this.roomsService.getRoom(roomId).subscribe(
@@ -47,7 +46,6 @@ export class EditRoomPage implements OnInit, OnDestroy {
         usermobile: this.room.usermobile,
         nome_progetto: this.room.nome_progetto,
         nome_collaudatore: this.room.nome_collaudatore,
-        // data_inserimento: new Date(this.room.data_inserimento).toISOString(),
       });
     });
   }
@@ -62,18 +60,6 @@ export class EditRoomPage implements OnInit, OnDestroy {
         updateOn: 'blur',
         validators: [Validators.required, Validators.maxLength(12)]
       }),
-      nome_progetto: new FormControl(null, {
-        updateOn: 'blur',
-        validators: [Validators.required, Validators.maxLength(30)]
-      }),
-      nome_collaudatore: new FormControl(this.authService.user, {
-        updateOn: 'blur',
-        validators: [Validators.required, Validators.maxLength(30)]
-      }),
-      // data_inserimento: new FormControl(null, {
-      //   updateOn: 'blur',
-      //   validators: [Validators.required]
-      // }),
     });
   }
 
@@ -86,22 +72,25 @@ export class EditRoomPage implements OnInit, OnDestroy {
     console.log("Foto scaricate");
   }
 
-  onSave() {
-    if (!this.form.valid) {
-      return;
-    }
-    this.roomsService.updateRoom(this.room.id, this.room.usermobile).subscribe(
-      res => {
-        this.roomsService.saveRoom(
-          this.room.id,
-          this.form.value.usermobile,
-          this.form.value.nome_progetto,
-          this.form.value.nome_collaudatore);
+  onUpdateRoom() {
+    if (!this.form.valid) { return; }
+    this.roomsService
+    .updateRoom(this.room.id, this.form.value.usermobile)
+    .subscribe(res => {
+        this.presentToast('Room Aggiornata!');
         this.form.reset();
-        console.log("Progetto salvato");
         this.navController.navigateBack(['/rooms']);
       }
     );
+  }
+
+  async presentToast(message: string) {
+    const toast = await this.toastController.create({
+      message: message,
+      color: 'secondary',
+      duration: 2000
+    });
+    toast.present();
   }
 
   onDelete() {
@@ -117,8 +106,10 @@ export class EditRoomPage implements OnInit, OnDestroy {
           {
             text: 'Elimina',
             handler: () => {
-              this.roomsService.deleteRoom(this.room.usermobile);
-              this.navController.navigateBack(['/rooms']);
+              this.roomsService.deleteRoom(this.room.id).subscribe(res => {
+                this.presentToast('Room Eliminata');
+                this.navController.navigateBack(['/rooms']);
+              });
             }
           }
         ]

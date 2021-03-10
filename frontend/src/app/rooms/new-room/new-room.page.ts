@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { NavController } from '@ionic/angular';
+import { LoadingController, NavController, ToastController } from '@ionic/angular';
 import { AuthService } from 'src/app/auth/auth.service';
 import { RoomService } from '../room.service';
 
@@ -18,6 +18,8 @@ export class NewRoomPage implements OnInit {
     private navController: NavController,
     private roomsService: RoomService,
     private authService: AuthService,
+    private loadingCtrl: LoadingController,
+    private toastController: ToastController
   ) { }
 
   ngOnInit() {
@@ -43,14 +45,26 @@ export class NewRoomPage implements OnInit {
   }
 
   onCreateRoom() {
-    this.roomsService.addRoom(
-      // ??? regole per creare un numero random per l'id
-      Math.floor((Math.random() * 2000) + 1), // <-- Return a random number between 1 and 2000
-      this.form.value.usermobile, 
-      this.form.value.nome_progetto,
-      this.form.value.nome_collaudatore);
-    this.form.reset();
-    console.log("Progetto creato");
-    this.navController.navigateBack(['/rooms']);
+    this.roomsService
+      .addRoom(
+        Math.floor((Math.random() * 2000) + 1), // <-- Return a random number between 1 and 2000
+        this.form.value.usermobile,
+        this.form.value.nome_progetto,
+        this.form.value.nome_collaudatore)
+      .subscribe(res => {
+        this.presentToast();
+        this.form.reset();
+        this.navController.navigateBack(['/rooms']);
+      });
+  }
+
+  async presentToast() {
+    const toast = await this.toastController.create({
+      message: 'Room creata!',
+      color: 'secondary',
+      duration: 2000
+    });
+    toast.present();
   }
 }
+

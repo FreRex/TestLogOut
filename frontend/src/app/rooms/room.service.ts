@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, take, tap } from 'rxjs/operators';
+import { delay, map, take, tap } from 'rxjs/operators';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
 
@@ -91,42 +91,54 @@ export class RoomService {
   // }
 
   /** Aggiunge una nuova room alla lista */
-  addRoom(id: number, usermobile: string, nome_progetto: string, nome_collaudatore: string) {
-    const newRoom =
-    {
-      id: id,
-      usermobile: usermobile,
-      nome_progetto: nome_progetto,
-      nome_collaudatore: nome_collaudatore,
-      data_inserimento: new Date()
-    };
-
-    this.rooms
-      .pipe(take(1))                // <-- take(1) = dopo la prima emissione dell'Osservabile togli la sottoscrizione
-      .subscribe(                   // <-- mi sottoscrivo all'osservabile
-        (rooms: Room[]) => {        // <-- applico una funzione all'array emesso dall'osservabile (solo 1 perchè uso take(1))
-          this._rooms.next(         // <-- next() = emetto il nuovo array concatencato come prossimo elemento del BehaviourSubject 
-            rooms.concat(newRoom)   // <-- prendo il vecchio array emesso dall'osservabile e concateno il nuovo elemento
-          );
-        }
-      );
+  addRoom(id: number, usermobile: string, nome_progetto: string, nome_collaudatore: string) {    
+    // this.rooms è un OSSERVABILE
+    // take(1) = dopo la prima emissione dell'Osservabile togli la sottoscrizione
+    // tap() = applico una funzione all'array emesso dall'osservabile (solo 1 perchè uso take(1)) senza sottoscrivermi
+    return this.rooms.pipe(take(1), tap((rooms: Room[]) => {
+      const newRoom =
+      {
+        id: id,
+        usermobile: usermobile,
+        nome_progetto: nome_progetto,
+        nome_collaudatore: nome_collaudatore,
+        data_inserimento: new Date()
+      };
+      // this._rooms è un BEHAVIOUR SUBJECT
+      // next() = emetto il nuovo array concatencato come prossimo elemento del BehaviourSubject 
+      // concat(newRoom) = prendo il vecchio array emesso dall'osservabile e concateno il nuovo elemento
+      this._rooms.next(rooms.concat(newRoom));
+    }));
   }
 
   /** Cancella una room */
-  deleteRoom(id: string) {
-    // this._rooms = this._rooms.filter(room => {  // <-- filter() = filtra un array in base a una regola ("se è vero")
-    //   return room.usermobile !== id;                // <-- ritrorna vero per tutte le ricette tranne quella che voglio scartare
-    // });
-    // this.roomsChanged.next(this._rooms.slice());
+  deleteRoom(roomId: number) {
+    return this.rooms.pipe(take(1), tap(rooms => {
+      // filter() = filtra un array in base a una regola ("se è vero")
+      // ritrorna vero per tutte le room tranne quella che voglio scartare
+      const updatedRooms = [...rooms].filter(room => room.id !== roomId);
+      this._rooms.next(updatedRooms);
+    }));
   }
 
   /** Salva una room dopo una modifica */
-  saveRoom(id: number, usermobile: string, nome_progetto: string, nome_collaudatore: string) {
-    // const index = this._rooms.findIndex(room => {
-    //   return room.usermobile === usermobile;
-    // });
-    // this._rooms[index] = new Room(id, usermobile, nome_progetto, nome_collaudatore, new Date());
-    // this.roomsChanged.next(this._rooms.slice());
+  updateRoom(roomId: number, newUsermobile: string) {
+    return this.rooms.pipe(take(1), tap(rooms => {
+      // findIndex() = trova l'indice di un elemento di un array in base a una regola ("se è vero")
+      const updatedRoomIndex = rooms.findIndex(room => room.id === roomId);
+      const updatedRooms = [...rooms];
+      const oldRoom = updatedRooms[updatedRoomIndex];
+      const newRoom = 
+      {
+        id: oldRoom.id,
+        usermobile: newUsermobile,
+        nome_progetto: oldRoom.nome_progetto,
+        nome_collaudatore: oldRoom.nome_collaudatore,
+        data_inserimento: oldRoom.data_inserimento,
+      };
+      updatedRooms[updatedRoomIndex] = newRoom;
+      this._rooms.next(updatedRooms);
+    }));
   }
 
   /** Aggiorna e sostituisce le room con quelle restituiti dal server */
@@ -135,18 +147,18 @@ export class RoomService {
       .get<ResponseRoom[]>('https://www.collaudolive.com:9083/s/room/')
       .pipe(
         // Rimappa i dati che arrivano dal server sull'interfaccia della Room
-        map((resData: ResponseRoom[]) => {
+        map((res: ResponseRoom[]) => {
           const rooms: Room[] = [];
-          for (const key in resData) {
-            // console.log("Key:", key," - ","ResData[key]",resData[key]);
+          for (const key in res) {
+            // console.log("Key:", key," - ","Res[key]",res[key]);
             // resData.hasOwnProperty(key) = iterate all enumerable properties, directly on the object (not on the prototype)
-            if (resData.hasOwnProperty(key)) { 
+            if (res.hasOwnProperty(key)) {
               rooms.push({
-                id:                 resData[key].id,
-                usermobile:         resData[key].usermobile,
-                nome_progetto:      resData[key].progettoselezionato,
-                nome_collaudatore:  resData[key].collaudatoreufficio,
-                data_inserimento:   resData[key].DataInsert,
+                id: res[key].id,
+                usermobile: res[key].usermobile,
+                nome_progetto: res[key].progettoselezionato,
+                nome_collaudatore: res[key].collaudatoreufficio,
+                data_inserimento: res[key].DataInsert,
               });
             }
           }
@@ -157,8 +169,9 @@ export class RoomService {
       );
   }
 
-  updateRoom(id: number, usermobile: string) {
-    const headers = new HttpHeaders().set("Content-Type", "application/json");
-    return this.http.put<Room>('https://www.collaudolive.com:9083/u/multistreaming/' + id + '/' + usermobile, { headers });
-  }
+  // updateRoom(id: number, usermobile: string) {
+
+  //   const headers = new HttpHeaders().set("Content-Type", "application/json");
+  //   return this.http.put<Room>('https://www.collaudolive.com:9083/u/multistreaming/' + id + '/' + usermobile, { headers });
+  // }
 }

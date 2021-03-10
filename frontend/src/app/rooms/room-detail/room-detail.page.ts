@@ -17,7 +17,6 @@ export class RoomDetailPage implements OnInit, OnDestroy {
   constructor(
     private activatedRouter: ActivatedRoute,
     private roomsService: RoomService,
-    private alertController: AlertController,
     private navController: NavController,
   ) { }
 
@@ -28,7 +27,6 @@ export class RoomDetailPage implements OnInit, OnDestroy {
         return;
       }
       const roomId = +paramMap.get('roomId');
-      // this.loadedRoom = this.roomsService.getRoomById(roomId);
 
       // mi sottoscrivo all'osservabile "getRoom()" che restituisce una singola room per ID
       this.sub = this.roomsService.getRoom(roomId).subscribe(
@@ -41,39 +39,4 @@ export class RoomDetailPage implements OnInit, OnDestroy {
   ngOnDestroy() {
     if(this.sub) { this.sub.unsubscribe; }
   }
-
-  // onEditRoom() {
-  //   this.modalController
-  //     .create({
-  //       component: EditRoomModalComponent,
-  //       componentProps: {
-  //         roomId: this.loadedRoom.usermobile,
-  //         isEditMode: true
-  //       }
-  //     })
-  //     .then(modalEl => { modalEl.present(); });
-  // }
-
-  onDeleteRoom() {
-    this.alertController.create(
-      {
-        header: 'Sei sicuro?',
-        message: 'Vuoi davvero cancellare il progetto?',
-        buttons: [
-          {
-            text: 'Annulla',
-            role: 'cancel'
-          },
-          {
-            text: 'Elimina',
-            handler: () => {
-              this.roomsService.deleteRoom(this.room.usermobile);
-              this.navController.navigateBack(['/rooms']);
-            }
-          }
-        ]
-      }
-    ).then(alertEl => { alertEl.present(); });
-  }
-
 }

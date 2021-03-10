@@ -26,7 +26,7 @@ export class RoomItemComponent implements OnInit {
 
   onOpenEditPage(slidingItem: IonItemSliding){
     slidingItem.close();
-    this.router.navigate(['/', 'rooms', 'edit', this.roomItem.usermobile]);
+    this.router.navigate(['/', 'rooms', 'edit', this.roomItem.id]);
   }
 
   onFavoutite(){
