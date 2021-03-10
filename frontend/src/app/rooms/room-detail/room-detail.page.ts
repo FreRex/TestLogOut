@@ -26,7 +26,7 @@ export class RoomDetailPage implements OnInit, OnDestroy {
         this.navController.navigateBack(['/rooms']);
         return;
       }
-      const roomId = +paramMap.get('roomId');
+      const roomId = paramMap.get('roomId');
 
       // mi sottoscrivo all'osservabile "getRoom()" che restituisce una singola room per ID
       this.sub = this.roomsService.getRoom(roomId).subscribe(

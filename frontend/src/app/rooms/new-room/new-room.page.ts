@@ -47,7 +47,6 @@ export class NewRoomPage implements OnInit {
   onCreateRoom() {
     this.roomsService
       .addRoom(
-        Math.floor((Math.random() * 2000) + 1), // <-- Return a random number between 1 and 2000
         this.form.value.usermobile,
         this.form.value.nome_progetto,
         this.form.value.nome_collaudatore)

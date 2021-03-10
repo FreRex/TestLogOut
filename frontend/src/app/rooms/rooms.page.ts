@@ -12,11 +12,12 @@ import { SIZE_TO_MEDIA } from '@ionic/core/dist/collection/utils/media'
   styleUrls: ['./rooms.page.scss'],
 })
 export class RoomsPage implements OnInit, OnDestroy {
-  
+
   private sub: Subscription;
   rooms: Room[];
   isSearchMode: boolean = false;
-  filteredRooms = [];
+  filteredRooms: Room[] = [];
+  isLoading = false;
 
   constructor(
     private modalController: ModalController,
@@ -24,14 +25,20 @@ export class RoomsPage implements OnInit, OnDestroy {
     private router: Router,
   ) { }
 
-  ngOnInit() {
+  ngOnInit() {    
+    
+    this.isLoading = true;
+    this.roomService.fetchRooms().subscribe(res => {
+      this.isLoading = false;
+    });
+
     // mi sottoscrivo all'osservabile "get rooms()" che restituisce la lista di room
     this.sub = this.roomService.rooms.subscribe(
       // questa funzione viene eseguita qualsiasi volta la lista di room cambia
-      (rooms: Room[]) => { 
-        this.rooms = rooms; 
+      (rooms: Room[]) => {
+        this.rooms = rooms;
         this.filteredRooms = this.rooms;
-      } 
+      }
     );
   }
 
@@ -41,7 +48,7 @@ export class RoomsPage implements OnInit, OnDestroy {
   }
 
   doRefresh(event) {
-    this.roomService.fetchRooms().subscribe(res => { event.target.complete(); } );
+    this.roomService.fetchRooms().subscribe(res => { event.target.complete(); });
   }
 
   /** Funzione che filtra i progetti in base al fitro impostato e all'input */
@@ -68,9 +75,11 @@ export class RoomsPage implements OnInit, OnDestroy {
       }
       default: {
         this.filteredRooms = this.rooms.filter((room) => {
-          return (room.nome_progetto.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1 ||
+          return (
+            room.nome_progetto.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1 ||
             room.usermobile.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1 ||
-            room.nome_collaudatore.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1);
+            room.nome_collaudatore.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1
+          );
         }); break;
       }
     }

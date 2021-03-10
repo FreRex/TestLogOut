@@ -13,7 +13,7 @@ export class EditRoomModalComponent implements OnInit, OnDestroy {
   private sub: Subscription;
 
   room: Room;
-  roomId: number;
+  roomId: string;
   isEditMode: boolean;
 
   constructor(

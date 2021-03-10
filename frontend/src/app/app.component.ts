@@ -7,23 +7,17 @@ import { RoomService } from './rooms/room.service';
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.scss'],
 })
-export class AppComponent implements OnInit{
-  
-  constructor(private roomService: RoomService, private loadingCtrl: LoadingController) {}
-  
+export class AppComponent implements OnInit {
+
+  constructor(private roomService: RoomService) { }
+
   isLoading: boolean;
-  
+
   /** Primo fetch dei dati sal database */
   ngOnInit() {
-    this.loadingCtrl
-    .create({ keyboardClose : true, message: 'Fetching Rooms..'})
-    .then(loadingEl => {
-      loadingEl.present();
-      this.roomService.fetchRooms().subscribe(res => {
-        this.isLoading = false;
-        loadingEl.dismiss();
-      });
-    });
+    // this.isLoading = true;
+    // this.roomService.fetchRooms().subscribe(res => {
+    //   this.isLoading = false;
+    // });
   }
-
 }
