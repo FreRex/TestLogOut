@@ -1,6 +1,7 @@
 import express from 'express';
 const controllerSelect = require('./ctrl/controllerSelect');
 const controllerUpdate = require('./ctrl/controllerUpdate');
+const controllerDelete = require('./ctrl/controllerDelete');
 const router = express.Router();
 const cors = require('cors');
 
@@ -23,17 +24,17 @@ router.use(function(req, res, next) {
 });
 
 
-
-//Indirizzamento API di lettura (SELECT)
+//Indirizzamento ad API di lettura (SELECT)
 router.get('/s/:table/', controllerSelect.getSelect);
 router.get('/s/:table/:id/', controllerSelect.getSelect);
 
-//Indirizzamento API di modifica (UPDATE)
-//router.get('/u/:table/',controllerUpdate.putUpdate);
-//router.get('/u/:table/:id/:usermobile',controllerUpdate.putUpdate);
+//Indirizzamento ad API di modifica (UPDATE)
 router.put('/ur/',controllerUpdate.putUpdateRoom);
 router.put('/uu/',controllerUpdate.putUpdateUtenti);
 router.put('/up/',controllerUpdate.putUpdateProgetti);
+
+//Indirizzamento adAPI di eliminazione (DELETE)
+router.delete('/d/',controllerDelete.delete);
 
 
 module.exports = router;
