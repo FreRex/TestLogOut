@@ -28,4 +28,5 @@ router.get('/s/:table/:id/', controllerSelect.getSelect);
 //router.get('/u/:table/:id/:usermobile',controllerUpdate.putUpdate);
 router.put('/ur/', controllerUpdate.putUpdateRoom);
 router.put('/uu/', controllerUpdate.putUpdateUtenti);
+router.put('/up/', controllerUpdate.putUpdateProgetti);
 module.exports = router;
