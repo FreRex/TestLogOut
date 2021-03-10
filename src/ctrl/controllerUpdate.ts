@@ -12,10 +12,10 @@ exports.putUpdateRoom = (req: any, res: any, next: any) => {
             esecuzioneQuery(usermobile,id);
         }
         else
-        { res.send('Errore: parametro id vuoto, non numero , "undefined" o "null"'); }
+        { res.send('Errore: parametro usermobile vuoto, non numero , "undefined" o "null"'); }
     }
     else
-    { res.send('Errore: parametro table vuoto, "undefined" o "null"');}
+    { res.send('Errore: parametro id vuoto, "undefined" o "null"');}
     //-----------------------    
     
     //-------------------
