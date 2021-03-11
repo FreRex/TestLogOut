@@ -1,47 +1,76 @@
-import { Component, OnInit } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { IonSearchbar, ModalController } from '@ionic/angular';
 import { GisfoSyncModalComponent } from './gisfo-sync-modal/gisfo-sync-modal.component';
 import { Proj } from './proj.model';
-import { ProjService, User } from './proj.service';
+import { User } from './proj.service';
 import { SIZE_TO_MEDIA } from '@ionic/core/dist/collection/utils/media'
+import { StorageDataService } from '../shared/storage-data.service';
+import { concat, fromEvent, Observable, of } from 'rxjs';
+import { UploadShpModalComponent } from './upload-shp-modal/upload-shp-modal.component';
+import { debounceTime, distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators';
+
+
 
 @Component({
   selector: 'app-backoffice',
   templateUrl: './backoffice.page.html',
   styleUrls: ['./backoffice.page.scss'],
 })
-export class BackofficePage implements OnInit {
+export class BackofficePage implements OnInit, AfterViewInit {
+
+  @ViewChild("searchInput", {static:true}) input: IonSearchbar;
+
+  projects$:Observable<Proj[]>;
+  filteredProjects$:Observable<Proj[]>;
 
   shpProjects:Proj[];
   users:User[];
   showProjects:boolean = true;
 
-  filteredProj:Proj[];
-  filteredUser:User[];
+
 
   constructor(
-    private projService: ProjService,
+    private projService:StorageDataService,
     private modalCtrl: ModalController
     ) {}
 
-  ngOnInit() {
 
-    this.projService.fetchProjects().subscribe(
-      res => {
-        this.reloadProj();
-      }
-    );
-  }
 
-  search(eventValue: Event, view: boolean){
-    this.filteredProj = this.shpProjects;
+    ngOnInit() {
+      this.projects$ = this.projService.projects$;
+    }
+
+    ngAfterViewInit(): void {
+      const obs = this.input.ionInput
+      .pipe(
+        map(
+          event => (<HTMLInputElement>event.target).value
+        ),
+        debounceTime(400),
+        distinctUntilChanged(),
+        switchMap(search => this.loadProjects(search))
+      );
+      const pino = this.loadProjects();
+      this.projects$ = concat(pino, obs);
+    }
+
+    loadProjects(search: string =''): Observable<Proj[]>{
+      return this.projects$.pipe(map(res => {
+        console.log(res.filter(proj => proj.nome === search));
+        return res.filter(proj => proj.nome === search)
+      }));
+
+    }
+
+/*   search(eventValue: Event, view: boolean){
+    this.projects = this.shpProjects;
     this.filteredUser = this.users;
 
     let searchTerm = (<HTMLInputElement>eventValue.target).value;
     if (view == this.showProjects){
 
       this.filteredProj = this.shpProjects.filter((Proj) => {
-        return Proj.nome_progetto.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1;
+        return Proj.nome.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1;
       }
       );}
           else{
@@ -50,7 +79,9 @@ export class BackofficePage implements OnInit {
               return User.collaudatoreufficio.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1;
             })
     }
-  }
+  } */
+
+
 
 
 
@@ -58,15 +89,24 @@ export class BackofficePage implements OnInit {
     console.log("progetto eliminato");
   }
 
-  reloadProj(){
-    this.shpProjects = this.projService.getProjects();
-    this.filteredProj=this.shpProjects.slice();
-  }
 
   openGisfoUpload() {
     this.modalCtrl
       .create({
         component: GisfoSyncModalComponent,
+      })
+      .then(modalEl => {
+        modalEl.present();
+        return modalEl.onDidDismiss();
+      })
+      .then(resultData => {
+        console.log(resultData.data, resultData.role);
+      });
+  }
+  openUploadShp() {
+    this.modalCtrl
+      .create({
+        component: UploadShpModalComponent
       })
       .then(modalEl => {
         modalEl.present();
@@ -82,12 +122,6 @@ export class BackofficePage implements OnInit {
   }
   showUsers(){
     this.showProjects = false;
-    this.projService.fetchUsers().subscribe(
-      users => {
-        this.users = users;
-        this.filteredUser = this.users.slice();
-      }
-    );
   }
 
   toggleMenu() {

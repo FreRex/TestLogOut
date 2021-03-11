@@ -14,9 +14,7 @@
 <ion-content>
   <ion-grid>
     <ion-row>
-      <!--
-      PRIMA COLONNA - IMPORT FROM GISFO
--->
+
       <ion-col size-md="3" offset-md="1">
         <ion-card class="bottoni">
           <div class="ion-margin-vertical ion-text-start ">
@@ -26,106 +24,15 @@
             <ion-button expand="block" shape="round" fill="outline" color="primary" (click)="openGisfoUpload()">
               <ion-icon slot="start" name="cloud-download-outline"></ion-icon>GisFo Sync
             </ion-button>
-            <ion-button expand="block" shape="round" fill="outline" color="primary">
+            <ion-button expand="block" shape="round" fill="outline" color="primary" (click)="openUploadShp()">
               <ion-icon slot="start" name="duplicate-outline"></ion-icon>Carica SHP
             </ion-button>
           </div>
+          <div>
+          </div>
         </ion-card>
       </ion-col>
-      <!--
-  SECONDA COLONNA LINK GEOSERVER
--->
-      <!-- <ion-col size-md="3" offset-md="0">
-        <ion-card class="shp">
-          <ion-card-header>
-            <ion-card-title color="primary">Carica SHP</ion-card-title>
-            <ion-card-subtitle color="primary">Incolla link GeoWeb</ion-card-subtitle>
-          </ion-card-header>
-          <ion-card-content>
 
-            <ion-item>
-              <ion-label position="floating" class="ion-margin">
-                <h6>Località</h6>
-              </ion-label>
-              <ion-input type="text" id="localita">
-                <h6></h6>
-              </ion-input>
-            </ion-item>
-
-            <ion-item>
-              <ion-label position="floating" class="ion-margin">
-                <h6>Connessione OPTA-Civici</h6>
-              </ion-label>
-              <ion-input type="text" id="OPTA-C">
-                <h6></h6>
-              </ion-input>
-            </ion-item>
-
-            <ion-item>
-              <ion-label position="floating" class="ion-margin">
-                <h6>Nodi Fisici</h6>
-              </ion-label>
-              <ion-input type="text" id="pkProj">
-                <h6></h6>
-              </ion-input>
-            </ion-item>
-
-            <ion-item>
-              <ion-label position="floating" class="ion-margin">
-                <h6>Nodi Ottici</h6>
-              </ion-label>
-              <ion-input type="text" id="nodiOttici">
-                <h6></h6>
-              </ion-input>
-            </ion-item>
-
-            <ion-item>
-              <ion-label position="floating" class="ion-margin">
-                <h6>Tratte</h6>
-              </ion-label>
-              <ion-input type="text" id="tratte">
-                <h6></h6>
-              </ion-input>
-            </ion-item>
-
-            <ion-item>
-              <ion-label position="floating" class="ion-margin">
-                <h6>Latitudine</h6>
-              </ion-label>
-              <ion-input type="text" id="lat">
-                <h6></h6>
-              </ion-input>
-            </ion-item>
-
-            <ion-item>
-              <ion-label position="floating" class="ion-margin">
-                <h6>Longitudine</h6>
-              </ion-label>
-              <ion-input type="text" id="lng">
-                <h6></h6>
-              </ion-input>
-            </ion-item>
-
-            <ion-item>
-              <ion-label position="floating" class="ion-margin">
-                <h6>PK Project</h6>
-              </ion-label>
-              <ion-input type="text" id="pkProject">
-                <h6></h6>
-              </ion-input>
-            </ion-item>
-
-            <div class="ion-margin-vertical ion-text-right ">
-              <ion-button shape="round" fill="outline" color="primary" onclick="createLink()">
-                <ion-icon slot="start" name="caret-forward-circle-outline"></ion-icon>CREA LINK
-              </ion-button>
-            </div>
-          </ion-card-content>
-        </ion-card>
-      </ion-col> -->
-      <!--
-  TERZA COLONNA LISTA DEI PROGETTI
- -->
       <ion-col size-md="7" offset-md="0">
         <ion-card class="card-out">
           <div class="ion-margin-vertical ion-text-right ">
@@ -138,11 +45,12 @@
             </ion-button>
           </div>
           <ion-card-content>
+
 <!-- TODO / INSERIRE LOGICA RICERCA -->
-              <ion-searchbar placeholder="Cerca" (ionInput)="search($event, true)" ></ion-searchbar>
+<ion-searchbar #searchInput placeholder="Cerca"></ion-searchbar>
 <!-- INSERIRE LOGICA RICERCA / TODO -->
-            <ion-card class="card-inside" *ngIf="showProjects">
-              <ion-item-sliding *ngFor="let proj of filteredProj">
+            <ion-card class="card-inside" *ngIf="showProjects" >
+              <ion-item-sliding *ngFor="let proj of (projects$ | async)">
                 <ion-item>
                   <div class="ion-margin-vertical">
                     <ion-icon name="map-outline" color="secondary"></ion-icon>
@@ -150,12 +58,12 @@
                   <ion-grid>
                     <ion-row>
                       <ion-col class="ion-text-center">
-                        <ion-label color="primary">{{ proj.nome_progetto }}</ion-label>
+                        <ion-label color="primary">{{ proj.nome }}</ion-label>
                         <p color="primary"><b>PK:</b> {{ proj.pk_proj }}</p>
                       </ion-col>
                       <ion-col class="ion-text-center">
-                        <p color="primary"><b>Lat:</b> {{ proj.lat_progetto }}</p>
-                        <p color="primary"><b>Long:</b> {{ proj.long_progetto }}</p>
+                        <p color="primary"><b>Lat:</b> {{ proj.lat_centro_map }}</p>
+                        <p color="primary"><b>Long:</b> {{ proj.long_centro_map }}</p>
                       </ion-col>
                     </ion-row>
                   </ion-grid>
@@ -171,7 +79,7 @@
               </ion-item-sliding>
             </ion-card>
             <ion-card class="card-inside" *ngIf="!showProjects">
-              <ion-item-sliding *ngFor="let user of filteredUser">
+              <ion-item-sliding *ngFor="let user of users">
                 <ion-item>
                   <div class="ion-margin-vertical">
                     <ion-icon name="person-outline" color="secondary"></ion-icon>

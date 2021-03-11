@@ -1,0 +1,89 @@
+<ion-card class="ion-margin-vertical card-inside">
+  <ion-card-header>
+    <ion-card-title color="primary">Carica SHP</ion-card-title>
+    <ion-card-subtitle color="primary">Incolla link GeoWeb</ion-card-subtitle>
+  </ion-card-header>
+  <ion-card-content>
+
+    <ion-item>
+      <ion-label position="floating" class="ion-margin">
+        <h6>Località</h6>
+      </ion-label>
+      <ion-input type="text" id="localita">
+        <h6></h6>
+      </ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating" class="ion-margin">
+        <h6>Connessione OPTA-Civici</h6>
+      </ion-label>
+      <ion-input type="text" id="OPTA-C">
+        <h6></h6>
+      </ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating" class="ion-margin">
+        <h6>Nodi Fisici</h6>
+      </ion-label>
+      <ion-input type="text" id="pkProj">
+        <h6></h6>
+      </ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating" class="ion-margin">
+        <h6>Nodi Ottici</h6>
+      </ion-label>
+      <ion-input type="text" id="nodiOttici">
+        <h6></h6>
+      </ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating" class="ion-margin">
+        <h6>Tratte</h6>
+      </ion-label>
+      <ion-input type="text" id="tratte">
+        <h6></h6>
+      </ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating" class="ion-margin">
+        <h6>Latitudine</h6>
+      </ion-label>
+      <ion-input type="text" id="lat">
+        <h6></h6>
+      </ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating" class="ion-margin">
+        <h6>Longitudine</h6>
+      </ion-label>
+      <ion-input type="text" id="lng">
+        <h6></h6>
+      </ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating" class="ion-margin">
+        <h6>PK Project</h6>
+      </ion-label>
+      <ion-input type="text" id="pkProject">
+        <h6></h6>
+      </ion-input>
+    </ion-item>
+
+    <div class="ion-margin-vertical ion-text-right ">
+      <ion-button shape="round" fill="outline" color="primary" (click)="closeModal()">
+        <ion-icon slot="start" name="close-outline"></ion-icon>ANNULLA
+      </ion-button>
+      <ion-button shape="round" fill="outline" color="primary">
+        <ion-icon slot="start" name="add-outline"></ion-icon>CREA LINK
+      </ion-button>
+    </div>
+  </ion-card-content>
+</ion-card>

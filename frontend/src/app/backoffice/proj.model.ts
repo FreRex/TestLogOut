@@ -1,11 +1,11 @@
 export class Proj{
   constructor(
   public id: number,
-  public collaudatore: number,
+  public idutente: number,
   public pk_proj: number,
-  public nome_progetto: string,
-  public long_progetto: string,
-  public lat_progetto: string,
+  public nome: string,
+  public long_centro_map: string,
+  public lat_centro_map: string,
   public nodi_fisici?:string,
   public nodi_ottici?:string,
   public tratte?: string,

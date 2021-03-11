@@ -12,16 +12,16 @@ export class GisfoSyncModalComponent implements OnInit {
   users:User[];
 
   constructor(
-    private projService: ProjService,
+
     private modalCtrl: ModalController
   ) { }
 
   ngOnInit() {}
 
   showUsersList(){
-    this.projService.fetchUsers().subscribe(
+
       users => this.users = users
-    );
+
   }
 
   closeModal(){
