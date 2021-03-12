@@ -4,8 +4,8 @@
 
 export const environment = {
   production: false, 
-  // apiUrl: 'https://www.collaudolive.com:9083',
-  apiUrl: 'https://chat-operativa-default-rtdb.europe-west1.firebasedatabase.app',
+  apiUrl: 'https://www.collaudolive.com:9083',
+  // apiUrl: 'https://chat-operativa-default-rtdb.europe-west1.firebasedatabase.app',
 };
 
 /*

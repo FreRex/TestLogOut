@@ -7,7 +7,7 @@ import { environment } from 'src/environments/environment';
 
 /** Interfaccia che definisce la Room all'interno del progetto */
 export interface Room {
-  id: string;
+  id: number;
   usermobile: string;
   nome_progetto: string;
   nome_collaudatore: string;
@@ -18,16 +18,11 @@ export interface Room {
 
 /** Interfaccia che definisce la Room come mi arriva sul JSON */
 export interface RoomData {
-  id: string;
+  id: number;
   usermobile: string;
-  // API Firebase
-  nome_progetto: string;
-  nome_collaudatore: string;
-  data_inserimento: string;
-  // API Frex
-  // progettoselezionato: string;
-  // collaudatoreufficio: string;
-  // DataInsert: string;
+  progettoselezionato: string;
+  collaudatoreufficio: string;
+  DataInsert: string;
 }
 
 @Injectable({
@@ -69,16 +64,17 @@ export class RoomService {
 
   /** Ritorna una singola room sotto forma di Osservabile */
   getRoom(roomId: string): Observable<Room> {
-    return this.http.get<RoomData>(`${environment.apiUrl}/rooms/${roomId}.json`)
+    return this.http.get<RoomData>(`${environment.apiUrl}/s/room/${roomId}`)
       .pipe(
         map(roomData => {
+          console.log(roomData);
+          
           return {
-            id: roomId,
-            usermobile: roomData.usermobile,
-            // API Firebase
-            nome_progetto: roomData.nome_progetto,
-            nome_collaudatore: roomData.nome_collaudatore,
-            data_inserimento: new Date(roomData.data_inserimento),
+            id: roomData[0].id,
+            usermobile: roomData[0].usermobile,
+            nome_progetto: roomData[0].progettoselezionato,
+            nome_collaudatore: roomData[0].collaudatoreufficio,
+            data_inserimento: new Date(roomData[0].DataInsert),
           }
         })
       );
@@ -125,7 +121,7 @@ export class RoomService {
   }
 
   /** Cancella una room */
-  deleteRoom(roomId: string) {
+  deleteRoom(roomId: number) {
     return this.http.delete(`${environment.apiUrl}/rooms/${roomId}.json`)
       .pipe(
         switchMap(() => {
@@ -134,7 +130,6 @@ export class RoomService {
         take(1),
         tap(rooms => {
           console.log(rooms);
-          
           // filter() = filtra un array in base a una regola ("se è vero")
           // ritrorna vero per tutte le room tranne quella che voglio scartare
           const updatedRooms = rooms.filter(room => room.id !== roomId);
@@ -144,7 +139,7 @@ export class RoomService {
   }
 
   /** Salva una room dopo una modifica */
-  updateRoom(roomId: string, newUsermobile: string) {
+  updateRoom(roomId: number, newUsermobile: string) {
     let updatedRooms: Room[];
     return this.rooms.pipe(
       take(1),
@@ -180,26 +175,21 @@ export class RoomService {
   fetchRooms(): Observable<Room[]> {
     return this.http
       // WHY : { [key: string]: RoomData } al posto di RoomData[] ???
-      .get<{ [key: string]: RoomData }>(`${environment.apiUrl}/rooms.json`)
+      .get<{ [key: string]: RoomData }>(`${environment.apiUrl}/s/room/`)
       .pipe(
         // Rimappa i dati che arrivano dal server sull'interfaccia della Room
-        map((resData: { [key: string]: RoomData }) => {
+        map((roomData: { [key: string]: RoomData }) => {
           const rooms: Room[] = [];
-          for (const key in resData) {
+          for (const key in roomData) {
             // console.log("Key:", key," - ","Res[key]",res[key]);
             // resData.hasOwnProperty(key) = iterate all enumerable properties, directly on the object (not on the prototype)
-            if (resData.hasOwnProperty(key)) {
+            if (roomData.hasOwnProperty(key)) {
               rooms.push({
-                id: key,
-                usermobile: resData[key].usermobile,
-                // API Firebase
-                nome_progetto: resData[key].nome_progetto,
-                nome_collaudatore: resData[key].nome_collaudatore,
-                data_inserimento: new Date(resData[key].data_inserimento),
-                // API Frex
-                // nome_progetto: resData[key].progettoselezionato,
-                // nome_collaudatore: resData[key].collaudatoreufficio,
-                // data_inserimento: new Date(resData[key].DataInsert),
+                id: roomData[key].id,
+                usermobile: roomData[key].usermobile,
+                nome_progetto: roomData[key].progettoselezionato,
+                nome_collaudatore: roomData[key].collaudatoreufficio,
+                data_inserimento: new Date(roomData[key].DataInsert),
               });
             }
           }
