@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { ProjService, User } from '../proj.service';
+import { User } from '../../shared/storage-data.service';
 
 @Component({
   selector: 'app-gisfo-sync-modal',

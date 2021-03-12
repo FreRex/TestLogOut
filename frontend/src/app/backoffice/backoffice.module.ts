@@ -9,6 +9,7 @@ import { BackofficePageRoutingModule } from './backoffice-routing.module';
 import { BackofficePage } from './backoffice.page';
 import { GisfoSyncModalComponent } from './gisfo-sync-modal/gisfo-sync-modal.component';
 import { UploadShpModalComponent } from './upload-shp-modal/upload-shp-modal.component';
+import { CreateUserModalComponent } from './create-user-modal/create-user-modal.component';
 
 
 @NgModule({
@@ -18,7 +19,7 @@ import { UploadShpModalComponent } from './upload-shp-modal/upload-shp-modal.com
     IonicModule,
     BackofficePageRoutingModule
   ],
-  declarations: [BackofficePage, GisfoSyncModalComponent, UploadShpModalComponent],
-  entryComponents:[GisfoSyncModalComponent, UploadShpModalComponent]
+  declarations: [BackofficePage, GisfoSyncModalComponent, UploadShpModalComponent, CreateUserModalComponent,],
+  entryComponents:[GisfoSyncModalComponent, UploadShpModalComponent, CreateUserModalComponent]
 })
 export class BackofficePageModule {}
