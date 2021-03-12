@@ -3,14 +3,17 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/rooms"></ion-back-button>
     </ion-buttons>
-    <ion-title>Room: {{ room.nome_progetto }}</ion-title>
+    <ion-title>Room: {{ isLoading ? 'Loading...' : room.nome_progetto }}</ion-title>
     <ion-buttons slot="primary">
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-grid>
+  <div *ngIf="isLoading" class="ion-text-center">
+    <ion-spinner color="primary"></ion-spinner>
+  </div>
+  <ion-grid *ngIf="!isLoading">
     <ion-row>
       <ion-col>
         <div>

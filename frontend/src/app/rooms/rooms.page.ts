@@ -76,8 +76,8 @@ export class RoomsPage implements OnInit, OnDestroy {
       default: {
         this.filteredRooms = this.rooms.filter((room) => {
           return (
-            room.nome_progetto.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1 ||
             room.usermobile.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1 ||
+            room.nome_progetto.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1 ||
             room.nome_collaudatore.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1
           );
         }); break;

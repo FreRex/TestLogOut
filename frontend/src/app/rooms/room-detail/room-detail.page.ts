@@ -13,11 +13,13 @@ export class RoomDetailPage implements OnInit, OnDestroy {
 
   private sub: Subscription;
   room: Room;
+  isLoading = false;
 
   constructor(
     private activatedRouter: ActivatedRoute,
     private roomsService: RoomService,
     private navController: NavController,
+    private alertController: AlertController
   ) { }
 
   ngOnInit() {
@@ -26,13 +28,30 @@ export class RoomDetailPage implements OnInit, OnDestroy {
         this.navController.navigateBack(['/rooms']);
         return;
       }
-      const roomId = paramMap.get('roomId');
 
       // mi sottoscrivo all'osservabile "getRoom()" che restituisce una singola room per ID
-      this.sub = this.roomsService.getRoom(roomId).subscribe(
-        (room: Room) => { this.room = room; }
+      this.isLoading = true;
+      this.sub = this.roomsService.getRoom(paramMap.get('roomId'))
+      .subscribe(
+        (room: Room) => { 
+          this.room = room; 
+          this.isLoading = false;
+        }, 
+        error => {
+          this.alertController.create({
+            header: 'Errore', 
+            message:'Impossibiile caricare la room', 
+            buttons : [{
+              text: 'Annulla', handler: () => {
+                this.navController.navigateBack(['/rooms']);
+                // this.router.navigate(['/rooms']);
+              }
+            }]
+          }).then(alertEl => {
+            alertEl.present();
+          })
+        }
       );
-
     });
   }
 

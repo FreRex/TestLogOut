@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AlertController, NavController, ToastController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
@@ -17,36 +17,57 @@ export class EditRoomPage implements OnInit, OnDestroy {
   form: FormGroup;
   room: Room;
   roomId: string;
+  isLoading = false;
 
   constructor(
     private activatedRouter: ActivatedRoute,
     private navController: NavController,
     private roomsService: RoomService,
     private alertController: AlertController,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private router: Router,
   ) { }
 
   ngOnInit() {
-    this.createForm();
-
+    
     // FIXME: si rompe inserendo a mano l'indirizzo http://localhost:8100/rooms/edit
     this.activatedRouter.paramMap.subscribe(paramMap => {
       if (!paramMap.has('roomId')) {
         this.navController.navigateBack(['/rooms']);
+        // this.router.navigate(['/rooms']);
         return;
       }
-      const roomId = paramMap.get('roomId');
-
+      
       // mi sottoscrivo all'osservabile "getRoom()" che restituisce una singola room per ID
-      this.sub = this.roomsService.getRoom(roomId).subscribe(
-        (room: Room) => { this.room = room; }
+      this.isLoading = true;
+      this.sub = this.roomsService.getRoom(paramMap.get('roomId'))
+      .subscribe(
+        (room: Room) => { 
+          this.room = room; 
+          this.form = new FormGroup({
+            usermobile: new FormControl(this.room.usermobile, {
+              updateOn: 'blur',
+              validators: [Validators.required, Validators.maxLength(12)]
+            })
+          });
+          this.isLoading = false;
+        }, 
+        error => {
+          this.alertController.create({
+            header: 'Errore', 
+            message:'Impossibiile caricare la room', 
+            buttons : [{
+              text: 'Annulla', handler: () => {
+                this.navController.navigateBack(['/rooms']);
+                // this.router.navigate(['/rooms']);
+              }
+            }]
+          }).then(alertEl => {
+            alertEl.present();
+          })
+        }
       );
 
-      this.form.patchValue({
-        usermobile: this.room.usermobile,
-        nome_progetto: this.room.nome_progetto,
-        nome_collaudatore: this.room.nome_collaudatore,
-      });
     });
   }
 
@@ -55,12 +76,7 @@ export class EditRoomPage implements OnInit, OnDestroy {
   }
   
   createForm() {
-    this.form = new FormGroup({
-      usermobile: new FormControl(null, {
-        updateOn: 'blur',
-        validators: [Validators.required, Validators.maxLength(12)]
-      }),
-    });
+    
   }
 
   onCancel() {
