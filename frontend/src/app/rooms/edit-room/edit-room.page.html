@@ -9,7 +9,10 @@
 
 <!-- Reactive Form -->
 <ion-content>
-  <form [formGroup]="form">
+  <div *ngIf="isLoading" class="ion-text-center">
+    <ion-spinner color="primary"></ion-spinner>
+  </div>
+  <form [formGroup]="form" *ngIf="!isLoading">
     <ion-grid>
       <ion-row>
         <ion-col  size-sm="6" offset-sm="3">
@@ -32,32 +35,6 @@
         </ion-col>
       </ion-row>
       <ion-row>
-        <ion-col size-sm="6" offset-sm="3">
-          <ion-item>
-            <ion-label position="stacked">NOME PROGETTO</ion-label>
-            <ion-input formControlName="nome_progetto" type="text" autocomplete autocorrect></ion-input>
-            <ion-icon name="pencil-outline" slot="end" class="ion-align-self-center"></ion-icon>
-          </ion-item>
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col size-sm="6" offset-sm="3">
-          <ion-item>
-            <ion-label position="stacked">COLLAUDATORE</ion-label>
-            <ion-input formControlName="nome_collaudatore" type="text" autocomplete autocorrect></ion-input>
-            <ion-icon name="pencil-outline" slot="end" class="ion-align-self-center"></ion-icon>
-          </ion-item>
-        </ion-col>
-      </ion-row>
-      <!-- <ion-row>
-        <ion-col size-sm="6" offset-sm="3">
-          <ion-item>
-            <ion-label position="stacked">DATA INSERIMENTO</ion-label>
-            <ion-datetime formControlName="data_inserimento" displayFormat="DD MMMM YYYY" pickerFormat="DD MMMM YYYY"></ion-datetime>
-          </ion-item>
-        </ion-col>
-      </ion-row> -->
-      <ion-row>
         <ion-col size="6" size-sm="3" offset-sm="3">
           <ion-button type="button" color="primary" expand="block" shape="round" fill="outline" (click)="onDownload()">Download Foto
           </ion-button>
@@ -69,19 +46,9 @@
       </ion-row>
       <ion-row >
         <ion-col size-sm="6" offset-sm="3">
-          <ion-button [disabled]="!form.valid" type="submit" color="primary" expand="block" shape="round" (click)="onSave()">Salva</ion-button>
+          <ion-button [disabled]="!form.valid" type="submit" color="primary" expand="block" shape="round" (click)="onUpdateRoom()">Salva</ion-button>
         </ion-col>
       </ion-row>
-      <!-- <ion-row>
-        <ion-col size-sm="6" offset-sm="3">
-          <ion-button 
-          color="primary" 
-          expand="block" 
-          shape="round" 
-          [disabled]="!form.valid" 
-          (click)="onSave()">{{ isEditMode ? 'Salva' : 'Crea'}}</ion-button>
-        </ion-col>
-      </ion-row> -->
     </ion-grid>
   </form>
 </ion-content>

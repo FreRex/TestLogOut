@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { IonItemSliding } from '@ionic/angular';
-import { Room } from '../room.model';
+import { Room } from '../room.service';
 
 @Component({
   selector: 'app-room-item',
@@ -26,7 +26,7 @@ export class RoomItemComponent implements OnInit {
 
   onOpenEditPage(slidingItem: IonItemSliding){
     slidingItem.close();
-    this.router.navigate(['/', 'rooms', 'edit', this.roomItem.usermobile]);
+    this.router.navigate(['/', 'rooms', 'edit', this.roomItem.id]);
   }
 
   onFavoutite(){

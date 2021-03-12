@@ -3,28 +3,25 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/rooms"></ion-back-button>
     </ion-buttons>
-    <ion-title>Room: {{ loadedRoom.nome_progetto }}</ion-title>
+    <ion-title>Room: {{ isLoading ? 'Loading...' : room.nome_progetto }}</ion-title>
     <ion-buttons slot="primary">
-      <!-- <ion-button (click)="onEditRoom()">
-        <ion-icon name="create-outline" slot="icon-only"></ion-icon>
-      </ion-button> -->
-      <ion-button (click)="onDeleteRoom()">
-        <ion-icon name="trash" slot="icon-only"></ion-icon>
-      </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <ion-grid>
+  <div *ngIf="isLoading" class="ion-text-center">
+    <ion-spinner color="primary"></ion-spinner>
+  </div>
+  <ion-grid *ngIf="!isLoading">
     <ion-row>
       <ion-col>
         <div>
-          <h2>{{ loadedRoom.nome_progetto }} ({{ loadedRoom.usermobile }})</h2>
-          <p> ID: {{loadedRoom.id}} 
-              - USERMOBILE: {{ loadedRoom.usermobile }}
-              - COLLUDATORE: {{ loadedRoom.nome_collaudatore}} 
-              - DATA: {{ loadedRoom.data_inserimento | date:'MM/dd/yy, hh:mm:ss'}}
+          <h2>{{ room.nome_progetto }} ({{ room.usermobile }})</h2>
+          <p> ID: {{room.id}} 
+              - USERMOBILE: {{ room.usermobile }}
+              - COLLUDATORE: {{ room.nome_collaudatore}} 
+              - DATA: {{ room.data_inserimento | date:'MM/dd/yy, hh:mm:ss'}}
           </p>
         </div>
       </ion-col>
