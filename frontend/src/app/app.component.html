@@ -3,6 +3,7 @@
         <!-- <app-menu></app-menu> -->
     <!-- <ion-router-outlet id="main"></ion-router-outlet> -->
   <!-- </ion-split-pane> -->
+  <!-- FIX : spostando il menù su un componente separato non funziona più correttamente in combinazione con lo split-pane -->
   <ion-split-pane contentId="main">
     <!--  the side menu  -->
     <ion-menu contentId="main">
@@ -23,6 +24,24 @@
             <ion-item lines="none" button="true" routerLink="backoffice">
               <ion-icon name="lock-open" slot="start"></ion-icon>
               <ion-label>Backoffice</ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+          <ion-menu-toggle auto-hide="false">
+            <ion-item lines="none" button="true" href="https://www.collaudolive.xyz:9888/admin/streams" target="_blank">
+              <ion-icon name="tv-outline" slot="start"></ion-icon>
+              <ion-label>Admin STREAMING</ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+          <ion-menu-toggle auto-hide="false">
+            <ion-item lines="none" button="true" href="http://www.eaglelive.tv:5080/#/pages/login" target="_blank">
+              <ion-icon name="headset-outline" slot="start"></ion-icon>
+              <ion-label>Admin AUDIO</ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+          <ion-menu-toggle auto-hide="false">
+            <ion-item lines="none" button="true" href="https://www.collaudolive.xyz:9080/geoserver/web/" target="_blank">
+              <ion-icon name="map-outline" slot="start"></ion-icon>
+              <ion-label>Admin GEOSERVER</ion-label>
             </ion-item>
           </ion-menu-toggle>
           <ion-menu-toggle auto-hide="false">
