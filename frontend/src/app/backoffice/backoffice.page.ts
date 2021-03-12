@@ -1,98 +1,139 @@
-import { Component, OnInit } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { AfterViewInit, Component, ViewChild } from '@angular/core';
+import { IonSearchbar, ModalController } from '@ionic/angular';
 import { GisfoSyncModalComponent } from './gisfo-sync-modal/gisfo-sync-modal.component';
-import { Proj } from './proj.model';
-import { ProjService, User } from './proj.service';
-import { SIZE_TO_MEDIA } from '@ionic/core/dist/collection/utils/media'
+import { CreateUserModalComponent } from './create-user-modal/create-user-modal.component';
+import { UploadShpModalComponent } from './upload-shp-modal/upload-shp-modal.component';
+import { Project, User, StorageDataService } from '../shared/storage-data.service';
+import { SIZE_TO_MEDIA } from '@ionic/core/dist/collection/utils/media';
+import { Observable } from 'rxjs';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  map,
+  startWith,
+  switchMap,
+} from 'rxjs/operators';
 
 @Component({
   selector: 'app-backoffice',
   templateUrl: './backoffice.page.html',
   styleUrls: ['./backoffice.page.scss'],
 })
-export class BackofficePage implements OnInit {
+export class BackofficePage implements AfterViewInit {
+  @ViewChild('searchInput', { static: true }) input: IonSearchbar;
 
-  shpProjects:Proj[];
-  users:User[];
-  showProjects:boolean = true;
+  projects$: Observable<Project[]>;
+  users$: Observable<User[]>;
+  showProjects: boolean = true;
 
-  filteredProj:Proj[];
-  filteredUser:User[];
 
   constructor(
-    private projService: ProjService,
+    private projService: StorageDataService,
+    private userService: StorageDataService,
     private modalCtrl: ModalController
-    ) {}
+  ) {}
 
-  ngOnInit() {
+  ngAfterViewInit(): void {
+    this.filterProjects();
+    this.filterUsers();
+  }
 
-    this.projService.fetchProjects().subscribe(
-      res => {
-        this.reloadProj();
-      }
+  filterProjects(): void {
+    this.projects$ = this.input.ionInput.pipe(
+      map((event) => (<HTMLInputElement>event.target).value),
+      debounceTime(400),
+      distinctUntilChanged(),
+      startWith(""),
+      switchMap((search) =>
+        this.projService.projects$.pipe(
+          map((projects) =>
+            projects.filter((proj) =>
+              proj.nome.toLowerCase().includes(search.toLowerCase())
+            )
+          )
+        )
+      )
     );
   }
 
-  search(eventValue: Event, view: boolean){
-    this.filteredProj = this.shpProjects;
-    this.filteredUser = this.users;
-
-    let searchTerm = (<HTMLInputElement>eventValue.target).value;
-    if (view == this.showProjects){
-
-      this.filteredProj = this.shpProjects.filter((Proj) => {
-        return Proj.nome_progetto.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1;
-      }
-      );}
-          else{
-
-            this.filteredUser = this.users.filter((User) => {
-              return User.collaudatoreufficio.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1;
-            })
-    }
+  filterUsers(){
+    this.users$ = this.input.ionInput.pipe(
+      map((event) => (<HTMLInputElement>event.target).value),
+      debounceTime(400),
+      distinctUntilChanged(),
+      startWith(""),
+      switchMap((search) =>
+        this.userService.users$.pipe(
+          map((users) =>
+            users.filter((user) =>
+              user.collaudatoreufficio.toLowerCase().includes(search.toLowerCase())
+            )
+          )
+        )
+      )
+    );
   }
 
-
-
-  onDelete(){
-    console.log("progetto eliminato");
+  onDelete() {
+    console.log('progetto eliminato');
   }
 
-  reloadProj(){
-    this.shpProjects = this.projService.getProjects();
-    this.filteredProj=this.shpProjects.slice();
-  }
+  /* *********************** MODALS *********************** */
 
   openGisfoUpload() {
     this.modalCtrl
       .create({
         component: GisfoSyncModalComponent,
       })
-      .then(modalEl => {
+      .then((modalEl) => {
         modalEl.present();
         return modalEl.onDidDismiss();
       })
-      .then(resultData => {
+      .then((resultData) => {
         console.log(resultData.data, resultData.role);
       });
   }
 
-  showProjectsClick(){
+  openUploadShp() {
+    this.modalCtrl
+      .create({
+        component: UploadShpModalComponent,
+      })
+      .then((modalEl) => {
+        modalEl.present();
+        return modalEl.onDidDismiss();
+      })
+      .then((resultData) => {
+        console.log(resultData.data, resultData.role);
+      });
+  }
+
+  openCreateUser() {
+    this.modalCtrl
+      .create({
+        component: CreateUserModalComponent,
+      })
+      .then((modalEl) => {
+        modalEl.present();
+        return modalEl.onDidDismiss();
+      })
+      .then((resultData) => {
+        console.log(resultData.data, resultData.role);
+      });
+  }
+  /* *************************END MODALS*********************************** */
+  showProjectsClick() {
     this.showProjects = true;
   }
-  showUsers(){
+  showUsers() {
     this.showProjects = false;
-    this.projService.fetchUsers().subscribe(
-      users => {
-        this.users = users;
-        this.filteredUser = this.users.slice();
-      }
-    );
   }
 
   toggleMenu() {
-    const splitPane = document.querySelector('ion-split-pane')
-    if (window.matchMedia(SIZE_TO_MEDIA[splitPane.when] || splitPane.when).matches) {
+    const splitPane = document.querySelector('ion-split-pane');
+    if (
+      window.matchMedia(SIZE_TO_MEDIA[splitPane.when] || splitPane.when).matches
+    ) {
       splitPane.classList.toggle('split-pane-visible');
     }
   }

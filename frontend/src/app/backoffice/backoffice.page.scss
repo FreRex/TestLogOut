@@ -1,16 +1,29 @@
+
 .card-out{
   max-height: 80vh;
+  margin-left: 0;
+  margin-right: 0;
+  box-shadow: none;
 }
 
 .card-inside{
   max-height: 40vh;
   overflow: hidden;
   overflow-y: auto;
+
 }
 
 .shp{
   max-height: 80vh;
   overflow: hidden;
   overflow-y: auto;
+}
+
+.bottoni{
+  display: flex;
+  flex-direction: column;
+  box-shadow: none;
+  justify-content: center;
+  align-items: center;
 }
 
