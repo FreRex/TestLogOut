@@ -54,6 +54,8 @@ export class RoomService {
   //   }
   // ];
 
+  constructor(private http: HttpClient, private authService: AuthService) { }
+
   /** Lista delle room sotto forma di BehaviourSubject */
   private _rooms = new BehaviorSubject<Room[]>([]);  // <-- "_rooms" può emettere eventi perchè è un BehaviourSubject
 
@@ -62,13 +64,41 @@ export class RoomService {
     return this._rooms.asObservable();            // <-- "rooms" NON può emettere eventi, ma può essere sottoscritto, perchè è un Observable
   }
 
-  /** Ritorna una singola room sotto forma di Osservabile */
+  /** SELECT rooms */
+  fetchRooms(): Observable<Room[]> {
+    return this.http
+      // WHY : { [key: string]: RoomData } al posto di RoomData[] ???
+      .get<{ [key: string]: RoomData }>(`${environment.apiUrl}/s/room/`)
+      .pipe(
+        // Rimappa i dati che arrivano dal server sull'interfaccia della Room
+        map((roomData: { [key: string]: RoomData }) => {
+          const rooms: Room[] = [];
+          for (const key in roomData) {
+            // console.log("Key:", key," - ","Res[key]",res[key]);
+            // resData.hasOwnProperty(key) = iterate all enumerable properties, directly on the object (not on the prototype)
+            if (roomData.hasOwnProperty(key)) {
+              rooms.push({
+                id: roomData[key].id,
+                usermobile: roomData[key].usermobile,
+                nome_progetto: roomData[key].progettoselezionato,
+                nome_collaudatore: roomData[key].collaudatoreufficio,
+                data_inserimento: new Date(roomData[key].DataInsert),
+              });
+            }
+          }
+          return rooms;
+        }),
+        delay(1000),
+        // emette il nuovo array come valore del BehaviourSubject _rooms
+        tap((rooms: Room[]) => { this._rooms.next(rooms); })
+      );
+  }
+
+  /** SELECT singola room */
   getRoom(roomId: string): Observable<Room> {
     return this.http.get<RoomData>(`${environment.apiUrl}/s/room/${roomId}`)
       .pipe(
         map(roomData => {
-          console.log(roomData);
-          
           return {
             id: roomData[0].id,
             usermobile: roomData[0].usermobile,
@@ -84,9 +114,7 @@ export class RoomService {
     //   }));
   }
 
-  constructor(private http: HttpClient, private authService: AuthService) { }
-
-  /** Aggiunge una nuova room alla lista */
+  /** CREATE room e aggiungila alla lista */
   addRoom(usermobile: string, nome_progetto: string, nome_collaudatore: string) {
     const newRoom =
     {
@@ -120,7 +148,81 @@ export class RoomService {
     // return this.rooms.pipe(take(1), tap((rooms: Room[]) => {}));
   }
 
-  /** Cancella una room */
+  /** UPDATE 1 room dopo una modifica */
+  // updateRoom(roomId: number, newUsermobile: string) {
+  //   let updatedRooms: Room[];
+  //   return this.rooms.pipe(
+  //     take(1),
+  //     switchMap(rooms => {
+  //       if (!rooms || rooms.length <= 0) {
+  //         return this.fetchRooms();
+  //       } else {
+  //         return of(rooms);
+  //       }
+  //     }),
+  //     switchMap(rooms => {
+  //       // findIndex() = trova l'indice di un elemento di un array in base a una regola ("se è vero")
+  //       const updatedRoomIndex = rooms.findIndex(room => room.id === roomId);
+  //       updatedRooms = [...rooms];
+  //       const oldRoom = updatedRooms[updatedRoomIndex];
+  //       updatedRooms[updatedRoomIndex] =
+  //       {
+  //         id: oldRoom.id,
+  //         usermobile: newUsermobile,
+  //         nome_progetto: oldRoom.nome_progetto,
+  //         nome_collaudatore: oldRoom.nome_collaudatore,
+  //         data_inserimento: oldRoom.data_inserimento,
+  //       };
+  //       return this.http.put(`${environment.apiUrl}/ur`,
+  //         {
+  //           "id": roomId,
+  //           "usermobile": newUsermobile
+  //         });
+  //     }),
+  //     tap(res => {
+  //       console.log(res);
+  //       this._rooms.next(updatedRooms);
+  //     }));
+  // }
+
+    /** UPDATE 2 room dopo una modifica */
+    updateRoom(roomId: number, newUsermobile: string) {
+      let updatedRooms: Room[];
+      return this.rooms.pipe(
+        take(1),
+        switchMap(rooms => {
+          if (!rooms || rooms.length <= 0) {
+            return this.fetchRooms();
+          } else {
+            return of(rooms);
+          }
+        }),
+        switchMap(rooms => {
+          // findIndex() = trova l'indice di un elemento di un array in base a una regola ("se è vero")
+          const updatedRoomIndex = rooms.findIndex(room => room.id === roomId);
+          updatedRooms = [...rooms];
+          const oldRoom = updatedRooms[updatedRoomIndex];
+          updatedRooms[updatedRoomIndex] =
+          {
+            id: oldRoom.id,
+            usermobile: newUsermobile,
+            nome_progetto: oldRoom.nome_progetto,
+            nome_collaudatore: oldRoom.nome_collaudatore,
+            data_inserimento: oldRoom.data_inserimento,
+          };
+          this._rooms.next(updatedRooms);
+          return of(updatedRooms[updatedRoomIndex])
+        }),
+        switchMap(newRoom => {
+          return this.http.put(`${environment.apiUrl}/ur`,
+            {
+              "id": newRoom.id,
+              "usermobile": newRoom.usermobile
+            });
+        }));
+    }
+
+  /** DELETE room */
   deleteRoom(roomId: number) {
     return this.http.delete(`${environment.apiUrl}/rooms/${roomId}.json`)
       .pipe(
@@ -135,69 +237,6 @@ export class RoomService {
           const updatedRooms = rooms.filter(room => room.id !== roomId);
           this._rooms.next(updatedRooms);
         })
-      );
-  }
-
-  /** Salva una room dopo una modifica */
-  updateRoom(roomId: number, newUsermobile: string) {
-    let updatedRooms: Room[];
-    return this.rooms.pipe(
-      take(1),
-      switchMap(rooms => {
-        if (!rooms || rooms.length <= 0) {
-          return this.fetchRooms();
-        } else {
-          return of(rooms);
-        }
-      }),
-      switchMap(rooms => {
-        // findIndex() = trova l'indice di un elemento di un array in base a una regola ("se è vero")
-        const updatedRoomIndex = rooms.findIndex(room => room.id === roomId);
-        updatedRooms = [...rooms];
-        const oldRoom = updatedRooms[updatedRoomIndex];
-        updatedRooms[updatedRoomIndex] =
-        {
-          id: oldRoom.id,
-          usermobile: newUsermobile,
-          nome_progetto: oldRoom.nome_progetto,
-          nome_collaudatore: oldRoom.nome_collaudatore,
-          data_inserimento: oldRoom.data_inserimento,
-        };
-        return this.http.put(`${environment.apiUrl}/rooms/${roomId}.json`,
-          { ...updatedRooms[updatedRoomIndex] });
-      }),
-      tap(res => {
-        this._rooms.next(updatedRooms);
-      }));
-  }
-
-  /** Aggiorna e sostituisce le room con quelle restituiti dal server */
-  fetchRooms(): Observable<Room[]> {
-    return this.http
-      // WHY : { [key: string]: RoomData } al posto di RoomData[] ???
-      .get<{ [key: string]: RoomData }>(`${environment.apiUrl}/s/room/`)
-      .pipe(
-        // Rimappa i dati che arrivano dal server sull'interfaccia della Room
-        map((roomData: { [key: string]: RoomData }) => {
-          const rooms: Room[] = [];
-          for (const key in roomData) {
-            // console.log("Key:", key," - ","Res[key]",res[key]);
-            // resData.hasOwnProperty(key) = iterate all enumerable properties, directly on the object (not on the prototype)
-            if (roomData.hasOwnProperty(key)) {
-              rooms.push({
-                id: roomData[key].id,
-                usermobile: roomData[key].usermobile,
-                nome_progetto: roomData[key].progettoselezionato,
-                nome_collaudatore: roomData[key].collaudatoreufficio,
-                data_inserimento: new Date(roomData[key].DataInsert),
-              });
-            }
-          }
-          return rooms;
-        }),
-        delay(1000),
-        // emette il nuovo array come valore del BehaviourSubject _rooms
-        tap((rooms: Room[]) => { this._rooms.next(rooms); })
       );
   }
 }

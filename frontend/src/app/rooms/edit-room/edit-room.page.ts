@@ -29,7 +29,7 @@ export class EditRoomPage implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    
+
     // FIXME: si rompe inserendo a mano l'indirizzo http://localhost:8100/rooms/edit
     this.activatedRouter.paramMap.subscribe(paramMap => {
       if (!paramMap.has('roomId')) {
@@ -37,46 +37,46 @@ export class EditRoomPage implements OnInit, OnDestroy {
         // this.router.navigate(['/rooms']);
         return;
       }
-      
+
       // mi sottoscrivo all'osservabile "getRoom()" che restituisce una singola room per ID
       this.isLoading = true;
       this.sub = this.roomsService.getRoom(paramMap.get('roomId'))
-      .subscribe(
-        (room: Room) => { 
-          this.room = room; 
-          this.form = new FormGroup({
-            usermobile: new FormControl(this.room.usermobile, {
-              updateOn: 'blur',
-              validators: [Validators.required, Validators.maxLength(12)]
+        .subscribe(
+          (room: Room) => {
+            this.room = room;
+            this.form = new FormGroup({
+              usermobile: new FormControl(this.room.usermobile, {
+                updateOn: 'blur',
+                validators: [Validators.required, Validators.maxLength(12)]
+              })
+            });
+            this.isLoading = false;
+          },
+          error => {
+            this.alertController.create({
+              header: 'Errore',
+              message: 'Impossibiile caricare la room',
+              buttons: [{
+                text: 'Annulla', handler: () => {
+                  this.navController.navigateBack(['/rooms']);
+                  // this.router.navigate(['/rooms']);
+                }
+              }]
+            }).then(alertEl => {
+              alertEl.present();
             })
-          });
-          this.isLoading = false;
-        }, 
-        error => {
-          this.alertController.create({
-            header: 'Errore', 
-            message:'Impossibiile caricare la room', 
-            buttons : [{
-              text: 'Annulla', handler: () => {
-                this.navController.navigateBack(['/rooms']);
-                // this.router.navigate(['/rooms']);
-              }
-            }]
-          }).then(alertEl => {
-            alertEl.present();
-          })
-        }
-      );
+          }
+        );
 
     });
   }
 
   ngOnDestroy() {
-    if(this.sub) { this.sub.unsubscribe; }
+    if (this.sub) { this.sub.unsubscribe; }
   }
-  
+
   createForm() {
-    
+
   }
 
   onCancel() {
@@ -91,13 +91,14 @@ export class EditRoomPage implements OnInit, OnDestroy {
   onUpdateRoom() {
     if (!this.form.valid) { return; }
     this.roomsService
-    .updateRoom(this.room.id, this.form.value.usermobile)
-    .subscribe(res => {
+      .updateRoom(this.room.id, this.form.value.usermobile)
+      .subscribe(res => {
+        console.log(res);
         this.presentToast('Room Aggiornata!');
         this.form.reset();
         this.navController.navigateBack(['/rooms']);
       }
-    );
+      );
   }
 
   async presentToast(message: string) {
