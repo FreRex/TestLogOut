@@ -100,3 +100,41 @@ exports.postCreateProgetti = (req, res, next) => {
     }
     //-----------------------------
 };
+exports.postCreateRoom = (req, res, next) => {
+    const db = require('../conf/db');
+    let queryInsert = [];
+    let messageErrore = '';
+    let key;
+    let valore = '';
+    for (let attribute in req.body) {
+        if (typeof (req.body[attribute]) !== 'undefined' && req.body[attribute] !== null && req.body[attribute] !== '') {
+            valore = "'" + req.body[attribute] + "'";
+            queryInsert.push(valore);
+        }
+        else {
+            {
+                messageErrore = ('Errore parametro ' + key + ': vuoto, "undefined" o "null"');
+            }
+        }
+    }
+    // Fine ciclo-esame json => operazione da compiere
+    if (messageErrore == '') {
+        let sql = "INSERT INTO multistreaming (cod, usermobile, progettoselezionato, collaudatoreufficio) VALUES (" + queryInsert + ")";
+        esecuzioneQuery(sql);
+    }
+    else {
+        res.send(messageErrore);
+    }
+    //-------------------   
+    function esecuzioneQuery(sqlInsert) {
+        db.query(sqlInsert, (err, rows, fields) => {
+            if (err) {
+                res.send('Query error: ' + err.sqlMessage);
+            }
+            else {
+                res.send(rows);
+            }
+        });
+    }
+    //-----------------------------
+};
