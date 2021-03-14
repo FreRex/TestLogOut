@@ -2,6 +2,7 @@ import express from 'express';
 const controllerSelect = require('./ctrl/controllerSelect');
 const controllerUpdate = require('./ctrl/controllerUpdate');
 const controllerDelete = require('./ctrl/controllerDelete');
+const controllerCreate = require('./ctrl/controllerCreate');
 const router = express.Router();
 const cors = require('cors');
 
@@ -33,8 +34,9 @@ router.put('/ur/',controllerUpdate.putUpdateRoom);
 router.put('/uu/',controllerUpdate.putUpdateUtenti);
 router.put('/up/',controllerUpdate.putUpdateProgetti);
 
-//Indirizzamento adAPI di eliminazione (DELETE)
-router.delete('/d/',controllerDelete.delete);
+//Indirizzamento ad API di creazione (POST)
+router.post('/cu/',controllerCreate.postCreateUtenti);
+router.post('/cp/',controllerCreate.postCreateProgetti);
 
 
 module.exports = router;
