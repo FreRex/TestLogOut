@@ -25,6 +25,24 @@
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
 
+
+/*
+FONT
+*/
+
+@font-face {
+  font-family: 'Varela';    //valore da chiamare nel CSS
+  src: url('../src/assets/fonts/Varela-Regular.ttf');
+}
+@font-face {
+  font-family: 'Courier';    //valore da chiamare nel CSS
+  src: url('../src/assets/fonts/CourierPrime-Regular.ttf');
+}
+@font-face {
+  font-family: 'Montserrat';    //valore da chiamare nel CSS
+  src: url('../src/assets/fonts/Montserrat-Regular.ttf');
+}
+
 /*
 *  Applica uno stile globale alla toolbar
 */
@@ -57,4 +75,10 @@ ion-toolbar {
   border-radius: 5px;
 }
 
+*{
+  font-family: Montserrat !important;
+}
+ion-label{
+  font-family: Montserrat !important;
+}
 
