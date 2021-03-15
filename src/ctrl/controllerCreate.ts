@@ -18,9 +18,9 @@ exports.postCreateUtenti = (req: any, res: any, next: any) => {
             username = req.body.username;
             if(typeof(req.body.password) !== 'undefined' && req.body.password !== null && req.body.password !== ''){
                 password = req.body.password;
-                if(typeof(req.body.autorizzazioni) !== 'undefined' && req.body.autorizzazioni !== null && req.body.autorizzazioni !== ''){
+                if(typeof(req.body.autorizzazioni) !== 'undefined' && req.body.autorizzazioni !== null && req.body.autorizzazioni !== '' && typeof(req.body.autorizzazioni) === 'number'){
                     autorizzazioni = req.body.autorizzazioni;
-                    sql = "INSERT INTO utenti (collaudatoreufficio, username, password, autorizzazioni) VALUES ('" + collaudatoreufficio +"', '" + username +"', '" + password + "', " +autorizzazioni + ")";
+                    sql = "INSERT INTO utenti (collaudatoreufficio, username, password, autorizzazioni) VALUES (?,?,?,?)";
                     esecuzioneQuery(sql);
                 }
                 else
@@ -40,7 +40,7 @@ exports.postCreateUtenti = (req: any, res: any, next: any) => {
     //-------------------   
     function esecuzioneQuery(sqlInsert: any){        
         
-        db.query(sqlInsert, (err: any, rows: any, fields: any) => {
+        db.query(sqlInsert, [collaudatoreufficio,username,password,autorizzazioni], (err: any, rows: any, fields: any) => {
             if(err){
                 res.send('Query error: ' + err.sqlMessage);
             }else{           
@@ -69,7 +69,7 @@ exports.postCreateProgetti = (req: any, res: any, next: any) => {
             }
             else
             { 
-               { messageErrore = ('Errore parametro ' + key + ': vuoto, "undefined", non "number" o "null"');} 
+               { messageErrore = ('Errore parametro ' + attribute + ': vuoto, "undefined", non "number" o "null"');} 
             }     
 
         }
@@ -77,12 +77,11 @@ exports.postCreateProgetti = (req: any, res: any, next: any) => {
         {
             
             if(typeof(req.body[attribute]) !== 'undefined' && req.body[attribute] !== null && req.body[attribute] !== ''){
-                valore = "'" + req.body[attribute] + "'";
-                queryInsert.push(valore);               
+                queryInsert.push(req.body[attribute]);                
             }
             else
             { 
-                { messageErrore = ('Errore parametro ' + key + ': vuoto, "undefined" o "null"');} 
+                { messageErrore = ('Errore parametro ' + attribute + ': vuoto, "undefined" o "null"');} 
             }
 
         } 
@@ -91,7 +90,7 @@ exports.postCreateProgetti = (req: any, res: any, next: any) => {
     // Fine ciclo-esame json => operazione da compiere
     if(messageErrore==''){
         
-        let sql: any = "INSERT INTO rappre_prog_gisfo (idutente, pk_proj, nome, nodi_fisici, nodi_ottici, tratte, conn_edif_opta, long_centro_map, lat_centro_map) VALUES (" + queryInsert + ")";             
+        let sql: any = "INSERT INTO rappre_prog_gisfo (idutente, pk_proj, nome, nodi_fisici, nodi_ottici, tratte, conn_edif_opta, long_centro_map, lat_centro_map) VALUES (?,?,?,?,?,?,?,?,?)";             
        
         esecuzioneQuery(sql);     
 
@@ -104,7 +103,7 @@ exports.postCreateProgetti = (req: any, res: any, next: any) => {
     //-------------------   
     function esecuzioneQuery(sqlInsert: any){        
         
-        db.query(sqlInsert, (err: any, rows: any, fields: any) => {
+        db.query(sqlInsert, queryInsert, (err: any, rows: any, fields: any) => {
             if(err){
                 res.send('Query error: ' + err.sqlMessage);
             }else{           
@@ -125,23 +124,23 @@ exports.postCreateRoom = (req: any, res: any, next: any) => {
     let key: any;
     let valore: any = '';
    
-    for(let attribute in req.body){        
-            
-        if(typeof(req.body[attribute]) !== 'undefined' && req.body[attribute] !== null && req.body[attribute] !== ''){
-            valore = "'" + req.body[attribute] + "'";
-            queryInsert.push(valore);               
-        }
-        else
-        { 
-           { messageErrore = ('Errore parametro ' + key + ': vuoto, "undefined" o "null"');} 
-        }
-       
+    for(let attribute in req.body){
+        
+                   
+            if(typeof(req.body[attribute]) !== 'undefined' && req.body[attribute] !== null && req.body[attribute] !== ''){                
+                queryInsert.push(req.body[attribute]);               
+            }
+            else
+            { 
+                { messageErrore = ('Errore parametro ' + attribute + ': vuoto, "undefined" o "null"');} 
+            }
+
     }
 
     // Fine ciclo-esame json => operazione da compiere
     if(messageErrore==''){
         
-        let sql: any = "INSERT INTO multistreaming (cod, usermobile, progettoselezionato, collaudatoreufficio) VALUES (" + queryInsert + ")";             
+        let sql: any = "INSERT INTO multistreaming (usermobile, progettoselezionato) VALUES (?,?)";             
        
         esecuzioneQuery(sql);     
 
@@ -154,7 +153,7 @@ exports.postCreateRoom = (req: any, res: any, next: any) => {
     //-------------------   
     function esecuzioneQuery(sqlInsert: any){        
         
-        db.query(sqlInsert, (err: any, rows: any, fields: any) => {
+        db.query(sqlInsert, queryInsert, (err: any, rows: any, fields: any) => {
             if(err){
                 res.send('Query error: ' + err.sqlMessage);
             }else{           

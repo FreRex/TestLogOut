@@ -27,8 +27,8 @@ exports.putUpdateRoom = (req, res, next) => {
     //-------------------   
     function esecuzioneQuery(usermobile, id) {
         let sql;
-        sql = "UPDATE multistreaming SET usermobile = '" + usermobile + "' WHERE id=" + id;
-        db.query(sql, (err, rows, fields) => {
+        sql = "UPDATE multistreaming SET usermobile = ? WHERE id= ?";
+        db.query(sql, [usermobile, id], (err, rows, fields) => {
             if (err) {
                 res.send('Query error: ' + err.sqlMessage);
             }

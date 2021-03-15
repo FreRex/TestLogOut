@@ -4,16 +4,16 @@ exports.delete = (req: any, res: any, next: any) => {
     
     let sql: any = '';
     let id: Number;
-    let table: any; 
+    let tableDelete: any; 
     
     //Controllo parametri e creazione query   
     if(typeof(req.body.id) !== 'undefined' && req.body.id !== null && typeof(req.body.id)==='number' && req.body.id !== ''){
         id = req.body.id; 
 
         //determina tabella da lavorare e genera query
-        if(typeof(req.body.table) !== 'undefined' && req.body.table !== null && req.body.table !== ''){
-            table = req.body.table;            
-            sql = "DELETE FROM " + table + " WHERE id = " + id;
+        if(typeof(req.body.tableDelete) !== 'undefined' && req.body.tableDelete !== null && req.body.tableDelete !== ''){
+            tableDelete = req.body.tableDelete;            
+            sql = "DELETE FROM " + tableDelete + " WHERE id = ?";
         }
         
         esecuzioneQuery(sql);
@@ -28,7 +28,7 @@ exports.delete = (req: any, res: any, next: any) => {
     //-------------------   
     function esecuzioneQuery(sqlDelete: any){        
         
-        db.query(sqlDelete, (err: any, rows: any, fields: any) => {
+        db.query(sqlDelete, [id], (err: any, rows: any, fields: any) => {
             if(err){
                 res.send('Query error: ' + err.sqlMessage);
             }else{           
