@@ -1,6 +1,7 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { LoadingController, NavController, ToastController } from '@ionic/angular';
+import { AlertController, LoadingController, NavController, ToastController } from '@ionic/angular';
 import { AuthService } from 'src/app/auth/auth.service';
 import { RoomService } from '../room.service';
 
@@ -19,6 +20,7 @@ export class NewRoomPage implements OnInit {
     private roomsService: RoomService,
     private authService: AuthService,
     private loadingCtrl: LoadingController,
+    private alertController: AlertController,
     private toastController: ToastController
   ) { }
 
@@ -50,11 +52,28 @@ export class NewRoomPage implements OnInit {
         this.form.value.usermobile,
         this.form.value.nome_progetto,
         this.form.value.nome_collaudatore)
-      .subscribe(res => {
+      .subscribe(
+        res => {
         this.presentToast();
         this.form.reset();
         this.navController.navigateBack(['/rooms']);
-      });
+      },
+      (err: HttpErrorResponse) => {
+        console.log("Error:",err.error['text']);
+        this.createErrorAlert(err.error['text']);
+      }
+      );
+  }
+
+  async createErrorAlert(error: string) {
+    const alert = await this.alertController.create({
+      header: "Errore:",
+      message: error,
+      buttons: [{ text: 'Annulla', role: 'cancel' },]
+    });
+    // FIX: si può fare in entrambi i modi, qual'è il più giusto?
+    // .then(alertEl => { alertEl.present(); });
+    alert.present();
   }
 
   async presentToast() {

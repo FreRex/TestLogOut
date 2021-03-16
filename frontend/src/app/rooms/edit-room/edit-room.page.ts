@@ -1,9 +1,9 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { AlertController, NavController, ToastController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
-import { AuthService } from 'src/app/auth/auth.service';
 import { Room, RoomService } from '../room.service';
 
 @Component({
@@ -25,12 +25,9 @@ export class EditRoomPage implements OnInit, OnDestroy {
     private roomsService: RoomService,
     private alertController: AlertController,
     private toastController: ToastController,
-    private router: Router,
   ) { }
 
   ngOnInit() {
-
-    // FIXME: si rompe inserendo a mano l'indirizzo http://localhost:8100/rooms/edit
     this.activatedRouter.paramMap.subscribe(paramMap => {
       if (!paramMap.has('roomId')) {
         this.navController.navigateBack(['/rooms']);
@@ -52,31 +49,13 @@ export class EditRoomPage implements OnInit, OnDestroy {
             });
             this.isLoading = false;
           },
-          error => {
-            this.alertController.create({
-              header: 'Errore',
-              message: 'Impossibiile caricare la room',
-              buttons: [{
-                text: 'Annulla', handler: () => {
-                  this.navController.navigateBack(['/rooms']);
-                  // this.router.navigate(['/rooms']);
-                }
-              }]
-            }).then(alertEl => {
-              alertEl.present();
-            })
-          }
+          error => { this.createErrorAlert('Impossibile caricare la room'); }
         );
-
     });
   }
 
   ngOnDestroy() {
     if (this.sub) { this.sub.unsubscribe; }
-  }
-
-  createForm() {
-
   }
 
   onCancel() {
@@ -92,13 +71,29 @@ export class EditRoomPage implements OnInit, OnDestroy {
     if (!this.form.valid) { return; }
     this.roomsService
       .updateRoom(this.room.id, this.form.value.usermobile)
-      .subscribe(res => {
-        console.log(res);
-        this.presentToast('Room Aggiornata!');
-        this.form.reset();
-        this.navController.navigateBack(['/rooms']);
-      }
+      .subscribe(
+        res => {
+          console.log("Response",res);
+          this.presentToast('Room Aggiornata!');
+          this.form.reset();
+          this.navController.navigateBack(['/rooms']);
+        },
+        (err: HttpErrorResponse) => {
+          console.log("Error:",err.message);
+          this.createErrorAlert(err.message);
+        }
       );
+  }
+
+  async createErrorAlert(error: string) {
+    const alert = await this.alertController.create({
+      header: "Errore:",
+      message: error,
+      buttons: [{ text: 'Annulla', handler: () => this.navController.navigateBack(['/rooms']) }]
+    });
+    // FIX: si può fare in entrambi i modi, qual'è il più giusto?
+    // .then(alertEl => { alertEl.present(); });
+    alert.present();
   }
 
   async presentToast(message: string) {
@@ -106,7 +101,9 @@ export class EditRoomPage implements OnInit, OnDestroy {
       message: message,
       color: 'secondary',
       duration: 2000
-    });
+    })
+    // FIX: si può fare in entrambi i modi, qual'è il più giusto?
+    // .then(toastEl => toastEl.present());
     toast.present();
   }
 
@@ -124,6 +121,7 @@ export class EditRoomPage implements OnInit, OnDestroy {
             text: 'Elimina',
             handler: () => {
               this.roomsService.deleteRoom(this.room.id).subscribe(res => {
+                console.log("Response", res);
                 this.presentToast('Room Eliminata');
                 this.navController.navigateBack(['/rooms']);
               });
