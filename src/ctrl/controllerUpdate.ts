@@ -29,8 +29,8 @@ exports.putUpdateRoom = (req: any, res: any, next: any) => {
     //-------------------   
     function esecuzioneQuery(usermobile: any, id: Number){
         let sql;
-        sql="UPDATE multistreaming SET usermobile = '" + usermobile + "' WHERE id=" +id;
-        db.query(sql, (err: any, rows: any, fields: any) => {
+        sql="UPDATE multistreaming SET usermobile = ? WHERE id= ?";
+        db.query(sql, [usermobile, id], (err: any, rows: any, fields: any) => {
             if(err){
                 res.send('Query error: ' + err.sqlMessage);
             }else{           
@@ -46,7 +46,8 @@ exports.putUpdateUtenti = (req: any, res: any, next: any) => {
     const db = require('../conf/db');
 
     let sql: any = ''; 
-    let id: Number;   
+    let id: Number;    
+    let parametri: any = [];  
 
     //Parametri modificabili
     let collaudatoreufficio: any;
@@ -59,33 +60,39 @@ exports.putUpdateUtenti = (req: any, res: any, next: any) => {
         // collaudatoreufficio      
         if(typeof(req.body.collaudatoreufficio) !== 'undefined' && req.body.collaudatoreufficio !== null && req.body.collaudatoreufficio !== ''){
             collaudatoreufficio = req.body.collaudatoreufficio;
-            sql = sql + "collaudatoreufficio = '" + collaudatoreufficio + "' ";
+            sql = sql + "collaudatoreufficio = ? ";
+            parametri.push(collaudatoreufficio); 
         }
         // username
         if(typeof(req.body.username) !== 'undefined' && req.body.username !== null && req.body.username !== ''){
             username = req.body.username;
+            parametri.push(username);
+            
             if(sql===''){
-                sql = sql + "username = '" + username + "' ";
+                sql = sql + "username = ? ";
             }
-            else
-            {
-                sql = sql + ", username = '" + username + "' "; 
+            else            {
+                sql = sql + ", username = ? "; 
             }
+            
         }
         // password
         if(typeof(req.body.password) !== 'undefined' && req.body.password !== null && req.body.password !== ''){
             password = req.body.password;
+            parametri.push(password);
+            
             if(sql===''){
-                sql = sql + "password = '" + password + "' ";
+                sql = sql + "password = ? ";
             }
             else
              {
-                sql = sql + ", password = '" + password + "' ";
+                sql = sql + ", password = ? ";
              }
+            
         }
-       
-        sql = "UPDATE utenti SET " + sql + " WHERE id = " + id;
         
+        parametri.push(id);
+        sql = "UPDATE utenti SET " + sql + " WHERE id = ? ";       
         esecuzioneQuery(sql);
 
     }
@@ -98,7 +105,7 @@ exports.putUpdateUtenti = (req: any, res: any, next: any) => {
     //-------------------   
     function esecuzioneQuery(sqlUpdate: any){        
         
-        db.query(sqlUpdate, (err: any, rows: any, fields: any) => {
+        db.query(sqlUpdate, parametri, (err: any, rows: any, fields: any) => {
             if(err){
                 res.send('Query error: ' + err.sqlMessage);
             }else{           
@@ -115,6 +122,7 @@ exports.putUpdateProgetti = (req: any, res: any, next: any) => {
     
     let sql: any = '';
     let id: Number;   
+    let parametri: any = []; 
 
     //Parametri modificabili
     let idutente: Number;
@@ -129,55 +137,59 @@ exports.putUpdateProgetti = (req: any, res: any, next: any) => {
         // idutente     
         if(typeof(req.body.idutente) !== 'undefined' && req.body.idutente !== null && req.body.idutente !== ''){
             idutente = req.body.idutente;
-            sql = sql + "idutente = '" + idutente + "' ";
+            parametri.push(idutente); 
+            sql = sql + "idutente = ?";
         }
         // pk_proj
         if(typeof(req.body.pk_proj) !== 'undefined' && req.body.pk_proj !== null && req.body.pk_proj !== ''){
             pk_proj = req.body.pk_proj;
+            parametri.push(pk_proj);
             if(sql===''){
-                sql = sql + "pk_proj = '" + pk_proj + "' ";
+                sql = sql + "pk_proj = ?";
             }
             else
             {
-                sql = sql + ", pk_proj = '" + pk_proj + "' "; 
+                sql = sql + ", pk_proj = ?"; 
             }
         } 
         // nome
         if(typeof(req.body.nome) !== 'undefined' && req.body.nome !== null && req.body.nome !== ''){
             nome = req.body.nome;
+            parametri.push(nome);
             if(sql===''){
-                sql = sql + "nome = '" + nome + "' ";
+                sql = sql + "nome = ?";
             }
             else
             {
-                sql = sql + ", nome = '" + nome + "' "; 
+                sql = sql + ", nome = ?"; 
             }
         }    
         // long_centro_map
         if(typeof(req.body.long_centro_map) !== 'undefined' && req.body.long_centro_map !== null && req.body.long_centro_map !== ''){
             long_centro_map = req.body.long_centro_map;
+            parametri.push(long_centro_map);
             if(sql===''){
-                sql = sql + "long_centro_map = '" + long_centro_map + "' ";
+                sql = sql + "long_centro_map = ?";
             }
             else
             {
-                sql = sql + ", long_centro_map = '" + long_centro_map + "' "; 
+                sql = sql + ", long_centro_map = ?"; 
             }
         }
         // lat_centro_map
         if(typeof(req.body.lat_centro_map) !== 'undefined' && req.body.lat_centro_map !== null && req.body.lat_centro_map !== ''){
             lat_centro_map = req.body.lat_centro_map;
+            parametri.push(lat_centro_map);
             if(sql===''){
-                sql = sql + "lat_centro_map= '" + lat_centro_map + "' ";
+                sql = sql + " lat_centro_map= ?";
             }
             else
             {
-                sql = sql + ", lat_centro_map = '" + lat_centro_map + "' "; 
+                sql = sql + ", lat_centro_map = ?"; 
             }
         }    
-       
-        sql = "UPDATE rappre_prog_gisfo SET " + sql + " WHERE id = " + id;
-        
+        parametri.push(id);
+        sql = "UPDATE rappre_prog_gisfo SET " + sql + " WHERE id = ? ";
         esecuzioneQuery(sql);
 
     }
@@ -190,7 +202,7 @@ exports.putUpdateProgetti = (req: any, res: any, next: any) => {
     //-------------------   
     function esecuzioneQuery(sqlUpdate: any){        
         
-        db.query(sqlUpdate, (err: any, rows: any, fields: any) => {
+        db.query(sqlUpdate, parametri, (err: any, rows: any, fields: any) => {
             if(err){
                 res.send('Query error: ' + err.sqlMessage);
             }else{           

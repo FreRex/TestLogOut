@@ -29,7 +29,7 @@ router.get('/s/:table/:id/', controllerSelect.getSelect);
 router.put('/ur/', controllerUpdate.putUpdateRoom);
 router.put('/uu/', controllerUpdate.putUpdateUtenti);
 router.put('/up/', controllerUpdate.putUpdateProgetti);
-//Indirizzamento ad API di modifica (UPDATE)
+//Indirizzamento ad API di modifica (DELETE)
 router.post('/d/', controllerDelete.delete);
 //Indirizzamento ad API di creazione (POST)
 router.post('/cu/', controllerCreate.postCreateUtenti);

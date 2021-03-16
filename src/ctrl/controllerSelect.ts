@@ -14,11 +14,11 @@ exports.getSelect = (req: any, res: any, next: any) => {
     if (typeof(req.params.id) !== 'undefined') {
         id = req.params.id;
         if(table=='room'){
-            idWh = "multistreaming.id = "+ id;
+            idWh = "multistreaming.id = ?";
         }
         else
         {
-            idWh = "id = "+ id;
+            idWh = "id = ?";
         }        
     }
     else
@@ -64,7 +64,7 @@ exports.getSelect = (req: any, res: any, next: any) => {
     }else{
         
         //Parametro valido presente => query 'con' WHERE
-        db.query(sql + " WHERE " + idWh + " ORDER BY id DESC", (err: any, rows: any, fields: any) => {
+        db.query(sql + " WHERE " + idWh + " ORDER BY id DESC", [id], (err: any, rows: any, fields: any) => {
             if(err){
                 res.send('Query error: ' + err.sqlMessage);
             }else{                
