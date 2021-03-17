@@ -95,21 +95,6 @@ export class RoomsPage implements OnInit, OnDestroy {
     this.router.navigate(['/', 'room', 'new']);
   }
 
-  /** Apre il modale di MODIFICA ROOM */
-  onEditRoomModal() {
-    this.modalController
-      .create({
-        component: EditRoomModalComponent,
-      })
-      .then(modalEl => {
-        modalEl.present();
-        return modalEl.onDidDismiss();
-      })
-      .then(resultData => {
-        console.log(resultData.data, resultData.role);
-      });
-  }
-
   toggleMenu() {
     const splitPane = document.querySelector('ion-split-pane')
     if (window.matchMedia(SIZE_TO_MEDIA[splitPane.when] || splitPane.when).matches) {

@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, delay, map, switchMap, take, tap } from 'rxjs/operators';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
@@ -64,13 +64,23 @@ export class RoomService {
     return this._rooms.asObservable();            // <-- "rooms" NON può emettere eventi, ma può essere sottoscritto, perchè è un Observable
   }
 
+  /** SELECT singola room */
+  getRoom(roomId: number): Observable<Room> {
+    return this.rooms.pipe(take(1),
+      // <-- applico una funzione di filtro all'array di room che ho preso con take(1)
+      map((rooms: Room[]) => {
+        // <-- ritorna vero quando trova il progeto giusto
+        return { ...rooms.find(room => room.id === roomId) };
+      }));
+  }
+
   /** SELECT rooms */
   fetchRooms(): Observable<Room[]> {
     return this.http
       // WHY : { [key: string]: RoomData } al posto di RoomData[] ???
       .get<{ [key: string]: RoomData }>(`${environment.apiUrl}/s/room/`)
       .pipe(
-        // Rimappa i dati che arrivano dal server sull'interfaccia della Room
+        // <-- Rimappa i dati che arrivano dal server sull'interfaccia della Room
         map((roomData: { [key: string]: RoomData }) => {
           const rooms: Room[] = [];
           for (const key in roomData) {
@@ -89,13 +99,13 @@ export class RoomService {
           return rooms;
         }),
         delay(1000),
-        // emette il nuovo array come valore del BehaviourSubject _rooms
+        // <-- emette il nuovo array come valore del BehaviourSubject _rooms
         tap((rooms: Room[]) => { this._rooms.next(rooms); })
       );
   }
 
   /** SELECT singola room */
-  getRoom(roomId: string): Observable<Room> {
+  selectRoom(roomId: string): Observable<Room> {
     return this.http.get<RoomData>(`${environment.apiUrl}/s/room/${roomId}`)
       .pipe(
         map(roomData => {
@@ -108,10 +118,6 @@ export class RoomService {
           }
         })
       );
-    // return this.rooms.pipe(take(1),
-    //   map((rooms: Room[]) => {                              // <-- applico una funzione di filtro all'array di room che ho preso con take(1)
-    //     return { ...rooms.find(room => room.id === roomId) };   // <-- ritorna vero quando trova il progeto giusto
-    //   }));
   }
 
   /** CREATE room e aggiungila alla lista */
@@ -126,7 +132,6 @@ export class RoomService {
       data_inserimento: new Date()
     };
     let generatedId: string;
-
     // this.rooms è un OSSERVABILE
     // take(1) = dopo la prima emissione dell'Osservabile togli la sottoscrizione
     // tap() = applico una funzione all'array emesso dall'osservabile (solo 1 perchè uso take(1)) senza sottoscrivermi

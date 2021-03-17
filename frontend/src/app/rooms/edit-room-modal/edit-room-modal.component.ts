@@ -1,5 +1,6 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
 import { AlertController, ModalController, ToastController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { Room, RoomService } from '../room.service';
@@ -11,11 +12,11 @@ import { Room, RoomService } from '../room.service';
 })
 export class EditRoomModalComponent implements OnInit, OnDestroy {
   private sub: Subscription;
-
+  form: FormGroup;
   room: Room;
-  roomId: string;
-  isEditMode: boolean;
-
+  @Input() roomId: number;
+  isLoading = false;
+  
   constructor(
     private modalController: ModalController,
     private roomsService: RoomService,
@@ -24,14 +25,27 @@ export class EditRoomModalComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
+    console.log(this.roomId);
+
     // mi sottoscrivo all'osservabile "getRoom()" che restituisce una singola room per ID
+    // this.isLoading = true;
     this.sub = this.roomsService.getRoom(this.roomId).subscribe(
-      (room: Room) => { this.room = room; }
+      (room: Room) => {
+        this.room = room;
+        this.form = new FormGroup({
+          usermobile: new FormControl(this.room.usermobile, {
+            updateOn: 'blur',
+            validators: [Validators.required, Validators.maxLength(12)]
+          })
+        });
+        // this.isLoading = false;
+      },
+      error => { this.createErrorAlert('Impossibile caricare la room'); }
     );
   }
 
   ngOnDestroy() {
-    if(this.sub) { this.sub.unsubscribe; }
+    if (this.sub) { this.sub.unsubscribe; }
   }
 
   onCancel() {
@@ -43,23 +57,33 @@ export class EditRoomModalComponent implements OnInit, OnDestroy {
     console.log("Foto scaricate");
   }
 
-  onSubmit(form: NgForm) {
-    if (!form.valid) {
-      return;
-    }
+  onUpdateRoom() {
+    if (!this.form.valid) { return; }
+    this.roomsService
+      .updateRoom(this.room.id, this.form.value.usermobile)
+      .subscribe(
+        res => {
+          console.log("Response",res);
+          this.presentToast('Room Aggiornata!');
+          this.form.reset();
+          this.modalController.dismiss({ message: 'room saved' }, 'save');
+        },
+        (err: HttpErrorResponse) => {
+          console.log("Error:",err.message);
+          this.createErrorAlert(err.message);
+        }
+      );
+  }
 
-    this.room.nome_progetto = form.value.progetto;
-    this.room.usermobile = form.value.usermobile;
-    this.room.nome_collaudatore = form.value.collaudatore;
-
-    if (this.isEditMode) {
-      // this.roomsService.saveRoom(this.room);
-      this.modalController.dismiss({ message: 'room saved' }, 'save');
-    } else {
-      // this.roomsService.createRoom(this.room);
-      this.modalController.dismiss({ message: 'room created' }, 'create');
-    }
-    console.log("Progetto salvato");
+  async createErrorAlert(error: string) {
+    const alert = await this.alertController.create({
+      header: "Errore:",
+      message: error,
+      buttons: [{ text: 'Annulla', role: 'cancel' }]
+    });
+    // FIX: si può fare in entrambi i modi, qual'è il più giusto?
+    // .then(alertEl => { alertEl.present(); });
+    alert.present();
   }
 
   async presentToast(message: string) {
@@ -67,7 +91,9 @@ export class EditRoomModalComponent implements OnInit, OnDestroy {
       message: message,
       color: 'secondary',
       duration: 2000
-    });
+    })
+    // FIX: si può fare in entrambi i modi, qual'è il più giusto?
+    // .then(toastEl => toastEl.present());
     toast.present();
   }
 

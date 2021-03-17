@@ -13,7 +13,6 @@ import { Room, RoomService } from '../room.service';
 })
 export class EditRoomPage implements OnInit, OnDestroy {
   private sub: Subscription;
-
   form: FormGroup;
   room: Room;
   roomId: string;
@@ -37,7 +36,7 @@ export class EditRoomPage implements OnInit, OnDestroy {
 
       // mi sottoscrivo all'osservabile "getRoom()" che restituisce una singola room per ID
       this.isLoading = true;
-      this.sub = this.roomsService.getRoom(paramMap.get('roomId'))
+      this.sub = this.roomsService.selectRoom(paramMap.get('roomId'))
         .subscribe(
           (room: Room) => {
             this.room = room;
