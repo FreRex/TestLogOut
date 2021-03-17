@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { IonSearchbar, ModalController } from '@ionic/angular';
 import { GisfoSyncModalComponent } from './gisfo-sync-modal/gisfo-sync-modal.component';
 import { CreateUserModalComponent } from './create-user-modal/create-user-modal.component';
@@ -14,18 +14,18 @@ import {
   switchMap,
 } from 'rxjs/operators';
 
+
 @Component({
   selector: 'app-backoffice',
   templateUrl: './backoffice.page.html',
   styleUrls: ['./backoffice.page.scss'],
 })
-export class BackofficePage implements AfterViewInit {
+export class BackofficePage implements OnInit {
   @ViewChild('searchInput', { static: true }) input: IonSearchbar;
 
   projects$: Observable<Project[]>;
   users$: Observable<User[]>;
   showProjects: boolean = true;
-
 
   constructor(
     private projService: StorageDataService,
@@ -33,10 +33,18 @@ export class BackofficePage implements AfterViewInit {
     private modalCtrl: ModalController
   ) {}
 
-  ngAfterViewInit(): void {
+  ngOnInit(): void {
     this.filterProjects();
     this.filterUsers();
   }
+
+  onDelete() {
+
+    console.log("cancellato");
+
+  }
+
+  /* Filtro Progetti/Utenti per barra ricerca */
 
   filterProjects(): void {
     this.projects$ = this.input.ionInput.pipe(
@@ -74,10 +82,6 @@ export class BackofficePage implements AfterViewInit {
     );
   }
 
-  onDelete() {
-    console.log('progetto eliminato');
-  }
-
   /* *********************** MODALS *********************** */
 
   openGisfoUpload() {
@@ -89,9 +93,6 @@ export class BackofficePage implements AfterViewInit {
         modalEl.present();
         return modalEl.onDidDismiss();
       })
-      .then((resultData) => {
-        console.log(resultData.data, resultData.role);
-      });
   }
 
   openUploadShp() {
@@ -103,9 +104,6 @@ export class BackofficePage implements AfterViewInit {
         modalEl.present();
         return modalEl.onDidDismiss();
       })
-      .then((resultData) => {
-        console.log(resultData.data, resultData.role);
-      });
   }
 
   openCreateUser() {
@@ -117,9 +115,6 @@ export class BackofficePage implements AfterViewInit {
         modalEl.present();
         return modalEl.onDidDismiss();
       })
-      .then((resultData) => {
-        console.log(resultData.data, resultData.role);
-      });
   }
   /* *************************END MODALS*********************************** */
   showProjectsClick() {

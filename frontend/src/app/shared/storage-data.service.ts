@@ -12,12 +12,12 @@ export interface User{
 }
 
 export interface Project{
-  id: number;
-  idutente: number;
+  collaudatoreufficio: string;
   pk_proj: number;
   nome: string;
   long_centro_map: string;
   lat_centro_map: string;
+  id?: number;
   nodi_fisici?: string;
   nodi_ottici?: string;
   tratte?: string;
