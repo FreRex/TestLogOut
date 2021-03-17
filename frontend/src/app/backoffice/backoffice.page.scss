@@ -7,10 +7,9 @@
 }
 
 .card-inside{
-  max-height: 40vh;
+  max-height: 55vh;
   overflow: hidden;
   overflow-y: auto;
-
 }
 
 .shp{
@@ -25,5 +24,13 @@
   box-shadow: none;
   justify-content: center;
   align-items: center;
+}
+.secondary-data{
+  font-size: 0.5rem;
+  word-wrap: break-word;
+}
+.primary-data{
+  font-size: 0.7rem;
+  word-wrap: break-word;
 }
 

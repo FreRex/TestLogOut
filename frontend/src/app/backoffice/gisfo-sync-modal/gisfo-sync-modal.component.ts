@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { User } from '../../shared/storage-data.service';
+import { Observable, Subscription } from 'rxjs';
+import { StorageDataService, User } from '../../shared/storage-data.service';
 
 @Component({
   selector: 'app-gisfo-sync-modal',
@@ -9,20 +10,22 @@ import { User } from '../../shared/storage-data.service';
 })
 export class GisfoSyncModalComponent implements OnInit {
 
+  private sub : Subscription;
   users:User[];
 
   constructor(
-
+    private userService: StorageDataService,
     private modalCtrl: ModalController
   ) { }
 
-  ngOnInit() {}
-
-  showUsersList(){
-
-      users => this.users = users
-
+  ngOnInit() {
+    this.sub = this.userService.users$.subscribe(
+      (users:User[]) => {
+        this.users = users;
+      }
+    )
   }
+
 
   closeModal(){
     this.modalCtrl.dismiss(GisfoSyncModalComponent);
