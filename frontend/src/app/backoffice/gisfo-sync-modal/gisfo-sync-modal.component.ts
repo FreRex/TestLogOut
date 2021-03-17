@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { Observable, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { StorageDataService, User } from '../../shared/storage-data.service';
 
 @Component({
@@ -8,7 +8,7 @@ import { StorageDataService, User } from '../../shared/storage-data.service';
   templateUrl: './gisfo-sync-modal.component.html',
   styleUrls: ['./gisfo-sync-modal.component.scss'],
 })
-export class GisfoSyncModalComponent implements OnInit {
+export class GisfoSyncModalComponent implements OnInit, OnDestroy {
 
   private sub : Subscription;
   users:User[];
@@ -24,6 +24,12 @@ export class GisfoSyncModalComponent implements OnInit {
         this.users = users;
       }
     )
+  }
+
+  ngOnDestroy(){
+    if(this.sub){
+      this.sub.unsubscribe();
+    }
   }
 
   closeModal(){

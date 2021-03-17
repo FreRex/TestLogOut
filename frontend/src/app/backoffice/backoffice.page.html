@@ -52,15 +52,15 @@
                         <ion-row>
                           <ion-text class="primary-data" color="primary">{{ proj.collaudatoreufficio }}</ion-text>
                         </ion-row>
+                        <a class="secondary-data" href="https://www.nperf.com/it/map/IT/-/230.TIM/signal/?ll={{ proj.lat_centro_map }}&lg={{ proj.long_centro_map }}&zoom=13" target="_blank">Copertura Rete Mobile</a>
                           <p class="secondary-data" color="primary"><b>PK:</b> {{ proj.pk_proj }}</p>
-                          <p class="secondary-data" color="primary"><b>Lat:</b> {{ proj.lat_centro_map }}</p>
-                          <p class="secondary-data" color="primary"><b>Long:</b> {{ proj.long_centro_map }}</p>
-                      </ion-col>
-                      <ion-col size-md="6" offset-md="1" class="ion-margin-vertical">
+                        </ion-col>
+                        <ion-col size-md="6" offset-md="1" class="ion-margin-vertical">
                           <p class="secondary-data" color="primary"><b>Nodi Ottici:</b> {{ proj.nodi_ottici }}</p>
                           <p class="secondary-data" color="primary"><b>Nodi Fisici:</b> {{ proj.nodi_fisici }}</p>
                           <p class="secondary-data" color="primary"><b>Tratte:</b> {{ proj.tratte }}</p>
                           <p class="secondary-data" color="primary"><b>Connessioni:</b> {{ proj.conn_edif_opta }}</p>
+                          <p class="secondary-data" color="primary"><b>Lat:</b> {{ proj.lat_centro_map }} <b>Long:</b> {{ proj.long_centro_map }}</p>
                       </ion-col>
                     </ion-row>
                   </ion-grid>

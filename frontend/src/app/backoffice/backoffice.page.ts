@@ -56,7 +56,9 @@ export class BackofficePage implements OnInit {
         this.projService.projects$.pipe(
           map((projects) =>
             projects.filter((proj) =>
-              proj.nome.toLowerCase().includes(search.toLowerCase())
+              proj.nome.toLowerCase().includes(search.toLowerCase()) ||
+              proj.collaudatoreufficio.toLowerCase().includes(search.toLowerCase()) ||
+              proj.pk_proj.toString().toLowerCase().includes(search.toLowerCase())
             )
           )
         )
@@ -74,7 +76,8 @@ export class BackofficePage implements OnInit {
         this.userService.users$.pipe(
           map((users) =>
             users.filter((user) =>
-              user.collaudatoreufficio.toLowerCase().includes(search.toLowerCase())
+              user.collaudatoreufficio.toLowerCase().includes(search.toLowerCase()) ||
+              user.id.toString().toLowerCase().includes(search.toLowerCase())
             )
           )
         )

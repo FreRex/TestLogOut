@@ -3,6 +3,9 @@ const controllerSelect = require('./ctrl/controllerSelect');
 const controllerUpdate = require('./ctrl/controllerUpdate');
 const controllerDelete = require('./ctrl/controllerDelete');
 const controllerCreate = require('./ctrl/controllerCreate');
+
+const controllerSelectTest = require('./ctrl/controllerSelectTest');
+
 const router = express.Router();
 const cors = require('cors');
 
@@ -28,6 +31,9 @@ router.use(function(req, res, next) {
 //Indirizzamento ad API di lettura (SELECT)
 router.get('/s/:table/', controllerSelect.getSelect);
 router.get('/s/:table/:id/', controllerSelect.getSelect);
+
+router.get('/stest/:table/', controllerSelectTest.getSelectTest);
+router.get('/stest/:table/:id/', controllerSelectTest.getSelectTest);
 
 //Indirizzamento ad API di modifica (UPDATE)
 router.put('/ur/',controllerUpdate.putUpdateRoom);

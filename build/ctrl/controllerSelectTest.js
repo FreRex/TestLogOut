@@ -1,5 +1,5 @@
 "use strict";
-exports.getSelect = (req, res, next) => {
+exports.getSelectTest = (req, res, next) => {
     const db = require('../conf/db');
     const validator = require('validator');
     let table = req.params.table;
