@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
-import { StorageDataService, User } from 'src/app/shared/storage-data.service';
+import { User, UserService } from '../../users/user.service';
 
 @Component({
   selector: 'app-upload-shp-modal',
@@ -14,7 +14,7 @@ export class UploadShpModalComponent implements OnInit {
   users:User[];
 
   constructor(
-    private userService: StorageDataService,
+    private userService: UserService,
     private modalCtrl: ModalController
   ) { }
 

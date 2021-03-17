@@ -29,7 +29,7 @@ export class RoomsPage implements OnInit, OnDestroy {
   ngOnInit() {    
     
     this.isLoading = true;
-    this.roomService.fetchRooms().subscribe(res => {
+    this.roomService.loadRooms().subscribe(res => {
       this.isLoading = false;
     });
 
@@ -49,7 +49,7 @@ export class RoomsPage implements OnInit, OnDestroy {
   }
 
   doRefresh(event) {
-    this.roomService.fetchRooms().subscribe(res => { event.target.complete(); });
+    this.roomService.loadRooms().subscribe(res => { event.target.complete(); });
   }
 
   /** Funzione che filtra i progetti in base al fitro impostato e all'input */

@@ -75,7 +75,7 @@ export class RoomService {
   }
 
   /** SELECT rooms */
-  fetchRooms(): Observable<Room[]> {
+  loadRooms(): Observable<Room[]> {
     return this.http
       // WHY : { [key: string]: RoomData } al posto di RoomData[] ???
       .get<{ [key: string]: RoomData }>(`${environment.apiUrl}/s/room/`)
@@ -139,7 +139,7 @@ export class RoomService {
       take(1),
       switchMap(rooms => {
         if (!rooms || rooms.length <= 0) {
-          return this.fetchRooms();
+          return this.loadRooms();
         } else {
           return of(rooms);
         }
@@ -188,7 +188,7 @@ export class RoomService {
       take(1),
       switchMap(rooms => {
         if (!rooms || rooms.length <= 0) {
-          return this.fetchRooms();
+          return this.loadRooms();
         } else {
           return of(rooms);
         }
@@ -224,7 +224,7 @@ export class RoomService {
       take(1),
       switchMap(rooms => {
         if (!rooms || rooms.length <= 0) {
-          return this.fetchRooms();
+          return this.loadRooms();
         } else {
           return of(rooms);
         }

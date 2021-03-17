@@ -7,7 +7,10 @@ import { StorageDataService } from './shared/storage-data.service';
   styleUrls: ['app.component.scss'],
 })
 export class AppComponent implements OnInit{
-  constructor(private store:StorageDataService) {}
+
+  constructor(
+    private store: StorageDataService,
+    ) {}
 
   ngOnInit(){
     this.store.init();
