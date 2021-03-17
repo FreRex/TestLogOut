@@ -1,7 +1,7 @@
 exports.getSelect = (req: any, res: any, next: any) => {  
     
     const db = require('../conf/db');
-    const validator = require('validator'); 
+    const validator = require('validator');       
     
     let table = req.params.table;
     let sql;
@@ -51,7 +51,7 @@ exports.getSelect = (req: any, res: any, next: any) => {
             db.query(sql, (err: any, rows: any, fields: any) => {
                 if(err){
                     res.send('Query error: ' + err.sqlMessage);
-                }else{                    
+                }else{                                       
                     res.json(rows);
                 }
             });

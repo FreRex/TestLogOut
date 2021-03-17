@@ -5,6 +5,7 @@ import fs from 'fs';
 
 
 const routes = require('./routes');
+ 
 const app = express();
 const port = 9083;
 
@@ -37,7 +38,9 @@ https.createServer({
     console.log(`https://www.collaudolive.com:${port}/s/utenti`);
 
     console.log(`-------------------- API UPDATE-----------------------------------`);    
-    console.log(`https://www.collaudolive.com:${port}/u/room/987/biqq2`);    
+    console.log(`https://www.collaudolive.com:${port}/ur/`);    
+    console.log(`https://www.collaudolive.com:${port}/up/`); 
+    console.log(`https://www.collaudolive.com:${port}/uu/`); 
 
     console.log(`-------------------- FRONTEND ------------------------------`);
     console.log(`https://www.collaudolive.com:${port}/auth`); 

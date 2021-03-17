@@ -4,10 +4,14 @@ const controllerUpdate = require('./ctrl/controllerUpdate');
 const controllerDelete = require('./ctrl/controllerDelete');
 const controllerCreate = require('./ctrl/controllerCreate');
 
-const controllerSelectTest = require('./ctrl/controllerSelectTest');
+const controllerToken = require('./ctrl/controllerToken');
+const mid = require('./middleware/mid'); 
+
 
 const router = express.Router();
 const cors = require('cors');
+
+
 
 
 router.use(function(req, res, next) {
@@ -27,13 +31,12 @@ router.use(function(req, res, next) {
     next();
 });
 
+//Token
+router.post('/token/', controllerToken.getToken);
 
 //Indirizzamento ad API di lettura (SELECT)
-router.get('/s/:table/', controllerSelect.getSelect);
+router.get('/s/:table/', [mid.checkAuth], controllerSelect.getSelect);
 router.get('/s/:table/:id/', controllerSelect.getSelect);
-
-router.get('/stest/:table/', controllerSelectTest.getSelectTest);
-router.get('/stest/:table/:id/', controllerSelectTest.getSelectTest);
 
 //Indirizzamento ad API di modifica (UPDATE)
 router.put('/ur/',controllerUpdate.putUpdateRoom);
