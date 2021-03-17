@@ -9,6 +9,17 @@
       <ion-row>
         <ion-col size-md="8" offset-md="2">
 
+          <ion-item>
+            <ion-label>
+              <h6>Collaudatore</h6>
+            </ion-label>
+            <ion-select interface="action-sheet">
+              <ion-select-option *ngFor="let user of users">
+                <h6>{{ user.collaudatoreufficio }}</h6>
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+
     <ion-item>
       <ion-label position="floating" class="ion-margin">
         <h6>Località</h6>

@@ -12,7 +12,7 @@
     <ion-label>
       <h6>Collaudatore</h6>
     </ion-label>
-    <ion-select interface="popover" (click)="showUsersList()">
+    <ion-select interface="action-sheet">
       <ion-select-option *ngFor="let user of users">
         <h6>{{ user.collaudatoreufficio }}</h6>
       </ion-select-option>
