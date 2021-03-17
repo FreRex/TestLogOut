@@ -27,13 +27,14 @@ export class RoomItemComponent implements OnInit {
   }
 
   /** Apre la pagina di MODIFICA ROOM */
-  onOpenEditPage(slidingItem: IonItemSliding){
+  onOpenEditRoomPage(slidingItem: IonItemSliding){
     slidingItem.close();
     this.router.navigate(['/', 'rooms', 'edit', this.roomItem.id]);
   }
 
   /** Apre il modale di MODIFICA ROOM */
-  onEditRoomModal() {
+  onOpenEditRoomModal(slidingItem: IonItemSliding) {
+    slidingItem.close();
     this.modalController
       .create({
         component: EditRoomModalComponent,

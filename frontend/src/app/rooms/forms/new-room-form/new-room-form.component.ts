@@ -1,35 +1,30 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { AlertController, LoadingController, NavController, ToastController } from '@ionic/angular';
+import { AlertController, ModalController, ToastController } from '@ionic/angular';
 import { AuthService } from 'src/app/auth/auth.service';
-import { RoomService } from '../room.service';
+import { RoomService } from '../../room.service';
 
 @Component({
-  selector: 'app-new-room',
-  templateUrl: './new-room.page.html',
-  styleUrls: ['./new-room.page.scss'],
+  selector: 'new-room-form',
+  templateUrl: './new-room-form.component.html',
+  styleUrls: ['./new-room-form.component.scss'],
 })
-export class NewRoomPage implements OnInit {
+export class NewRoomFormComponent implements OnInit {
 
   form: FormGroup;
   creator: string;
 
   constructor(
-    private navController: NavController,
+    private modalController: ModalController,
     private roomsService: RoomService,
     private authService: AuthService,
-    private loadingCtrl: LoadingController,
     private alertController: AlertController,
     private toastController: ToastController
   ) { }
 
   ngOnInit() {
     this.creator = this.authService.user;
-    this.createForm();
-  }
-
-  createForm() {
     this.form = new FormGroup({
       nome_progetto: new FormControl(null, {
         updateOn: 'blur',
@@ -47,6 +42,7 @@ export class NewRoomPage implements OnInit {
   }
 
   onCreateRoom() {
+    if (!this.form.valid) { return; }
     this.roomsService
       .addRoom(
         this.form.value.usermobile,
@@ -54,14 +50,15 @@ export class NewRoomPage implements OnInit {
         this.form.value.nome_collaudatore)
       .subscribe(
         res => {
-        this.presentToast();
-        this.form.reset();
-        this.navController.navigateBack(['/rooms']);
-      },
-      (err: HttpErrorResponse) => {
-        console.log("Error:",err.error['text']);
-        this.createErrorAlert(err.error['text']);
-      }
+          console.log("Response",res);
+          this.presentToast('Room creata!');
+          this.form.reset();
+          this.modalController.dismiss({ message: 'room saved' }, 'save');
+        },
+        (err: HttpErrorResponse) => {
+          console.log("Error:", err.error['text']);
+          this.createErrorAlert(err.error['text']);
+        }
       );
   }
 
@@ -76,13 +73,14 @@ export class NewRoomPage implements OnInit {
     alert.present();
   }
 
-  async presentToast() {
+  async presentToast(message: string) {
     const toast = await this.toastController.create({
-      message: 'Room creata!',
+      message: message,
       color: 'secondary',
       duration: 2000
-    });
+    })
+    // FIX: si può fare in entrambi i modi, qual'è il più giusto?
+    // .then(toastEl => toastEl.present());
     toast.present();
   }
 }
-

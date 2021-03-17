@@ -3,10 +3,10 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/rooms"></ion-back-button>
     </ion-buttons>
-    <ion-title>Modifica Room</ion-title>
+    <ion-title>Nuova Room</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <edit-room-form [roomId]="roomId" (formEvent)="onFormEvent($event)"></edit-room-form>
+  <new-room-form></new-room-form>
 </ion-content>

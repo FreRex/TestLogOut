@@ -9,6 +9,9 @@ import { RoomsPageRoutingModule } from './rooms-routing.module';
 import { RoomsPage } from './rooms.page';
 import { RoomItemComponent } from './room-item/room-item.component';
 import { EditRoomModalComponent } from './edit-room-modal/edit-room-modal.component';
+import { NewRoomModalComponent } from './new-room-modal/new-room-modal.component';
+import { NewRoomFormComponent } from './forms/new-room-form/new-room-form.component';
+import { EditRoomFormComponent } from './forms/edit-room-form/edit-room-form.component';
 
 @NgModule({
   imports: [
@@ -22,7 +25,12 @@ import { EditRoomModalComponent } from './edit-room-modal/edit-room-modal.compon
     RoomsPage, 
     RoomItemComponent,
     EditRoomModalComponent,
+    NewRoomModalComponent,
+    NewRoomFormComponent,
+    EditRoomFormComponent
   ],
-  entryComponents: [EditRoomModalComponent] // <-- Serve per i componenti che non sono dichiarati all'interno di altri template (es. modal)
+  exports: [NewRoomFormComponent, EditRoomFormComponent],
+  // <-- Serve per i componenti che non sono dichiarati all'interno di altri template (es. modal)
+  entryComponents: [EditRoomModalComponent, NewRoomModalComponent] 
 })
 export class RoomsPageModule {}

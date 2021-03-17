@@ -26,7 +26,6 @@ export class GisfoSyncModalComponent implements OnInit {
     )
   }
 
-
   closeModal(){
     this.modalCtrl.dismiss(GisfoSyncModalComponent);
   }

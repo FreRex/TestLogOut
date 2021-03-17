@@ -82,13 +82,26 @@ ion-label{
   font-family: Montserrat !important;
 }
 
-.custom-card {
-  height: 100%;
+ion-card.custom-card {
   overflow: hidden;
   overflow-y: auto;
   box-shadow: none;
-  padding: 0%;
-  margin: 0%;
+  // padding: 0%;
+  // margin: 0%;
+}
+
+div.fixed {
+  position: fixed;
+  bottom: 10px;
+  width: 100%;
+} 
+
+ion-textarea.custom-textarea {
+  padding: 10px;
+  line-height: 1.5;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  box-shadow: 1px 1px 1px #999;
 }
 
 // .test-custom-modal-css {

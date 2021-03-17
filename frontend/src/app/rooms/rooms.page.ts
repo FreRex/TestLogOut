@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { Room, RoomService } from './room.service';
 import { EditRoomModalComponent } from './edit-room-modal/edit-room-modal.component';
 import { SIZE_TO_MEDIA } from '@ionic/core/dist/collection/utils/media'
+import { NewRoomModalComponent } from './new-room-modal/new-room-modal.component';
 
 @Component({
   selector: 'app-room',
@@ -15,7 +16,7 @@ export class RoomsPage implements OnInit, OnDestroy {
 
   private sub: Subscription;
   rooms: Room[];
-  isSearchMode: boolean = false;
+  // isSearchMode: boolean = false;
   filteredRooms: Room[] = [];
   isLoading = false;
 
@@ -95,11 +96,27 @@ export class RoomsPage implements OnInit, OnDestroy {
     this.router.navigate(['/', 'room', 'new']);
   }
 
-  toggleMenu() {
-    const splitPane = document.querySelector('ion-split-pane')
-    if (window.matchMedia(SIZE_TO_MEDIA[splitPane.when] || splitPane.when).matches) {
-      splitPane.classList.toggle('split-pane-visible');
-    }
+  /** Apre il modale di MODIFICA ROOM */
+  onNewRoomModal() {
+    this.modalController
+      .create({
+        component: NewRoomModalComponent,
+        backdropDismiss: false,
+        // cssClass: 'test-custom-modal-css',
+      })
+      .then(modalEl => {
+        modalEl.present();
+        return modalEl.onDidDismiss();
+      })
+      .then(resultData => {
+        console.log(resultData.data, resultData.role);
+      });
   }
+  // toggleMenu() {
+  //   const splitPane = document.querySelector('ion-split-pane')
+  //   if (window.matchMedia(SIZE_TO_MEDIA[splitPane.when] || splitPane.when).matches) {
+  //     splitPane.classList.toggle('split-pane-visible');
+  //   }
+  // }
 
 }

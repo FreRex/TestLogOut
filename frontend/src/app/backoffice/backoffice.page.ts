@@ -124,12 +124,12 @@ export class BackofficePage implements OnInit {
     this.showProjects = false;
   }
 
-  toggleMenu() {
-    const splitPane = document.querySelector('ion-split-pane');
-    if (
-      window.matchMedia(SIZE_TO_MEDIA[splitPane.when] || splitPane.when).matches
-    ) {
-      splitPane.classList.toggle('split-pane-visible');
-    }
-  }
+  // toggleMenu() {
+  //   const splitPane = document.querySelector('ion-split-pane');
+  //   if (
+  //     window.matchMedia(SIZE_TO_MEDIA[splitPane.when] || splitPane.when).matches
+  //   ) {
+  //     splitPane.classList.toggle('split-pane-visible');
+  //   }
+  // }
 }
