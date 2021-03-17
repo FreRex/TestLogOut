@@ -1,10 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { IonSearchbar, ModalController } from '@ionic/angular';
-import { GisfoSyncModalComponent } from './gisfo-sync-modal/gisfo-sync-modal.component';
-import { CreateUserModalComponent } from './create-user-modal/create-user-modal.component';
-import { UploadShpModalComponent } from './upload-shp-modal/upload-shp-modal.component';
-import { Project, User, StorageDataService } from '../shared/storage-data.service';
-import { SIZE_TO_MEDIA } from '@ionic/core/dist/collection/utils/media';
+import { GisfoSyncModalComponent } from './projects/gisfo-sync-modal/gisfo-sync-modal.component';
+import { CreateUserModalComponent } from './users/create-user-modal/create-user-modal.component';
+import { UploadShpModalComponent } from './projects/upload-shp-modal/upload-shp-modal.component';
 import { Observable } from 'rxjs';
 import {
   debounceTime,
@@ -13,6 +11,8 @@ import {
   startWith,
   switchMap,
 } from 'rxjs/operators';
+import { Project, ProjectService } from './projects/project.service';
+import { User, UserService } from './users/user.service';
 
 
 @Component({
@@ -28,8 +28,8 @@ export class BackofficePage implements OnInit {
   showProjects: boolean = true;
 
   constructor(
-    private projService: StorageDataService,
-    private userService: StorageDataService,
+    private projService: ProjectService,
+    private userService: UserService,
     private modalCtrl: ModalController
   ) {}
 
@@ -127,12 +127,12 @@ export class BackofficePage implements OnInit {
     this.showProjects = false;
   }
 
-  toggleMenu() {
-    const splitPane = document.querySelector('ion-split-pane');
-    if (
-      window.matchMedia(SIZE_TO_MEDIA[splitPane.when] || splitPane.when).matches
-    ) {
-      splitPane.classList.toggle('split-pane-visible');
-    }
-  }
+  // toggleMenu() {
+  //   const splitPane = document.querySelector('ion-split-pane');
+  //   if (
+  //     window.matchMedia(SIZE_TO_MEDIA[splitPane.when] || splitPane.when).matches
+  //   ) {
+  //     splitPane.classList.toggle('split-pane-visible');
+  //   }
+  // }
 }

@@ -1,6 +1,13 @@
-<ion-menu side="start" contentId="main">
+<ion-menu contentId="main">
   <ion-header>
     <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-menu-toggle auto-hide="false">
+        <ion-button>
+          <ion-icon name="close" size="default"></ion-icon>
+        </ion-button>
+      </ion-menu-toggle>
+      </ion-buttons>
       <ion-title>Menu</ion-title>
     </ion-toolbar>
   </ion-header>
@@ -19,19 +26,19 @@
         </ion-item>
       </ion-menu-toggle>
       <ion-menu-toggle auto-hide="false">
-        <ion-item lines="none" button="true" href="https://www.collaudolive.xyz:9888/admin/streams">
+        <ion-item lines="none" button="true" href="https://www.collaudolive.xyz:9888/admin/streams" target="_blank">
           <ion-icon name="tv-outline" slot="start"></ion-icon>
           <ion-label>Admin STREAMING</ion-label>
         </ion-item>
       </ion-menu-toggle>
       <ion-menu-toggle auto-hide="false">
-        <ion-item lines="none" button="true" href="https://www.collaudolive.xyz:9888/admin/streams">
+        <ion-item lines="none" button="true" href="http://www.eaglelive.tv:5080/#/pages/login" target="_blank">
           <ion-icon name="headset-outline" slot="start"></ion-icon>
           <ion-label>Admin AUDIO</ion-label>
         </ion-item>
       </ion-menu-toggle>
       <ion-menu-toggle auto-hide="false">
-        <ion-item lines="none" button="true" href="https://www.collaudolive.xyz:9888/admin/streams">
+        <ion-item lines="none" button="true" href="https://www.collaudolive.xyz:9080/geoserver/web/" target="_blank">
           <ion-icon name="map-outline" slot="start"></ion-icon>
           <ion-label>Admin GEOSERVER</ion-label>
         </ion-item>

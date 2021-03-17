@@ -11,7 +11,7 @@ const routes: Routes = [
   },
   {
     path: 'new',
-    loadChildren: () => import('./new-room/new-room.module').then( m => m.NewRoomPageModule),
+    loadChildren: () => import('./new-room-page/new-room.module').then( m => m.NewRoomPageModule),
     canLoad: [AuthGuard]
   },
   {

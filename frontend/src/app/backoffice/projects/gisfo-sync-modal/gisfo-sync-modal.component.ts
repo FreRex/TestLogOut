@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
-import { StorageDataService, User } from '../../shared/storage-data.service';
+import { User, UserService } from '../../users/user.service';
 
 @Component({
   selector: 'app-gisfo-sync-modal',
@@ -14,7 +14,7 @@ export class GisfoSyncModalComponent implements OnInit, OnDestroy {
   users:User[];
 
   constructor(
-    private userService: StorageDataService,
+    private userService: UserService,
     private modalCtrl: ModalController
   ) { }
 

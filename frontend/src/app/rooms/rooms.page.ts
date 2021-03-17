@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { Room, RoomService } from './room.service';
 import { EditRoomModalComponent } from './edit-room-modal/edit-room-modal.component';
 import { SIZE_TO_MEDIA } from '@ionic/core/dist/collection/utils/media'
+import { NewRoomModalComponent } from './new-room-modal/new-room-modal.component';
 
 @Component({
   selector: 'app-room',
@@ -15,7 +16,7 @@ export class RoomsPage implements OnInit, OnDestroy {
 
   private sub: Subscription;
   rooms: Room[];
-  isSearchMode: boolean = false;
+  // isSearchMode: boolean = false;
   filteredRooms: Room[] = [];
   isLoading = false;
 
@@ -28,7 +29,7 @@ export class RoomsPage implements OnInit, OnDestroy {
   ngOnInit() {    
     
     this.isLoading = true;
-    this.roomService.fetchRooms().subscribe(res => {
+    this.roomService.loadRooms().subscribe(res => {
       this.isLoading = false;
     });
 
@@ -48,7 +49,7 @@ export class RoomsPage implements OnInit, OnDestroy {
   }
 
   doRefresh(event) {
-    this.roomService.fetchRooms().subscribe(res => { event.target.complete(); });
+    this.roomService.loadRooms().subscribe(res => { event.target.complete(); });
   }
 
   /** Funzione che filtra i progetti in base al fitro impostato e all'input */
@@ -96,10 +97,12 @@ export class RoomsPage implements OnInit, OnDestroy {
   }
 
   /** Apre il modale di MODIFICA ROOM */
-  onEditRoomModal() {
+  onNewRoomModal() {
     this.modalController
       .create({
-        component: EditRoomModalComponent,
+        component: NewRoomModalComponent,
+        backdropDismiss: false,
+        // cssClass: 'test-custom-modal-css',
       })
       .then(modalEl => {
         modalEl.present();
@@ -109,12 +112,11 @@ export class RoomsPage implements OnInit, OnDestroy {
         console.log(resultData.data, resultData.role);
       });
   }
-
-  toggleMenu() {
-    const splitPane = document.querySelector('ion-split-pane')
-    if (window.matchMedia(SIZE_TO_MEDIA[splitPane.when] || splitPane.when).matches) {
-      splitPane.classList.toggle('split-pane-visible');
-    }
-  }
+  // toggleMenu() {
+  //   const splitPane = document.querySelector('ion-split-pane')
+  //   if (window.matchMedia(SIZE_TO_MEDIA[splitPane.when] || splitPane.when).matches) {
+  //     splitPane.classList.toggle('split-pane-visible');
+  //   }
+  // }
 
 }

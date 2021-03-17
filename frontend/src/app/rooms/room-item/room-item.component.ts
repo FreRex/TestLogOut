@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { IonItemSliding } from '@ionic/angular';
+import { IonItemSliding, ModalController } from '@ionic/angular';
+import { EditRoomModalComponent } from '../edit-room-modal/edit-room-modal.component';
 import { Room } from '../room.service';
 
 @Component({
@@ -14,7 +15,8 @@ export class RoomItemComponent implements OnInit {
   isFavourite: boolean;
   
   constructor(
-    private router: Router
+    private router: Router,
+    private modalController: ModalController
     ) { }
 
   ngOnInit() {  }
@@ -24,9 +26,29 @@ export class RoomItemComponent implements OnInit {
     console.log("Foto scaricate");
   }
 
-  onOpenEditPage(slidingItem: IonItemSliding){
+  /** Apre la pagina di MODIFICA ROOM */
+  onOpenEditRoomPage(slidingItem: IonItemSliding){
     slidingItem.close();
     this.router.navigate(['/', 'rooms', 'edit', this.roomItem.id]);
+  }
+
+  /** Apre il modale di MODIFICA ROOM */
+  onOpenEditRoomModal(slidingItem: IonItemSliding) {
+    slidingItem.close();
+    this.modalController
+      .create({
+        component: EditRoomModalComponent,
+        backdropDismiss: false,
+        cssClass: 'test-custom-modal-css',
+        componentProps: { roomId: this.roomItem.id }
+      })
+      .then(modalEl => {
+        modalEl.present();
+        return modalEl.onDidDismiss();
+      })
+      .then(resultData => {
+        console.log(resultData.data, resultData.role);
+      });
   }
 
   onFavoutite(){
