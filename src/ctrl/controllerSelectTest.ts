@@ -1,4 +1,4 @@
-exports.getSelect = (req: any, res: any, next: any) => {  
+exports.getSelectTest = (req: any, res: any, next: any) => {  
     
     const db = require('../conf/db');
     const validator = require('validator'); 
