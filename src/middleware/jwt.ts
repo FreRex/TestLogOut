@@ -3,7 +3,7 @@ import fs from 'fs';
 
 let option = {
     algorithm: "RS256",
-    expiresIn: "8m"
+    expiresIn: "1h"
 }
 
 let getPayload = (token: any) => {
