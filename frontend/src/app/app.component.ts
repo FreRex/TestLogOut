@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthService } from './auth/auth.service';
 import { StorageDataService } from './shared/storage-data.service';
 
 @Component({
@@ -8,12 +9,19 @@ import { StorageDataService } from './shared/storage-data.service';
 })
 export class AppComponent implements OnInit{
 
+  isLoading = false; 
   constructor(
     private store: StorageDataService,
+    private authService: AuthService
     ) {}
 
   ngOnInit(){
-    this.store.init();
+    this.authService.authorizeAccess().subscribe(
+      res => {
+        console.log(res);
+        this.store.init();
+      }
+    );
   }
 
 

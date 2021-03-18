@@ -1,8 +1,11 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
+import { AuthService } from 'src/app/auth/auth.service';
+import { environment } from 'src/environments/environment';
 
-export interface Project{
+export interface Project {
   collaudatoreufficio: string;
   pk_proj: number;
   nome: string;
@@ -24,17 +27,27 @@ export class ProjectService {
   projects$: Observable<Project[]> = this.projSubj.asObservable();
 
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    private authService: AuthService
   ) { }
 
-  loadProjects(){
-    this.http
+  // loadProjects(){
+  //   this.http
+  //     .get<Project[]>(
+  //       'https://www.collaudolive.com:9083/s/progetti/'
+  //     ).subscribe(
+  //       projects => { 
+  //         this.projSubj.next(projects); 
+  //       }
+  //     )
+  // }
+
+  loadProjects(): Observable<Project[]> {
+    return this.http
       .get<Project[]>(
-        'https://www.collaudolive.com:9083/s/progetti/'
-      ).subscribe(
-        projects =>{
-          this.projSubj.next(projects);
-        }
+        `${environment.apiUrl}/s/progetti/`,
+        { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
       )
+      .pipe(tap(projects => { this.projSubj.next(projects); }));
   }
 }

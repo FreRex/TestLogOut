@@ -1,4 +1,7 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { environment } from 'src/environments/environment';
+import { map, switchMap, tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -10,15 +13,17 @@ export class AuthService {
   private _user: string = '';
 
   // TODO: rendere userIsAthenticated un BehaviourSubject e ritornare un Osservabile
-  get userIsAthenticated(){
+  get userIsAthenticated() {
     return this._userIsAutenticated;
   }
 
-  get user(){
+  get user() {
     return this._user;
   }
 
-  constructor() { }
+  constructor(
+    private http: HttpClient,
+  ) { }
 
   login(user: string) {
     this._userIsAutenticated = true;
@@ -30,5 +35,14 @@ export class AuthService {
     this._userIsAutenticated = false;
     this._user = '';
     console.log("is logged out: " + this._userIsAutenticated);
+  }
+
+  private _token: string;
+  get token(): string { return this._token; }
+
+  authorizeAccess() {
+    return this.http
+      .post<{ [key: string]: string }>(`${environment.apiUrl}/token/`, {})
+      .pipe(tap(res => { this._token = res['token']; }));
   }
 }

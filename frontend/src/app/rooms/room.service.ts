@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, delay, map, switchMap, take, tap } from 'rxjs/operators';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
@@ -54,7 +54,10 @@ export class RoomService {
   //   }
   // ];
 
-  constructor(private http: HttpClient, private authService: AuthService) { }
+  constructor(
+    private http: HttpClient,
+    private authService: AuthService
+  ) { }
 
   /** Lista delle room sotto forma di BehaviourSubject */
   private _rooms = new BehaviorSubject<Room[]>([]);  // <-- "_rooms" può emettere eventi perchè è un BehaviourSubject
@@ -66,19 +69,25 @@ export class RoomService {
 
   /** SELECT singola room */
   getRoom(roomId: number): Observable<Room> {
-    return this.rooms.pipe(take(1),
-      // <-- applico una funzione di filtro all'array di room che ho preso con take(1)
-      map((rooms: Room[]) => {
-        // <-- ritorna vero quando trova il progeto giusto
-        return { ...rooms.find(room => room.id === roomId) };
-      }));
+    return this.rooms
+      .pipe(
+        take(1),
+        // <-- applico una funzione di filtro all'array di room che ho preso con take(1)
+        map((rooms: Room[]) => {
+          // <-- ritorna vero quando trova il progeto giusto
+          return { ...rooms.find(room => room.id === roomId) };
+        }));
   }
 
   /** SELECT rooms */
   loadRooms(): Observable<Room[]> {
+    console.log(this.authService.token);
+
     return this.http
-      // WHY : { [key: string]: RoomData } al posto di RoomData[] ???
-      .get<{ [key: string]: RoomData }>(`${environment.apiUrl}/s/room/`)
+      .get<{ [key: string]: RoomData }>(
+        `${environment.apiUrl}/s/room/`,
+        { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
+      )
       .pipe(
         // <-- Rimappa i dati che arrivano dal server sull'interfaccia della Room
         map((roomData: { [key: string]: RoomData }) => {
@@ -106,7 +115,11 @@ export class RoomService {
 
   /** SELECT singola room */
   selectRoom(roomId: string): Observable<Room> {
-    return this.http.get<RoomData>(`${environment.apiUrl}/s/room/${roomId}`)
+    return this.http
+      .get<RoomData>(
+        `${environment.apiUrl}/s/room/${roomId}`,
+        { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
+      )
       .pipe(
         map(roomData => {
           return {
@@ -135,112 +148,111 @@ export class RoomService {
     // this.rooms è un OSSERVABILE
     // take(1) = dopo la prima emissione dell'Osservabile togli la sottoscrizione
     // tap() = applico una funzione all'array emesso dall'osservabile (solo 1 perchè uso take(1)) senza sottoscrivermi
-    return this.rooms.pipe(
-      take(1),
-      switchMap(rooms => {
-        if (!rooms || rooms.length <= 0) {
-          return this.loadRooms();
-        } else {
-          return of(rooms);
-        }
-      }),
-      switchMap(rooms => {
-        updatedRooms = [...rooms];
-        return this.http.post(`${environment.apiUrl}/cr/`,
-          {
-            "usermobile": usermobile,
-            "progettoselezionato": nome_progetto,
-            // "collaudatoreufficio": nome_collaudatore
-          })
-      }),
-      catchError(err => { return throwError(err); }),
-      tap(res => {
-        console.log('GeneratedId:', res['insertId']);
-        newRoom.id = res['insertId'];
-        // this._rooms è un BEHAVIOUR SUBJECT
-        // next() = emetto il nuovo array concatencato come prossimo elemento del BehaviourSubject 
-        // concat(newRoom) = prendo il vecchio array emesso dall'osservabile e concateno il nuovo elemento
-        this._rooms.next(updatedRooms.concat(newRoom));
-      })
-    );
-    // Firebase resonse --> Object { name: "-MVS4EJcaH_E95wHB6Yt" }
-    // return this.http.post<{ name: string }>(`${environment.apiUrl}/rooms.json`, newRoom)
-    //   .pipe(
-    //     switchMap((resData: { name: string }) => {
-    //       generatedId = resData.name;
-    //       return this.rooms;
-    //     }),
-    //     take(1),
-    //     tap(rooms => {
-    //       console.log('GeneratedId:', generatedId);
-    //       newRoom.id = generatedId;
-    //       // this._rooms è un BEHAVIOUR SUBJECT
-    //       // next() = emetto il nuovo array concatencato come prossimo elemento del BehaviourSubject 
-    //       // concat(newRoom) = prendo il vecchio array emesso dall'osservabile e concateno il nuovo elemento
-    //       this._rooms.next(rooms.concat(newRoom));
-    //     }));
+    return this.rooms
+      .pipe(
+        take(1),
+        switchMap(rooms => {
+          if (!rooms || rooms.length <= 0) {
+            return this.loadRooms();
+          } else {
+            return of(rooms);
+          }
+        }),
+        switchMap(rooms => {
+          updatedRooms = [...rooms];
+          return this.http
+            .post(
+              `${environment.apiUrl}/cr/`,
+              {
+                "usermobile": usermobile,
+                "progettoselezionato": nome_progetto,
+                // "collaudatoreufficio": nome_collaudatore
+              },
+              { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
+            )
+        }),
+        catchError(err => { return throwError(err); }),
+        tap(res => {
+          console.log('GeneratedId:', res['insertId']);
+          newRoom.id = res['insertId'];
+          // this._rooms è un BEHAVIOUR SUBJECT
+          // next() = emetto il nuovo array concatencato come prossimo elemento del BehaviourSubject 
+          // concat(newRoom) = prendo il vecchio array emesso dall'osservabile e concateno il nuovo elemento
+          this._rooms.next(updatedRooms.concat(newRoom));
+        })
+      );
   }
 
   /** UPDATE room dopo una modifica */
   updateRoom(roomId: number, newUsermobile: string) {
     let updatedRooms: Room[];
-    return this.rooms.pipe(
-      take(1),
-      switchMap(rooms => {
-        if (!rooms || rooms.length <= 0) {
-          return this.loadRooms();
-        } else {
-          return of(rooms);
-        }
-      }),
-      switchMap(rooms => {
-        // findIndex() = trova l'indice di un elemento di un array in base a una regola ("se è vero")
-        const updatedRoomIndex = rooms.findIndex(room => room.id === roomId);
-        updatedRooms = [...rooms];
-        const oldRoom = updatedRooms[updatedRoomIndex];
-        updatedRooms[updatedRoomIndex] =
-        {
-          id: oldRoom.id,
-          usermobile: newUsermobile,
-          nome_progetto: oldRoom.nome_progetto,
-          nome_collaudatore: oldRoom.nome_collaudatore,
-          data_inserimento: oldRoom.data_inserimento,
-        };
-        return this.http.put(`${environment.apiUrl}/ur`,
+    return this.rooms
+      .pipe(
+        take(1),
+        switchMap(rooms => {
+          if (!rooms || rooms.length <= 0) {
+            return this.loadRooms();
+          } else {
+            return of(rooms);
+          }
+        }),
+        switchMap(rooms => {
+          // findIndex() = trova l'indice di un elemento di un array in base a una regola ("se è vero")
+          const updatedRoomIndex = rooms.findIndex(room => room.id === roomId);
+          updatedRooms = [...rooms];
+          const oldRoom = updatedRooms[updatedRoomIndex];
+          updatedRooms[updatedRoomIndex] =
           {
-            "id": roomId,
-            "usermobile": newUsermobile
-          });
-      }),
-      catchError(err => { return throwError(err); }),
-      tap(res => { this._rooms.next(updatedRooms); })
-    );
+            id: oldRoom.id,
+            usermobile: newUsermobile,
+            nome_progetto: oldRoom.nome_progetto,
+            nome_collaudatore: oldRoom.nome_collaudatore,
+            data_inserimento: oldRoom.data_inserimento,
+          };
+          return this.http
+            .put(
+              `${environment.apiUrl}/ur`,
+              {
+                "id": roomId,
+                "usermobile": newUsermobile
+              },
+              { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
+            );
+        }),
+        catchError(err => { return throwError(err); }),
+        tap(res => { this._rooms.next(updatedRooms); })
+      );
   }
 
   /** DELETE room */
   deleteRoom(roomId: number) {
     let updatedRooms: Room[];
-    return this.rooms.pipe(
-      take(1),
-      switchMap(rooms => {
-        if (!rooms || rooms.length <= 0) {
-          return this.loadRooms();
-        } else {
-          return of(rooms);
-        }
-      }),
-      switchMap(rooms => {
-        // filter() = filtra un array in base a una regola ("se è vero")
-        // ritrorna vero per tutte le room tranne quella che voglio scartare
-        updatedRooms = rooms.filter(room => room.id !== roomId);
-        return this.http.post(`${environment.apiUrl}/d/`,
-          {
-            "id": roomId,
-            "tableDelete": "multistreaming"
-          })
-      }),
-      catchError(err => { return throwError(err); }),
-      tap(res => { this._rooms.next(updatedRooms); })
-    );
+    return this.rooms
+      .pipe(
+        take(1),
+        switchMap(rooms => {
+          if (!rooms || rooms.length <= 0) {
+            return this.loadRooms();
+          } else {
+            return of(rooms);
+          }
+        }),
+        switchMap(rooms => {
+          // filter() = filtra un array in base a una regola ("se è vero")
+          // ritrorna vero per tutte le room tranne quella che voglio scartare
+          updatedRooms = rooms.filter(room => room.id !== roomId);
+          return this.http
+            .post(
+              `${environment.apiUrl}/d/`,
+              {
+                "id": roomId,
+                "tableDelete": "multistreaming"
+              },
+              { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
+            )
+        }),
+        catchError(err => { return throwError(err); }),
+        tap(res => { this._rooms.next(updatedRooms); })
+      );
   }
 }

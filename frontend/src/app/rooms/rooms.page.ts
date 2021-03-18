@@ -29,14 +29,15 @@ export class RoomsPage implements OnInit, OnDestroy {
   ngOnInit() {    
     
     this.isLoading = true;
-    this.roomService.loadRooms().subscribe(res => {
-      this.isLoading = false;
-    });
-
+    // this.roomService.loadRooms().subscribe(res => {
+    //   this.isLoading = false;
+    // });
+    
     // mi sottoscrivo all'osservabile "get rooms()" che restituisce la lista di room
     this.sub = this.roomService.rooms.subscribe(
       // questa funzione viene eseguita qualsiasi volta la lista di room cambia
       (rooms: Room[]) => {
+        this.isLoading = false;
         this.rooms = rooms;
         this.filteredRooms = this.rooms;
       }
