@@ -71,7 +71,8 @@ exports.putUpdateUtenti = (req: any, res: any, next: any) => {
             if(sql===''){
                 sql = sql + "username = ? ";
             }
-            else            {
+            else 
+            {
                 sql = sql + ", username = ? "; 
             }
             

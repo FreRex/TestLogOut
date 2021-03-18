@@ -9,9 +9,11 @@ const controllerUpdate = require('./ctrl/controllerUpdate');
 const controllerDelete = require('./ctrl/controllerDelete');
 const controllerCreate = require('./ctrl/controllerCreate');
 const controllerToken = require('./ctrl/controllerToken');
+const controllerVidApp = require('./ctrl/controllerVidApp');
 const mid = require('./middleware/mid');
 const router = express_1.default.Router();
 const cors = require('cors');
+router.use(cors());
 router.use(function (req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', '*');
     // Request methods you wish to allow
@@ -24,19 +26,26 @@ router.use(function (req, res, next) {
     // Pass to next layer of middleware
     next();
 });
+//----------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------
+//VidApp (riavvio Node Media Server)
+router.post('/vidapp/', controllerVidApp.VidApp);
 //Token
 router.post('/token/', controllerToken.getToken);
-//Indirizzamento ad API di lettura (SELECT)
+//----------- API-db -----------------------------------------------------
+//Indirizzamento ad API-db di lettura (SELECT)
 router.get('/s/:table/', [mid.checkAuth], controllerSelect.getSelect);
 router.get('/s/:table/:id/', controllerSelect.getSelect);
-//Indirizzamento ad API di modifica (UPDATE)
+//Indirizzamento ad API-db di modifica (UPDATE)
 router.put('/ur/', controllerUpdate.putUpdateRoom);
 router.put('/uu/', controllerUpdate.putUpdateUtenti);
 router.put('/up/', controllerUpdate.putUpdateProgetti);
-//Indirizzamento ad API di modifica (DELETE)
+//Indirizzamento ad API-db di modifica (DELETE)
 router.post('/d/', controllerDelete.delete);
-//Indirizzamento ad API di creazione (POST)
+//Indirizzamento ad API-db di creazione (POST)
 router.post('/cu/', controllerCreate.postCreateUtenti);
 router.post('/cp/', controllerCreate.postCreateProgetti);
 router.post('/cr/', controllerCreate.postCreateRoom);
+//------------------------------------------------------------------------
 module.exports = router;

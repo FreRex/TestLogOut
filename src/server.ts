@@ -3,13 +3,13 @@ import path from 'path';
 import https from 'https';
 import fs from 'fs';
 
-
 const routes = require('./routes');
  
 const app = express();
 const port = 9083;
 
 app.use(express.json());
+
 
 //--------------------
 //SEZIONE ROUTE NODEJS

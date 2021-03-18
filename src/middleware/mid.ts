@@ -20,6 +20,3 @@ exports.checkAuth = (req: any, res: any, next: any)=>{
 
     
 }
-
-
-// module.exports = checkAuth;
