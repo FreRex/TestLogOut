@@ -39,4 +39,6 @@ https_1.default.createServer({
     console.log(`https://www.collaudolive.com:${port}/auth`);
     console.log(`https://www.collaudolive.com:${port}/backoffice`);
     console.log(`https://www.collaudolive.com:${port}/rooms`);
+    console.log(`-------------------- FRONTEND ------------------------------`);
+    console.log(`https://www.collaudolive.com:${port}/vidapp`);
 });

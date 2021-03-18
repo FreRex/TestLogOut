@@ -30,7 +30,7 @@ router.use(function (req, res, next) {
 //----------------------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------------
 //VidApp (riavvio Node Media Server)
-router.post('/vidapp/', controllerVidApp.VidApp);
+router.get('/vidapp/', controllerVidApp.VidApp);
 //Token
 router.post('/token/', controllerToken.getToken);
 //----------- API-db -----------------------------------------------------
