@@ -1,10 +1,12 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
 import { BackofficePageRoutingModule } from './backoffice-routing.module';
+
+
 
 import { BackofficePage } from './backoffice.page';
 import { GisfoSyncModalComponent } from './projects/gisfo-sync-modal/gisfo-sync-modal.component';
@@ -15,7 +17,7 @@ import { CreateUserModalComponent } from './users/create-user-modal/create-user-
 @NgModule({
   imports: [
     CommonModule,
-    FormsModule,
+    ReactiveFormsModule,
     IonicModule,
     BackofficePageRoutingModule
   ],

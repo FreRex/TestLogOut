@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { IonSearchbar, ModalController } from '@ionic/angular';
+import { AlertController, IonSearchbar, ModalController, ToastController } from '@ionic/angular';
 import { GisfoSyncModalComponent } from './projects/gisfo-sync-modal/gisfo-sync-modal.component';
 import { CreateUserModalComponent } from './users/create-user-modal/create-user-modal.component';
 import { UploadShpModalComponent } from './projects/upload-shp-modal/upload-shp-modal.component';
@@ -13,7 +13,6 @@ import {
 } from 'rxjs/operators';
 import { Project, ProjectService } from './projects/project.service';
 import { User, UserService } from './users/user.service';
-
 
 @Component({
   selector: 'app-backoffice',
@@ -30,18 +29,14 @@ export class BackofficePage implements OnInit {
   constructor(
     private projService: ProjectService,
     private userService: UserService,
-    private modalCtrl: ModalController
+    private modalCtrl: ModalController,
+    private toastController: ToastController,
+    private alertController: AlertController
   ) {}
 
   ngOnInit(): void {
     this.filterProjects();
     this.filterUsers();
-  }
-
-  onDelete() {
-
-    console.log("cancellato");
-
   }
 
   /* Filtro Progetti/Utenti per barra ricerca */
@@ -127,6 +122,39 @@ export class BackofficePage implements OnInit {
     this.showProjects = false;
   }
 
+  async presentToast(message: string) {
+    const toast = await this.toastController.create({
+      message: message,
+      color: 'secondary',
+      duration: 2000
+    })
+    // FIX: si può fare in entrambi i modi, qual'è il più giusto?
+    // .then(toastEl => toastEl.present());
+    toast.present();
+  }
+
+  onDelete(userId: number) {
+    this.alertController.create(
+      {
+        header: 'Sei sicuro?',
+        message: "Vuoi davvero cancellare l'Utente?",
+        buttons: [
+          {
+            text: 'Annulla',
+            role: 'cancel'
+          },
+          {
+            text: 'Elimina',
+            handler: () => {
+              this.userService.deleteUser(userId).subscribe(res => {
+                this.presentToast('User Eliminato');
+              });
+            }
+          }
+        ]
+      }
+    ).then(alertEl => { alertEl.present(); });
+  }
   // toggleMenu() {
   //   const splitPane = document.querySelector('ion-split-pane');
   //   if (
