@@ -50,8 +50,8 @@
             <div class="ion-text-center" *ngIf="isLoading"><ion-spinner></ion-spinner></div>
             <p class="ion-text-center" *ngIf="!isLoading && rooms.length <= 0">Nessuna Room disponibile</p>
             <ion-list *ngIf="!isLoading && rooms.length > 0">
-                <app-room-item *ngFor="let room of filteredRooms" [roomItem]="room"></app-room-item>
-                <!-- <app-room-item *ngFor="let room of rooms" [roomItem]="room"></app-room-item> -->
+                <app-room-item *ngFor="let room of filteredRooms" [room]="room"></app-room-item>
+                <!-- <app-room-item *ngFor="let room of rooms" [room]="room"></app-room-item> -->
             </ion-list>
         </ion-col>
     </ion-row>

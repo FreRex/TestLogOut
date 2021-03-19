@@ -96,6 +96,22 @@ div.fixed {
   width: 100%;
 } 
 
+div.custom-list{
+  border: 1px solid #ccc;
+  overflow-y: scroll;
+  height: 180px;
+}
+
+ion-item.custom-item {
+  --min-height: 16px;
+  padding-right: 16px;
+}
+
+ion-label.custom-label {
+  padding: 3px;
+  margin: 3px;
+}
+
 ion-textarea.custom-textarea {
   padding: 10px;
   line-height: 1.5;

@@ -68,7 +68,8 @@ export class MenuComponent implements OnInit {
     const toast = await this.toastController.create({
       message: message,
       color: 'secondary',
-      duration: 2000
+      duration: 2000,
+      buttons: [ { icon: 'close', role: 'cancel'}]
     })
     // FIX: si può fare in entrambi i modi, qual'è il più giusto?
     // .then(toastEl => toastEl.present());

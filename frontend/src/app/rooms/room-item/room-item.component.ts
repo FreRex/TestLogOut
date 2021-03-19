@@ -1,8 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { IonItemSliding, ModalController } from '@ionic/angular';
+import { AlertController, IonItemSliding, ModalController, ToastController } from '@ionic/angular';
 import { EditRoomModalComponent } from '../edit-room-modal/edit-room-modal.component';
-import { Room } from '../room.service';
+import { Room, RoomService } from '../room.service';
 
 @Component({
   selector: 'app-room-item',
@@ -11,25 +11,29 @@ import { Room } from '../room.service';
 })
 export class RoomItemComponent implements OnInit {
 
-  @Input() roomItem: Room;
+  @Input() room: Room;
   isFavourite: boolean;
   
   constructor(
     private router: Router,
-    private modalController: ModalController
+    private roomsService: RoomService,
+    private alertController: AlertController,
+    private modalController: ModalController,
+    private toastController: ToastController
     ) { }
 
   ngOnInit() {  }
 
-  onDownload() {
+  onDownload(slidingItem: IonItemSliding) {
     // TODO: logica download foto
+    slidingItem.close();
     console.log("Foto scaricate");
   }
 
   /** Apre la pagina di MODIFICA ROOM */
   onOpenEditRoomPage(slidingItem: IonItemSliding){
     slidingItem.close();
-    this.router.navigate(['/', 'rooms', 'edit', this.roomItem.id]);
+    this.router.navigate(['/', 'rooms', 'edit', this.room.id]);
   }
 
   /** Apre il modale di MODIFICA ROOM */
@@ -40,7 +44,7 @@ export class RoomItemComponent implements OnInit {
         component: EditRoomModalComponent,
         backdropDismiss: false,
         cssClass: 'test-custom-modal-css',
-        componentProps: { roomId: this.roomItem.id }
+        componentProps: { roomId: this.room.id }
       })
       .then(modalEl => {
         modalEl.present();
@@ -49,6 +53,42 @@ export class RoomItemComponent implements OnInit {
       .then(resultData => {
         console.log(resultData.data, resultData.role);
       });
+  }
+
+  onDelete(slidingItem: IonItemSliding) {
+    slidingItem.close();
+    this.alertController.create(
+      {
+        header: 'Sei sicuro?',
+        message: 'Vuoi davvero cancellare il progetto?',
+        buttons: [
+          {
+            text: 'Annulla',
+            role: 'cancel'
+          },
+          {
+            text: 'Elimina',
+            handler: () => {
+              this.roomsService.deleteRoom(this.room.id).subscribe(res => {
+                this.presentToast('Room Eliminata');
+              });
+            }
+          }
+        ]
+      }
+    ).then(alertEl => { alertEl.present(); });
+  }
+
+  async presentToast(message: string) {
+    const toast = await this.toastController.create({
+      message: message,
+      color: 'secondary',
+      duration: 2000,
+      buttons: [ { icon: 'close', role: 'cancel'}]
+    })
+    // FIX: si può fare in entrambi i modi, qual'è il più giusto?
+    // .then(toastEl => toastEl.present());
+    toast.present();
   }
 
   onFavoutite(){

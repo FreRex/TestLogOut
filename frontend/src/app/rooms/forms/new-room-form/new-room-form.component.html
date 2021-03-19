@@ -23,18 +23,29 @@
       <ion-col>
         <ion-item>
           <ion-label color="primary" position="floating">Collaudatore</ion-label>
-          <ion-input formControlName="nome_collaudatore" type="text" autocomplete autocorrect></ion-input>
-          <ion-icon name="pencil-outline" slot="end" class="ion-align-self-center"></ion-icon>
+          <ion-input formControlName="nome_collaudatore" type="text" autocomplete autocorrect #searchInput></ion-input>
+          <ion-icon name="chevron-down-outline" slot="end" class="ion-align-self-center"></ion-icon>
         </ion-item>
       </ion-col>
     </ion-row>
+    <div class="custom-list" *ngIf="showList">
+    <ion-row>
+      <ion-col>
+          <ion-list *ngFor="let user of (users$ | async)">
+            <ion-item button="true" lines="none" (click)="onChooseCollaudatore(user.collaudatoreufficio)">
+              <ion-icon name="chevron-forward-outline" slot="start" class="ion-align-self-center"></ion-icon>
+              <ion-label>{{user.collaudatoreufficio}}</ion-label>
+            </ion-item>
+          </ion-list>
+        </ion-col>
+      </ion-row>
+    </div>
   </form>
 </div>
 <div class="fixed ion-padding">
   <ion-row>
     <ion-col>
-      <ion-button [disabled]="!form.valid" type="submit" color="primary" expand="block" shape="round"
-        (click)="onCreateRoom()">Crea
+      <ion-button type="submit" color="primary" expand="block" shape="round" (click)="onCreateRoom()">Crea
       </ion-button>
     </ion-col>
   </ion-row>

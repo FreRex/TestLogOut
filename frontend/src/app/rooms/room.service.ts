@@ -81,8 +81,6 @@ export class RoomService {
 
   /** SELECT rooms */
   loadRooms(): Observable<Room[]> {
-    console.log(this.authService.token);
-
     return this.http
       .get<{ [key: string]: RoomData }>(
         `${environment.apiUrl}/s/room/`,

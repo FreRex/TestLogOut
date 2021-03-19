@@ -1,8 +1,10 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { AlertController, ModalController, ToastController } from '@ionic/angular';
-import { AuthService } from 'src/app/auth/auth.service';
+import { AlertController, IonInput, ModalController, PopoverController, ToastController } from '@ionic/angular';
+import { Observable } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map, startWith, switchMap } from 'rxjs/operators';
+import { User, UserService } from 'src/app/backoffice/users/user.service';
 import { RoomService } from '../../room.service';
 
 @Component({
@@ -12,34 +14,68 @@ import { RoomService } from '../../room.service';
 })
 export class NewRoomFormComponent implements OnInit {
 
+  @ViewChild('searchInput', { static: true }) inputCollaudatore: IonInput;
+  users$: Observable<User[]>;
   form: FormGroup;
-  creator: string;
+  showList = true;
 
   constructor(
     private modalController: ModalController,
     private roomsService: RoomService,
-    private authService: AuthService,
     private alertController: AlertController,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private userService: UserService
   ) { }
 
+
   ngOnInit() {
-    this.creator = this.authService.user;
+    this.onFilterUsers();
+
     this.form = new FormGroup({
-      nome_progetto: new FormControl(null, {
-        updateOn: 'blur',
-        validators: [Validators.required, Validators.maxLength(30)]
-      }),
       usermobile: new FormControl(null, {
         updateOn: 'blur',
         validators: [Validators.required, Validators.maxLength(12)]
       }),
-      nome_collaudatore: new FormControl(this.creator ? this.creator : null, {
+      nome_progetto: new FormControl(null, {
+        updateOn: 'blur',
+        validators: [Validators.required, Validators.maxLength(30)]
+      }),
+      nome_collaudatore: new FormControl(null, {
         updateOn: 'blur',
         validators: [Validators.required, Validators.maxLength(30)]
       }),
     });
+
   }
+
+  onFilterUsers() {
+    this.users$ = this.inputCollaudatore.ionInput.pipe(
+      map((event) => (<HTMLInputElement>event.target).value),
+      debounceTime(400),
+      distinctUntilChanged(),
+      startWith(""),
+      switchMap((searchTerm) =>
+        this.userService.users$.pipe(
+          map((users) =>
+            users.filter((user) =>
+              user.collaudatoreufficio.toLowerCase().includes(searchTerm.toLowerCase())
+            )
+          )
+        )
+      )
+    );
+  }
+
+  onChooseCollaudatore(collaudatoreufficio: string) {
+    this.form.patchValue({ nome_collaudatore: collaudatoreufficio });
+  }
+
+  // onFilter(eventValue: Event) {
+  //   let searchTerm = (<HTMLInputElement>eventValue.target).value;
+  //   this.users = this.users.filter((user) => {
+  //     return user.collaudatoreufficio.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1;
+  //   });
+  // }
 
   onCreateRoom() {
     if (!this.form.valid) { return; }
@@ -50,7 +86,7 @@ export class NewRoomFormComponent implements OnInit {
         this.form.value.nome_collaudatore)
       .subscribe(
         res => {
-          console.log("Response",res);
+          console.log("Response", res);
           this.presentToast('Room creata!');
           this.form.reset();
           this.modalController.dismiss({ message: 'room saved' }, 'save');
@@ -77,7 +113,8 @@ export class NewRoomFormComponent implements OnInit {
     const toast = await this.toastController.create({
       message: message,
       color: 'secondary',
-      duration: 2000
+      duration: 2000,
+      buttons: [{ icon: 'close', role: 'cancel' }]
     })
     // FIX: si può fare in entrambi i modi, qual'è il più giusto?
     // .then(toastEl => toastEl.present());

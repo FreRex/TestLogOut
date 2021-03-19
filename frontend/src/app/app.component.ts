@@ -7,21 +7,21 @@ import { StorageDataService } from './shared/storage-data.service';
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.scss'],
 })
-export class AppComponent implements OnInit{
+export class AppComponent implements OnInit {
 
-  isLoading = false; 
+  isLoading = false;
   constructor(
     private store: StorageDataService,
     private authService: AuthService
-    ) {}
+  ) { }
 
-  ngOnInit(){
-    this.authService.authorizeAccess().subscribe(
-      res => {
-        console.log(res);
-        this.store.init();
-      }
-    );
+  ngOnInit() {
+    this.authService.authorizeAccess()
+      .subscribe(
+        res => {
+          this.store.init();
+        }
+      );
   }
 
 

@@ -43,6 +43,8 @@ export class AuthService {
   authorizeAccess() {
     return this.http
       .post<{ [key: string]: string }>(`${environment.apiUrl}/token/`, {})
-      .pipe(tap(res => { this._token = res['token']; }));
+      .pipe(tap(res => { 
+        this._token = res['token']; 
+      }));
   }
 }
