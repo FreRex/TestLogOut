@@ -4,7 +4,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AlertController, IonInput, ModalController, PopoverController, ToastController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map, startWith, switchMap } from 'rxjs/operators';
-import { User, UserService } from 'src/app/backoffice/users/user.service';
+import { Project, ProjectService } from 'src/app/backoffice/projects/project.service';
 import { RoomService } from '../../room.service';
 
 @Component({
@@ -15,7 +15,7 @@ import { RoomService } from '../../room.service';
 export class NewRoomFormComponent implements OnInit {
 
   @ViewChild('searchInput', { static: true }) inputCollaudatore: IonInput;
-  users$: Observable<User[]>;
+  projects$: Observable<Project[]>;
   form: FormGroup;
   showList = true;
 
@@ -24,12 +24,12 @@ export class NewRoomFormComponent implements OnInit {
     private roomsService: RoomService,
     private alertController: AlertController,
     private toastController: ToastController,
-    private userService: UserService
+    private projectService: ProjectService
   ) { }
 
 
   ngOnInit() {
-    this.onFilterUsers();
+    this.onFilterProjects();
 
     this.form = new FormGroup({
       usermobile: new FormControl(null, {
@@ -48,17 +48,17 @@ export class NewRoomFormComponent implements OnInit {
 
   }
 
-  onFilterUsers() {
-    this.users$ = this.inputCollaudatore.ionInput.pipe(
+  onFilterProjects() {
+    this.projects$ = this.inputCollaudatore.ionInput.pipe(
       map((event) => (<HTMLInputElement>event.target).value),
       debounceTime(400),
       distinctUntilChanged(),
       startWith(""),
       switchMap((searchTerm) =>
-        this.userService.users$.pipe(
-          map((users) =>
-            users.filter((user) =>
-              user.collaudatoreufficio.toLowerCase().includes(searchTerm.toLowerCase())
+        this.projectService.projects$.pipe(
+          map((projects) =>
+            projects.filter((project) =>
+              project.nome.toLowerCase().includes(searchTerm.toLowerCase())
             )
           )
         )
@@ -66,14 +66,17 @@ export class NewRoomFormComponent implements OnInit {
     );
   }
 
-  onChooseCollaudatore(collaudatoreufficio: string) {
-    this.form.patchValue({ nome_collaudatore: collaudatoreufficio });
+  onChooseProject(project: Project) {
+    this.form.patchValue({ 
+      nome_collaudatore: project.collaudatoreufficio,
+      nome_progetto: project.nome, 
+    });
   }
 
   // onFilter(eventValue: Event) {
   //   let searchTerm = (<HTMLInputElement>eventValue.target).value;
-  //   this.users = this.users.filter((user) => {
-  //     return user.collaudatoreufficio.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1;
+  //   this.projects = this.projects.filter((project) => {
+  //     return project.collaudatoreufficio.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1;
   //   });
   // }
 

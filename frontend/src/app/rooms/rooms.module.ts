@@ -12,6 +12,7 @@ import { EditRoomModalComponent } from './edit-room-modal/edit-room-modal.compon
 import { NewRoomModalComponent } from './new-room-modal/new-room-modal.component';
 import { NewRoomFormComponent } from './forms/new-room-form/new-room-form.component';
 import { EditRoomFormComponent } from './forms/edit-room-form/edit-room-form.component';
+import { PipesModule } from '../pipes.module';
 
 @NgModule({
   imports: [
@@ -19,6 +20,7 @@ import { EditRoomFormComponent } from './forms/edit-room-form/edit-room-form.com
     FormsModule,
     ReactiveFormsModule,
     IonicModule,
+    PipesModule,
     RoomsPageRoutingModule
   ],
   declarations: [
@@ -27,8 +29,9 @@ import { EditRoomFormComponent } from './forms/edit-room-form/edit-room-form.com
     EditRoomModalComponent,
     NewRoomModalComponent,
     NewRoomFormComponent,
-    EditRoomFormComponent
+    EditRoomFormComponent,
   ],
+  // providers: [ ObsWithStatusPipe ],
   exports: [NewRoomFormComponent, EditRoomFormComponent],
   // <-- Serve per i componenti che non sono dichiarati all'interno di altri template (es. modal)
   entryComponents: [EditRoomModalComponent, NewRoomModalComponent] 

@@ -14,32 +14,52 @@
       <ion-col>
         <ion-item>
           <ion-label color="primary" position="floating">Progetto</ion-label>
-          <ion-input formControlName="nome_progetto" type="text" autocomplete autocorrect></ion-input>
-          <ion-icon name="pencil-outline" slot="end" class="ion-align-self-center"></ion-icon>
+          <ion-input formControlName="nome_progetto" type="text" autocomplete autocorrect #searchInput></ion-input>
+          <ion-icon name="chevron-down-outline" slot="end" class="ion-align-self-center" (click)="showList = !showList">
+          </ion-icon>
         </ion-item>
       </ion-col>
     </ion-row>
-    <ion-row>
-      <ion-col>
-        <ion-item>
-          <ion-label color="primary" position="floating">Collaudatore</ion-label>
-          <ion-input formControlName="nome_collaudatore" type="text" autocomplete autocorrect #searchInput></ion-input>
-          <ion-icon name="chevron-down-outline" slot="end" class="ion-align-self-center"></ion-icon>
-        </ion-item>
-      </ion-col>
-    </ion-row>
-    <div class="custom-list" *ngIf="showList">
-    <ion-row>
-      <ion-col>
-          <ion-list *ngFor="let user of (users$ | async)">
-            <ion-item button="true" lines="none" (click)="onChooseCollaudatore(user.collaudatoreufficio)">
-              <ion-icon name="chevron-forward-outline" slot="start" class="ion-align-self-center"></ion-icon>
-              <ion-label>{{user.collaudatoreufficio}}</ion-label>
-            </ion-item>
+    <div class="custom-list" *ngIf="projects$ | obsWithStatus | async as projects">
+      <ion-row>
+        <ion-col>
+          <ion-list *ngFor="let project of projects.value">
+            <ng-template [ngIf]="projects.value">
+              <ion-item button="true" lines="none" (click)="onChooseProject(project)">
+                <ion-icon name="chevron-forward-outline" slot="start" class="ion-align-self-center"></ion-icon>
+                <ion-label>{{project.nome}}</ion-label>
+              </ion-item>
+            </ng-template>
+            <ng-template [ngIf]="projects.loading">
+              <div class="ion-text-center">
+                <ion-spinner></ion-spinner>
+              </div>
+            </ng-template>
           </ion-list>
         </ion-col>
       </ion-row>
     </div>
+    <!-- <div class="custom-list" *ngIf="showList">
+      <ion-row>
+        <ion-col>
+          <ion-list *ngFor="let project of (projects$ | async)">
+            <ion-item button="true" lines="none" (click)="onChooseProject(project)">
+              <ion-icon name="chevron-forward-outline" slot="start" class="ion-align-self-center"></ion-icon>
+              <ion-label>{{project.nome}}</ion-label>
+            </ion-item>
+          </ion-list>
+        </ion-col>
+      </ion-row>
+    </div> -->
+    <ion-row>
+      <ion-col>
+        <ion-item>
+          <ion-label color="primary" position="floating">Collaudatore</ion-label>
+          <ion-input formControlName="nome_collaudatore" type="text" autocomplete autocorrect></ion-input>
+          <ion-icon name="lock-closed-outline" slot="end" class="ion-align-self-center"></ion-icon>
+        </ion-item>
+      </ion-col>
+    </ion-row>
   </form>
 </div>
 <div class="fixed ion-padding">
