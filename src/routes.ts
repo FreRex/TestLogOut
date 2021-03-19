@@ -44,21 +44,21 @@ router.post('/token/', controllerToken.getToken);
 //----------- API-db -----------------------------------------------------
 //Indirizzamento ad API-db di lettura (SELECT)
 router.get('/s/:table/', [mid.checkAuth], controllerSelect.getSelect);
-router.get('/s/:table/:id/', controllerSelect.getSelect);
+router.get('/s/:table/:id/', [mid.checkAuth], controllerSelect.getSelect);
+//router.get('/s/:table/:idcollaudatore/', [mid.checkAuth], controllerSelect.getSelect);
 
 //Indirizzamento ad API-db di modifica (UPDATE)
-router.put('/ur/',controllerUpdate.putUpdateRoom);
-router.put('/uu/',controllerUpdate.putUpdateUtenti);
-router.put('/up/',controllerUpdate.putUpdateProgetti);
+router.put('/ur/', [mid.checkAuth], controllerUpdate.putUpdateRoom);
+router.put('/uu/', [mid.checkAuth], controllerUpdate.putUpdateUtenti);
+router.put('/up/', [mid.checkAuth], controllerUpdate.putUpdateProgetti);
 
 //Indirizzamento ad API-db di modifica (DELETE)
-router.post('/d/',controllerDelete.delete);
+router.post('/d/', [mid.checkAuth], controllerDelete.delete);
 
 //Indirizzamento ad API-db di creazione (POST)
-router.post('/cu/',controllerCreate.postCreateUtenti);
-router.post('/cp/',controllerCreate.postCreateProgetti);
-router.post('/cr/',controllerCreate.postCreateRoom);
+router.post('/cu/', controllerCreate.postCreateUtenti);
+router.post('/cp/', controllerCreate.postCreateProgetti);
+router.post('/cr/', [mid.checkAuth], controllerCreate.postCreateRoom);
 //------------------------------------------------------------------------
-
 
 module.exports = router;
