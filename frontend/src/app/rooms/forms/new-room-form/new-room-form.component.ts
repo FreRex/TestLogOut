@@ -2,8 +2,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AlertController, IonInput, ModalController, PopoverController, ToastController } from '@ionic/angular';
-import { Observable } from 'rxjs';
-import { debounceTime, distinctUntilChanged, map, startWith, switchMap } from 'rxjs/operators';
+import { BehaviorSubject, concat, Observable, of } from 'rxjs';
+import { debounceTime, delay, distinctUntilChanged, map, startWith, switchMap } from 'rxjs/operators';
 import { Project, ProjectService } from 'src/app/backoffice/projects/project.service';
 import { RoomService } from '../../room.service';
 
@@ -13,6 +13,30 @@ import { RoomService } from '../../room.service';
   styleUrls: ['./new-room-form.component.scss'],
 })
 export class NewRoomFormComponent implements OnInit {
+
+  searchStream$ = new BehaviorSubject('');
+
+  obs$: Observable<{ type: string; value?: Project[] }> = this.searchStream$.pipe(
+    debounceTime(200),
+    distinctUntilChanged(),
+    switchMap((query) => 
+      concat(
+        of({ type: 'start'}),
+        this.getByFilter(query).pipe(map(value => ({ type: 'finish', value })))
+      ))
+  );
+  
+  getByFilter(query: string) {
+    // const products = PRODUCTS.filter(product => product.toLowerCase().includes(query.toLowerCase()))
+    // return of(products).pipe(delay(500));
+    return this.projectService.projects$.pipe(
+      map((projects) =>
+        projects.filter((project) =>
+          project.nome.toLowerCase().includes(query.toLowerCase())
+        )
+      )
+    )
+  }
 
   @ViewChild('searchInput', { static: true }) inputCollaudatore: IonInput;
   projects$: Observable<Project[]>;

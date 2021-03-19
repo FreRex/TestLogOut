@@ -14,7 +14,9 @@
       <ion-col>
         <ion-item>
           <ion-label color="primary" position="floating">Progetto</ion-label>
-          <ion-input formControlName="nome_progetto" type="text" autocomplete autocorrect #searchInput></ion-input>
+          <ion-input (input)="searchStream$.next($event.target.value)" 
+          formControlName="nome_progetto" type="text"
+            autocomplete autocorrect #searchInput></ion-input>
           <ion-icon name="chevron-down-outline" slot="end" class="ion-align-self-center" (click)="showList = !showList">
           </ion-icon>
         </ion-item>
