@@ -13,6 +13,8 @@ import {
 } from 'rxjs/operators';
 import { Project, ProjectService } from './projects/project.service';
 import { User, UserService } from './users/user.service';
+import { EditProjectModalComponent } from './projects/edit-project-modal/edit-project-modal.component';
+import { EditUserModalComponent } from './users/edit-user-modal/edit-user-modal.component';
 
 @Component({
   selector: 'app-backoffice',
@@ -108,6 +110,28 @@ export class BackofficePage implements OnInit {
     this.modalCtrl
       .create({
         component: CreateUserModalComponent,
+      })
+      .then((modalEl) => {
+        modalEl.present();
+        return modalEl.onDidDismiss();
+      })
+  }
+
+  openEditProject() {
+    this.modalCtrl
+      .create({
+        component: EditProjectModalComponent,
+      })
+      .then((modalEl) => {
+        modalEl.present();
+        return modalEl.onDidDismiss();
+      })
+  }
+
+  openEditUser() {
+    this.modalCtrl
+      .create({
+        component: EditUserModalComponent,
       })
       .then((modalEl) => {
         modalEl.present();

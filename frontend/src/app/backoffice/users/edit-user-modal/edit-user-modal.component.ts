@@ -4,11 +4,11 @@ import { ModalController } from '@ionic/angular';
 import { UserService } from '../user.service';
 
 @Component({
-  selector: 'app-create-user-modal',
-  templateUrl: './create-user-modal.component.html',
-  styleUrls: ['./create-user-modal.component.scss'],
+  selector: 'app-edit-user-modal',
+  templateUrl: './edit-user-modal.component.html',
+  styleUrls: ['./edit-user-modal.component.scss'],
 })
-export class CreateUserModalComponent implements OnInit {
+export class EditUserModalComponent implements OnInit {
 
   form:FormGroup;
 
@@ -43,29 +43,6 @@ export class CreateUserModalComponent implements OnInit {
   }
 
   closeModal(){
-    this.modalCtrl.dismiss(CreateUserModalComponent);
-  }
-
-  createUser(){
-    if (!this.form.valid) { return; }
-    this.userService
-      .addUser(
-        this.form.value.collaudatoreufficio,
-        this.form.value.username,
-        this.form.value.password,
-        +this.form.value.autorizzazioni)
-      .subscribe(
-        res => {
-          // console.log("Response",res);
-          // this.presentToast('Room creata!');
-          this.form.reset();
-          this.modalCtrl.dismiss({ message: 'user create' }, 'save');
-        },
-        // (err: HttpErrorResponse) => {
-        //   console.log("Error:", err.error['text']);
-        //   this.createErrorAlert(err.error['text']);
-        // }
-      );
-
+    this.modalCtrl.dismiss(EditUserModalComponent);
   }
 }

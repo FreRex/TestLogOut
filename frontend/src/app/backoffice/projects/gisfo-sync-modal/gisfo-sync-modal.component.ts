@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { User, UserService } from '../../users/user.service';
@@ -12,6 +13,7 @@ export class GisfoSyncModalComponent implements OnInit, OnDestroy {
 
   private sub : Subscription;
   users:User[];
+  form:FormGroup;
 
   constructor(
     private userService: UserService,
@@ -19,6 +21,20 @@ export class GisfoSyncModalComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
+
+      this.form = new FormGroup({
+        collaudatoreufficio: new FormControl(null, {
+          updateOn: 'blur',
+          validators: [Validators.required, Validators.maxLength(50)]
+        }),
+        pk_proj: new FormControl(null, {
+          updateOn: 'blur',
+          validators: [Validators.required, Validators.maxLength(30)]
+        }),
+
+      });
+
+
     this.sub = this.userService.users$.subscribe(
       (users:User[]) => {
         this.users = users;

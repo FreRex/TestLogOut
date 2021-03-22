@@ -5,11 +5,11 @@ import { Subscription } from 'rxjs';
 import { User, UserService } from '../../users/user.service';
 
 @Component({
-  selector: 'app-upload-shp-modal',
-  templateUrl: './upload-shp-modal.component.html',
-  styleUrls: ['./upload-shp-modal.component.scss'],
+  selector: 'app-edit-project-modal',
+  templateUrl: './edit-project-modal.component.html',
+  styleUrls: ['./edit-project-modal.component.scss'],
 })
-export class UploadShpModalComponent implements OnInit {
+export class EditProjectModalComponent implements OnInit {
 
   form:FormGroup;
   private sub : Subscription;
@@ -73,6 +73,6 @@ export class UploadShpModalComponent implements OnInit {
   }
 
   closeModal(){
-    this.modalCtrl.dismiss(UploadShpModalComponent);
+    this.modalCtrl.dismiss(EditProjectModalComponent);
   }
 }
