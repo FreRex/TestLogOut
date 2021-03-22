@@ -60,7 +60,7 @@ export class AuthService {
       // if(!this.currentUser || !this.currentUser.value.roles.includes(oneRole)){
       //   return false;
       // }
-      if(!this.currentRole || !this.currentRole.value.includes(oneRole)){
+      if(!this.currentRole.value || !this.currentRole.value.includes(oneRole)){
         return false;
       }
     }
