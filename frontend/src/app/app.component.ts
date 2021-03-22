@@ -15,12 +15,12 @@ export class AppComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    // this.authService.authorizeAccess()
-    //   .subscribe(
-    //     res => {
-    //       this.store.init();
-    //     }
-    //   );
+    this.authService.authorizeAccess()
+      .subscribe(
+        res => {
+          this.store.init();
+        }
+      );
   }
 
 

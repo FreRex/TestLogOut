@@ -31,23 +31,17 @@ export class ProjectService {
     private authService: AuthService
   ) { }
 
-  // loadProjects(){
-  //   this.http
-  //     .get<Project[]>(
-  //       'https://www.collaudolive.com:9083/s/progetti/'
-  //     ).subscribe(
-  //       projects => { 
-  //         this.projSubj.next(projects); 
-  //       }
-  //     )
-  // }
-
-  loadProjects(): Observable<Project[]> {
-    return this.http
+  loadProjects() {
+    this.http
       .get<Project[]>(
         `${environment.apiUrl}/s/progetti/`,
-        { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
+        { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}` )}
       )
-      .pipe(tap(projects => { this.projSubj.next(projects); }));
+      // .pipe(tap(projects => { 
+      //   this.projSubj.next(projects); 
+      // }));
+      .subscribe(projects => {
+        this.projSubj.next(projects);
+      });
   }
 }

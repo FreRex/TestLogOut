@@ -19,41 +19,28 @@ export interface User {
   providedIn: 'root',
 })
 export class UserService {
+
   private usersSubj = new BehaviorSubject<User[]>([]);
   users$: Observable<User[]> = this.usersSubj.asObservable();
 
-  constructor(private http: HttpClient, private authService: AuthService) {}
+  constructor(
+    private http: HttpClient,
+    private authService: AuthService
+  ) { }
 
-  loadUsers(){
+  loadUsers() {
     this.http
       .get<User[]>(
-        'https://www.collaudolive.com:9083/s/utenti/',{
-          headers: new HttpHeaders().set(
-            'Authorization',
-            `Bearer ${this.authService.token}`
-          ),
-        }
-      ).subscribe(
-        users =>{
-          this.usersSubj.next(users);
-        }
+        `${environment.apiUrl}/s/utenti/`,
+        { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}` )}
       )
+      // .pipe(tap((users) => {
+      //   this.usersSubj.next(users);
+      // }));
+      .subscribe(users => {
+        this.usersSubj.next(users);
+      });
   }
-
-  // loadUsers(): Observable<User[]> {
-  //   return this.http
-  //     .get<User[]>(`${environment.apiUrl}/s/utenti/`, {
-  //       headers: new HttpHeaders().set(
-  //         'Authorization',
-  //         `Bearer ${this.authService.token}`
-  //       ),
-  //     })
-  //     .pipe(
-  //       tap((users) => {
-  //         this.usersSubj.next(users);
-  //       })
-  //     );
-  // }
 
   addUser(
     collaudatoreufficio: string,
@@ -64,39 +51,28 @@ export class UserService {
     return this.http.post(
       `${environment.apiUrl}/cu/`,
       {
-        collaudatoreufficio: collaudatoreufficio,
-        username: username,
-        password: password,
-        autorizzazioni: autorizzazioni
+        "collaudatoreufficio": collaudatoreufficio,
+        "username": username,
+        "password": password,
+        "autorizzazioni": autorizzazioni
       },
-
-      {
-        headers: new HttpHeaders().set(
-          'Authorization',
-          `Bearer ${this.authService.token}`
-        ),
-      }
-    ).pipe(tap(res=>{
+      { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}` )}
+      ).pipe(tap(res => {
       this.loadUsers();
 
     }))
-    ;
+      ;
   }
 
-  deleteUser(userId:number){
+  deleteUser(userId: number) {
     return this.http.post(
       `${environment.apiUrl}/d/`,
       {
-        "id" : userId,
-        "tableDelete" : "utenti"
+        "id": userId,
+        "tableDelete": "utenti"
       },
-      {
-        headers: new HttpHeaders().set(
-          'Authorization',
-          `Bearer ${this.authService.token}`
-        ),
-      }
-    ).pipe(tap(res=>{
+      { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}` )}
+      ).pipe(tap(res => {
       this.loadUsers();
     }));
 

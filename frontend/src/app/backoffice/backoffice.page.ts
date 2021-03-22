@@ -41,8 +41,7 @@ export class BackofficePage implements OnInit {
     this.filterUsers();
   }
 
-  /* Filtro Progetti/Utenti per barra ricerca */
-
+  /** Filtra Progetti in base alla ricerca */
   filterProjects(): void {
     this.projects$ = this.input.ionInput.pipe(
       map((event) => (<HTMLInputElement>event.target).value),
@@ -62,7 +61,8 @@ export class BackofficePage implements OnInit {
       )
     );
   }
-
+  
+  /** Filtra Utenti in base alla ricerca */
   filterUsers(){
     this.users$ = this.input.ionInput.pipe(
       map((event) => (<HTMLInputElement>event.target).value),

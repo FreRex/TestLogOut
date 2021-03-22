@@ -15,9 +15,8 @@ export class StorageDataService{
     ) {}
 
   init(){
-    this.projectService.loadProjects().subscribe();
+    this.projectService.loadProjects();
     this.userService.loadUsers();
-    this.roomService.loadRooms().subscribe();
   }
 
 }
