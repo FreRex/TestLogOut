@@ -28,12 +28,12 @@ export class EditRoomModalComponent implements OnInit {
       case 'save':
         this.modalController.dismiss({ message: 'room saved' }, 'save');
         break;
-        case 'delete':
-          this.modalController.dismiss({ message: 'room deleted' }, 'delete');
-          break;
-        default :
-          this.modalController.dismiss(null, 'cancel');
-          break;
+      case 'delete':
+        this.modalController.dismiss({ message: 'room deleted' }, 'delete');
+        break;
+      default :
+        this.modalController.dismiss(null, 'cancel');
+        break;
       }
   }
   

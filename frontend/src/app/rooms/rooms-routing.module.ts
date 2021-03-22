@@ -21,7 +21,7 @@ const routes: Routes = [
   },
   {
     path: 'edit/:roomId',
-    loadChildren: () => import('./edit-room/edit-room.module').then( m => m.EditRoomPageModule),
+    loadChildren: () => import('./edit-room-page/edit-room.module').then( m => m.EditRoomPageModule),
     canLoad: [AuthGuard]
   },
 ];

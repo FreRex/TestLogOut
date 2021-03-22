@@ -81,9 +81,11 @@ export class RoomService {
 
   /** SELECT rooms */
   loadRooms(): Observable<Room[]> {
+    console.log("User:",this.authService.user);
+    
     return this.http
       .get<{ [key: string]: RoomData }>(
-        `${environment.apiUrl}/s/room/`,
+        `${environment.apiUrl}/s/room/${this.authService.user}/0`,
         { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
       )
       .pipe(

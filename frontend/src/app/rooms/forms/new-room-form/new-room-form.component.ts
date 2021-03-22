@@ -14,6 +14,7 @@ import { RoomService } from '../../room.service';
 })
 export class NewRoomFormComponent implements OnInit {
 
+  //-------------------------------------------
   searchStream$ = new BehaviorSubject('');
 
   obs$: Observable<{ type: string; value?: Project[] }> = this.searchStream$.pipe(
@@ -37,7 +38,8 @@ export class NewRoomFormComponent implements OnInit {
       )
     )
   }
-
+  //-------------------------------------------
+  
   @ViewChild('searchInput', { static: true }) inputCollaudatore: IonInput;
   projects$: Observable<Project[]>;
   form: FormGroup;

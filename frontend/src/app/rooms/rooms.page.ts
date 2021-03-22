@@ -1,11 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { IonSelect, ModalController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Room, RoomService } from './room.service';
-import { EditRoomModalComponent } from './edit-room-modal/edit-room-modal.component';
-import { SIZE_TO_MEDIA } from '@ionic/core/dist/collection/utils/media'
 import { NewRoomModalComponent } from './new-room-modal/new-room-modal.component';
+import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'app-room',
@@ -24,24 +23,40 @@ export class RoomsPage implements OnInit, OnDestroy {
     private modalController: ModalController,
     private roomService: RoomService,
     private router: Router,
+    private route: ActivatedRoute,
+    private authService: AuthService
   ) { }
 
-  ngOnInit() {    
-    
+  ngOnInit() {
     this.isLoading = true;
-    // this.roomService.loadRooms().subscribe(res => {
-    //   this.isLoading = false;
-    // });
-    
-    // mi sottoscrivo all'osservabile "get rooms()" che restituisce la lista di room
-    this.sub = this.roomService.rooms.subscribe(
-      // questa funzione viene eseguita qualsiasi volta la lista di room cambia
-      (rooms: Room[]) => {
-        this.isLoading = false;
-        this.rooms = rooms;
-        this.filteredRooms = this.rooms;
+    this.route.queryParams.subscribe(params => {
+      if (params) {
+        let user = params['user'];
+        console.log(
+          "is user", !!user, 
+          "is a number", !isNaN(user), 
+          "is not 0", user !== 0
+        );
+        //if(x) = check if x is negative, undefined, null or empty 
+        // isNaN(x) = determina se un valore è NaN o no
+        this.authService.user = (user && !isNaN(user) && user !== 0) ? user : 0;
+      } else {
+        this.authService.user = 0;
       }
-    );
+      this.authService.authorizeAccess().subscribe(res => {
+        this.roomService.loadRooms().subscribe(res => {
+          // mi sottoscrivo all'osservabile "get rooms()" che restituisce la lista di room
+          this.sub = this.roomService.rooms.subscribe(
+            // questa funzione viene eseguita qualsiasi volta la lista di room cambia
+            (rooms: Room[]) => {
+              this.isLoading = false;
+              this.rooms = rooms;
+              this.filteredRooms = this.rooms;
+            }
+          );
+        });
+      });
+    });
   }
 
   ngOnDestroy() {

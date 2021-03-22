@@ -10,7 +10,7 @@ export class AuthService {
 
   // TODO: set to false
   private _userIsAutenticated = true;
-  private _user: string = '';
+  private _user: number;
 
   // TODO: rendere userIsAthenticated un BehaviourSubject e ritornare un Osservabile
   get userIsAthenticated() {
@@ -21,19 +21,22 @@ export class AuthService {
     return this._user;
   }
 
+  set user(user: number){
+    this._user = user;
+  }
+
   constructor(
     private http: HttpClient,
   ) { }
 
-  login(user: string) {
+  login() {
     this._userIsAutenticated = true;
-    this._user = user;
     console.log("is logged in: " + this._userIsAutenticated);
   }
 
   logout() {
     this._userIsAutenticated = false;
-    this._user = '';
+    this._user = null;
     console.log("is logged out: " + this._userIsAutenticated);
   }
 
