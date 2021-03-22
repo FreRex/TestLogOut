@@ -13,6 +13,7 @@ import { NewRoomModalComponent } from './new-room-modal/new-room-modal.component
 import { NewRoomFormComponent } from './forms/new-room-form/new-room-form.component';
 import { EditRoomFormComponent } from './forms/edit-room-form/edit-room-form.component';
 import { PipesModule } from '../pipes.module';
+import { SharedDirectivesModule } from '../directives/shared-directives.module';
 
 @NgModule({
   imports: [
@@ -21,6 +22,7 @@ import { PipesModule } from '../pipes.module';
     ReactiveFormsModule,
     IonicModule,
     PipesModule,
+    SharedDirectivesModule,
     RoomsPageRoutingModule
   ],
   declarations: [

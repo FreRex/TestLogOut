@@ -12,6 +12,7 @@ export interface User {
   autorizzazioni: number;
   id?: number;
   checkGis?: number;
+  roles?: string[]
 }
 
 @Injectable({
