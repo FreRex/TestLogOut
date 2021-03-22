@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Room, RoomService } from './room.service';
 import { NewRoomModalComponent } from './new-room-modal/new-room-modal.component';
 import { AuthService } from '../auth/auth.service';
+import { mergeMap, switchMap, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-room',
@@ -13,6 +14,7 @@ import { AuthService } from '../auth/auth.service';
 })
 export class RoomsPage implements OnInit, OnDestroy {
 
+  authenticated = false;
   private sub: Subscription;
   rooms: Room[];
   // isSearchMode: boolean = false;
@@ -29,33 +31,34 @@ export class RoomsPage implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.isLoading = true;
-    this.route.queryParams.subscribe(params => {
-      if (params) {
-        let user = params['user'];
-        console.log(
-          "is user", !!user, 
-          "is a number", !isNaN(user), 
-          "is not 0", user !== 0
-        );
+    this.route.queryParams.pipe(
+      switchMap(params => {
+        console.log("user exist",!!params['user'],"is a number",!isNaN(params['user']),"is not 0",params['user']!=='0');
         //if(x) = check if x is negative, undefined, null or empty 
         // isNaN(x) = determina se un valore è NaN o no
-        this.authService.user = (user && !isNaN(user) && user !== 0) ? user : 0;
-      } else {
-        this.authService.user = 0;
-      }
-      this.authService.authorizeAccess().subscribe(res => {
-        this.roomService.loadRooms().subscribe(res => {
-          // mi sottoscrivo all'osservabile "get rooms()" che restituisce la lista di room
-          this.sub = this.roomService.rooms.subscribe(
-            // questa funzione viene eseguita qualsiasi volta la lista di room cambia
-            (rooms: Room[]) => {
-              this.isLoading = false;
-              this.rooms = rooms;
-              this.filteredRooms = this.rooms;
-            }
-          );
-        });
-      });
+        if (params && params['user'] && !isNaN(params['user']) && params['user'] !== '0') {
+          this.authService.onLogin(+params['user']);
+        } else {
+          this.authService.onLogin(0);
+        }
+        return this.authService.currentRole$;
+      }),
+      switchMap(authState => {
+        this.authenticated = authState ? true : false;
+        return this.authService.authorizeAccess();
+      }),
+      switchMap(res => {
+        return this.roomService.loadRooms();
+      }),
+      switchMap(res => {
+        return this.roomService.rooms;
+      })
+    ).subscribe((rooms: Room[]) => {
+      // mi sottoscrivo all'osservabile "get rooms()" che restituisce la lista di room
+      // questa funzione viene eseguita qualsiasi volta la lista di room cambia
+      this.isLoading = false;
+      this.rooms = rooms;
+      this.filteredRooms = this.rooms;
     });
   }
 
