@@ -2,31 +2,53 @@
 exports.getSelect = (req, res, next) => {
     const db = require('../conf/db');
     const validator = require('validator');
+    // Definizione variabili
     let table = req.params.table;
     let sql;
     let id;
+    let collaudatoreufficio;
     let idWh;
     //-------------------------
-    //Verifica parametro 'id'
+    //Verifica parametri
     //-------------------------
-    if (typeof (req.params.id) !== 'undefined') {
+    //if (typeof(req.params.id) !== 'undefined' && Number.isInteger(id) && (req.params.id)!= 0 && (req.params.id)!='') {
+    if (typeof (req.params.id) !== 'undefined' && validator.isNumeric(req.params.id) && (req.params.id) != 0 && (req.params.id) != '') {
         id = req.params.id;
-        if (table == 'room') {
-            idWh = "multistreaming.id = ?";
-        }
-        else {
-            idWh = "id = ?";
-        }
     }
     else {
         id = '';
+    }
+    //if (typeof(req.params.collaudatoreufficio) !== 'undefined') {
+    if (typeof (req.params.collaudatoreufficio) !== 'undefined' && validator.isNumeric(req.params.collaudatoreufficio) && (req.params.collaudatoreufficio) != 0 && (req.params.collaudatoreufficio) != '') {
+        collaudatoreufficio = req.params.collaudatoreufficio;
+    }
+    else {
+        collaudatoreufficio = '';
     }
     //---------------------
     //Selezione tipo query  
     //---------------------  
     switch (table) {
         case "room":
-            sql = 'SELECT multistreaming.id AS id, multistreaming.usermobile AS usermobile, multistreaming.progettoselezionato AS progettoselezionato, utenti.collaudatoreufficio AS collaudatoreufficio, multistreaming.DataInsert AS DataInsert FROM multistreaming INNER JOIN utenti ON utenti.id = multistreaming.collaudatoreufficio ORDER BY id DESC';
+            sql = 'SELECT multistreaming.id AS id, multistreaming.usermobile AS usermobile, multistreaming.progettoselezionato AS progettoselezionato, utenti.collaudatoreufficio AS collaudatoreufficio, multistreaming.DataInsert AS DataInsert FROM multistreaming INNER JOIN utenti ON utenti.id = multistreaming.collaudatoreufficio ';
+            if (id == '') {
+                if (collaudatoreufficio == '') {
+                    sql = sql + 'ORDER BY id DESC';
+                }
+                else {
+                    sql = sql + 'WHERE utenti.id = ' + collaudatoreufficio + ' ORDER BY id DESC';
+                }
+                //res.send(sql)           
+            }
+            else {
+                if (collaudatoreufficio == '') {
+                    sql = sql + 'WHERE multistreaming.id = ' + id + ' ORDER BY id DESC';
+                }
+                else {
+                    sql = sql + 'WHERE multistreaming.id = ' + id + ' AND utenti.id = ' + collaudatoreufficio + ' ORDER BY id DESC';
+                }
+            }
+            //res.send(sql)
             break;
         case "utenti":
             sql = 'SELECT * FROM utenti ORDER BY id DESC';
@@ -39,32 +61,12 @@ exports.getSelect = (req, res, next) => {
     //-------------------
     // Esecuzione query
     //-------------------
-    if (!validator.isNumeric(id) || id == 0) {
-        if (id == '') {
-            //In caso di assenza di parametri si esegue la query 'senza' WHERE
-            db.query(sql, (err, rows, fields) => {
-                if (err) {
-                    res.send('Query error: ' + err.sqlMessage);
-                }
-                else {
-                    res.json(rows);
-                }
-            });
+    db.query(sql, (err, rows, fields) => {
+        if (err) {
+            res.send('Query error: ' + err.sqlMessage);
         }
         else {
-            //Parametri non validi (NON numerici o uguali a ZERO)
-            res.send('Parameter error: invalid parameters');
+            res.json(rows);
         }
-    }
-    else {
-        //Parametro valido presente => query 'con' WHERE
-        db.query(sql + " WHERE " + idWh, [id], (err, rows, fields) => {
-            if (err) {
-                res.send('Query error: ' + err.sqlMessage);
-            }
-            else {
-                res.json(rows);
-            }
-        });
-    }
+    });
 };

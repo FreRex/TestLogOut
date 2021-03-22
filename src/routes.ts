@@ -1,4 +1,7 @@
 import express from 'express';
+
+const controllerTest = require('./ctrl/controllerTest');
+
 const controllerSelect = require('./ctrl/controllerSelect');
 const controllerUpdate = require('./ctrl/controllerUpdate');
 const controllerDelete = require('./ctrl/controllerDelete');
@@ -35,6 +38,11 @@ router.use(function(req, res, next) {
 //----------------------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------------
 
+//TEST
+router.get('/test/:par1?/:par2?', controllerTest.test);
+
+
+
 //VidApp (riavvio Node Media Server)
 router.get('/vidapp/', controllerVidApp.VidApp);
 
@@ -43,9 +51,9 @@ router.post('/token/', controllerToken.getToken);
 
 //----------- API-db -----------------------------------------------------
 //Indirizzamento ad API-db di lettura (SELECT)
-router.get('/s/:table/', [mid.checkAuth], controllerSelect.getSelect);
-router.get('/s/:table/:id/', [mid.checkAuth], controllerSelect.getSelect);
-//router.get('/s/:table/:idcollaudatore/', [mid.checkAuth], controllerSelect.getSelect);
+//router.get('/s/:table/', [mid.checkAuth], controllerSelect.getSelect);
+//router.get('/s/:table/:id?/', [mid.checkAuth], controllerSelect.getSelect);
+router.get('/s/:table/:collaudatoreufficio?/:id?/', [mid.checkAuth], controllerSelect.getSelect);
 
 //Indirizzamento ad API-db di modifica (UPDATE)
 router.put('/ur/', [mid.checkAuth], controllerUpdate.putUpdateRoom);
