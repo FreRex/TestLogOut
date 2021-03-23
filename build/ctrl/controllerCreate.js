@@ -117,7 +117,7 @@ exports.postCreateRoom = (req, res, next) => {
     }
     // Fine ciclo-esame json => operazione da compiere
     if (messageErrore == '') {
-        let sql = "INSERT INTO multistreaming (usermobile, progettoselezionato) VALUES (?,?)";
+        let sql = "INSERT INTO multistreaming (usermobile, progettoselezionato, cod, collaudatoreufficio) VALUES (?,?,?,?)";
         esecuzioneQuery(sql);
     }
     else {
