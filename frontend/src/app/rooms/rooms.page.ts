@@ -33,13 +33,15 @@ export class RoomsPage implements OnInit, OnDestroy {
     this.isLoading = true;
     this.route.queryParams.pipe(
       switchMap(params => {
-        console.log("user exist",!!params['user'],"is a number",!isNaN(params['user']),"is not 0",params['user']!=='0');
+        console.log("user exist", !!params['user'], "is a number", !isNaN(params['user']), "is not 0", params['user'] !== '0');
         //if(x) = check if x is negative, undefined, null or empty 
         // isNaN(x) = determina se un valore è NaN o no
-        if (params && params['user'] && !isNaN(params['user']) && params['user'] !== '0' && params['user'] !== '1') {
-          this.authService.onLogin(+params['user']);
-        } else {
-          this.authService.onLogin(0);
+        if (!this.authenticated) {
+          if (params && params['user'] && !isNaN(params['user']) && params['user'] !== '0' && params['user'] !== '1') {
+            this.authService.onLogin(+params['user']);
+          } else {
+            this.authService.onLogin(0);
+          }
         }
         return this.authService.currentRole$;
       }),
@@ -72,7 +74,7 @@ export class RoomsPage implements OnInit, OnDestroy {
   }
 
   /** Funzione che filtra i progetti in base al fitro impostato e all'input */
-  onFilter(eventValue: Event, filterValue: string) {
+  onFilter(eventValue: Event, filterValue?: string) {
     let searchTerm = (<HTMLInputElement>eventValue.target).value;
     switch (filterValue) {
       case "collaudatore": {

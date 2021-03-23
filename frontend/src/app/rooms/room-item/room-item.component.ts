@@ -30,11 +30,11 @@ export class RoomItemComponent implements OnInit {
     this.authService.currentRole$.subscribe(
       currentRole => {
         this.currentRole = currentRole;
-        this.linkProgetto = 
-        'https://www.collaudolive.com:9777/glasses_test/FrontEnd/src/index.php?q='
-        + this.room.pk_proj
-        + ((currentRole === 'admin') ? '&useringresso=admin' : '');
-        console.log(this.linkProgetto);
+        this.linkProgetto =
+          'https://www.collaudolive.com:9777/glasses_test/FrontEnd/src/index.php?q='
+          + this.room.projectID
+          + ((currentRole === 'admin') ? '&useringresso=admin' : '');
+        // console.log(this.linkProgetto);
       }
     );
   }

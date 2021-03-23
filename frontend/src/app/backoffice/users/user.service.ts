@@ -130,4 +130,15 @@ export class UserService {
         })
       );
   }
+  
+  getUserIdByName(name: string): number {
+    let userID: number;
+    this.users$.pipe(
+      take(1),
+      map((users: User[]) => {
+        return { ...users.find(user => user.collaudatoreufficio === name) };
+      }))
+      .subscribe(user => userID = user.id);
+    return userID;
+    }
 }
