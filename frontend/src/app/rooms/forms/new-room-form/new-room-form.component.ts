@@ -44,6 +44,7 @@ export class NewRoomFormComponent implements OnInit {
   projects$: Observable<Project[]>;
   form: FormGroup;
   showList = true;
+  project: Project;
 
   constructor(
     private modalController: ModalController,
@@ -93,9 +94,10 @@ export class NewRoomFormComponent implements OnInit {
   }
 
   onChooseProject(project: Project) {
+    this.project = project;
     this.form.patchValue({ 
-      nome_collaudatore: project.collaudatoreufficio,
-      nome_progetto: project.nome, 
+      nome_collaudatore: this.project.collaudatoreufficio,
+      nome_progetto: this.project.nome, 
     });
   }
 
@@ -110,6 +112,7 @@ export class NewRoomFormComponent implements OnInit {
     if (!this.form.valid) { return; }
     this.roomsService
       .addRoom(
+        this.project.pk_proj.toString(),
         this.form.value.usermobile,
         this.form.value.nome_progetto,
         this.form.value.nome_collaudatore)

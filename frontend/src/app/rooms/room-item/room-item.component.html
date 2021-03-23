@@ -1,17 +1,20 @@
 <ion-item-sliding #slidingItem>
-    <ion-item detail>
+    <ion-item detail button="true" 
+    [href]="linkProgetto"
+    target="_blank">
         <!-- <div class="ion-padding">
             <ion-icon size="large" color="medium" name="create-outline" (click)="onOpenEditModal()"></ion-icon>
         </div> -->
-        <ion-label [routerLink]="['./', room.id]">
+        <ion-label>
             <ion-text color="primary">
                 <h2><b>Progetto:</b> {{ room.nome_progetto }}</h2>
             </ion-text>
             <ion-text color="medium">
                 <p>
-                    <b>Data Inserimento:</b> {{ room.data_inserimento | date:'dd MMMM yyyy' }} -
+                    {{linkProgetto}}
+                    <!-- <b>Data Inserimento:</b> {{ room.data_inserimento | date:'dd MMMM yyyy' }} -
                     <b>Collaudatore:</b> {{ room.nome_collaudatore}} -
-                    <b>Usermobile:</b> {{ room.usermobile }}
+                    <b>Usermobile:</b> {{ room.usermobile }} -->
                 </p>
             </ion-text>
         </ion-label>

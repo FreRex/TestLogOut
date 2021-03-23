@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController, IonItemSliding, ModalController, ToastController } from '@ionic/angular';
+import { AuthService } from 'src/app/auth/auth.service';
 import { EditRoomModalComponent } from '../edit-room-modal/edit-room-modal.component';
 import { Room, RoomService } from '../room.service';
 
@@ -12,17 +13,31 @@ import { Room, RoomService } from '../room.service';
 export class RoomItemComponent implements OnInit {
 
   @Input() room: Room;
+  currentRole: string;
+  linkProgetto: string;
   isFavourite: boolean;
-  
+
   constructor(
     private router: Router,
     private roomsService: RoomService,
+    private authService: AuthService,
     private alertController: AlertController,
     private modalController: ModalController,
     private toastController: ToastController
-    ) { }
+  ) { }
 
-  ngOnInit() {  }
+  ngOnInit() {
+    this.authService.currentRole$.subscribe(
+      currentRole => {
+        this.currentRole = currentRole;
+        this.linkProgetto = 
+        'https://www.collaudolive.com:9777/glasses_test/FrontEnd/src/index.php?q='
+        + this.room.pk_proj
+        + ((currentRole === 'admin') ? '&useringresso=admin' : '');
+        console.log(this.linkProgetto);
+      }
+    );
+  }
 
   onDownload(slidingItem: IonItemSliding) {
     // TODO: logica download foto
@@ -31,7 +46,7 @@ export class RoomItemComponent implements OnInit {
   }
 
   /** Apre la pagina di MODIFICA ROOM */
-  onOpenEditRoomPage(slidingItem: IonItemSliding){
+  onOpenEditRoomPage(slidingItem: IonItemSliding) {
     slidingItem.close();
     this.router.navigate(['/', 'rooms', 'edit', this.room.id]);
   }
@@ -84,14 +99,14 @@ export class RoomItemComponent implements OnInit {
       message: message,
       color: 'secondary',
       duration: 2000,
-      buttons: [ { icon: 'close', role: 'cancel'}]
+      buttons: [{ icon: 'close', role: 'cancel' }]
     })
     // FIX: si può fare in entrambi i modi, qual'è il più giusto?
     // .then(toastEl => toastEl.present());
     toast.present();
   }
 
-  onFavoutite(){
+  onFavoutite() {
     console.log("My favourite room!");
     this.isFavourite = !this.isFavourite;
   }

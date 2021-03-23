@@ -8,6 +8,7 @@ import { environment } from 'src/environments/environment';
 /** Interfaccia che definisce la Room all'interno del progetto */
 export interface Room {
   id: number;
+  pk_proj: string;
   usermobile: string;
   nome_progetto: string;
   nome_collaudatore: string;
@@ -19,6 +20,7 @@ export interface Room {
 /** Interfaccia che definisce la Room come mi arriva sul JSON */
 export interface RoomData {
   id: number;
+  cod: string,
   usermobile: string;
   progettoselezionato: string;
   collaudatoreufficio: string;
@@ -98,6 +100,7 @@ export class RoomService {
             if (roomData.hasOwnProperty(key)) {
               rooms.push({
                 id: roomData[key].id,
+                pk_proj: roomData[key].cod,
                 usermobile: roomData[key].usermobile,
                 nome_progetto: roomData[key].progettoselezionato,
                 nome_collaudatore: roomData[key].collaudatoreufficio,
@@ -124,6 +127,7 @@ export class RoomService {
         map(roomData => {
           return {
             id: roomData[0].id,
+            pk_proj: roomData[0].cod,
             usermobile: roomData[0].usermobile,
             nome_progetto: roomData[0].progettoselezionato,
             nome_collaudatore: roomData[0].collaudatoreufficio,
@@ -134,11 +138,12 @@ export class RoomService {
   }
 
   /** CREATE room e aggiungila alla lista */
-  addRoom(usermobile: string, nome_progetto: string, nome_collaudatore: string) {
+  addRoom(pk_proj: string, usermobile: string, nome_progetto: string, nome_collaudatore: string) {
     let updatedRooms: Room[];
     const newRoom =
     {
       id: null,
+      pk_proj: pk_proj,
       usermobile: usermobile,
       nome_progetto: nome_progetto,
       nome_collaudatore: nome_collaudatore,
@@ -166,7 +171,6 @@ export class RoomService {
               {
                 "usermobile": usermobile,
                 "progettoselezionato": nome_progetto,
-                // "collaudatoreufficio": nome_collaudatore
               },
               { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
             )
@@ -204,6 +208,7 @@ export class RoomService {
           updatedRooms[updatedRoomIndex] =
           {
             id: oldRoom.id,
+            pk_proj: oldRoom.pk_proj,
             usermobile: newUsermobile,
             nome_progetto: oldRoom.nome_progetto,
             nome_collaudatore: oldRoom.nome_collaudatore,

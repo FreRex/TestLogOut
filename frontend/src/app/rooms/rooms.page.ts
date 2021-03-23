@@ -36,7 +36,7 @@ export class RoomsPage implements OnInit, OnDestroy {
         console.log("user exist",!!params['user'],"is a number",!isNaN(params['user']),"is not 0",params['user']!=='0');
         //if(x) = check if x is negative, undefined, null or empty 
         // isNaN(x) = determina se un valore è NaN o no
-        if (params && params['user'] && !isNaN(params['user']) && params['user'] !== '0') {
+        if (params && params['user'] && !isNaN(params['user']) && params['user'] !== '0' && params['user'] !== '1') {
           this.authService.onLogin(+params['user']);
         } else {
           this.authService.onLogin(0);

@@ -1,9 +1,8 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
 import { BehaviorSubject } from 'rxjs';
-import { User } from '../backoffice/users/user.service';
 
 @Injectable({
   providedIn: 'root'
@@ -66,8 +65,6 @@ export class AuthService {
     }
     return true;
   }
-
-
 
   login() {
     this._userIsAutenticated = true;

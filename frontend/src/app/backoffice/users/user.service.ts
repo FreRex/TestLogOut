@@ -32,7 +32,7 @@ export class UserService {
     this.http
       .get<User[]>(
         `${environment.apiUrl}/s/utenti/`,
-        { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}` )}
+        { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
       )
       // .pipe(tap((users) => {
       //   this.usersSubj.next(users);
@@ -42,12 +42,7 @@ export class UserService {
       });
   }
 
-  addUser(
-    collaudatoreufficio: string,
-    username: string,
-    password: string,
-    autorizzazioni: number
-  ) {
+  addUser(collaudatoreufficio: string, username: string, password: string, autorizzazioni: number) {
     return this.http.post(
       `${environment.apiUrl}/cu/`,
       {
@@ -56,12 +51,10 @@ export class UserService {
         "password": password,
         "autorizzazioni": autorizzazioni
       },
-      { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}` )}
-      ).pipe(tap(res => {
+      { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
+    ).pipe(tap(res => {
       this.loadUsers();
-
-    }))
-      ;
+    }));
   }
 
   deleteUser(userId: number) {
@@ -71,8 +64,8 @@ export class UserService {
         "id": userId,
         "tableDelete": "utenti"
       },
-      { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}` )}
-      ).pipe(tap(res => {
+      { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
+    ).pipe(tap(res => {
       this.loadUsers();
     }));
 
