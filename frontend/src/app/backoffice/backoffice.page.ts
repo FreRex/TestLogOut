@@ -117,10 +117,11 @@ export class BackofficePage implements OnInit {
       })
   }
 
-  openEditProject() {
+  openEditProject(projectId:number) {
     this.modalCtrl
       .create({
         component: EditProjectModalComponent,
+        componentProps: {projectId:projectId}
       })
       .then((modalEl) => {
         modalEl.present();
@@ -128,10 +129,11 @@ export class BackofficePage implements OnInit {
       })
   }
 
-  openEditUser() {
+  openEditUser(userId:number) {
     this.modalCtrl
       .create({
         component: EditUserModalComponent,
+        componentProps: {userId:userId}
       })
       .then((modalEl) => {
         modalEl.present();
@@ -179,12 +181,6 @@ export class BackofficePage implements OnInit {
       }
     ).then(alertEl => { alertEl.present(); });
   }
-  // toggleMenu() {
-  //   const splitPane = document.querySelector('ion-split-pane');
-  //   if (
-  //     window.matchMedia(SIZE_TO_MEDIA[splitPane.when] || splitPane.when).matches
-  //   ) {
-  //     splitPane.classList.toggle('split-pane-visible');
-  //   }
-  // }
+
+
 }
