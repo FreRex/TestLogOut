@@ -34,23 +34,6 @@
               </ion-input>
             </ion-item>
 
-            <ion-item>
-              <ion-label position="floating" class="ion-margin">
-                <h6>Commessa</h6>
-              </ion-label>
-              <ion-input type="text" id="commessa">
-                <h6></h6>
-              </ion-input>
-            </ion-item>
-
-            <ion-item>
-              <ion-label position="floating" class="ion-margin">
-                <h6>Privilegi</h6>
-              </ion-label>
-              <ion-input type="text" formControlName="autorizzazioni">
-                <h6></h6>
-              </ion-input>
-            </ion-item>
           </ion-col>
         </ion-row>
       </ion-grid>
@@ -60,7 +43,7 @@
       <ion-button shape="round" color="primary" (click)="closeModal()">
         <ion-icon slot="start" name="close-outline" color="danger"></ion-icon>ANNULLA
       </ion-button>
-      <ion-button shape="round" color="primary" >
+      <ion-button shape="round" color="primary" (click)="updateUser()">
         <ion-icon slot="start" name="pencil-outline" color="success"></ion-icon>MODIFICA
       </ion-button>
     </div>
