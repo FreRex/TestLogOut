@@ -4,11 +4,12 @@ import { catchError, delay, map, switchMap, take, tap } from 'rxjs/operators';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
 import { environment } from 'src/environments/environment';
+import { UserService } from '../backoffice/users/user.service';
 
 /** Interfaccia che definisce la Room all'interno del progetto */
 export interface Room {
   id: number;
-  pk_proj: string;
+  projectID: string;
   usermobile: string;
   nome_progetto: string;
   nome_collaudatore: string;
@@ -58,7 +59,8 @@ export class RoomService {
 
   constructor(
     private http: HttpClient,
-    private authService: AuthService
+    private authService: AuthService,
+    private userService: UserService
   ) { }
 
   /** Lista delle room sotto forma di BehaviourSubject */
@@ -100,7 +102,7 @@ export class RoomService {
             if (roomData.hasOwnProperty(key)) {
               rooms.push({
                 id: roomData[key].id,
-                pk_proj: roomData[key].cod,
+                projectID: roomData[key].cod,
                 usermobile: roomData[key].usermobile,
                 nome_progetto: roomData[key].progettoselezionato,
                 nome_collaudatore: roomData[key].collaudatoreufficio,
@@ -127,7 +129,7 @@ export class RoomService {
         map(roomData => {
           return {
             id: roomData[0].id,
-            pk_proj: roomData[0].cod,
+            projectID: roomData[0].cod,
             usermobile: roomData[0].usermobile,
             nome_progetto: roomData[0].progettoselezionato,
             nome_collaudatore: roomData[0].collaudatoreufficio,
@@ -138,12 +140,12 @@ export class RoomService {
   }
 
   /** CREATE room e aggiungila alla lista */
-  addRoom(pk_proj: string, usermobile: string, nome_progetto: string, nome_collaudatore: string) {
+  addRoom(projectID: string, usermobile: string, nome_progetto: string, nome_collaudatore: string) {
     let updatedRooms: Room[];
     const newRoom =
     {
       id: null,
-      pk_proj: pk_proj,
+      projectID: projectID,
       usermobile: usermobile,
       nome_progetto: nome_progetto,
       nome_collaudatore: nome_collaudatore,
@@ -171,6 +173,8 @@ export class RoomService {
               {
                 "usermobile": usermobile,
                 "progettoselezionato": nome_progetto,
+                "cod": projectID,
+                "collaudatoreufficio": this.userService.getUserIdByName(nome_collaudatore),
               },
               { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
             )
@@ -208,7 +212,7 @@ export class RoomService {
           updatedRooms[updatedRoomIndex] =
           {
             id: oldRoom.id,
-            pk_proj: oldRoom.pk_proj,
+            projectID: oldRoom.projectID,
             usermobile: newUsermobile,
             nome_progetto: oldRoom.nome_progetto,
             nome_collaudatore: oldRoom.nome_collaudatore,

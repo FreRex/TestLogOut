@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { map, take, tap } from 'rxjs/operators';
 import { AuthService } from 'src/app/auth/auth.service';
 import { environment } from 'src/environments/environment';
 
@@ -71,4 +71,14 @@ export class UserService {
 
   }
 
+  getUserIdByName(name: string): number {
+    let userID: number;
+    this.users$.pipe(
+      take(1),
+      map((users: User[]) => {
+        return { ...users.find(user => user.collaudatoreufficio === name) };
+      }))
+      .subscribe(user => userID = user.id);
+    return userID;
+  }
 }
