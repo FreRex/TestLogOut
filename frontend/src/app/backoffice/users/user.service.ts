@@ -30,8 +30,8 @@ export class UserService {
 
   loadUsers() {
     this.http
-      .get<User[]>('https://www.collaudolive.com:9083/s/utenti/', {
-        headers: new HttpHeaders().set(
+      .get<User[]>('https://www.collaudolive.com:9083/s/utenti/',
+      {headers: new HttpHeaders().set(
           'Authorization',
           `Bearer ${this.authService.token}`
         ),
@@ -130,7 +130,7 @@ export class UserService {
         })
       );
   }
-  
+
   getUserIdByName(name: string): number {
     let userID: number;
     this.users$.pipe(
