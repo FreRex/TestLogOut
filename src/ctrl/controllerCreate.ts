@@ -124,8 +124,7 @@ exports.postCreateRoom = (req: any, res: any, next: any) => {
     let key: any;
     let valore: any = '';
    
-    for(let attribute in req.body){
-        
+    for(let attribute in req.body){        
                    
             if(typeof(req.body[attribute]) !== 'undefined' && req.body[attribute] !== null && req.body[attribute] !== ''){                
                 queryInsert.push(req.body[attribute]);               
@@ -140,7 +139,7 @@ exports.postCreateRoom = (req: any, res: any, next: any) => {
     // Fine ciclo-esame json => operazione da compiere
     if(messageErrore==''){
         
-        let sql: any = "INSERT INTO multistreaming (usermobile, progettoselezionato) VALUES (?,?)";             
+        let sql: any = "INSERT INTO multistreaming (usermobile, progettoselezionato, cod, collaudatoreufficio) VALUES (?,?,?,?)";             
        
         esecuzioneQuery(sql);     
 
