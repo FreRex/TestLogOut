@@ -77,8 +77,8 @@ export class ProjectService {
       );
   }
 
-  loadProjects(): Observable<Project[]> {
-    return this.http
+  loadProjects(){
+    this.http
       .get<Project[]>(
         `${environment.apiUrl}/s/progetti/`,
         { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}` )}
