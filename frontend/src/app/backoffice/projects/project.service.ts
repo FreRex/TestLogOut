@@ -86,4 +86,66 @@ export class ProjectService {
       });
   }
 
+  deleteProject(progectId: number) {
+    return this.http
+      .post(
+        `${environment.apiUrl}/d/`,
+        {
+          id: progectId,
+          tableDelete: 'rappre_prog_gisfo',
+        },
+        {
+          headers: new HttpHeaders().set(
+            'Authorization',
+            `Bearer ${this.authService.token}`
+          ),
+        }
+      )
+      .pipe(
+        tap((res) => {
+          this.loadProjects();
+        })
+      );
+  }
+
+  addProject(
+    idutente: number,
+    pk_proj: number,
+    nome: string,
+    nodi_fisici: string,
+    nodi_ottici: string,
+    tratte: string,
+    conn_edif_opta: string,
+    long_centro_map: string,
+    lat_centro_map: string
+  ) {
+    return this.http
+      .post(
+        `${environment.apiUrl}/cp/`,
+        {
+          "idutente": idutente,
+          "pk_proj": pk_proj,
+          "nome": nome,
+          "nodi_fisici": nodi_fisici,
+          "nodi_ottici": nodi_ottici,
+          "tratte": tratte,
+          "conn_edif_opta": conn_edif_opta,
+          "long_centro_map": long_centro_map,
+          "lat_centro_map": lat_centro_map,
+        },
+
+        {
+          headers: new HttpHeaders().set(
+            'Authorization',
+            `Bearer ${this.authService.token}`
+          ),
+        }
+      )
+      .pipe(
+        tap((res) => {
+          this.loadProjects();
+        })
+      );
+  }
+
 }
