@@ -14,7 +14,7 @@
               <h6>Collaudatore</h6>
             </ion-label>
             <ion-select interface="action-sheet" formControlName="collaudatoreufficio">
-              <ion-select-option *ngFor="let user of users">
+              <ion-select-option *ngFor="let user of ( users$ | async )">
                 <h6>{{ user.collaudatoreufficio }}</h6>
               </ion-select-option>
             </ion-select>
@@ -99,7 +99,7 @@
   <ion-button shape="round" color="primary" (click)="closeModal()">
     <ion-icon slot="start" name="close-outline" color="danger"></ion-icon>ANNULLA
   </ion-button>
-  <ion-button shape="round" color="primary">
+  <ion-button shape="round" color="primary" (click)="createProject()">
     <ion-icon slot="start" name="add-outline" color="success"></ion-icon>CREA LINK
   </ion-button>
 </div>

@@ -19,7 +19,6 @@ export class EditProjectModalComponent implements OnInit {
   @Input() projectId: number;
   project: Project;
 
-
   constructor(
     private userService: UserService,
     private modalCtrl: ModalController,
@@ -84,14 +83,14 @@ export class EditProjectModalComponent implements OnInit {
     this.modalCtrl.dismiss(EditProjectModalComponent);
   }
 
-  updateProject(idUtente : number) {
+  updateProject() {
     if (!this.form.valid) {
       return;
     }
     this.projectService
       .updateProject(
-        this.project.id,
-        idUtente,
+        this.project.idprogetto,
+        this.form.value.idutente,
         this.form.value.pk_proj,
         this.form.value.nome,
         this.form.value.long_centro_map,
