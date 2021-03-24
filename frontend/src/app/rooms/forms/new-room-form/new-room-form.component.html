@@ -12,24 +12,22 @@
     </ion-row>
     <ion-row>
       <ion-col>
-        <ion-item>
+        <ion-item (click)="projListOpen()">
           <ion-label color="primary" position="floating">Progetto</ion-label>
-          <ion-input (input)="searchStream$.next($event.target.value)" 
+          <ion-input  (input)="searchStream$.next($event.target.value)"
           formControlName="nome_progetto" type="text"
             autocomplete autocorrect #searchInput></ion-input>
-          <ion-icon name="chevron-down-outline" slot="end" class="ion-align-self-center" (click)="showList = !showList">
+          <ion-icon name="chevron-down-outline" slot="end" class="ion-align-self-center" >
           </ion-icon>
         </ion-item>
       </ion-col>
     </ion-row>
-    <div class="custom-list" *ngIf="projects$ | obsWithStatus | async as projects">
-      <ion-row>
-        <ion-col>
+    <div id="projList" class="custom-list-close" *ngIf="projects$ | obsWithStatus | async as projects">
           <ion-list *ngFor="let project of projects.value">
             <ng-template [ngIf]="projects.value">
               <ion-item button="true" lines="none" (click)="onChooseProject(project)">
                 <ion-icon name="chevron-forward-outline" slot="start" class="ion-align-self-center"></ion-icon>
-                <ion-label>{{project.nome}}</ion-label>
+                <ion-label (click)="projListClose()">{{project.nome}}</ion-label>
               </ion-item>
             </ng-template>
             <ng-template [ngIf]="projects.loading">
@@ -38,8 +36,6 @@
               </div>
             </ng-template>
           </ion-list>
-        </ion-col>
-      </ion-row>
     </div>
     <!-- <div class="custom-list" *ngIf="showList">
       <ion-row>

@@ -20,13 +20,13 @@ export class NewRoomFormComponent implements OnInit {
   obs$: Observable<{ type: string; value?: Project[] }> = this.searchStream$.pipe(
     debounceTime(200),
     distinctUntilChanged(),
-    switchMap((query) => 
+    switchMap((query) =>
       concat(
         of({ type: 'start'}),
         this.getByFilter(query).pipe(map(value => ({ type: 'finish', value })))
       ))
   );
-  
+
   getByFilter(query: string) {
     // const products = PRODUCTS.filter(product => product.toLowerCase().includes(query.toLowerCase()))
     // return of(products).pipe(delay(500));
@@ -39,7 +39,7 @@ export class NewRoomFormComponent implements OnInit {
     )
   }
   //-------------------------------------------
-  
+
   @ViewChild('searchInput', { static: true }) inputCollaudatore: IonInput;
   projects$: Observable<Project[]>;
   form: FormGroup;
@@ -95,9 +95,9 @@ export class NewRoomFormComponent implements OnInit {
 
   onChooseProject(project: Project) {
     this.project = project;
-    this.form.patchValue({ 
+    this.form.patchValue({
       nome_collaudatore: this.project.collaudatoreufficio,
-      nome_progetto: this.project.nome, 
+      nome_progetto: this.project.nome,
     });
   }
 
@@ -152,4 +152,13 @@ export class NewRoomFormComponent implements OnInit {
     // .then(toastEl => toastEl.present());
     toast.present();
   }
+
+  projListOpen(){
+    document.getElementById("projList").className = "custom-list-open"
+  }
+
+  projListClose(){
+    document.getElementById("projList").className = "custom-list-close"
+  }
+
 }
