@@ -22,7 +22,7 @@ export class NewRoomFormComponent implements OnInit {
     distinctUntilChanged(),
     switchMap((query) =>
       concat(
-        of({ type: 'start'}),
+        of({ type: 'start' }),
         this.getByFilter(query).pipe(map(value => ({ type: 'finish', value })))
       ))
   );
@@ -43,7 +43,6 @@ export class NewRoomFormComponent implements OnInit {
   @ViewChild('searchInput', { static: true }) inputCollaudatore: IonInput;
   projects$: Observable<Project[]>;
   form: FormGroup;
-  showList = true;
   project: Project;
 
   constructor(
@@ -94,6 +93,9 @@ export class NewRoomFormComponent implements OnInit {
   }
 
   onChooseProject(project: Project) {
+    this.toggle();
+    // this.projListClose();
+
     this.project = project;
     this.form.patchValue({
       nome_collaudatore: this.project.collaudatoreufficio,
@@ -153,12 +155,16 @@ export class NewRoomFormComponent implements OnInit {
     toast.present();
   }
 
-  projListOpen(){
+  projListOpen() {
     document.getElementById("projList").className = "custom-list-open"
   }
 
-  projListClose(){
+  projListClose() {
     document.getElementById("projList").className = "custom-list-close"
+  }
+
+  toggle() {
+    document.getElementById("myDropdown").classList.toggle("show");
   }
 
 }
