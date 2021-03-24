@@ -61,7 +61,7 @@ export class BackofficePage implements OnInit {
       )
     );
   }
-  
+
   /** Filtra Utenti in base alla ricerca */
   filterUsers(){
     this.users$ = this.input.ionInput.pipe(
@@ -159,7 +159,7 @@ export class BackofficePage implements OnInit {
     toast.present();
   }
 
-  onDelete(userId: number) {
+  onDeleteUser(userId: number) {
     this.alertController.create(
       {
         header: 'Sei sicuro?',
@@ -182,5 +182,27 @@ export class BackofficePage implements OnInit {
     ).then(alertEl => { alertEl.present(); });
   }
 
+  onDeleteProject(projectId: number) {
+    this.alertController.create(
+      {
+        header: 'Sei sicuro?',
+        message: "Vuoi davvero cancellare il progetto?",
+        buttons: [
+          {
+            text: 'Annulla',
+            role: 'cancel'
+          },
+          {
+            text: 'Elimina',
+            handler: () => {
+              this.projService.deleteProject(projectId).subscribe(res => {
+                this.presentToast('Progetto Eliminato');
+              });
+            }
+          }
+        ]
+      }
+    ).then(alertEl => { alertEl.present(); });
+  }
 
 }

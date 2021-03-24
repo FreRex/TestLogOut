@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { User, UserService } from '../../users/user.service';
+import { ProjectService } from '../project.service';
 
 @Component({
   selector: 'app-upload-shp-modal',
@@ -12,15 +13,18 @@ import { User, UserService } from '../../users/user.service';
 export class UploadShpModalComponent implements OnInit {
 
   form:FormGroup;
-  private sub : Subscription;
-  users:User[];
+  users$: Observable <User[]>;
+
 
   constructor(
     private userService: UserService,
-    private modalCtrl: ModalController
+    private modalCtrl: ModalController,
+    private projectService: ProjectService
   ) { }
 
   ngOnInit() {
+
+    this.users$ = this.userService.users$;
 
     this.form = new FormGroup({
       collaudatoreufficio: new FormControl(null, {
@@ -29,7 +33,7 @@ export class UploadShpModalComponent implements OnInit {
       }),
       pk_proj: new FormControl(null, {
         updateOn: 'blur',
-        validators: [Validators.required, Validators.maxLength(50)]
+        validators: [Validators.required, Validators.maxLength(20)]
       }),
       nome: new FormControl( null, {
         updateOn: 'blur',
@@ -63,16 +67,37 @@ export class UploadShpModalComponent implements OnInit {
 
     });
 
-
-
-    this.sub = this.userService.users$.subscribe(
-      (users:User[]) => {
-        this.users = users;
-      }
-    )
   }
 
   closeModal(){
     this.modalCtrl.dismiss(UploadShpModalComponent);
+  }
+
+  createProject(){
+    if (!this.form.valid) { return; }
+    this.projectService
+      .addProject(
+        this.userService.getUserIdByName(this.form.value.collaudatoreufficio),
+        +this.form.value.pk_proj,
+        this.form.value.nome,
+        this.form.value.nodi_fisici,
+        this.form.value.nodi_ottici,
+        this.form.value.tratte,
+        this.form.value.conn_edif_opta,
+        this.form.value.long_centro_map,
+        this.form.value.lat_centro_map
+        )
+      .subscribe(
+        res => {
+          // console.log("Response",res);
+          // this.presentToast('Room creata!');
+          this.form.reset();
+          this.modalCtrl.dismiss({ message: 'Project Create' }, 'save');
+        },
+        // (err: HttpErrorResponse) => {
+        //   console.log("Error:", err.error['text']);
+        //   this.createErrorAlert(err.error['text']);
+        // }
+      );
   }
 }
