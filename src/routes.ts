@@ -1,14 +1,13 @@
 import express from 'express';
 
-const controllerTest = require('./ctrl/controllerTest');
+const controllerToken = require('./ctrl/controllerToken');
+const controllerVidApp = require('./ctrl/controllerVidApp');
+const controllerDownloadZip = require('./ctrl/controllerDownloadZip');
 
 const controllerSelect = require('./ctrl/controllerSelect');
 const controllerUpdate = require('./ctrl/controllerUpdate');
 const controllerDelete = require('./ctrl/controllerDelete');
 const controllerCreate = require('./ctrl/controllerCreate');
-
-const controllerToken = require('./ctrl/controllerToken');
-const controllerVidApp = require('./ctrl/controllerVidApp');
 
 const mid = require('./middleware/mid');
 
@@ -38,16 +37,15 @@ router.use(function(req, res, next) {
 //----------------------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------------
 
-//TEST
-router.get('/test/:par1?/:par2?', controllerTest.test);
-
-
+//Token
+router.post('/token/', controllerToken.getToken);
 
 //VidApp (riavvio Node Media Server)
 router.get('/vidapp/', controllerVidApp.VidApp);
 
-//Token
-router.post('/token/', controllerToken.getToken);
+//Downloadzip (download foto compresse)
+router.get('/checkdownloadzip/:folderzip/', controllerDownloadZip.CheckDownloadZip);
+router.get('/downloadzip/:folderzip/', controllerDownloadZip.DownloadZip);
 
 //----------- API-db -----------------------------------------------------
 //Indirizzamento ad API-db di lettura (SELECT)
