@@ -20,7 +20,6 @@ export class ObsWithStatusPipe implements PipeTransform {
       // startWith({ loading: true }),
       catchError(error => of({ loading: false, error: typeof error === 'string' ? error : defaultError })),
       map((res: any) => {
-        console.log(res.value);
         return {
           loading: (res.type === 'finish' && (res.value ? res.value.length > 0 : false)) ? false : true,
           error: res.type === 'error' ? defaultError : '',

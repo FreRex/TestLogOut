@@ -14,7 +14,6 @@ import { mergeMap, switchMap, tap } from 'rxjs/operators';
 })
 export class RoomsPage implements OnInit, OnDestroy {
 
-  authenticated = false;
   private sub: Subscription;
   rooms: Room[];
   // isSearchMode: boolean = false;
@@ -36,25 +35,16 @@ export class RoomsPage implements OnInit, OnDestroy {
         console.log("user exist", !!params['user'], "is a number", !isNaN(params['user']), "is not 0", params['user'] !== '0');
         //if(x) = check if x is negative, undefined, null or empty 
         // isNaN(x) = determina se un valore è NaN o no
-        if (!this.authenticated) {
-          if (params && params['user'] && !isNaN(params['user']) && params['user'] !== '0' && params['user'] !== '1') {
-            this.authService.onLogin(+params['user']);
-          } else {
-            this.authService.onLogin(0);
-          }
+        if (params && params['user'] && !isNaN(params['user']) && params['user'] !== '0' && params['user'] !== '1') {
+          this.authService.onLogin(+params['user']);
+        } else {
+          this.authService.onLogin(0);
         }
-        return this.authService.currentRole$;
-      }),
-      switchMap(authState => {
-        this.authenticated = authState ? true : false;
         return this.authService.authorizeAccess();
       }),
       switchMap(res => {
         return this.roomService.loadRooms();
       }),
-      switchMap(res => {
-        return this.roomService.rooms;
-      })
     ).subscribe((rooms: Room[]) => {
       // mi sottoscrivo all'osservabile "get rooms()" che restituisce la lista di room
       // questa funzione viene eseguita qualsiasi volta la lista di room cambia

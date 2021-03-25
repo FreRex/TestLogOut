@@ -17,53 +17,24 @@ export class AuthService {
 
   private _userId: number;
   get userId() { return this._userId; }
-  set userId(user: number){ this._userId = user; }
+  set userId(user: number) { this._userId = user; }
 
-  // currentUser: BehaviorSubject<User> = new BehaviorSubject(null);
-  // currentUser$ = this.currentUser.asObservable();
-  currentRole: BehaviorSubject<string> = new BehaviorSubject(null);
-  currentRole$ = this.currentRole.asObservable();
 
-  onLogin(userId: number){
+  private _token: string;
+  get token(): string { return this._token; }
+
+  authorizeAccess() {
+    return this.http
+      .post<{ [key: string]: string }>(`${environment.apiUrl}/token/`, {})
+      .pipe(tap(res => {
+        this._token = res['token'];
+      }));
+  }
+
+  currentRole: string = '';
+  onLogin(userId: number) {
     this.userId = userId;
-    if(this.userId === 0){
-      console.log("Role:", 'admin');
-      this.currentRole.next('admin');
-      // this.currentUser.next({
-      //   id: userId,
-      //   collaudatoreufficio: "Collaudatore1",
-      //   username: "username1",
-      //   password: "password1",
-      //   autorizzazioni: 0,
-      //   roles: ['admin']
-      // });
-    } else {
-      console.log("Role:", 'user');
-      this.currentRole.next('user');
-      // this.currentUser.next({
-      //   id: userId,
-      //   collaudatoreufficio: "Collaudatore1",
-      //   username: "username1",
-      //   password: "password1",
-      //   autorizzazioni: 1,
-      //   roles: ['user']
-      // });
-    }
-  }
-  onLogout(){
-    // this.currentUser.next(null);
-    this.currentRole.next(null);
-  }
-  hasRoles(roles: string[]): boolean{
-    for(const oneRole of roles){
-      // if(!this.currentUser || !this.currentUser.value.roles.includes(oneRole)){
-      //   return false;
-      // }
-      if(!this.currentRole.value || !this.currentRole.value.includes(oneRole)){
-        return false;
-      }
-    }
-    return true;
+    this.currentRole = this.userId === 0 ? 'admin' : 'user';
   }
 
   login() {
@@ -77,14 +48,5 @@ export class AuthService {
     console.log("is logged out: " + this._userIsAutenticated);
   }
 
-  private _token: string;
-  get token(): string { return this._token; }
 
-  authorizeAccess() {
-    return this.http
-      .post<{ [key: string]: string }>(`${environment.apiUrl}/token/`, {})
-      .pipe(tap(res => { 
-        this._token = res['token']; 
-      }));
-  }
 }
