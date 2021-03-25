@@ -1,7 +1,7 @@
 "use strict";
 exports.CheckDownloadZip = (req, res, next) => {
     const fs = require('fs');
-    const nameFolder = './datasave/';
+    const nameFolder = '../datasave/';
     //-- Determinazione cartella da verificare
     let nameRooms = req.params.folderzip;
     let path = nameFolder + nameRooms;
@@ -21,7 +21,7 @@ exports.DownloadZip = (req, res, next) => {
     const zip = new AdmZip();
     const fs = require('fs');
     //----------- determinazione path
-    const nameFolder = './datasave/';
+    const nameFolder = '../datasave/';
     let nameRooms = req.params.folderzip;
     //-- Creazione cartella compressa
     fs.readdirSync(nameFolder + nameRooms).forEach((file) => {

@@ -1,7 +1,7 @@
 exports.CheckDownloadZip = (req: any, res: any, next: any) => {  
 
     const fs = require('fs');
-    const nameFolder: any = './datasave/'; 
+    const nameFolder: any = '../datasave/'; 
     
     //-- Determinazione cartella da verificare
     let nameRooms: any = req.params.folderzip;
@@ -27,7 +27,7 @@ exports.CheckDownloadZip = (req: any, res: any, next: any) => {
      const fs = require('fs');
     
      //----------- determinazione path
-      const nameFolder = './datasave/';    
+      const nameFolder = '../datasave/';    
       let nameRooms = req.params.folderzip;
       
       //-- Creazione cartella compressa
