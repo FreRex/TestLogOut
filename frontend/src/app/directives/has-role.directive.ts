@@ -6,7 +6,7 @@ import { AuthService } from '../auth/auth.service';
 })
 export class HasRoleDirective implements OnInit {
 
-  @Input('userHasRole') role: string;
+  @Input('userHasRole') roles: string;
 
   constructor(
     private authService: AuthService,
@@ -15,10 +15,18 @@ export class HasRoleDirective implements OnInit {
   ) { }
 
   ngOnInit() {
-    if (this.authService.currentRole && this.authService.currentRole == this.role) {
-      this.viewContainer.createEmbeddedView(this.templateRef);
-    } else {
-      this.viewContainer.clear();
-    }
+    // if (this.authService.currentRole && this.authService.currentRole == this.role) {
+    //   this.viewContainer.createEmbeddedView(this.templateRef);
+    // } else {
+    //   this.viewContainer.clear();
+    // }
+    this.authService.currentRole$.subscribe((currentRole) => {
+      if(currentRole && currentRole.includes(this.roles)){
+        this.viewContainer.createEmbeddedView(this.templateRef);
+      } else {
+        this.viewContainer.clear();
+      }
+    })
+    
   }
 }

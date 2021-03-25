@@ -13,7 +13,6 @@ import { Room, RoomService } from '../room.service';
 export class RoomItemComponent implements OnInit {
 
   @Input() room: Room;
-  currentRole: string;
   linkProgetto: string;
   isFavourite: boolean;
 
@@ -27,16 +26,15 @@ export class RoomItemComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    // this.authService.currentRole$.subscribe(
-    //   currentRole => {
-        this.currentRole = this.authService.currentRole;
+    this.authService.currentRole$.subscribe(
+      currentRole => {
         this.linkProgetto =
           'https://www.collaudolive.com:9777/glasses_test/FrontEnd/src/index.php?q='
           + this.room.projectID
-          + ((this.currentRole === 'admin') ? '&useringresso=admin' : '');
+          + ((currentRole === 'admin') ? '&useringresso=admin' : '');
         // console.log(this.linkProgetto);
-      // }
-    // );
+      }
+    );
   }
 
   onDownload(slidingItem: IonItemSliding) {

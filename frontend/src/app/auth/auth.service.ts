@@ -19,7 +19,6 @@ export class AuthService {
   get userId() { return this._userId; }
   set userId(user: number) { this._userId = user; }
 
-
   private _token: string;
   get token(): string { return this._token; }
 
@@ -31,10 +30,19 @@ export class AuthService {
       }));
   }
 
-  currentRole: string = '';
+  currentRole: BehaviorSubject<string> = new BehaviorSubject(null);
+  currentRole$ = this.currentRole.asObservable();
+  // currentRole: string = '';
+
+  isAuthenticated = false;
   onLogin(userId: number) {
-    this.userId = userId;
-    this.currentRole = this.userId === 0 ? 'admin' : 'user';
+    if(!this.isAuthenticated){
+      this.isAuthenticated = true;
+      this.userId = userId;
+      if(this.userId === 0){ this.currentRole.next('admin'); }
+      else { this.currentRole.next('user'); }
+    }
+    // this.currentRole = this.userId === 0 ? 'admin' : 'user';
   }
 
   login() {
