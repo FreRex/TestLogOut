@@ -12,13 +12,14 @@
     </ion-row>
     <ion-row>
       <ion-col>
-        <!-- <ion-item (click)="projListOpen() "> -->
-        <ion-item (click)="toggle()">
+        <ion-item >
+        <!-- <ion-item (click)="toggle()"> -->
           <ion-label color="primary" position="floating">Progetto</ion-label>
-          <ion-input formControlName="nome_progetto" type="text" (input)="searchStream$.next($event.target.value)"
+          <ion-input formControlName="nome_progetto" type="text" (click)="projListOpen()"
             autocomplete autocorrect #searchInput></ion-input>
-          <ion-icon name="chevron-down-outline" slot="end" class="ion-align-self-center">
-          </ion-icon>
+            <ion-button fill="clear" slot="end" class="ion-align-self-center" (click)="toggleDropdown() ">
+              <ion-icon [name]="isListOpen ? 'close' : 'chevron-down-outline'" slot="icon-only" ></ion-icon>
+            </ion-button>
         </ion-item>
       </ion-col>
     </ion-row>
@@ -26,7 +27,7 @@
     <!-- <div id="projList" class="custom-list-close" *ngIf="projects$ | obsWithStatus | async as projects">
       <ion-list *ngFor="let project of projects.value">
         <ng-template [ngIf]="projects.value">
-          <ion-item button="true" lines="none" (click)="onChooseProject(project)">
+            <ion-item button="true" lines="none" (click)="onChooseProject(project)">
             <ion-icon name="chevron-forward-outline" slot="start" class="ion-align-self-center"></ion-icon>
             <ion-label>{{project.nome}}</ion-label>
           </ion-item>

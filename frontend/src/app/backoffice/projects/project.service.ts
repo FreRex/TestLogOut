@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map, take, tap } from 'rxjs/operators';
 import { AuthService } from 'src/app/auth/auth.service';
 import { environment } from 'src/environments/environment';
@@ -17,7 +17,7 @@ export interface Project {
   nodi_ottici?: string;
   tratte?: string;
   conn_edif_opta?: string;
-  idutente?:number;
+  idutente?: number;
 }
 
 @Injectable({
@@ -29,7 +29,7 @@ export class ProjectService {
 
   constructor(private http: HttpClient,
     private authService: AuthService
-    ) {}
+  ) { }
 
   getProjects(projectId: number): Observable<Project> {
     return this.projects$.pipe(
@@ -38,6 +38,19 @@ export class ProjectService {
         return { ...projects.find((project) => project.idprogetto === projectId) };
       })
     );
+  }
+
+  getByFilter(query: string): Observable<Project[]> {
+    console.log(query);
+    return this.projects$.pipe(
+      map((projects: Project[]) => {
+        return projects.filter((proj) =>
+          proj.nome.toLowerCase().includes(query.toLowerCase()) ||
+          proj.collaudatoreufficio.toLowerCase().includes(query.toLowerCase()) ||
+          proj.pk_proj.toString().toLowerCase().includes(query.toLowerCase())
+        )
+      })
+    )
   }
 
   updateProject(
@@ -76,9 +89,10 @@ export class ProjectService {
   loadProjects() {
     this.http
       .get<Project[]>(`${environment.apiUrl}/s/progetti/`,
-        {headers: new HttpHeaders().set(
-          'Authorization',
-          `Bearer ${this.authService.token}`
+        {
+          headers: new HttpHeaders().set(
+            'Authorization',
+            `Bearer ${this.authService.token}`
           ),
         })
       .subscribe(projects => {

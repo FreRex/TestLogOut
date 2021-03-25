@@ -3,13 +3,14 @@ import { AlertController, IonSearchbar, ModalController, ToastController } from 
 import { GisfoSyncModalComponent } from './projects/gisfo-sync-modal/gisfo-sync-modal.component';
 import { CreateUserModalComponent } from './users/create-user-modal/create-user-modal.component';
 import { UploadShpModalComponent } from './projects/upload-shp-modal/upload-shp-modal.component';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, concat, Observable, of } from 'rxjs';
 import {
   debounceTime,
   distinctUntilChanged,
   map,
   startWith,
   switchMap,
+  tap,
 } from 'rxjs/operators';
 import { Project, ProjectService } from './projects/project.service';
 import { User, UserService } from './users/user.service';
@@ -24,46 +25,43 @@ import { EditUserModalComponent } from './users/edit-user-modal/edit-user-modal.
 export class BackofficePage implements OnInit {
   @ViewChild('searchInput', { static: true }) input: IonSearchbar;
 
-  projects$: Observable<Project[]>;
+  projects$: Observable<{ type: string; value?: Project[] }>;
+  searchStream$ = new BehaviorSubject('');
+
   users$: Observable<User[]>;
   showProjects: boolean = true;
 
   constructor(
-    private projService: ProjectService,
+    private projectService: ProjectService,
     private userService: UserService,
     private modalCtrl: ModalController,
     private toastController: ToastController,
     private alertController: AlertController
-  ) {}
+  ) { }
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.filterProjects();
     this.filterUsers();
   }
 
   /** Filtra Progetti in base alla ricerca */
-  filterProjects(): void {
-    this.projects$ = this.input.ionInput.pipe(
-      map((event) => (<HTMLInputElement>event.target).value),
+  filterProjects() {
+    this.projects$ = this.searchStream$.pipe(
       debounceTime(400),
       distinctUntilChanged(),
       startWith(""),
-      switchMap((search) =>
-        this.projService.projects$.pipe(
-          map((projects) =>
-            projects.filter((proj) =>
-              proj.nome.toLowerCase().includes(search.toLowerCase()) ||
-              proj.collaudatoreufficio.toLowerCase().includes(search.toLowerCase()) ||
-              proj.pk_proj.toString().toLowerCase().includes(search.toLowerCase())
-            )
-          )
+      switchMap((query) =>
+        concat(
+          of({ type: 'start', value: null }),
+          this.projectService.getByFilter(query)
+            .pipe(map(projects => ({ type: 'finish', value: projects })))
         )
-      )
+      ),
     );
   }
 
   /** Filtra Utenti in base alla ricerca */
-  filterUsers(){
+  filterUsers() {
     this.users$ = this.input.ionInput.pipe(
       map((event) => (<HTMLInputElement>event.target).value),
       debounceTime(400),
@@ -117,11 +115,11 @@ export class BackofficePage implements OnInit {
       })
   }
 
-  openEditProject(projectId:number) {
+  openEditProject(projectId: number) {
     this.modalCtrl
       .create({
         component: EditProjectModalComponent,
-        componentProps: {projectId:projectId}
+        componentProps: { projectId: projectId }
       })
       .then((modalEl) => {
         modalEl.present();
@@ -129,11 +127,11 @@ export class BackofficePage implements OnInit {
       })
   }
 
-  openEditUser(userId:number) {
+  openEditUser(userId: number) {
     this.modalCtrl
       .create({
         component: EditUserModalComponent,
-        componentProps: {userId:userId}
+        componentProps: { userId: userId }
       })
       .then((modalEl) => {
         modalEl.present();
@@ -195,7 +193,7 @@ export class BackofficePage implements OnInit {
           {
             text: 'Elimina',
             handler: () => {
-              this.projService.deleteProject(projectId).subscribe(res => {
+              this.projectService.deleteProject(projectId).subscribe(res => {
                 this.presentToast('Progetto Eliminato');
               });
             }

@@ -36,44 +36,54 @@
             </ion-button>
           </div>
           <ion-card-content>
-            <ion-searchbar #searchInput placeholder="Cerca"></ion-searchbar>
-            <ion-card class="card-inside ion-no-margin" *ngIf="showProjects">
-              <ion-item-sliding *ngFor="let proj of (projects$ | async)">
-                <ion-item>
-                  <div class="ion-margin-vertical">
-                    <ion-icon name="map-outline" color="secondary"></ion-icon>
-                  </div>
-                  <ion-grid>
-                    <ion-row>
-                      <ion-col size-md="4" offset-md="1" class="ion-margin-vertical">
+            <ion-searchbar #searchInput placeholder="Cerca" (ionInput)="searchStream$.next($event.target.value)">
+            </ion-searchbar>
+            <ion-card class="card-inside ion-no-margin" *ngIf="projects$ | obsWithStatus | async as projects">
+              <ng-template [ngIf]="!projects.loading">
+                <ion-list *ngFor="let proj of projects.value">
+                  <ion-item-sliding>
+                    <ion-item>
+                      <div class="ion-margin-vertical">
+                        <ion-icon name="map-outline" color="secondary"></ion-icon>
+                      </div>
+                      <ion-grid>
                         <ion-row>
-                          <ion-text class="primary-data" color="primary">{{ proj.nome }}</ion-text>
+                          <ion-col size-md="4" offset-md="1" class="ion-margin-vertical">
+                            <ion-row>
+                              <ion-text class="primary-data" color="primary">{{ proj.nome }}</ion-text>
+                            </ion-row>
+                            <ion-row>
+                              <ion-text class="primary-data" color="primary">{{ proj.collaudatoreufficio }}</ion-text>
+                            </ion-row>
+                            <a class="secondary-data"
+                              href="https://www.nperf.com/it/map/IT/-/230.TIM/signal/?ll={{ proj.lat_centro_map }}&lg={{ proj.long_centro_map }}&zoom=13"
+                              target="_blank">Copertura Rete Mobile</a>
+                            <p class="secondary-data" color="primary"><b>PK:</b> {{ proj.pk_proj }}</p>
+                          </ion-col>
+                          <ion-col size-md="6" offset-md="1" class="ion-margin-vertical">
+                            <p class="secondary-data" color="primary"><b>Nodi Ottici:</b> {{ proj.nodi_ottici }}</p>
+                            <p class="secondary-data" color="primary"><b>Nodi Fisici:</b> {{ proj.nodi_fisici }}</p>
+                            <p class="secondary-data" color="primary"><b>Tratte:</b> {{ proj.tratte }}</p>
+                            <p class="secondary-data" color="primary"><b>Connessioni:</b> {{ proj.conn_edif_opta }}</p>
+                            <p class="secondary-data" color="primary"><b>Lat:</b> {{ proj.lat_centro_map }} <b>Long:</b>
+                              {{ proj.long_centro_map }}</p>
+                          </ion-col>
                         </ion-row>
-                        <ion-row>
-                          <ion-text class="primary-data" color="primary">{{ proj.collaudatoreufficio }}</ion-text>
-                        </ion-row>
-                        <a class="secondary-data" href="https://www.nperf.com/it/map/IT/-/230.TIM/signal/?ll={{ proj.lat_centro_map }}&lg={{ proj.long_centro_map }}&zoom=13" target="_blank">Copertura Rete Mobile</a>
-                          <p class="secondary-data" color="primary"><b>PK:</b> {{ proj.pk_proj }}</p>
-                        </ion-col>
-                        <ion-col size-md="6" offset-md="1" class="ion-margin-vertical">
-                          <p class="secondary-data" color="primary"><b>Nodi Ottici:</b> {{ proj.nodi_ottici }}</p>
-                          <p class="secondary-data" color="primary"><b>Nodi Fisici:</b> {{ proj.nodi_fisici }}</p>
-                          <p class="secondary-data" color="primary"><b>Tratte:</b> {{ proj.tratte }}</p>
-                          <p class="secondary-data" color="primary"><b>Connessioni:</b> {{ proj.conn_edif_opta }}</p>
-                          <p class="secondary-data" color="primary"><b>Lat:</b> {{ proj.lat_centro_map }} <b>Long:</b> {{ proj.long_centro_map }}</p>
-                      </ion-col>
-                    </ion-row>
-                  </ion-grid>
-                </ion-item>
-                <ion-item-options>
-                  <ion-item-option color="danger" (click)="onDeleteProject(proj.idprogetto)">
-                    <ion-icon name="trash" slot="icon-only"></ion-icon>
-                  </ion-item-option>
-                  <ion-item-option color="warning" (click)="openEditProject(proj.idprogetto)">
-                    <ion-icon name="pencil-outline" slot="icon-only"></ion-icon>
-                  </ion-item-option>
-                </ion-item-options>
-              </ion-item-sliding>
+                      </ion-grid>
+                    </ion-item>
+                    <ion-item-options>
+                      <ion-item-option color="danger" (click)="onDeleteProject(proj.idprogetto)">
+                        <ion-icon name="trash" slot="icon-only"></ion-icon>
+                      </ion-item-option>
+                      <ion-item-option color="warning" (click)="openEditProject(proj.idprogetto)">
+                        <ion-icon name="pencil-outline" slot="icon-only"></ion-icon>
+                      </ion-item-option>
+                    </ion-item-options>
+                  </ion-item-sliding>
+                </ion-list>
+              </ng-template>
+              <ng-template [ngIf]="projects.loading"><div class="ion-text-center"><ion-spinner></ion-spinner></div>
+              </ng-template>
             </ion-card>
             <ion-card class="card-inside" *ngIf="!showProjects">
               <ion-item-sliding *ngFor="let user of (users$ | async)">
@@ -85,7 +95,8 @@
                     <ion-row>
                       <ion-col class="ion-margin vertical ion-text-center">
                         <ion-row class="ion-margin-horizontal">
-                          <ion-text class="primary-data" color="primary"><b>Nome:</b> {{ user.collaudatoreufficio }}</ion-text>
+                          <ion-text class="primary-data" color="primary"><b>Nome:</b> {{ user.collaudatoreufficio }}
+                          </ion-text>
                         </ion-row>
                         <ion-row class="ion-margin-horizontal">
                           <ion-text class="primary-data" color="primary"><b>Commessa:</b> XXXXXXXXXXX </ion-text>

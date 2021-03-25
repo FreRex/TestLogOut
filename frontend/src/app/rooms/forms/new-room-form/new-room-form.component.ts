@@ -14,31 +14,7 @@ import { RoomService } from '../../room.service';
 })
 export class NewRoomFormComponent implements OnInit {
 
-  //-------------------------------------------
-  searchStream$ = new BehaviorSubject('');
 
-  obs$: Observable<{ type: string; value?: Project[] }> = this.searchStream$.pipe(
-    debounceTime(200),
-    distinctUntilChanged(),
-    switchMap((query) =>
-      concat(
-        of({ type: 'start' }),
-        this.getByFilter(query).pipe(map(value => ({ type: 'finish', value })))
-      ))
-  );
-
-  getByFilter(query: string) {
-    // const products = PRODUCTS.filter(product => product.toLowerCase().includes(query.toLowerCase()))
-    // return of(products).pipe(delay(500));
-    return this.projectService.projects$.pipe(
-      map((projects) =>
-        projects.filter((project) =>
-          project.nome.toLowerCase().includes(query.toLowerCase())
-        )
-      )
-    )
-  }
-  //-------------------------------------------
 
   @ViewChild('searchInput', { static: true }) inputCollaudatore: IonInput;
   projects$: Observable<Project[]>;
@@ -93,8 +69,8 @@ export class NewRoomFormComponent implements OnInit {
   }
 
   onChooseProject(project: Project) {
-    this.toggle();
-    // this.projListClose();
+    // this.toggle();
+    this.projListClose();
 
     this.project = project;
     this.form.patchValue({
@@ -155,16 +131,25 @@ export class NewRoomFormComponent implements OnInit {
     toast.present();
   }
 
+  isListOpen: boolean = false;
   projListOpen() {
-    document.getElementById("projList").className = "custom-list-open"
+    // document.getElementById("projList").className = "custom-list-open"
+    document.getElementById("myDropdown").classList.add("show");
+    console.log(this.isListOpen);
+    
+    this.isListOpen = true;
   }
-
+  
   projListClose() {
-    document.getElementById("projList").className = "custom-list-close"
+    // document.getElementById("projList").className = "custom-list-close"
+    document.getElementById("myDropdown").classList.remove("show");
+    console.log(this.isListOpen);
+    this.isListOpen = false;
   }
 
-  toggle() {
-    document.getElementById("myDropdown").classList.toggle("show");
+  toggleDropdown() {
+    if(this.isListOpen) this.projListClose();
+    else this.projListOpen();
   }
 
 }

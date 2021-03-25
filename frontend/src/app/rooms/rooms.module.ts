@@ -21,7 +21,6 @@ import { SharedDirectivesModule } from '../directives/shared-directives.module';
     FormsModule,
     ReactiveFormsModule,
     IonicModule,
-    PipesModule,
     SharedDirectivesModule,
     RoomsPageRoutingModule
   ],
