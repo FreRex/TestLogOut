@@ -15,6 +15,8 @@ import { Project, ProjectService } from './projects/project.service';
 import { User, UserService } from './users/user.service';
 import { EditProjectModalComponent } from './projects/edit-project-modal/edit-project-modal.component';
 import { EditUserModalComponent } from './users/edit-user-modal/edit-user-modal.component';
+import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-backoffice',
@@ -33,7 +35,8 @@ export class BackofficePage implements OnInit {
     private userService: UserService,
     private modalCtrl: ModalController,
     private toastController: ToastController,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private http: HttpClient
   ) {}
 
   ngOnInit(): void {
@@ -173,7 +176,7 @@ export class BackofficePage implements OnInit {
             text: 'Elimina',
             handler: () => {
               this.userService.deleteUser(userId).subscribe(res => {
-                this.presentToast('User Eliminato');
+                this.presentToast('Utente Eliminato');
               });
             }
           }
@@ -205,4 +208,31 @@ export class BackofficePage implements OnInit {
     ).then(alertEl => { alertEl.present(); });
   }
 
+  onRiavviaStreaming() {
+    this.alertController.create(
+      {
+        header: 'Riavvio Server Streaming',
+        message: 'Vuoi davvero riavviare server streaming?',
+        buttons: [
+          {
+            text: 'Annulla',
+            role: 'cancel'
+          },
+          {
+            text: 'Riavvia',
+            handler: () => {
+              this.http.get(`${environment.apiUrl}/vidapp/`).subscribe(
+                res => {
+                  const restarted: boolean = res['restartNMS'];
+                  if(restarted) {
+                    this.presentToast('Server Streaming Riavviato');
+                  }
+                }
+              );
+            }
+          }
+        ]
+      }
+    ).then(alertEl => { alertEl.present(); });
+  }
 }

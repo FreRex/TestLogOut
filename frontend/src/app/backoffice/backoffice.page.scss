@@ -1,13 +1,15 @@
 
 .card-out{
-  max-height: 80vh;
+  max-height: 90vh;
   margin-left: 0;
   margin-right: 0;
   box-shadow: none;
+  --background:  var(--ion-color-secondary);
+  border-radius: 14px;
 }
 
 .card-inside{
-  max-height: 55vh;
+  max-height: 50vh;
   overflow: hidden;
   overflow-y: auto;
 }
@@ -34,4 +36,27 @@
   font-size: 0.7rem;
   word-wrap: break-word;
 }
+
+.header{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  padding-right: 10px;
+}
+
+.tabs{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.link-button{
+  display: flex;
+  flex-direction: column;
+}
+/* @media screen and (min-width 600px){
+
+}
+ */
 
