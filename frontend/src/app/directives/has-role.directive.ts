@@ -2,11 +2,9 @@ import { Directive, Input, OnInit, TemplateRef, ViewContainerRef } from '@angula
 import { AuthService } from '../auth/auth.service';
 
 @Directive({
-  selector: '[userHasRole]'
+  selector: '[userIsAdmin]'
 })
 export class HasRoleDirective implements OnInit {
-
-  @Input('userHasRole') roles: string;
 
   constructor(
     private authService: AuthService,
@@ -21,7 +19,7 @@ export class HasRoleDirective implements OnInit {
     //   this.viewContainer.clear();
     // }
     this.authService.currentRole$.subscribe((currentRole) => {
-      if(currentRole && currentRole.includes(this.roles)){
+      if(currentRole && currentRole == 'admin'){
         this.viewContainer.createEmbeddedView(this.templateRef);
       } else {
         this.viewContainer.clear();
