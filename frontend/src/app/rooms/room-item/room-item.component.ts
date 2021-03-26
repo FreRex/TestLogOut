@@ -26,15 +26,15 @@ export class RoomItemComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.authService.currentRole$.subscribe(
-      currentRole => {
-        this.linkProgetto =
-          'https://www.collaudolive.com:9777/glasses_test/FrontEnd/src/index.php?q='
-          + this.room.projectID
-          + ((currentRole === 'admin') ? '&useringresso=admin' : '');
-        // console.log(this.linkProgetto);
-      }
-    );
+    // this.authService.currentRole$.subscribe(
+    //   currentRole => {
+    this.linkProgetto =
+      'https://www.collaudolive.com:9777/glasses_test/FrontEnd/src/index.php?q='
+      + this.room.projectID
+      + ((this.authService.currentRole === 'admin') ? '&useringresso=admin' : '');
+    // console.log(this.linkProgetto);
+    // }
+    // );
   }
 
   onDownload(slidingItem: IonItemSliding) {

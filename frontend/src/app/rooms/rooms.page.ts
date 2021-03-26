@@ -16,7 +16,16 @@ export class RoomsPage implements OnInit, OnDestroy {
 
   private sub: Subscription;
   rooms: Room[];
-  // isSearchMode: boolean = false;
+  /* TABELLA
+  bulkEdit = true;
+  sortKey = '';
+  sortDirection = 0;
+  edit = {};
+  page = 0;
+  totalNumberOfRooms = 0;
+  roomsPerPage = 20;
+  totalPages = 20; */
+
   filteredRooms: Room[] = [];
   isLoading = false;
 
@@ -36,11 +45,11 @@ export class RoomsPage implements OnInit, OnDestroy {
         //if(x) = check if x is negative, undefined, null or empty 
         // isNaN(x) = determina se un valore è NaN o no
         if (params && params['user'] && !isNaN(params['user']) && params['user'] !== '0' && params['user'] !== '1') {
-          this.authService.onLogin(+params['user']);
+          this.authService.onLogin(params['user']);
         } else {
-          this.authService.onLogin(0);
+          this.authService.onLogin('0');
         }
-        return this.authService.authorizeAccess();
+        return this.authService.getToken();
       }),
       switchMap(res => {
         return this.roomService.loadRooms();
@@ -51,9 +60,54 @@ export class RoomsPage implements OnInit, OnDestroy {
       this.isLoading = false;
       this.rooms = rooms;
       this.filteredRooms = this.rooms;
+
+      /* TABELLA
+      this.totalNumberOfRooms = rooms.length;
+      this.totalPages = Math.ceil(this.totalNumberOfRooms / this.roomsPerPage);
+      this.rooms = rooms.slice(0, this.roomsPerPage);
+      this.sortBy('nome_progetto'); */
+      
     });
   }
 
+  /* TABELLA
+  sortBy(key: string){
+    this.sortKey = key;
+    this.sortDirection++;
+    this.sort();
+  }
+  sort(){
+    if(this.sortDirection == 1) {
+      this.rooms = this.rooms.sort((a,b) => {
+        const valA = a[this.sortKey].toString();
+        const valB = b[this.sortKey].toString();
+        return valA.localeCompare(valB);
+      })
+    } else if (this.sortDirection == 2 ){
+      this.rooms = this.rooms.sort((a,b) => {
+        const valA = a[this.sortKey].toString();
+        const valB = b[this.sortKey].toString();
+        return valB.localeCompare(valA);
+      })
+    } else {
+      this.sortDirection = 0;
+      this.sortKey = null;
+    }
+  }
+  nextPage(){
+    this.page++;
+  }
+  prevPage(){
+    this.page--;
+  }
+  goFirst(){
+    this.page = 0;
+  }
+  goLast(){
+    this.page = this.totalPages - 1;
+  }
+  */
+  
   ngOnDestroy() {
     // distruggo la subscription se viene distrutto il componente, per evitare memory leaks
     if (this.sub) { this.sub.unsubscribe(); }

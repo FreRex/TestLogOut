@@ -18,6 +18,7 @@ import { EditProjectModalComponent } from './projects/edit-project-modal/edit-pr
 import { EditUserModalComponent } from './users/edit-user-modal/edit-user-modal.component';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'app-backoffice',
@@ -27,10 +28,12 @@ import { environment } from 'src/environments/environment';
 export class BackofficePage implements OnInit {
   @ViewChild('searchInput', { static: true }) input: IonSearchbar;
 
+  projects: Project[];
   projects$: Observable<{ type: string; value?: Project[] }>;
   searchStream$ = new BehaviorSubject('');
 
-  users$: Observable<User[]>;
+  users: User[];
+  users$: Observable<{ type: string; value?: User[] }>;
   showProjects: boolean = true;
 
   constructor(
@@ -39,16 +42,22 @@ export class BackofficePage implements OnInit {
     private modalCtrl: ModalController,
     private toastController: ToastController,
     private alertController: AlertController,
+    private authService: AuthService,
     private http: HttpClient
-  ) {}
+  ) { }
 
   ngOnInit() {
-    this.filterProjects();
-    this.filterUsers();
+    this.initFilterUsers();
+    this.initFilterProjects();
+
+    this.authService.getToken().pipe(
+      switchMap(res => this.projectService.loadProjects()),
+      switchMap(res => this.userService.loadUsers())
+    ).subscribe();
   }
 
   /** Filtra Progetti in base alla ricerca */
-  filterProjects() {
+  initFilterProjects() {
     this.projects$ = this.searchStream$.pipe(
       debounceTime(400),
       distinctUntilChanged(),
@@ -56,7 +65,7 @@ export class BackofficePage implements OnInit {
       switchMap((query) =>
         concat(
           of({ type: 'start', value: null }),
-          this.projectService.getByFilter(query)
+          this.projectService.getProjectsByFilter(query)
             .pipe(map(projects => ({ type: 'finish', value: projects })))
         )
       ),
@@ -64,22 +73,18 @@ export class BackofficePage implements OnInit {
   }
 
   /** Filtra Utenti in base alla ricerca */
-  filterUsers() {
-    this.users$ = this.input.ionInput.pipe(
-      map((event) => (<HTMLInputElement>event.target).value),
+  initFilterUsers() {
+    this.users$ = this.searchStream$.pipe(
       debounceTime(400),
       distinctUntilChanged(),
       startWith(""),
-      switchMap((search) =>
-        this.userService.users$.pipe(
-          map((users) =>
-            users.filter((user) =>
-              user.collaudatoreufficio.toLowerCase().includes(search.toLowerCase()) ||
-              user.id.toString().toLowerCase().includes(search.toLowerCase())
-            )
-          )
-        )
+      switchMap((query) =>
+      concat(
+        of({ type: 'start', value: null }),
+        this.userService.getUsersByFilter(query)
+          .pipe(map(users => ({ type: 'finish', value: users })))
       )
+    ),
     );
   }
 
@@ -222,7 +227,7 @@ export class BackofficePage implements OnInit {
               this.http.get(`${environment.apiUrl}/vidapp/`).subscribe(
                 res => {
                   const restarted: boolean = res['restartNMS'];
-                  if(restarted) {
+                  if (restarted) {
                     this.presentToast('Server Streaming Riavviato');
                   }
                 }

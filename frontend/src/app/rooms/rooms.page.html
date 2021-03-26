@@ -6,10 +6,8 @@
                 <ion-button><ion-icon slot="icon-only" name="menu"></ion-icon></ion-button>
             </ion-menu-toggle> -->
         </ion-buttons>
-
         <!-- <ion-searchbar *ngIf="isSearchMode" showCancelButton="always" (ionInput)="onFilter($event)"
             (ionCancel)="isSearchMode = false"></ion-searchbar> -->
-
         <ion-title>Lista Room</ion-title>
         <ion-buttons slot="primary">
             <!-- <ion-button (click)="isSearchMode = !isSearchMode">
@@ -24,7 +22,6 @@
         </ion-buttons>
     </ion-toolbar>
 </ion-header>
-
 <ion-content>
     <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
         <ion-refresher-content></ion-refresher-content>
@@ -51,8 +48,68 @@
             <p class="ion-text-center" *ngIf="!isLoading && rooms.length <= 0">Nessuna Room disponibile</p>
             <ion-list *ngIf="!isLoading && rooms.length > 0">
                 <app-room-item *ngFor="let room of filteredRooms" [room]="room"></app-room-item>
-                <!-- <app-room-item *ngFor="let room of rooms" [room]="room"></app-room-item> -->
             </ion-list>
         </ion-col>
     </ion-row>
+    <!-- <ion-row class="header-row">
+        <ion-col size="2" *ngIf="bulkEdit">
+            Select
+        </ion-col>
+        <ion-col size="4" size-md="4" size-lg="2" tappable (click)="sortBy('id')">
+            ID
+            <ion-icon name="arrow-down" *ngIf="sortDirection == 1"></ion-icon>
+            <ion-icon name="arrow-up" *ngIf="sortDirection == 2"></ion-icon>
+        </ion-col>
+        <ion-col size="4" class="ion-hide-md-down" tappable (click)="sortBy('nome_progetto')">
+            Nome Progetto
+            <ion-icon name="arrow-down" *ngIf="sortDirection == 1"></ion-icon>
+            <ion-icon name="arrow-up" *ngIf="sortDirection == 2"></ion-icon>
+        </ion-col>
+        <ion-col size="2" class="ion-hide-lg-down" tappable (click)="sortBy('nome_collaudatore')">
+            Nome Collaudatore
+            <ion-icon name="arrow-down" *ngIf="sortDirection == 1"></ion-icon>
+            <ion-icon name="arrow-up" *ngIf="sortDirection == 2"></ion-icon>
+        </ion-col>
+    </ion-row>
+    <ion-row *ngFor="let room of rooms; let i = index;" class="data-row">
+        <ion-col size="2" *ngIf="bulkEdit">
+            <ion-checkbox [(ngModel)]='edit[i]'></ion-checkbox>
+        </ion-col>
+        <ion-col size="4" size-md="4" size-lg="2">
+            {{room.id}}
+        </ion-col>
+        <ion-col size="4" class="ion-hide-md-down">
+            {{room.nome_progetto}}
+        </ion-col>
+        <ion-col size="4" class="ion-hide-lg-down">
+            {{room.nome_collaudatore}}
+        </ion-col>
+    </ion-row>
+    <ion-row>
+        <ion-col size="2">
+            <ion-button fill="clear" (click)="goFirst()">
+                <ion-icon name="play-back" slot="icon-only"></ion-icon>
+            </ion-button>
+        </ion-col>
+        <ion-col size="2">
+            <ion-button fill="clear" (click)="prevPage()">
+                <ion-icon name="chevron-back" slot="icon-only"></ion-icon>
+            </ion-button>
+        </ion-col>
+        <ion-col size="4" class="ion-text-center">
+            <div class="ion-align-items-center">
+                {{ page + 1 }} of {{ totalPages }}
+            </div>
+        </ion-col>
+        <ion-col size="2">
+            <ion-button fill="clear" (click)="nextPage()">
+                <ion-icon name="chevron-forward" slot="icon-only"></ion-icon>
+            </ion-button>
+        </ion-col>
+        <ion-col size="2">
+            <ion-button fill="clear" (click)="goLast()">
+                <ion-icon name="play-forward" slot="icon-only"></ion-icon>
+            </ion-button>
+        </ion-col>
+    </ion-row> -->
 </ion-content>

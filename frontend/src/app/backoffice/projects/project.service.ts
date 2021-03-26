@@ -40,7 +40,7 @@ export class ProjectService {
     );
   }
 
-  getByFilter(query: string): Observable<Project[]> {
+  getProjectsByFilter(query: string): Observable<Project[]> {
     console.log(query);
     return this.projects$.pipe(
       map((projects: Project[]) => {
@@ -86,8 +86,8 @@ export class ProjectService {
       );
   }
 
-  loadProjects() {
-    this.http
+  loadProjects(): Observable<Project[]> {
+    return this.http
       .get<Project[]>(`${environment.apiUrl}/s/progetti/`,
         {
           headers: new HttpHeaders().set(
@@ -95,9 +95,9 @@ export class ProjectService {
             `Bearer ${this.authService.token}`
           ),
         })
-      .subscribe(projects => {
+      .pipe(tap((projects => {
         this.projSubj.next(projects);
-      });
+      })));
   }
 
   deleteProject(progectId: number) {

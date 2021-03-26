@@ -15,34 +15,30 @@ export class AuthService {
   private _userIsAutenticated = true;
   get userIsAthenticated() { return this._userIsAutenticated; }
 
-  private _userId: number;
-  get userId() { return this._userId; }
-  set userId(user: number) { this._userId = user; }
+  // get userId() { return this._userId; }
+  // set userId(user: number) { this._userId = user; }
 
-  private _token: string;
-  get token(): string { return this._token; }
-
-  authorizeAccess() {
+  token: string = '';
+  getToken() {
     return this.http
       .post<{ [key: string]: string }>(`${environment.apiUrl}/token/`, {})
       .pipe(tap(res => {
-        this._token = res['token'];
+        this.token = res['token'];
       }));
   }
 
-  currentRole: BehaviorSubject<string> = new BehaviorSubject(null);
-  currentRole$ = this.currentRole.asObservable();
-  // currentRole: string = '';
+  // currentRole: BehaviorSubject<string> = new BehaviorSubject(null);
+  // currentRole$ = this.currentRole.asObservable();
 
-  isAuthenticated = false;
-  onLogin(userId: number) {
-    if(!this.isAuthenticated){
-      this.isAuthenticated = true;
+  userId: string = '';
+  currentRole: string = '';
+  onLogin(userId: string) {
+    if (this.userId == '') {
       this.userId = userId;
-      if(this.userId === 0){ this.currentRole.next('admin'); }
-      else { this.currentRole.next('user'); }
+      // if(this.userId === 0){ this.currentRole.next('admin'); }
+      // else { this.currentRole.next('user'); }
+      this.currentRole = this.userId == '0' ? 'admin' : 'user';
     }
-    // this.currentRole = this.userId === 0 ? 'admin' : 'user';
   }
 
   login() {
@@ -52,7 +48,7 @@ export class AuthService {
 
   logout() {
     this._userIsAutenticated = false;
-    this._userId = null;
+    this.userId = null;
     console.log("is logged out: " + this._userIsAutenticated);
   }
 

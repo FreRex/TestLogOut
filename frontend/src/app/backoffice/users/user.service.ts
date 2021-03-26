@@ -28,17 +28,30 @@ export class UserService {
     private authService: AuthService
   ) { }
 
-  loadUsers() {
-    this.http
+  loadUsers(): Observable<User[]> {
+    return this.http
       .get<User[]>('https://www.collaudolive.com:9083/s/utenti/',
-      {headers: new HttpHeaders().set(
-          'Authorization',
-          `Bearer ${this.authService.token}`
-        ),
-      })
-      .subscribe((users) => {
+        {
+          headers: new HttpHeaders().set(
+            'Authorization',
+            `Bearer ${this.authService.token}`
+          ),
+        })
+      .pipe(tap(((users) => {
         this.usersSubj.next(users);
-      });
+      })));
+  }
+
+  getUsersByFilter(query: string): Observable<User[]> {
+    console.log(query);
+    return this.users$.pipe(
+      map((users) =>
+        users.filter((user) =>
+          user.collaudatoreufficio.toLowerCase().includes(query.toLowerCase()) ||
+          user.id.toString().toLowerCase().includes(query.toLowerCase())
+        )
+      )
+    );
   }
 
   getUser(userId: number): Observable<User> {
@@ -84,7 +97,7 @@ export class UserService {
     collaudatoreufficio: string,
     username: string,
     password: string,
-    id:number
+    id: number
   ) {
     return this.http
       .put(
@@ -140,5 +153,5 @@ export class UserService {
       }))
       .subscribe(user => userID = user.id);
     return userID;
-    }
+  }
 }
