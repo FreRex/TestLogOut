@@ -20,6 +20,31 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
+  <div class="ion-hide-md-up">
+    <ion-tabs>
+      <div class="titolo-gestione">
+        <ion-text color="light">Link Gestione</ion-text>
+      </div>
+      <ion-tab-bar slot="bottom" color="primary">
+        <ion-tab-button href="https://www.collaudolive.xyz:9888/admin/streams" target="_blank">
+          <ion-icon name="tv-outline"></ion-icon>
+          <ion-label>Streaming</ion-label>
+        </ion-tab-button>
+        <ion-tab-button href="http://www.eaglelive.tv:5080/#/pages/login" target="_blank">
+          <ion-icon name="headset-outline"></ion-icon>
+          <ion-label>Audio</ion-label>
+        </ion-tab-button>
+        <ion-tab-button href="https://www.collaudolive.com:9080/geoserver/web/" target="_blank">
+          <ion-icon name="map-outline"></ion-icon>
+          <ion-label>Geoserver</ion-label>
+        </ion-tab-button>
+        <ion-tab-button (click)="onRiavviaStreaming()">
+          <ion-icon name="videocam-off-outline" color="danger"></ion-icon>
+          <ion-label>Reset Video</ion-label>
+        </ion-tab-button>
+      </ion-tab-bar>
+    </ion-tabs>
+  </div>
   <ion-grid>
     <ion-row>
       <div class="ion-hide-md-down">
@@ -55,7 +80,7 @@
                   <ion-icon slot="start" name="headset-outline"></ion-icon>
                   Admin Audio
                 </ion-button>
-                <ion-button color="secondary" href="https://www.collaudolive.xyz:9080/geoserver/web/" target="_blank">
+                <ion-button color="secondary" href="https://www.collaudolive.com:9080/geoserver/web/" target="_blank">
                   <ion-icon slot="start" name="map-outline"></ion-icon>
                   Admin GeoServer
                 </ion-button>
@@ -79,7 +104,7 @@
             </ion-button>
           </div> -->
           <ion-card-content>
-            <div class="tabs">
+            <div class="top-button">
               <ion-button (click)="showProjectsClick()">
                 <ion-icon slot="start" name="file-tray-full-outline"></ion-icon>
                 <ion-label>Progetti</ion-label>
@@ -89,13 +114,13 @@
                 <ion-label>Utenti</ion-label>
               </ion-button>
               <!-- <ion-tab-button (click)="openUploadShp()">
-                <ion-icon name="duplicate-outline"></ion-icon>
-                <ion-label>XXXXXXX SHP</ion-label>
-              </ion-tab-button> -->
+                    <ion-icon name="duplicate-outline"></ion-icon>
+                    <ion-label>XXXXXXX SHP</ion-label>
+                  </ion-tab-button> -->
             </div>
             <ion-searchbar #searchInput placeholder="Cerca" (ionInput)="searchStream$.next($event.target.value)">
             </ion-searchbar>
-            <ion-card class="card-inside ion-no-margin" *ngIf="projects$ | obsWithStatus | async as projects">
+            <ion-card class="card-inside ion-no-margin" *ngIf="showProjects && (projects$ | obsWithStatus | async) as projects">
               <ng-template [ngIf]="!projects.loading">
                 <ion-list *ngFor="let proj of projects.value">
                   <ion-item-sliding>
@@ -117,7 +142,7 @@
                               target="_blank">Copertura Rete Mobile</a>
                             <p class="secondary-data" color="primary"><b>PK:</b> {{ proj.pk_proj }}</p>
                           </ion-col>
-                          <ion-col size-md="6" offset-md="1" class="ion-margin-vertical">
+                          <ion-col size-md="4" offset-md="0" class="ion-margin-vertical ion-hide-md-down">
                             <p class="secondary-data" color="primary"><b>Nodi Ottici:</b> {{ proj.nodi_ottici }}</p>
                             <p class="secondary-data" color="primary"><b>Nodi Fisici:</b> {{ proj.nodi_fisici }}</p>
                             <p class="secondary-data" color="primary"><b>Tratte:</b> {{ proj.tratte }}</p>
@@ -125,24 +150,30 @@
                             <p class="secondary-data" color="primary"><b>Lat:</b> {{ proj.lat_centro_map }} <b>Long:</b>
                               {{ proj.long_centro_map }}</p>
                           </ion-col>
+                          <ion-col size-md="2" offset-md="1" class="ion-margin-vertical ion-hide-md-down">
+                            <ion-button size="small" color="warning" (click)="openEditProject(proj.idprogetto)">
+                              <ion-icon name="pencil-outline" slot="icon-only"></ion-icon>
+                            </ion-button>
+                            <ion-button size="small" color="danger" (click)="onDeleteProject(proj.idprogetto)">
+                              <ion-icon name="trash" slot="icon-only"></ion-icon>
+                            </ion-button>
+                          </ion-col>
                         </ion-row>
                       </ion-grid>
                     </ion-item>
                     <ion-item-options>
-                      <ion-item-option color="danger" (click)="onDeleteProject(proj.idprogetto)">
-                        <ion-icon name="trash" slot="icon-only"></ion-icon>
-                      </ion-item-option>
                       <ion-item-option color="warning" (click)="openEditProject(proj.idprogetto)">
                         <ion-icon name="pencil-outline" slot="icon-only"></ion-icon>
+                      </ion-item-option>
+                      <ion-item-option color="danger" (click)="onDeleteProject(proj.idprogetto)">
+                        <ion-icon name="trash" slot="icon-only"></ion-icon>
                       </ion-item-option>
                     </ion-item-options>
                   </ion-item-sliding>
                 </ion-list>
               </ng-template>
               <ng-template [ngIf]="projects.loading">
-                <div class="ion-text-center">
-                  <ion-spinner></ion-spinner>
-                </div>
+                <div class="ion-text-center"><ion-spinner></ion-spinner></div>
               </ng-template>
             </ion-card>
             <ion-card class="card-inside ion-no-margin" *ngIf="!showProjects">
@@ -154,7 +185,7 @@
                   </div>
                   <ion-grid>
                     <ion-row>
-                      <ion-col class="ion-margin-vertical ">
+                      <ion-col size-md="4" class="ion-margin-vertical ">
                         <ion-row class="ion-margin-horizontal">
                           <ion-text class="primary-data" color="primary"><b>Nome:</b> {{ user.collaudatoreufficio }}
                           </ion-text>
@@ -163,7 +194,7 @@
                           <ion-text class="primary-data" color="primary"><b>Commessa:</b> XXXXXXXXXXX </ion-text>
                         </ion-row>
                       </ion-col>
-                      <ion-col size-md="3" class="ion-margin vertical ion-hide-md-down">
+                      <ion-col size-md="2" class="ion-margin vertical ion-hide-md-down">
                         <p class="secondary-data" color="primary"><b>ID: </b> {{ user.id }}</p>
                         <p class="secondary-data" color="primary"><b>Autorizzazione: </b> {{ user.autorizzazioni }}</p>
                       </ion-col>
@@ -171,15 +202,23 @@
                         <p class="secondary-data" color="primary"><b>User: </b> {{ user.username }}</p>
                         <p class="secondary-data" color="primary"><b>Password: </b> {{ user.password }}</p>
                       </ion-col>
+                      <ion-col size-md="2" class="ion-margin-vertical ion-hide-md-down">
+                        <ion-button size="small" color="warning" (click)="openEditUser(user.id)">
+                          <ion-icon name="pencil-outline" slot="icon-only"></ion-icon>
+                        </ion-button>
+                        <ion-button size="small" color="danger" (click)="onDeleteUser(user.id)">
+                          <ion-icon name="trash" slot="icon-only"></ion-icon>
+                        </ion-button>
+                      </ion-col>
                     </ion-row>
                   </ion-grid>
                 </ion-item>
                 <ion-item-options>
-                  <ion-item-option color="danger" (click)="onDeleteUser(user.id)">
-                    <ion-icon name="trash" slot="icon-only"></ion-icon>
-                  </ion-item-option>
                   <ion-item-option color="warning" (click)="openEditUser(user.id)">
                     <ion-icon name="pencil-outline" slot="icon-only"></ion-icon>
+                  </ion-item-option>
+                  <ion-item-option color="danger" (click)="onDeleteUser(user.id)">
+                    <ion-icon name="trash" slot="icon-only"></ion-icon>
                   </ion-item-option>
                 </ion-item-options>
               </ion-item-sliding>
@@ -188,24 +227,25 @@
         </ion-card>
       </ion-col>
     </ion-row>
-    <div class="ion-hide-md-up">
-      <ion-row>
-        <ion-col class="ion-text-center" size-md="4" offset-md="2">
-          <ion-button color="secondary" href="https://www.collaudolive.xyz:9888/admin/streams" target="_blank">
-            <ion-icon slot="start" name="tv-outline"></ion-icon>
-            Admin Stream
-          </ion-button>
-        </ion-col>
-        <ion-col class="ion-text-center" size-md="4">
-          <ion-button color="secondary" href="http://www.eaglelive.tv:5080/#/pages/login" target="_blank">
-            <ion-icon slot="start" name="headset-outline"></ion-icon>
-            Admin Audio
-          </ion-button>
-        </ion-col>
+  </ion-grid>
+  <div class="ion-hide-md-up">
+    <!-- <ion-row >
+      <ion-col class="ion-text-center" size-md="4" offset-md="2">
+        <ion-button  color="secondary" href="https://www.collaudolive.xyz:9888/admin/streams" target="_blank">
+          <ion-icon slot="start" name="tv-outline"></ion-icon>
+          Admin Stream
+        </ion-button>
+      </ion-col>
+    <ion-col class="ion-text-center" size-md="4">
+      <ion-button  color="secondary" href="http://www.eaglelive.tv:5080/#/pages/login" target="_blank">
+        <ion-icon slot="start" name="headset-outline"></ion-icon>
+        Admin Audio
+      </ion-button>
+    </ion-col>
       </ion-row>
       <ion-row>
         <ion-col class="ion-text-center" size-md="4" offset-md="2">
-          <ion-button color="secondary" href="https://www.collaudolive.xyz:9080/geoserver/web/" target="_blank">
+          <ion-button  color="secondary" href="https://www.collaudolive.xyz:9080/geoserver/web/" target="_blank">
             <ion-icon slot="start" name="map-outline"></ion-icon>
             Admin GeoServer
           </ion-button>
@@ -216,11 +256,9 @@
             Riavvia Streaming
           </ion-button>
         </ion-col>
-      </ion-row>
-    </div>
-  </ion-grid>
+      </ion-row> -->
+  </div>
 </ion-content>
-
 <!-- <div class="ion-text-right button-menu">
   <ion-button size="small" shape="round" color="light" fill="outline" (click)="openCreateUser()">
     <ion-icon size="small" slot="icon-only" name="person-add-outline"></ion-icon>
@@ -232,22 +270,3 @@
     <ion-icon size="small" slot="icon-only" name="duplicate-outline"></ion-icon>
   </ion-button>
   </div> -->
-
-<!-- <div class="tabs">
-  <ion-tabs>
-    <ion-tab-bar slot="bottom" color="primary">
-      <ion-tab-button (click)="showProjectsClick()">
-        <ion-icon name="file-tray-full-outline"></ion-icon>
-        <ion-label>Progetti</ion-label>
-      </ion-tab-button>
-      <ion-tab-button (click)="showUsers()">
-        <ion-icon name="people-outline"></ion-icon>
-        <ion-label>Utenti</ion-label>
-      </ion-tab-button>
-      <ion-tab-button (click)="openUploadShp()">
-        <ion-icon name="duplicate-outline"></ion-icon>
-        <ion-label>XXXXXXX SHP</ion-label>
-      </ion-tab-button>
-    </ion-tab-bar>
-  </ion-tabs>
-</div> -->
