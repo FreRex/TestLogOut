@@ -8,15 +8,15 @@ exports.CheckDownloadZip = (req: any, res: any, next: any) => {
     let path = nameFolder+nameRooms;  
   
     //-- Controllo se cartella: (non-esiste o vuota) => true; se esiste e non è vuota => false
-    function isEmpty(path: any) {
+    function isFull(path: any) {
       try {
-          return fs.readdirSync(path).length === 0;
+          return fs.readdirSync(path).length !== 0;
       } catch (error) {
-        return true;
+        return false;
       }
     }
     
-    res.send(isEmpty(path));
+    res.send(isFull(path));
   
   }
   
