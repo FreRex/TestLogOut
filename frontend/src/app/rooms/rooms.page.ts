@@ -51,8 +51,9 @@ export class RoomsPage implements OnInit, OnDestroy {
         }
         return this.authService.getToken();
       }),
-      switchMap(res => {
-        return this.roomService.loadRooms();
+      switchMap(token => {
+        console.log('Token',token);
+        return this.roomService.rooms$;
       }),
     ).subscribe((rooms: Room[]) => {
       // mi sottoscrivo all'osservabile "get rooms()" che restituisce la lista di room
@@ -65,8 +66,8 @@ export class RoomsPage implements OnInit, OnDestroy {
       this.totalNumberOfRooms = rooms.length;
       this.totalPages = Math.ceil(this.totalNumberOfRooms / this.roomsPerPage);
       this.rooms = rooms.slice(0, this.roomsPerPage);
-      this.sortBy('nome_progetto'); */
-      
+      this.sortBy('nome_progetto'); 
+      */
     });
   }
 

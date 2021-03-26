@@ -63,17 +63,16 @@ export class RoomService {
     private userService: UserService
   ) { }
 
-  /** Lista delle room sotto forma di BehaviourSubject */
-  private _rooms = new BehaviorSubject<Room[]>([]);  // <-- "_rooms" può emettere eventi perchè è un BehaviourSubject
-
-  /** Ritorna la lista di tutti i progetti come Osservabile */
-  get rooms(): Observable<Room[]> {
-    return this._rooms.asObservable();            // <-- "rooms" NON può emettere eventi, ma può essere sottoscritto, perchè è un Observable
-  }
+  private _roomsSubject = new BehaviorSubject<Room[]>([]);  // <-- "_rooms" può emettere eventi perchè è un BehaviourSubject
+  rooms$: Observable<Room[]> = this._roomsSubject.asObservable() // <-- "rooms" NON può emettere eventi, ma può essere sottoscritto, perchè è un Observable
+    .pipe(switchMap(rooms => {
+      if (!rooms || rooms.length <= 0) { return this.loadRooms(); }
+      else { return of(rooms); }
+    }));
 
   /** SELECT singola room */
   getRoom(roomId: number): Observable<Room> {
-    return this.rooms
+    return this.rooms$
       .pipe(
         take(1),
         // <-- applico una funzione di filtro all'array di room che ho preso con take(1)
@@ -83,10 +82,21 @@ export class RoomService {
         }));
   }
 
+  // getRooms(): Observable<Room[]>{
+  //   return this.rooms.pipe(
+  //     switchMap(rooms => {
+  //       if (!rooms || rooms.length <= 0) {
+  //         return this.loadRooms();
+  //       } else {
+  //         return of(rooms);
+  //       }
+  //     })
+  //   )
+  // }
+
   /** SELECT rooms */
   loadRooms(): Observable<Room[]> {
-    console.log("User:",this.authService.userId);
-    
+    console.log("User:", this.authService.userId);
     return this.http
       .get<{ [key: string]: RoomData }>(
         `${environment.apiUrl}/s/room/${this.authService.userId}/0`,
@@ -112,9 +122,9 @@ export class RoomService {
           }
           return rooms;
         }),
-        delay(1000),
+
         // <-- emette il nuovo array come valore del BehaviourSubject _rooms
-        tap((rooms: Room[]) => { this._rooms.next(rooms); })
+        tap((rooms: Room[]) => { this._roomsSubject.next(rooms); })
       );
   }
 
@@ -155,16 +165,9 @@ export class RoomService {
     // this.rooms è un OSSERVABILE
     // take(1) = dopo la prima emissione dell'Osservabile togli la sottoscrizione
     // tap() = applico una funzione all'array emesso dall'osservabile (solo 1 perchè uso take(1)) senza sottoscrivermi
-    return this.rooms
+    return this.rooms$
       .pipe(
         take(1),
-        switchMap(rooms => {
-          if (!rooms || rooms.length <= 0) {
-            return this.loadRooms();
-          } else {
-            return of(rooms);
-          }
-        }),
         switchMap(rooms => {
           updatedRooms = [...rooms];
           return this.http
@@ -186,7 +189,7 @@ export class RoomService {
           // this._rooms è un BEHAVIOUR SUBJECT
           // next() = emetto il nuovo array concatencato come prossimo elemento del BehaviourSubject 
           // concat(newRoom) = prendo il vecchio array emesso dall'osservabile e concateno il nuovo elemento
-          this._rooms.next(updatedRooms.concat(newRoom));
+          this._roomsSubject.next(updatedRooms.concat(newRoom));
         })
       );
   }
@@ -194,16 +197,9 @@ export class RoomService {
   /** UPDATE room dopo una modifica */
   updateRoom(roomId: number, newUsermobile: string) {
     let updatedRooms: Room[];
-    return this.rooms
+    return this.rooms$
       .pipe(
         take(1),
-        switchMap(rooms => {
-          if (!rooms || rooms.length <= 0) {
-            return this.loadRooms();
-          } else {
-            return of(rooms);
-          }
-        }),
         switchMap(rooms => {
           // findIndex() = trova l'indice di un elemento di un array in base a una regola ("se è vero")
           const updatedRoomIndex = rooms.findIndex(room => room.id === roomId);
@@ -229,23 +225,16 @@ export class RoomService {
             );
         }),
         catchError(err => { return throwError(err); }),
-        tap(res => { this._rooms.next(updatedRooms); })
+        tap(res => { this._roomsSubject.next(updatedRooms); })
       );
   }
 
   /** DELETE room */
   deleteRoom(roomId: number) {
     let updatedRooms: Room[];
-    return this.rooms
+    return this.rooms$
       .pipe(
         take(1),
-        switchMap(rooms => {
-          if (!rooms || rooms.length <= 0) {
-            return this.loadRooms();
-          } else {
-            return of(rooms);
-          }
-        }),
         switchMap(rooms => {
           // filter() = filtra un array in base a una regola ("se è vero")
           // ritrorna vero per tutte le room tranne quella che voglio scartare
@@ -261,7 +250,14 @@ export class RoomService {
             )
         }),
         catchError(err => { return throwError(err); }),
-        tap(res => { this._rooms.next(updatedRooms); })
+        tap(res => { this._roomsSubject.next(updatedRooms); })
       );
   }
+
+  checkDownload(nomeProgetto: string) {
+    return this.http.get(
+      `${environment.apiUrl}/checkdownloadzip/${nomeProgetto}`,
+      { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) });
+  }
+
 }

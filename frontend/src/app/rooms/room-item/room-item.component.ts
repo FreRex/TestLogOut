@@ -25,6 +25,7 @@ export class RoomItemComponent implements OnInit {
     private toastController: ToastController
   ) { }
 
+
   ngOnInit() {
     // this.authService.currentRole$.subscribe(
     //   currentRole => {
@@ -35,12 +36,6 @@ export class RoomItemComponent implements OnInit {
     // console.log(this.linkProgetto);
     // }
     // );
-  }
-
-  onDownload(slidingItem: IonItemSliding) {
-    // TODO: logica download foto
-    slidingItem.close();
-    console.log("Foto scaricate");
   }
 
   /** Apre la pagina di MODIFICA ROOM */
@@ -68,6 +63,19 @@ export class RoomItemComponent implements OnInit {
       });
   }
 
+  onDownload(slidingItem: IonItemSliding) {
+    // TODO: logica download foto
+    slidingItem.close();    
+    const nomeProgetto = this.room.nome_progetto.trim().replace(' ','');
+    this.roomsService.checkDownload(nomeProgetto).subscribe(
+      (value: boolean) => {
+        if(value) window.open(`https://www.collaudolive.com:9083/downloadzip/${nomeProgetto}`)
+        else this.presentToast(`Non ci sono foto sul progetto ${nomeProgetto}!`, 'danger')
+        
+      }
+    )
+  }
+
   onDelete(slidingItem: IonItemSliding) {
     slidingItem.close();
     this.alertController.create(
@@ -83,7 +91,7 @@ export class RoomItemComponent implements OnInit {
             text: 'Elimina',
             handler: () => {
               this.roomsService.deleteRoom(this.room.id).subscribe(res => {
-                this.presentToast('Room Eliminata');
+                this.presentToast('Room Eliminata', 'secondary');
               });
             }
           }
@@ -92,10 +100,10 @@ export class RoomItemComponent implements OnInit {
     ).then(alertEl => { alertEl.present(); });
   }
 
-  async presentToast(message: string) {
+  async presentToast(message: string, color: string) {
     const toast = await this.toastController.create({
       message: message,
-      color: 'secondary',
+      color: color,
       duration: 2000,
       buttons: [{ icon: 'close', role: 'cancel' }]
     })
