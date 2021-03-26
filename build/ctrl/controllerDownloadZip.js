@@ -6,15 +6,15 @@ exports.CheckDownloadZip = (req, res, next) => {
     let nameRooms = req.params.folderzip;
     let path = nameFolder + nameRooms;
     //-- Controllo se cartella: (non-esiste o vuota) => true; se esiste e non è vuota => false
-    function isEmpty(path) {
+    function isFull(path) {
         try {
-            return fs.readdirSync(path).length === 0;
+            return fs.readdirSync(path).length !== 0;
         }
         catch (error) {
-            return true;
+            return false;
         }
     }
-    res.send(isEmpty(path));
+    res.send(isFull(path));
 };
 exports.DownloadZip = (req, res, next) => {
     const AdmZip = require('adm-zip');
