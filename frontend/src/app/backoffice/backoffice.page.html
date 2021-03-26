@@ -120,9 +120,9 @@
             </div>
             <ion-searchbar #searchInput placeholder="Cerca" (ionInput)="searchStream$.next($event.target.value)">
             </ion-searchbar>
-            <ion-card class="card-inside ion-no-margin" *ngIf="showProjects && (projects$ | obsWithStatus | async) as projects">
+            <ion-card class="card-inside ion-no-margin" *ngIf="(projects$ | obsWithStatus | async) as projects">
               <ng-template [ngIf]="!projects.loading">
-                <ion-list *ngFor="let proj of projects.value">
+                <ion-list *ngFor="let proj of $any(projects).value">
                   <ion-item-sliding>
                     <ion-item>
                       <div class="ion-margin-vertical">
