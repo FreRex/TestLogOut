@@ -1,4 +1,4 @@
-exports.CheckDownloadZip = (req: any, res: any, next: any) => {  
+  exports.CheckDownloadZip = (req: any, res: any, next: any) => {  
 
     const fs = require('fs');
     const nameFolder: any = '../datasave/'; 
