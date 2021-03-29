@@ -22,8 +22,6 @@ export class EditRoomModalComponent implements OnInit {
 
   onFormEvent(event: any) {
     // FIX : tipizzare l'evento?
-    console.log('shit');
-    
     switch (<string>event.target) {
       case 'save':
         this.modalController.dismiss({ message: 'room saved' }, 'save');

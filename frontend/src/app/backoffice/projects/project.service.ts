@@ -31,7 +31,7 @@ export class ProjectService {
     private authService: AuthService
   ) { }
 
-  getProjects(projectId: number): Observable<Project> {
+  getProject(projectId: number): Observable<Project> {
     return this.projects$.pipe(
       take(1),
       map((projects: Project[]) => {
@@ -61,6 +61,8 @@ export class ProjectService {
     long_centro_map: string,
     lat_centro_map: string
   ) {
+    console.log("Update project: ", idprogetto, idutente, pk_proj, nome);
+
     return this.http
       .put(
         `${environment.apiUrl}/up/`,

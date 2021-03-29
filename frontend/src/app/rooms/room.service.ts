@@ -64,11 +64,11 @@ export class RoomService {
   ) { }
 
   private _roomsSubject = new BehaviorSubject<Room[]>([]);  // <-- "_rooms" può emettere eventi perchè è un BehaviourSubject
-  rooms$: Observable<Room[]> = this._roomsSubject.asObservable() // <-- "rooms" NON può emettere eventi, ma può essere sottoscritto, perchè è un Observable
-    .pipe(switchMap(rooms => {
-      if (!rooms || rooms.length <= 0) { return this.loadRooms(); }
-      else { return of(rooms); }
-    }));
+  rooms$: Observable<Room[]> = this._roomsSubject.asObservable(); // <-- "rooms" NON può emettere eventi, ma può essere sottoscritto, perchè è un Observable
+    // .pipe(switchMap(rooms => {
+    //   if (!rooms || rooms.length <= 0) { return this.loadRooms(); }
+    //   else { return of(rooms); }
+    // }));
 
   /** SELECT singola room */
   getRoom(roomId: number): Observable<Room> {
@@ -154,12 +154,12 @@ export class RoomService {
     let updatedRooms: Room[];
     const newRoom =
     {
-      id: null,
-      projectID: projectID,
-      usermobile: usermobile,
-      nome_progetto: nome_progetto,
-      nome_collaudatore: nome_collaudatore,
-      data_inserimento: new Date()
+      "id": null,
+      "projectID": projectID,
+      "usermobile": usermobile,
+      "nome_progetto": nome_progetto,
+      "nome_collaudatore": nome_collaudatore,
+      "data_inserimento": new Date()
     };
     let generatedId: string;
     // this.rooms è un OSSERVABILE

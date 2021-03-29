@@ -123,6 +123,11 @@
             <ion-card class="card-inside ion-no-margin"
               *ngIf="showProjects && (projects$ | obsWithStatus | async) as projects">
               <!-- <div *ngIf="!isLoading"> -->
+              <ng-template [ngIf]="projects.loading">
+                <div class="ion-text-center">
+                  <ion-spinner></ion-spinner>
+                </div>
+              </ng-template>
               <ng-template [ngIf]="!projects.loading">
                 <ion-list *ngFor="let proj of $any(projects).value">
                   <ion-item-sliding>
@@ -177,12 +182,13 @@
                   </ion-item-sliding>
                 </ion-list>
               </ng-template>
-              <!-- </div> -->
-              <ng-template [ngIf]="projects.loading">
-                <div class="ion-text-center">
-                  <ion-spinner></ion-spinner>
-                </div>
-              </ng-template>
+              <!-- <div>
+                <ul *ngIf="projects.loading">
+                  <li *ngFor="let proj of $any(projects).value">
+                    {{proj.name}}
+                  </li>
+                </ul>
+              </div> -->
             </ion-card>
             <ion-card class="card-inside ion-no-margin"
               *ngIf="!showProjects && (users$ | obsWithStatus | async) as users">

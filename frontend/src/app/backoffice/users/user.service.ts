@@ -145,7 +145,7 @@ export class UserService {
   }
 
   getUserIdByName(name: string): number {
-    let userID: number;
+    let userID: number;   
     this.users$.pipe(
       take(1),
       map((users: User[]) => {

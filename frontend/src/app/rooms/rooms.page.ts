@@ -49,10 +49,6 @@ export class RoomsPage implements OnInit, OnDestroy {
         } else {
           this.authService.onLogin('0');
         }
-        return this.authService.getToken();
-      }),
-      switchMap(token => {
-        console.log('Token',token);
         return this.roomService.rooms$;
       }),
     ).subscribe((rooms: Room[]) => {

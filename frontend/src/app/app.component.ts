@@ -1,5 +1,11 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { LoadingController } from '@ionic/angular';
+import { switchMap } from 'rxjs/operators';
 import { AuthService } from './auth/auth.service';
+import { ProjectService } from './backoffice/projects/project.service';
+import { UserService } from './backoffice/users/user.service';
+import { RoomService } from './rooms/room.service';
 import { StorageDataService } from './shared/storage-data.service';
 
 @Component({
@@ -10,18 +16,38 @@ import { StorageDataService } from './shared/storage-data.service';
 export class AppComponent implements OnInit {
 
   constructor(
+    private loadingController: LoadingController,
     private store: StorageDataService,
-    private authService: AuthService
+    private authService: AuthService,
+    private userService: UserService,
+    private projectService: ProjectService,
+    private roomService: RoomService,
   ) { }
 
   ngOnInit() {
-    // this.authService.getToken()
-    //   .subscribe(
-    //     res => {
-    //       this.store.init();
-    //     }
-    //   );
+
+    this.loadingController
+      .create({ keyboardClose: true, message: 'Logging in..' })
+      .then(loadingEl => {
+        loadingEl.present();
+        this.authService.getToken().pipe(
+          switchMap(token => {
+            // console.log(token);
+            return this.userService.loadUsers()
+          }),
+          switchMap(users => {
+            // console.log(users);
+            return this.projectService.loadProjects()
+          }),
+          switchMap(projects => {
+            // console.log(projects);
+            return this.roomService.loadRooms()
+          }),
+        ).subscribe(rooms => {
+          // console.log(rooms);
+          loadingEl.dismiss()
+        });
+      });
+
   }
-
-
 }

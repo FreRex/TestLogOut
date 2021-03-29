@@ -28,11 +28,9 @@ import { AuthService } from '../auth/auth.service';
 export class BackofficePage implements OnInit {
   @ViewChild('searchInput', { static: true }) input: IonSearchbar;
 
-  projects: Project[];
   projects$: Observable<{ type: string; value?: Project[] }>;
   searchStream$ = new BehaviorSubject('');
 
-  users: User[];
   users$: Observable<{ type: string; value?: User[] }>;
   showProjects: boolean = true;
 
@@ -42,18 +40,12 @@ export class BackofficePage implements OnInit {
     private modalCtrl: ModalController,
     private toastController: ToastController,
     private alertController: AlertController,
-    private authService: AuthService,
     private http: HttpClient
   ) { }
 
   ngOnInit() {
     this.initFilterUsers();
     this.initFilterProjects();
-
-    this.authService.getToken().pipe(
-      switchMap(res => this.projectService.loadProjects()),
-      switchMap(res => this.userService.loadUsers())
-    ).subscribe();
   }
 
   /** Filtra Progetti in base alla ricerca */
@@ -61,7 +53,7 @@ export class BackofficePage implements OnInit {
     this.projects$ = this.searchStream$.pipe(
       debounceTime(400),
       distinctUntilChanged(),
-      startWith(""),
+      // startWith(""),
       switchMap((query) =>
         concat(
           of({ type: 'start', value: null }),
@@ -77,14 +69,14 @@ export class BackofficePage implements OnInit {
     this.users$ = this.searchStream$.pipe(
       debounceTime(400),
       distinctUntilChanged(),
-      startWith(""),
+      // startWith(""),
       switchMap((query) =>
-      concat(
-        of({ type: 'start', value: null }),
-        this.userService.getUsersByFilter(query)
-          .pipe(map(users => ({ type: 'finish', value: users })))
-      )
-    ),
+        concat(
+          of({ type: 'start', value: null }),
+          this.userService.getUsersByFilter(query)
+            .pipe(map(users => ({ type: 'finish', value: users })))
+        )
+      ),
     );
   }
 

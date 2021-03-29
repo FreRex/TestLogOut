@@ -1,3 +1,4 @@
+import { resolveForwardRef } from '@angular/compiler/src/util';
 import { Pipe, PipeTransform } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { catchError, map, startWith, tap } from 'rxjs/operators';
@@ -22,6 +23,7 @@ export class ObsWithStatusPipe implements PipeTransform {
       map((res: any) => {
         return {
           loading: (res.type === 'finish' && (res.value ? res.value.length > 0 : false)) ? false : true,
+          // loading:  res.type === 'start',
           error: res.type === 'error' ? defaultError : '',
           value: res.type ? res.value : res,
         };

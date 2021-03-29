@@ -30,7 +30,7 @@ export class EditProjectModalComponent implements OnInit {
 
     this.users$ = this.userService.users$;
 
-    this.projectService.getProjects(this.projectId).subscribe((project) => {
+    this.projectService.getProject(this.projectId).subscribe((project) => {
       this.project = project;
 
       this.form = new FormGroup({
@@ -72,11 +72,6 @@ export class EditProjectModalComponent implements OnInit {
         }), */
       });
     });
-
-/*       this.sub = this.userService.users$.subscribe((users: User[]) => {
-      this.users = users;
-
-    }); */
   }
 
   closeModal() {
@@ -90,7 +85,7 @@ export class EditProjectModalComponent implements OnInit {
     this.projectService
       .updateProject(
         this.project.idprogetto,
-        this.form.value.idutente,
+        this.userService.getUserIdByName(this.form.value.collaudatoreufficio),
         this.form.value.pk_proj,
         this.form.value.nome,
         this.form.value.long_centro_map,

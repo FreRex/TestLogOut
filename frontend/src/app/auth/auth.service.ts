@@ -31,10 +31,10 @@ export class AuthService {
   // currentRole: BehaviorSubject<string> = new BehaviorSubject(null);
   // currentRole$ = this.currentRole.asObservable();
 
-  userId: string = '';
+  userId: string = '0';
   currentRole: string = '';
   onLogin(userId: string) {
-    if (this.userId == '') {
+    if (this.currentRole == '') {
       this.userId = userId;
       // if(this.userId === 0){ this.currentRole.next('admin'); }
       // else { this.currentRole.next('user'); }
