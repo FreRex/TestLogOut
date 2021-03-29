@@ -1,10 +1,7 @@
 <ion-item-sliding #slidingItem>
-    <ion-item detail button="true" [href]="linkProgetto" target="_blank">
-        <!-- <div class="ion-padding">
-            <ion-icon size="large" color="medium" name="create-outline" (click)="onOpenEditModal()"></ion-icon>
-        </div> -->
-        <ion-label>
-            <ion-text color="primary">
+    <ion-item>
+        <ion-label class="ion-margin-end">
+            <ion-text color="dark">
                 <h2><b>Progetto:</b> {{ room.nome_progetto }}</h2>
             </ion-text>
             <ion-text color="medium">
@@ -15,17 +12,24 @@
                 </p>
             </ion-text>
         </ion-label>
-        <!-- <ion-icon [color]="isFavourite ? 'warning' : 'light'" 
-        name="star" slot="end" (click)="onFavoutite()"></ion-icon> -->
+        <!-- <ion-icon [color]="isFavourite ? 'warning' : 'light'"  name="star" slot="end" (click)="onFavoutite()"></ion-icon> -->
+        <ion-button shape="round" fill="outline" size="default" (click)="onDownload(slidingItem)" class="ion-margin-end">
+            <ion-label>Foto</ion-label>
+            <ion-icon name="cloud-download-outline" slot="end" ></ion-icon>
+        </ion-button>
+        <ion-button shape="round" size="default" (click)="onOpenRoom()">
+            <ion-label>Room</ion-label>
+            <ion-icon name="chevron-forward" slot="end" ></ion-icon>
+        </ion-button>
     </ion-item>
-    <ion-item-options>
-        <ion-item-option *userIsAdmin color="primary" (click)="onOpenEditRoomModal(slidingItem)">
+    <ion-item-options *userIsAdmin side="start">
+        <ion-item-option color="primary" (click)="onOpenEditRoomModal(slidingItem)">
             <ion-icon name="create" slot="icon-only"></ion-icon>
         </ion-item-option>
-        <ion-item-option color="secondary" (click)="onDownload(slidingItem)">
+        <!-- <ion-item-option color="secondary" (click)="onDownload(slidingItem)">
             <ion-icon name="download" slot="icon-only"></ion-icon>
-        </ion-item-option>
-        <ion-item-option *userIsAdmin color="danger" (click)="onDelete(slidingItem)">
+        </ion-item-option> -->
+        <ion-item-option color="danger" (click)="onDelete(slidingItem)">
             <ion-icon name="trash" slot="icon-only"></ion-icon>
         </ion-item-option>
     </ion-item-options>
