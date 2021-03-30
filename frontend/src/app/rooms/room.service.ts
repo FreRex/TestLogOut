@@ -33,44 +33,15 @@ export interface RoomData {
 })
 export class RoomService {
 
-  // dummyRooms: Room[] = [
-  //   {
-  //     id: 1,
-  //     usermobile: '1',
-  //     nome_progetto: 'Progetto 1',
-  //     nome_collaudatore: 'Collaudatore 1',
-  //     data_inserimento: new Date(2021, 3, 1),
-  //   },
-  //   {
-  //     id: 2,
-  //     usermobile: '2',
-  //     nome_progetto: 'Progetto 2',
-  //     nome_collaudatore: 'Collaudatore 2',
-  //     data_inserimento: new Date(2021, 3, 2),
-  //   },
-  //   {
-  //     id: 3,
-  //     usermobile: '3',
-  //     nome_progetto: 'Progetto 3',
-  //     nome_collaudatore: 'Collaudatore 3',
-  //     data_inserimento: new Date(2021, 3, 3),
-  //   }
-  // ];
-
   constructor(
     private http: HttpClient,
     private authService: AuthService,
     private userService: UserService
   ) { }
 
-  private _roomsSubject = new BehaviorSubject<Room[]>([]);  // <-- "_rooms" può emettere eventi perchè è un BehaviourSubject
-  rooms$: Observable<Room[]> = this._roomsSubject.asObservable(); // <-- "rooms" NON può emettere eventi, ma può essere sottoscritto, perchè è un Observable
-    // .pipe(switchMap(rooms => {
-    //   if (!rooms || rooms.length <= 0) { return this.loadRooms(); }
-    //   else { return of(rooms); }
-    // }));
+  private roomsSubject = new BehaviorSubject<Room[]>([]);  // <-- "_rooms" può emettere eventi perchè è un BehaviourSubject
+  rooms$: Observable<Room[]> = this.roomsSubject.asObservable(); // <-- "rooms" NON può emettere eventi, ma può essere sottoscritto, perchè è un Observable
 
-  /** SELECT singola room */
   getRoom(roomId: number): Observable<Room> {
     return this.rooms$
       .pipe(
@@ -82,21 +53,19 @@ export class RoomService {
         }));
   }
 
-  // getRooms(): Observable<Room[]>{
-  //   return this.rooms.pipe(
-  //     switchMap(rooms => {
-  //       if (!rooms || rooms.length <= 0) {
-  //         return this.loadRooms();
-  //       } else {
-  //         return of(rooms);
-  //       }
-  //     })
-  //   )
+  // getRooms(): Observable<Room[]> {
+  //   return this.rooms$
+  //     .pipe(
+  //       switchMap(rooms => {
+  //         if (!rooms || rooms.length <= 0) { return this.loadRooms(); }
+  //         else { return of(rooms); }
+  //       })
+  //     );
   // }
 
   /** SELECT rooms */
   loadRooms(): Observable<Room[]> {
-    console.log("User:", this.authService.userId);
+    // console.log("User:", this.authService.userId);
     return this.http
       .get<{ [key: string]: RoomData }>(
         `${environment.apiUrl}/s/room/${this.authService.userId}/0`,
@@ -124,7 +93,7 @@ export class RoomService {
         }),
 
         // <-- emette il nuovo array come valore del BehaviourSubject _rooms
-        tap((rooms: Room[]) => { this._roomsSubject.next(rooms); })
+        tap((rooms: Room[]) => { this.roomsSubject.next(rooms); })
       );
   }
 
@@ -189,7 +158,7 @@ export class RoomService {
           // this._rooms è un BEHAVIOUR SUBJECT
           // next() = emetto il nuovo array concatencato come prossimo elemento del BehaviourSubject 
           // concat(newRoom) = prendo il vecchio array emesso dall'osservabile e concateno il nuovo elemento
-          this._roomsSubject.next(updatedRooms.concat(newRoom));
+          this.roomsSubject.next(updatedRooms.concat(newRoom));
         })
       );
   }
@@ -225,7 +194,7 @@ export class RoomService {
             );
         }),
         catchError(err => { return throwError(err); }),
-        tap(res => { this._roomsSubject.next(updatedRooms); })
+        tap(res => { this.roomsSubject.next(updatedRooms); })
       );
   }
 
@@ -250,7 +219,7 @@ export class RoomService {
             )
         }),
         catchError(err => { return throwError(err); }),
-        tap(res => { this._roomsSubject.next(updatedRooms); })
+        tap(res => { this.roomsSubject.next(updatedRooms); })
       );
   }
 

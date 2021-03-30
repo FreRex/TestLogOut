@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingController } from '@ionic/angular';
+import { forkJoin } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { AuthService } from './auth/auth.service';
 import { ProjectService } from './backoffice/projects/project.service';
@@ -25,29 +26,44 @@ export class AppComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-
     this.loadingController
-      .create({ keyboardClose: true, message: 'Logging in..' })
+      .create({ keyboardClose: true, message: 'Loading...' })
       .then(loadingEl => {
         loadingEl.present();
         this.authService.getToken().pipe(
-          switchMap(token => {
-            // console.log(token);
-            return this.userService.loadUsers()
-          }),
-          switchMap(users => {
-            // console.log(users);
-            return this.projectService.loadProjects()
-          }),
-          switchMap(projects => {
-            // console.log(projects);
-            return this.roomService.loadRooms()
-          }),
-        ).subscribe(rooms => {
-          // console.log(rooms);
-          loadingEl.dismiss()
-        });
-      });
+          switchMap(token =>
+            forkJoin({
+              requestUsers: this.userService.loadUsers(),
+              requestProjects: this.projectService.loadProjects(),
+              requestRooms: this.roomService.loadRooms(),
+            })
+          )
+        ).subscribe(({ requestUsers, requestProjects, requestRooms }) => {
+            // console.log(requestUsers);
+            // console.log(requestProjects);
+            // console.log(requestRooms);
+            loadingEl.dismiss();
+          }
+        );
 
+        // this.authService.getToken().pipe(
+        //   switchMap(token => {
+        //     // console.log(token);
+        //     return this.userService.loadUsers()
+        //   }),
+        //   switchMap(users => {
+        //     // console.log(users);
+        //     return this.projectService.loadProjects()
+        //   }),
+        //   switchMap(projects => {
+        //     // console.log(projects);
+        //     return this.roomService.loadRooms()
+        //   }),
+        // ).subscribe(rooms => {
+        //   // console.log(rooms);
+        //   loadingEl.dismiss()
+        // });
+
+      });
   }
 }
