@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { map, take, tap } from 'rxjs/operators';
+import { map, switchMap, take, tap } from 'rxjs/operators';
 import { AuthService } from 'src/app/auth/auth.service';
 import { environment } from 'src/environments/environment';
 
@@ -28,22 +28,17 @@ export class UserService {
     private authService: AuthService
   ) { }
 
-  loadUsers(): Observable<User[]> {
-    return this.http
-      .get<User[]>('https://www.collaudolive.com:9083/s/utenti/',
-        {
-          headers: new HttpHeaders().set(
-            'Authorization',
-            `Bearer ${this.authService.token}`
-          ),
+  getUser(userId: number): Observable<User> {
+    return this.users$
+      .pipe(
+        take(1),
+        map((users: User[]) => {
+          return { ...users.find((user) => user.id === userId) };
         })
-      .pipe(tap(((users) => {
-        this.usersSubj.next(users);
-      })));
+      );
   }
 
   getUsersByFilter(query: string): Observable<User[]> {
-    console.log(query);
     return this.users$.pipe(
       map((users) =>
         users.filter((user) =>
@@ -54,15 +49,30 @@ export class UserService {
     );
   }
 
-  getUser(userId: number): Observable<User> {
-    return this.users$.pipe(
+  getUserIdByName(name: string): number {
+    let userID: number;
+    this.users$.pipe(
       take(1),
       map((users: User[]) => {
-        return { ...users.find((user) => user.id === userId) };
-      })
-    );
+        return { ...users.find(user => user.collaudatoreufficio === name) };
+      }))
+      .subscribe(user => userID = user.id);
+    return userID;
   }
 
+  /** SELECT utenti */
+  loadUsers(): Observable<User[]> {
+    return this.http
+      .get<User[]>('https://www.collaudolive.com:9083/s/utenti/',
+        { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
+      ).pipe(
+        tap(users => {
+          this.usersSubj.next(users);
+        })
+      );
+  }
+
+  /** CREATE utenti */
   addUser(
     collaudatoreufficio: string,
     username: string,
@@ -78,13 +88,7 @@ export class UserService {
           password: password,
           autorizzazioni: autorizzazioni,
         },
-
-        {
-          headers: new HttpHeaders().set(
-            'Authorization',
-            `Bearer ${this.authService.token}`
-          ),
-        }
+        { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
       )
       .pipe(
         tap((res) => {
@@ -93,6 +97,7 @@ export class UserService {
       );
   }
 
+  /** UPDATE utenti */
   updateUser(
     collaudatoreufficio: string,
     username: string,
@@ -108,12 +113,7 @@ export class UserService {
           password: password,
           id: id,
         },
-        {
-          headers: new HttpHeaders().set(
-            'Authorization',
-            `Bearer ${this.authService.token}`
-          ),
-        }
+        { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
       )
       .pipe(
         tap((res) => {
@@ -122,6 +122,7 @@ export class UserService {
       );
   }
 
+  /** DELETE utenti */
   deleteUser(userId: number) {
     return this.http
       .post(
@@ -130,28 +131,12 @@ export class UserService {
           id: userId,
           tableDelete: 'utenti',
         },
-        {
-          headers: new HttpHeaders().set(
-            'Authorization',
-            `Bearer ${this.authService.token}`
-          ),
-        }
+        { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
       )
       .pipe(
         tap((res) => {
           this.loadUsers();
         })
       );
-  }
-
-  getUserIdByName(name: string): number {
-    let userID: number;   
-    this.users$.pipe(
-      take(1),
-      map((users: User[]) => {
-        return { ...users.find(user => user.collaudatoreufficio === name) };
-      }))
-      .subscribe(user => userID = user.id);
-    return userID;
   }
 }
