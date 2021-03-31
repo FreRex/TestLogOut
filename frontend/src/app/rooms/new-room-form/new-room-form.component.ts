@@ -29,7 +29,6 @@ export class NewRoomFormComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    // this.onFilterProjects();
     this.projects$ = this.projectService.projects$;
 
     this.form = new FormGroup({
@@ -102,40 +101,4 @@ export class NewRoomFormComponent implements OnInit {
     // .then(toastEl => toastEl.present());
     toast.present();
   }
-
-  // onFilterProjects() {
-  //   this.projects$ = this.input.ionInput.pipe(
-  //     map((event) => (<HTMLInputElement>event.target).value),
-  //     debounceTime(400),
-  //     distinctUntilChanged(),
-  //     startWith(""),
-  //     switchMap((searchTerm) =>
-  //       this.projectService.projects$.pipe(
-  //         map((projects) =>
-  //           projects.filter((project) =>
-  //             project.nome.toLowerCase().includes(searchTerm.toLowerCase())
-  //           )
-  //         )
-  //       )
-  //     )
-  //   );
-  // }
-
-  // projListOpen() {
-  //   // document.getElementById("projList").className = "custom-list-open"
-  //   // document.getElementById("myDropdown").classList.add("show");
-  //   this.isListOpen = true;
-  // }
-
-  // projListClose() {
-  //   // document.getElementById("projList").className = "custom-list-close"
-  //   // document.getElementById("myDropdown").classList.remove("show");
-  //   this.isListOpen = false;
-  // }
-
-  // toggleDropdown() {
-  //   if (this.isListOpen) this.projListClose();
-  //   else this.projListOpen();
-  // }
-
 }

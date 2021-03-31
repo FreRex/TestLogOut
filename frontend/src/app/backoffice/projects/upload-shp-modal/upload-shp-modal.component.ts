@@ -3,7 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import { Observable, Subscription } from 'rxjs';
 import { User, UserService } from '../../users/user.service';
-import { ProjectService } from '../project.service';
+import { Project, ProjectService } from '../project.service';
 
 @Component({
   selector: 'app-upload-shp-modal',
@@ -12,9 +12,8 @@ import { ProjectService } from '../project.service';
 })
 export class UploadShpModalComponent implements OnInit {
 
-  form:FormGroup;
-  users$: Observable <User[]>;
-
+  form: FormGroup;
+  users$: Observable<User[]>;
 
   constructor(
     private userService: UserService,
@@ -35,49 +34,46 @@ export class UploadShpModalComponent implements OnInit {
         updateOn: 'blur',
         validators: [Validators.required, Validators.maxLength(20)]
       }),
-      nome: new FormControl( null, {
+      nome: new FormControl(null, {
         updateOn: 'blur',
         validators: [Validators.required, Validators.maxLength(50)]
       }),
-      long_centro_map: new FormControl( null, {
+      long_centro_map: new FormControl(null, {
         updateOn: 'blur',
         validators: [Validators.required, Validators.maxLength(50)]
       }),
-      lat_centro_map: new FormControl( null, {
+      lat_centro_map: new FormControl(null, {
         updateOn: 'blur',
         validators: [Validators.required, Validators.maxLength(50)]
       }),
-      nodi_fisici: new FormControl( null, {
+      nodi_fisici: new FormControl(null, {
         updateOn: 'blur',
         validators: [Validators.required, Validators.maxLength(50)]
       }),
-      nodi_ottici: new FormControl( null, {
+      nodi_ottici: new FormControl(null, {
         updateOn: 'blur',
         validators: [Validators.required, Validators.maxLength(50)]
       }),
-      tratte: new FormControl( null, {
+      tratte: new FormControl(null, {
         updateOn: 'blur',
         validators: [Validators.required, Validators.maxLength(50)]
       }),
-        conn_edif_opta: new FormControl( null, {
+      conn_edif_opta: new FormControl(null, {
         updateOn: 'blur',
         validators: [Validators.required, Validators.maxLength(50)]
       }),
-
-
     });
-
   }
 
-  closeModal(){
+  closeModal() {
     this.modalCtrl.dismiss(UploadShpModalComponent);
   }
 
-  createProject(){
+  createProject() {
     if (!this.form.valid) { return; }
     this.projectService
       .addProject(
-        this.userService.getUserIdByName(this.form.value.collaudatoreufficio),
+        this.form.value.collaudatoreufficio,
         +this.form.value.pk_proj,
         this.form.value.nome,
         this.form.value.nodi_fisici,
@@ -86,7 +82,7 @@ export class UploadShpModalComponent implements OnInit {
         this.form.value.conn_edif_opta,
         this.form.value.long_centro_map,
         this.form.value.lat_centro_map
-        )
+      )
       .subscribe(
         res => {
           // console.log("Response",res);

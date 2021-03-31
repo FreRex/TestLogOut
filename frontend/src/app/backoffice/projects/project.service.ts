@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
-import { map, switchMap, take, tap } from 'rxjs/operators';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { catchError, map, switchMap, take, tap } from 'rxjs/operators';
 import { AuthService } from 'src/app/auth/auth.service';
 import { environment } from 'src/environments/environment';
 import { UserService } from '../users/user.service';
@@ -24,11 +24,14 @@ export interface Project {
   providedIn: 'root',
 })
 export class ProjectService {
-  private projSubj = new BehaviorSubject<Project[]>([]);
-  projects$: Observable<Project[]> = this.projSubj.asObservable();
 
-  constructor(private http: HttpClient,
-    private authService: AuthService
+  private projSubject = new BehaviorSubject<Project[]>([]);
+  projects$: Observable<Project[]> = this.projSubject.asObservable();
+
+  constructor(
+    private http: HttpClient,
+    private authService: AuthService,
+    private userService: UserService
   ) { }
 
   getProject(projectId: number): Observable<Project> {
@@ -61,14 +64,14 @@ export class ProjectService {
         { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
       ).pipe(
         tap(projects => {
-          this.projSubj.next(projects);
+          this.projSubject.next(projects);
         })
       );
   }
 
   /** CREATE progetti */
   addProject(
-    idutente: number,
+    collaudatoreufficio: string,
     pk_proj: number,
     nome: string,
     nodi_fisici: string,
@@ -76,26 +79,50 @@ export class ProjectService {
     tratte: string,
     conn_edif_opta: string,
     long_centro_map: string,
-    lat_centro_map: string
+    lat_centro_map: string,
   ) {
-    return this.http
-      .post(
-        `${environment.apiUrl}/cp/`,
-        {
-          "idutente": idutente,
-          "pk_proj": pk_proj,
-          "nome": nome,
-          "nodi_fisici": nodi_fisici,
-          "nodi_ottici": nodi_ottici,
-          "tratte": tratte,
-          "conn_edif_opta": conn_edif_opta,
-          "long_centro_map": long_centro_map,
-          "lat_centro_map": lat_centro_map,
-        },
-        { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
-      ).pipe(
-        tap((res) => {
-          this.loadProjects();
+    let updatedProjetcs: Project[];
+    const newProject =
+    {
+      idprogetto: null,
+      collaudatoreufficio: collaudatoreufficio,
+      pk_proj: pk_proj,
+      nome: nome,
+      long_centro_map: long_centro_map,
+      lat_centro_map: lat_centro_map,
+      nodi_fisici: nodi_fisici,
+      nodi_ottici: nodi_ottici,
+      tratte: tratte,
+      conn_edif_opta: conn_edif_opta,
+    }
+    return this.projects$
+      .pipe(
+        take(1),
+        switchMap(projects => {
+          updatedProjetcs = [...projects];
+          return this.http
+            .post(
+              `${environment.apiUrl}/cp/`,
+              {
+                "idutente": this.userService.getUserIdByName(collaudatoreufficio),
+                "pk_proj": pk_proj,
+                "nome": nome,
+                "nodi_fisici": nodi_fisici,
+                "nodi_ottici": nodi_ottici,
+                "tratte": tratte,
+                "conn_edif_opta": conn_edif_opta,
+                "long_centro_map": long_centro_map,
+                "lat_centro_map": lat_centro_map,
+              },
+              { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
+            );
+        }),
+        catchError(err => { return throwError(err); }),
+        tap(res => {
+          console.log('GeneratedId:', res['insertId']);
+          newProject.idprogetto = res['insertId'];
+          updatedProjetcs.unshift(newProject);
+          this.projSubject.next(updatedProjetcs);
         })
       );
   }
@@ -103,47 +130,74 @@ export class ProjectService {
   /** UPDATE progetti */
   updateProject(
     idprogetto: number,
-    idutente: number,
+    collaudatoreufficio: string,
     pk_proj: number,
     nome: string,
     long_centro_map: string,
     lat_centro_map: string
   ) {
-    console.log("Update project: ", idprogetto, idutente, pk_proj, nome);
-    return this.http
-      .put(
-        `${environment.apiUrl}/up/`,
-        {
-          "id": idprogetto,
-          "idutente": idutente,
-          "pk_proj": pk_proj,
-          "nome": nome,
-          "long_centro_map": long_centro_map,
-          "lat_centro_map": lat_centro_map,
-        },
-        { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
-      )
+    let updatedProjetcs: Project[];
+    return this.projects$
       .pipe(
-        tap((res) => {
-          this.loadProjects();
-        })
+        take(1),
+        switchMap(projects => {
+          const projectIndex = projects.findIndex(proj => proj.idprogetto === idprogetto);
+          updatedProjetcs = [...projects];
+          const oldProject = updatedProjetcs[projectIndex];
+          updatedProjetcs[projectIndex] =
+          {
+            idprogetto: oldProject.idprogetto,
+            collaudatoreufficio: collaudatoreufficio,
+            pk_proj: pk_proj,
+            nome: nome,
+            long_centro_map: long_centro_map,
+            lat_centro_map: lat_centro_map,
+            nodi_fisici: oldProject.nodi_fisici,
+            nodi_ottici: oldProject.nodi_ottici,
+            tratte: oldProject.tratte,
+            conn_edif_opta: oldProject.conn_edif_opta,
+          };
+          return this.http
+            .put(
+              `${environment.apiUrl}/up/`,
+              {
+                "id": idprogetto,
+                "idutente": this.userService.getUserIdByName(collaudatoreufficio),
+                "pk_proj": pk_proj,
+                "nome": nome,
+                "long_centro_map": long_centro_map,
+                "lat_centro_map": lat_centro_map,
+              },
+              { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
+            );
+        }),
+        catchError(err => { return throwError(err); }),
+        tap(res => { this.projSubject.next(updatedProjetcs) })
       );
   }
 
   /** DELETE progetti */
-  deleteProject(progectId: number) {
-    return this.http
-      .post(
-        `${environment.apiUrl}/d/`,
-        {
-          id: progectId,
-          tableDelete: 'rappre_prog_gisfo',
-        },
-        { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
-      ).pipe(
-        tap((res) => {
-          this.loadProjects();
-        })
+  deleteProject(
+    projectId: number
+  ) {
+    let updatedProjetcs: Project[];
+    return this.projects$
+      .pipe(
+        take(1),
+        switchMap(projects => {
+          updatedProjetcs = projects.filter(proj => proj.idprogetto !== projectId);
+          return this.http
+            .post(
+              `${environment.apiUrl}/d/`,
+              {
+                id: projectId,
+                tableDelete: 'rappre_prog_gisfo',
+              },
+              { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
+            );
+        }),
+        catchError(err => { return throwError(err); }),
+        tap(res => { this.projSubject.next(updatedProjetcs) })
       );
   }
 

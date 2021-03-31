@@ -1,9 +1,9 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, delay, map, switchMap, take, tap } from 'rxjs/operators';
-import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
-import { AuthService } from '../auth/auth.service';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { catchError, map, switchMap, take, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
+import { AuthService } from '../auth/auth.service';
 import { UserService } from '../backoffice/users/user.service';
 
 /** Interfaccia che definisce la Room all'interno del progetto */
@@ -53,6 +53,18 @@ export class RoomService {
         }));
   }
 
+  getUsersByFilter(query: string): Observable<Room[]> {
+    return this.rooms$.pipe(
+      map(rooms =>
+        rooms.filter(room =>
+          room.usermobile.toLowerCase().includes(query.toLowerCase()) ||
+          room.nome_progetto.toString().toLowerCase().includes(query.toLowerCase()) ||
+          room.nome_collaudatore.toString().toLowerCase().includes(query.toLowerCase())
+        )
+      )
+    );
+  }
+
   // getRooms(): Observable<Room[]> {
   //   return this.rooms$
   //     .pipe(
@@ -62,6 +74,27 @@ export class RoomService {
   //       })
   //     );
   // }
+
+  /** SELECT singola room */
+  selectRoom(roomId: string): Observable<Room> {
+    return this.http
+      .get<RoomData>(
+        `${environment.apiUrl}/s/room/${roomId}`,
+        { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
+      )
+      .pipe(
+        map(roomData => {
+          return {
+            id: roomData[0].id,
+            projectID: roomData[0].cod,
+            usermobile: roomData[0].usermobile,
+            nome_progetto: roomData[0].progettoselezionato,
+            nome_collaudatore: roomData[0].collaudatoreufficio,
+            data_inserimento: new Date(roomData[0].DataInsert),
+          }
+        })
+      );
+  }
 
   /** SELECT rooms */
   loadRooms(): Observable<Room[]> {
@@ -91,46 +124,28 @@ export class RoomService {
           }
           return rooms;
         }),
-
         // <-- emette il nuovo array come valore del BehaviourSubject _rooms
         tap((rooms: Room[]) => { this.roomsSubject.next(rooms); })
       );
   }
 
-  /** SELECT singola room */
-  selectRoom(roomId: string): Observable<Room> {
-    return this.http
-      .get<RoomData>(
-        `${environment.apiUrl}/s/room/${roomId}`,
-        { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
-      )
-      .pipe(
-        map(roomData => {
-          return {
-            id: roomData[0].id,
-            projectID: roomData[0].cod,
-            usermobile: roomData[0].usermobile,
-            nome_progetto: roomData[0].progettoselezionato,
-            nome_collaudatore: roomData[0].collaudatoreufficio,
-            data_inserimento: new Date(roomData[0].DataInsert),
-          }
-        })
-      );
-  }
-
   /** CREATE room e aggiungila alla lista */
-  addRoom(projectID: string, usermobile: string, nome_progetto: string, nome_collaudatore: string) {
+  addRoom(
+    projectID: string,
+    usermobile: string,
+    nome_progetto: string,
+    nome_collaudatore: string
+  ) {
     let updatedRooms: Room[];
     const newRoom =
     {
-      "id": null,
-      "projectID": projectID,
-      "usermobile": usermobile,
-      "nome_progetto": nome_progetto,
-      "nome_collaudatore": nome_collaudatore,
-      "data_inserimento": new Date()
+      id: null,
+      projectID: projectID,
+      usermobile: usermobile,
+      nome_progetto: nome_progetto,
+      nome_collaudatore: nome_collaudatore,
+      data_inserimento: new Date()
     };
-    let generatedId: string;
     // this.rooms è un OSSERVABILE
     // take(1) = dopo la prima emissione dell'Osservabile togli la sottoscrizione
     // tap() = applico una funzione all'array emesso dall'osservabile (solo 1 perchè uso take(1)) senza sottoscrivermi
@@ -149,32 +164,36 @@ export class RoomService {
                 "collaudatoreufficio": this.userService.getUserIdByName(nome_collaudatore),
               },
               { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
-            )
+            );
         }),
         catchError(err => { return throwError(err); }),
         tap(res => {
           console.log('GeneratedId:', res['insertId']);
           newRoom.id = res['insertId'];
+          updatedRooms.unshift(newRoom);
           // this._rooms è un BEHAVIOUR SUBJECT
           // next() = emetto il nuovo array concatencato come prossimo elemento del BehaviourSubject 
           // concat(newRoom) = prendo il vecchio array emesso dall'osservabile e concateno il nuovo elemento
-          this.roomsSubject.next(updatedRooms.concat(newRoom));
+          this.roomsSubject.next(updatedRooms);
         })
       );
   }
 
-  /** UPDATE room dopo una modifica */
-  updateRoom(roomId: number, newUsermobile: string) {
+  /** UPDATE room */
+  updateRoom(
+    roomId: number,
+    newUsermobile: string
+  ) {
     let updatedRooms: Room[];
     return this.rooms$
       .pipe(
         take(1),
         switchMap(rooms => {
           // findIndex() = trova l'indice di un elemento di un array in base a una regola ("se è vero")
-          const updatedRoomIndex = rooms.findIndex(room => room.id === roomId);
+          const roomIndex = rooms.findIndex(room => room.id === roomId);
           updatedRooms = [...rooms];
-          const oldRoom = updatedRooms[updatedRoomIndex];
-          updatedRooms[updatedRoomIndex] =
+          const oldRoom = updatedRooms[roomIndex];
+          updatedRooms[roomIndex] =
           {
             id: oldRoom.id,
             projectID: oldRoom.projectID,

@@ -14,7 +14,7 @@ import { Project, ProjectService } from '../project.service';
 export class EditProjectModalComponent implements OnInit {
   form: FormGroup;
   private sub: Subscription;
-  users$: Observable <User[]>;
+  users$: Observable<User[]>;
 
   @Input() projectId: number;
   project: Project;
@@ -24,7 +24,7 @@ export class EditProjectModalComponent implements OnInit {
     private modalCtrl: ModalController,
     private projectService: ProjectService,
     private toastController: ToastController
-  ) {}
+  ) { }
 
   ngOnInit() {
 
@@ -42,31 +42,31 @@ export class EditProjectModalComponent implements OnInit {
           updateOn: 'blur',
           validators: [Validators.required, Validators.maxLength(50)],
         }),
-        coordinate: new FormControl( `${this.project.long_centro_map}, ${this.project.lat_centro_map}`, {
+        coordinate: new FormControl(`${this.project.long_centro_map}, ${this.project.lat_centro_map}`, {
           updateOn: 'blur',
           validators: [Validators.required, Validators.maxLength(50)],
         }),
 
-/*         lat_centro_map: new FormControl(this.project.lat_centro_map, {
-          updateOn: 'blur',
-          validators: [Validators.required, Validators.maxLength(50)],
-        }), */
-/*         nodi_fisici: new FormControl(this.project.nodi_fisici, {
-          updateOn: 'blur',
-          validators: [Validators.required, Validators.maxLength(50)],
-        }),
-        nodi_ottici: new FormControl(this.project.nodi_ottici, {
-          updateOn: 'blur',
-          validators: [Validators.required, Validators.maxLength(50)],
-        }),
-        tratte: new FormControl(this.project.tratte, {
-          updateOn: 'blur',
-          validators: [Validators.required, Validators.maxLength(50)],
-        }),
-        conn_edif_opta: new FormControl(this.project.conn_edif_opta, {
-          updateOn: 'blur',
-          validators: [Validators.required, Validators.maxLength(50)],
-        }), */
+        /*         lat_centro_map: new FormControl(this.project.lat_centro_map, {
+                  updateOn: 'blur',
+                  validators: [Validators.required, Validators.maxLength(50)],
+                }), */
+        /*         nodi_fisici: new FormControl(this.project.nodi_fisici, {
+                  updateOn: 'blur',
+                  validators: [Validators.required, Validators.maxLength(50)],
+                }),
+                nodi_ottici: new FormControl(this.project.nodi_ottici, {
+                  updateOn: 'blur',
+                  validators: [Validators.required, Validators.maxLength(50)],
+                }),
+                tratte: new FormControl(this.project.tratte, {
+                  updateOn: 'blur',
+                  validators: [Validators.required, Validators.maxLength(50)],
+                }),
+                conn_edif_opta: new FormControl(this.project.conn_edif_opta, {
+                  updateOn: 'blur',
+                  validators: [Validators.required, Validators.maxLength(50)],
+                }), */
       });
     });
   }
@@ -79,18 +79,16 @@ export class EditProjectModalComponent implements OnInit {
     if (!this.form.valid) {
       return;
     }
-
     const coords = this.form.value.coordinate.split(",");
-
     this.projectService
       .updateProject(
         this.project.idprogetto,
-        this.userService.getUserIdByName(this.form.value.collaudatoreufficio),
-        this.form.value.pk_proj,
+        this.form.value.collaudatoreufficio,
+        this.project.pk_proj,
         this.form.value.nome,
         coords[0],
         coords[1],
-      ).subscribe(res=>{
+      ).subscribe(res => {
         this.presentToast("Progetto Aggiornato");
         this.form.reset();
         this.closeModal();
@@ -102,7 +100,7 @@ export class EditProjectModalComponent implements OnInit {
       message: message,
       color: 'secondary',
       duration: 2000,
-      buttons: [ { icon: 'close', role: 'cancel'}]
+      buttons: [{ icon: 'close', role: 'cancel' }]
     })
     toast.present();
   }

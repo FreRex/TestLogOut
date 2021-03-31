@@ -12,7 +12,7 @@ import { filter, mergeMap, switchMap, tap } from 'rxjs/operators';
   templateUrl: './rooms.page.html',
   styleUrls: ['./rooms.page.scss'],
 })
-export class RoomsPage implements OnInit, OnDestroy, ViewWillEnter, ViewDidEnter, ViewWillLeave, ViewDidLeave {
+export class RoomsPage implements OnInit, OnDestroy/* , ViewWillEnter, ViewDidEnter, ViewWillLeave, ViewDidLeave */ {
 
   private sub: Subscription;
   rooms: Room[];
@@ -70,22 +70,22 @@ export class RoomsPage implements OnInit, OnDestroy, ViewWillEnter, ViewDidEnter
     });
   }
 
-  ionViewWillEnter() {
-    console.log('ionViewWillEnter', 'referrer: ', document.referrer);
-    console.log('ionViewWillEnter', 'vuoto? ', document.referrer === '');
-  }
-  ionViewDidEnter() {
-    console.log('ionViewDidEnter', 'referrer: ', document.referrer);
-    console.log('ionViewDidEnter', 'vuoto? ', document.referrer === '');
-  }
-  ionViewWillLeave() {
-    console.log('ionViewWillLeave', 'referrer: ', document.referrer);
-    console.log('ionViewWillLeave', 'vuoto? ', document.referrer === '');
-  }
-  ionViewDidLeave() {
-    console.log('ionViewDidLeave', 'referrer: ', document.referrer);
-    console.log('ionViewDidLeave', 'vuoto? ', document.referrer === '');
-  }
+  // ionViewWillEnter() {
+  //   console.log('ionViewWillEnter', 'referrer: ', document.referrer);
+  //   console.log('ionViewWillEnter', 'vuoto? ', document.referrer === '');
+  // }
+  // ionViewDidEnter() {
+  //   console.log('ionViewDidEnter', 'referrer: ', document.referrer);
+  //   console.log('ionViewDidEnter', 'vuoto? ', document.referrer === '');
+  // }
+  // ionViewWillLeave() {
+  //   console.log('ionViewWillLeave', 'referrer: ', document.referrer);
+  //   console.log('ionViewWillLeave', 'vuoto? ', document.referrer === '');
+  // }
+  // ionViewDidLeave() {
+  //   console.log('ionViewDidLeave', 'referrer: ', document.referrer);
+  //   console.log('ionViewDidLeave', 'vuoto? ', document.referrer === '');
+  // }
 
   /* TABELLA
   sortBy(key: string){

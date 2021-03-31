@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { map, switchMap, take, tap } from 'rxjs/operators';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { catchError, map, switchMap, take, tap } from 'rxjs/operators';
 import { AuthService } from 'src/app/auth/auth.service';
 import { environment } from 'src/environments/environment';
 
@@ -12,7 +12,6 @@ export interface User {
   autorizzazioni: number;
   id?: number;
   checkGis?: number;
-  roles?: string[]
 }
 
 @Injectable({
@@ -20,8 +19,8 @@ export interface User {
 })
 export class UserService {
 
-  private usersSubj = new BehaviorSubject<User[]>([]);
-  users$: Observable<User[]> = this.usersSubj.asObservable();
+  private usersSubject = new BehaviorSubject<User[]>([]);
+  users$: Observable<User[]> = this.usersSubject.asObservable();
 
   constructor(
     private http: HttpClient,
@@ -50,13 +49,14 @@ export class UserService {
   }
 
   getUserIdByName(name: string): number {
+    //TODO: probabilmente c'è un modo più elegante
     let userID: number;
     this.users$.pipe(
       take(1),
       map((users: User[]) => {
         return { ...users.find(user => user.collaudatoreufficio === name) };
-      }))
-      .subscribe(user => userID = user.id);
+      })
+    ).subscribe(user => userID = user.id);
     return userID;
   }
 
@@ -66,8 +66,8 @@ export class UserService {
       .get<User[]>('https://www.collaudolive.com:9083/s/utenti/',
         { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
       ).pipe(
-        tap(users => {
-          this.usersSubj.next(users);
+        tap((users: User[]) => {
+          this.usersSubject.next(users);
         })
       );
   }
@@ -79,20 +79,39 @@ export class UserService {
     password: string,
     autorizzazioni: number,
   ) {
-    return this.http
-      .post(
-        `${environment.apiUrl}/cu/`,
-        {
-          collaudatoreufficio: collaudatoreufficio,
-          username: username,
-          password: password,
-          autorizzazioni: autorizzazioni,
-        },
-        { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
-      )
+    let updatedUsers: User[];
+    const newUser =
+    {
+      id: null,
+      collaudatoreufficio: collaudatoreufficio,
+      username: username,
+      password: password,
+      autorizzazioni: autorizzazioni,
+      checkGis: 0 //TODO: cosa passare?
+    }
+    return this.users$
       .pipe(
-        tap((res) => {
-          this.loadUsers();
+        take(1),
+        switchMap(users => {
+          updatedUsers = [...users];
+          return this.http
+            .post(
+              `${environment.apiUrl}/cu/`,
+              {
+                "collaudatoreufficio": collaudatoreufficio,
+                "username": username,
+                "password": password,
+                "autorizzazioni": autorizzazioni,
+              },
+              { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
+            );
+        }),
+        catchError(err => { return throwError(err); }),
+        tap(res => {
+          console.log('GeneratedId:', res['insertId']);
+          newUser.id = res['insertId'];
+          updatedUsers.unshift(newUser);
+          this.usersSubject.next(updatedUsers);
         })
       );
   }
@@ -102,41 +121,64 @@ export class UserService {
     collaudatoreufficio: string,
     username: string,
     password: string,
-    id: number
+    userId: number
   ) {
-    return this.http
-      .put(
-        `${environment.apiUrl}/uu/`,
-        {
-          collaudatoreufficio: collaudatoreufficio,
-          username: username,
-          password: password,
-          id: id,
-        },
-        { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
-      )
+    let updatedUsers: User[];
+    return this.users$
       .pipe(
-        tap((res) => {
-          this.loadUsers();
-        })
+        take(1),
+        switchMap(users => {
+          const userIndex = users.findIndex(user => user.id === userId);
+          updatedUsers = [...users];
+          const oldUser = updatedUsers[userIndex];
+          updatedUsers[userIndex] =
+          {
+            id: oldUser.id,
+            collaudatoreufficio: collaudatoreufficio,
+            username: username,
+            password: password,
+            autorizzazioni: oldUser.autorizzazioni,
+            checkGis: 0 //TODO: cosa passare?
+          };
+          return this.http
+            .put(
+              `${environment.apiUrl}/uu/`,
+              {
+                "collaudatoreufficio": collaudatoreufficio,
+                "username": username,
+                "password": password,
+                "id": userId,
+              },
+              { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
+            );
+        }),
+        catchError(err => { return throwError(err); }),
+        tap(res => { this.usersSubject.next(updatedUsers) })
       );
   }
 
   /** DELETE utenti */
-  deleteUser(userId: number) {
-    return this.http
-      .post(
-        `${environment.apiUrl}/d/`,
-        {
-          id: userId,
-          tableDelete: 'utenti',
-        },
-        { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
-      )
+  deleteUser(
+    userId: number
+  ) {
+    let updatedUsers: User[];
+    return this.users$
       .pipe(
-        tap((res) => {
-          this.loadUsers();
-        })
+        take(1),
+        switchMap(users => {
+          updatedUsers = users.filter(user => user.id !== userId);
+          return this.http
+            .post(
+              `${environment.apiUrl}/d/`,
+              {
+                "id": userId,
+                "tableDelete": 'utenti',
+              },
+              { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
+            );
+        }),
+        catchError(err => { return throwError(err); }),
+        tap(res => { this.usersSubject.next(updatedUsers) })
       );
   }
 }
