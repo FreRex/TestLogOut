@@ -9,11 +9,13 @@ import { IonicStorageModule } from '@ionic/storage';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { environment } from '../environments/environment';
-import { MenuComponent } from './shared/menu/menu.component';
+import { SharedModule } from './shared/shared.module';
+import { MenuComponent } from './app-components/menu/menu.component';
 
 @NgModule({
   declarations: [AppComponent, MenuComponent],
   imports: [
+    SharedModule,
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,

@@ -4,14 +4,7 @@ import { GisfoSyncModalComponent } from './projects/gisfo-sync-modal/gisfo-sync-
 import { CreateUserModalComponent } from './users/create-user-modal/create-user-modal.component';
 import { UploadShpModalComponent } from './projects/upload-shp-modal/upload-shp-modal.component';
 import { BehaviorSubject, concat, Observable, of } from 'rxjs';
-import {
-  debounceTime,
-  distinctUntilChanged,
-  map,
-  startWith,
-  switchMap,
-  tap,
-} from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 import { Project, ProjectService } from './projects/project.service';
 import { User, UserService } from './users/user.service';
 import { EditProjectModalComponent } from './projects/edit-project-modal/edit-project-modal.component';

@@ -1,0 +1,26 @@
+.custom-list-close {
+    display: none;
+}
+
+.custom-list-open {
+    display: block;
+    max-height: 200px;
+    overflow: hidden;
+    overflow-y: auto;
+}
+
+.dropdown {
+    position: relative;
+    display: block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    max-height: 200px;
+    overflow: hidden;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    z-index: 2;
+}

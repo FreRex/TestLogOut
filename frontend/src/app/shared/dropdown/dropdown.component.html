@@ -1,0 +1,23 @@
+<!-- <ion-row class="dropdown">
+  <ion-col class="dropdown-content" [ngStyle]="{'display' : isListOpen ? 'block' : 'none'}"
+    *ngIf="(projects$ | async) as projects">
+    <ion-list class="ion-no-padding" *ngFor="let project of projects">
+      <ion-item button="true" lines="none" (click)="onChooseProject(project)">
+        <ion-icon name="chevron-forward-outline" slot="start" class="ion-align-self-center"></ion-icon>
+        <ion-label>{{project.nome}}</ion-label>
+      </ion-item>
+    </ion-list>
+  </ion-col>
+</ion-row> -->
+
+<ion-row class="dropdown">
+  <ion-col class="dropdown-content" [ngStyle]="{'display' : isListOpen ? 'block' : 'none'}"
+    *ngIf="(items$ | async) as items">
+    <ion-list class="ion-no-padding" *ngFor="let item of items">
+      <ion-item button="true" lines="none" (click)="event.emit(item)">
+        <ion-icon name="chevron-forward-outline" slot="start" class="ion-align-self-center"></ion-icon>
+        <ion-label>{{item[this.searchValue]}}</ion-label>
+      </ion-item>
+    </ion-list>
+  </ion-col>
+</ion-row>

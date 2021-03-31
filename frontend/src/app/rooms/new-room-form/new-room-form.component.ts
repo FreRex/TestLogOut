@@ -1,11 +1,11 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { AlertController, IonInput, ModalController, PopoverController, ToastController } from '@ionic/angular';
-import { BehaviorSubject, concat, Observable, of } from 'rxjs';
-import { debounceTime, delay, distinctUntilChanged, map, startWith, switchMap } from 'rxjs/operators';
+import { AlertController, IonInput, ModalController, ToastController } from '@ionic/angular';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map, startWith, switchMap } from 'rxjs/operators';
 import { Project, ProjectService } from 'src/app/backoffice/projects/project.service';
-import { RoomService } from '../../room.service';
+import { RoomService } from '../room.service';
 
 @Component({
   selector: 'new-room-form',
@@ -14,12 +14,11 @@ import { RoomService } from '../../room.service';
 })
 export class NewRoomFormComponent implements OnInit {
 
-
-
-  @ViewChild('searchInput', { static: true }) inputCollaudatore: IonInput;
+  // @ViewChild('searchInput', { static: true }) input: IonInput;
   projects$: Observable<Project[]>;
   form: FormGroup;
-  project: Project;
+  selectedProject: Project;
+  isListOpen: boolean = false;
 
   constructor(
     private modalController: ModalController,
@@ -29,9 +28,9 @@ export class NewRoomFormComponent implements OnInit {
     private projectService: ProjectService
   ) { }
 
-
   ngOnInit() {
-    this.onFilterProjects();
+    // this.onFilterProjects();
+    this.projects$ = this.projectService.projects$;
 
     this.form = new FormGroup({
       usermobile: new FormControl(null, {
@@ -47,50 +46,23 @@ export class NewRoomFormComponent implements OnInit {
         validators: [Validators.required, Validators.maxLength(30)]
       }),
     });
-
-  }
-
-  onFilterProjects() {
-    this.projects$ = this.inputCollaudatore.ionInput.pipe(
-      map((event) => (<HTMLInputElement>event.target).value),
-      debounceTime(400),
-      distinctUntilChanged(),
-      startWith(""),
-      switchMap((searchTerm) =>
-        this.projectService.projects$.pipe(
-          map((projects) =>
-            projects.filter((project) =>
-              project.nome.toLowerCase().includes(searchTerm.toLowerCase())
-            )
-          )
-        )
-      )
-    );
   }
 
   onChooseProject(project: Project) {
     // this.toggle();
-    this.projListClose();
-
-    this.project = project;
+    this.isListOpen = false;
+    this.selectedProject = project;
     this.form.patchValue({
-      nome_collaudatore: this.project.collaudatoreufficio,
-      nome_progetto: this.project.nome,
+      nome_collaudatore: this.selectedProject.collaudatoreufficio,
+      nome_progetto: this.selectedProject.nome,
     });
   }
-
-  // onFilter(eventValue: Event) {
-  //   let searchTerm = (<HTMLInputElement>eventValue.target).value;
-  //   this.projects = this.projects.filter((project) => {
-  //     return project.collaudatoreufficio.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1;
-  //   });
-  // }
 
   onCreateRoom() {
     if (!this.form.valid) { return; }
     this.roomsService
       .addRoom(
-        this.project.pk_proj.toString(),
+        this.selectedProject.pk_proj.toString(),
         this.form.value.usermobile,
         this.form.value.nome_progetto,
         this.form.value.nome_collaudatore)
@@ -131,25 +103,39 @@ export class NewRoomFormComponent implements OnInit {
     toast.present();
   }
 
-  isListOpen: boolean = false;
-  projListOpen() {
-    // document.getElementById("projList").className = "custom-list-open"
-    document.getElementById("myDropdown").classList.add("show");
-    console.log(this.isListOpen);
-    
-    this.isListOpen = true;
-  }
-  
-  projListClose() {
-    // document.getElementById("projList").className = "custom-list-close"
-    document.getElementById("myDropdown").classList.remove("show");
-    console.log(this.isListOpen);
-    this.isListOpen = false;
-  }
+  // onFilterProjects() {
+  //   this.projects$ = this.input.ionInput.pipe(
+  //     map((event) => (<HTMLInputElement>event.target).value),
+  //     debounceTime(400),
+  //     distinctUntilChanged(),
+  //     startWith(""),
+  //     switchMap((searchTerm) =>
+  //       this.projectService.projects$.pipe(
+  //         map((projects) =>
+  //           projects.filter((project) =>
+  //             project.nome.toLowerCase().includes(searchTerm.toLowerCase())
+  //           )
+  //         )
+  //       )
+  //     )
+  //   );
+  // }
 
-  toggleDropdown() {
-    if(this.isListOpen) this.projListClose();
-    else this.projListOpen();
-  }
+  // projListOpen() {
+  //   // document.getElementById("projList").className = "custom-list-open"
+  //   // document.getElementById("myDropdown").classList.add("show");
+  //   this.isListOpen = true;
+  // }
+
+  // projListClose() {
+  //   // document.getElementById("projList").className = "custom-list-close"
+  //   // document.getElementById("myDropdown").classList.remove("show");
+  //   this.isListOpen = false;
+  // }
+
+  // toggleDropdown() {
+  //   if (this.isListOpen) this.projListClose();
+  //   else this.projListOpen();
+  // }
 
 }

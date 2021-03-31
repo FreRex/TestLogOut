@@ -3,7 +3,7 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angu
 import { FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
 import { AlertController, ModalController, ToastController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
-import { Room, RoomService } from '../../room.service';
+import { Room, RoomService } from '../room.service';
 
 @Component({
   selector: 'edit-room-form',
@@ -85,7 +85,7 @@ export class EditRoomFormComponent implements OnInit {
       message: message,
       color: 'secondary',
       duration: 2000,
-      buttons: [ { icon: 'close', role: 'cancel'}]
+      buttons: [{ icon: 'close', role: 'cancel' }]
     })
     // FIX: si può fare in entrambi i modi, qual'è il più giusto?
     // .then(toastEl => toastEl.present());

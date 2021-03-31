@@ -5,32 +5,31 @@
   </ion-card-header>
   <ion-card-content>
     <form [formGroup]="form">
-    <ion-grid>
-      <ion-row>
-        <ion-col size-md="8" offset-md="2">
+      <ion-grid>
+        <ion-row>
+          <ion-col size-md="8" offset-md="2">
 
-          <ion-item>
-            <ion-label>
-              <h6>Collaudatore</h6>
-            </ion-label>
-            <ion-select #selectedUser interface="action-sheet" formControlName="collaudatoreufficio">
-              <ion-select-option *ngFor="let user of ( users$ | async)">
-                <h6>{{ user.collaudatoreufficio }}</h6>
-              </ion-select-option>
-            </ion-select>
-          </ion-item>
+            <ion-item>
+              <ion-label>
+                <h6>Collaudatore</h6>
+              </ion-label>
+              <ion-select #selectedUser interface="action-sheet" formControlName="collaudatoreufficio">
+                <ion-select-option *ngFor="let user of ( users$ | async)">
+                  <h6>{{ user.collaudatoreufficio }}</h6>
+                </ion-select-option>
+              </ion-select>
+            </ion-item>
 
+            <ion-item>
+              <ion-label position="floating" class="ion-margin">
+                <h6>Località</h6>
+              </ion-label>
+              <ion-input type="text" formControlName="nome">
+                <h6></h6>
+              </ion-input>
+            </ion-item>
 
-    <ion-item>
-      <ion-label position="floating" class="ion-margin">
-        <h6>Località</h6>
-      </ion-label>
-      <ion-input type="text" formControlName="nome">
-        <h6></h6>
-      </ion-input>
-    </ion-item>
-
-<!--     <ion-item>
+            <!--     <ion-item>
       <ion-label position="floating" class="ion-margin">
         <h6>Connessione OPTA-Civici</h6>
       </ion-label>
@@ -66,16 +65,16 @@
       </ion-input>
     </ion-item> -->
 
-    <ion-item>
-      <ion-label position="floating" class="ion-margin">
-        <h6>Coordinate</h6>
-      </ion-label>
-      <ion-input type="text" formControlName="coordinate">
-        <h6></h6>
-      </ion-input>
-    </ion-item>
+            <ion-item>
+              <ion-label position="floating" class="ion-margin">
+                <h6>Coordinate</h6>
+              </ion-label>
+              <ion-input type="text" formControlName="coordinate">
+                <h6></h6>
+              </ion-input>
+            </ion-item>
 
-<!--     <ion-item>
+            <!--     <ion-item>
       <ion-label position="floating" class="ion-margin">
         <h6>Longitudine</h6>
       </ion-label>
@@ -84,27 +83,26 @@
       </ion-input>
     </ion-item> -->
 
-    <ion-item>
-      <ion-label position="stacked" class="ion-margin">
-        <h6>PK Project</h6>
-      </ion-label>
-      <ion-input disabled="true" type="text" >
-        <h6>{{project.pk_proj}}</h6>
-      </ion-input>
-    </ion-item>
+            <ion-item>
+              <ion-label position="stacked" class="ion-margin">
+                <h6>PK Project</h6>
+              </ion-label>
+              <ion-input disabled="true" type="text">
+                <h6>{{project.pk_proj}}</h6>
+              </ion-input>
+            </ion-item>
 
-  </ion-col>
-</ion-row>
-</ion-grid>
-<div class="ion-margin-vertical ion-text-right ">
-  <ion-button shape="round" color="primary" (click)="closeModal()">
-    <ion-icon slot="start" name="close-outline" color="danger"></ion-icon>ANNULLA
-  </ion-button>
-  <ion-button shape="round" color="primary" (click)="updateProject()">
-    <ion-icon slot="start" name="pencil-outline" color="success"></ion-icon>MODIFICA
-  </ion-button>
-</div>
-</form>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+      <div class="ion-margin-vertical ion-text-right ">
+        <ion-button shape="round" color="primary" (click)="closeModal()">
+          <ion-icon slot="start" name="close-outline" color="danger"></ion-icon>ANNULLA
+        </ion-button>
+        <ion-button shape="round" color="primary" (click)="updateProject()">
+          <ion-icon slot="start" name="pencil-outline" color="success"></ion-icon>MODIFICA
+        </ion-button>
+      </div>
+    </form>
   </ion-card-content>
 </ion-card>
-

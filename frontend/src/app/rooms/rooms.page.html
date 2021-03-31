@@ -27,8 +27,9 @@
         <ion-refresher-content></ion-refresher-content>
     </ion-refresher>
     <ion-row class="ion-align-items-center">
-        <ion-col size-md="6" offset-md="3">
-            <!-- <ion-searchbar [placeholder]="filter.value" (ionInput)="onFilter($event, filter.value)"></ion-searchbar> -->
+        <ion-col size-md="12" size-lg="8" offset-lg="2">
+            <!-- <ion-searchbar [placeholder]=" filter.value" (ionInput)="onFilter($event, filter.value)">
+            </ion-searchbar> -->
             <ion-searchbar (ionInput)="onFilter($event)"></ion-searchbar>
         </ion-col>
         <!-- <ion-col size-md="0.5" size-xs="2">
@@ -43,8 +44,10 @@
         </ion-col> -->
     </ion-row>
     <ion-row>
-        <ion-col size-md="6" offset-md="3">
-            <div class="ion-text-center" *ngIf="isLoading"><ion-spinner></ion-spinner></div>
+        <ion-col size-md="12" size-lg="8" offset-lg="2">
+            <div class="ion-text-center" *ngIf="isLoading">
+                <ion-spinner></ion-spinner>
+            </div>
             <p class="ion-text-center" *ngIf="!isLoading && rooms.length <= 0">Nessuna Room disponibile</p>
             <ion-list *ngIf="!isLoading && rooms.length > 0">
                 <app-room-item *ngFor="let room of filteredRooms" [room]="room"></app-room-item>

@@ -10,22 +10,21 @@ import { RoomsPage } from './rooms.page';
 import { RoomItemComponent } from './room-item/room-item.component';
 import { EditRoomModalComponent } from './edit-room-modal/edit-room-modal.component';
 import { NewRoomModalComponent } from './new-room-modal/new-room-modal.component';
-import { NewRoomFormComponent } from './forms/new-room-form/new-room-form.component';
-import { EditRoomFormComponent } from './forms/edit-room-form/edit-room-form.component';
-import { PipesModule } from '../pipes.module';
-import { SharedDirectivesModule } from '../directives/shared-directives.module';
+import { NewRoomFormComponent } from './new-room-form/new-room-form.component';
+import { EditRoomFormComponent } from './edit-room-form/edit-room-form.component';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   imports: [
+    SharedModule,
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
     IonicModule,
-    SharedDirectivesModule,
     RoomsPageRoutingModule
   ],
   declarations: [
-    RoomsPage, 
+    RoomsPage,
     RoomItemComponent,
     EditRoomModalComponent,
     NewRoomModalComponent,
@@ -35,6 +34,6 @@ import { SharedDirectivesModule } from '../directives/shared-directives.module';
   // providers: [ ObsWithStatusPipe ],
   exports: [NewRoomFormComponent, EditRoomFormComponent],
   // <-- Serve per i componenti che non sono dichiarati all'interno di altri template (es. modal)
-  entryComponents: [EditRoomModalComponent, NewRoomModalComponent] 
+  entryComponents: [EditRoomModalComponent, NewRoomModalComponent]
 })
-export class RoomsPageModule {}
+export class RoomsPageModule { }

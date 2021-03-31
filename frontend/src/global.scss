@@ -16,7 +16,7 @@
 @import "~@ionic/angular/css/normalize.css";
 @import "~@ionic/angular/css/structure.css";
 @import "~@ionic/angular/css/typography.css";
-@import '~@ionic/angular/css/display.css';
+@import "~@ionic/angular/css/display.css";
 
 /* Optional CSS utils that can be commented out */
 @import "~@ionic/angular/css/padding.css";
@@ -25,37 +25,36 @@
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
 
-
 /*
 FONT
 */
 
 @font-face {
-  font-family: 'Varela';    //valore da chiamare nel CSS
-  src: url('../src/assets/fonts/Varela-Regular.ttf');
+  font-family: "Varela"; //valore da chiamare nel CSS
+  src: url("../src/assets/fonts/Varela-Regular.ttf");
 }
 @font-face {
-  font-family: 'Courier';    //valore da chiamare nel CSS
-  src: url('../src/assets/fonts/CourierPrime-Regular.ttf');
+  font-family: "Courier"; //valore da chiamare nel CSS
+  src: url("../src/assets/fonts/CourierPrime-Regular.ttf");
 }
 @font-face {
-  font-family: 'Montserrat';    //valore da chiamare nel CSS
-  src: url('../src/assets/fonts/Montserrat-Regular.ttf');
+  font-family: "Montserrat"; //valore da chiamare nel CSS
+  src: url("../src/assets/fonts/Montserrat-Regular.ttf");
 }
 
 /*
 *  Applica uno stile globale alla toolbar
 */
 ion-toolbar {
-    --background: var(--ion-color-primary);
-    --color: var(--ion-color-primary-contrast);
+  --background: var(--ion-color-primary);
+  --color: var(--ion-color-primary-contrast);
 }
 
 /*
 *  Applica uno stile globale a tutti i campi input-label non validi
 */
 .ion-invalid.ion-touched ion-label {
-    color: var(--ion-color-danger);
+  color: var(--ion-color-danger);
 }
 
 /* width */
@@ -65,7 +64,7 @@ ion-toolbar {
 
 /* Track */
 ::-webkit-scrollbar-track {
-  box-shadow: inset 0 0 5px var(--ion-color-secondary-tint);;
+  box-shadow: inset 0 0 5px var(--ion-color-secondary-tint);
   border-radius: 5px;
 }
 
@@ -75,11 +74,15 @@ ion-toolbar {
   border-radius: 5px;
 }
 
-*{
+* {
   font-family: Montserrat !important;
 }
-ion-label{
+ion-label {
   font-family: Montserrat !important;
+}
+
+ion-button {
+  --box-shadow: false;
 }
 
 ion-card.custom-card {
@@ -94,5 +97,4 @@ div.fixed {
   position: fixed;
   bottom: 10px;
   width: 100%;
-} 
-
+}

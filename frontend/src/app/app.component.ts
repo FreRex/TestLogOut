@@ -18,7 +18,6 @@ export class AppComponent implements OnInit {
 
   constructor(
     private loadingController: LoadingController,
-    private store: StorageDataService,
     private authService: AuthService,
     private userService: UserService,
     private projectService: ProjectService,
@@ -39,13 +38,11 @@ export class AppComponent implements OnInit {
             })
           )
         ).subscribe(({ requestUsers, requestProjects, requestRooms }) => {
-            // console.log(requestUsers);
-            // console.log(requestProjects);
-            // console.log(requestRooms);
-            loadingEl.dismiss();
-          }
-        );
-
+          // console.log(requestUsers);
+          // console.log(requestProjects);
+          // console.log(requestRooms);
+          loadingEl.dismiss();
+        });
         // this.authService.getToken().pipe(
         //   switchMap(token => {
         //     // console.log(token);
@@ -63,7 +60,6 @@ export class AppComponent implements OnInit {
         //   // console.log(rooms);
         //   loadingEl.dismiss()
         // });
-
       });
   }
 }

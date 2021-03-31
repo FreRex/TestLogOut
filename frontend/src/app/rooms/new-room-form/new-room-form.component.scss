@@ -1,8 +1,8 @@
-.custom-list-close{
+.custom-list-close {
   display: none;
 }
 
-.custom-list-open{
+.custom-list-open {
   display: block;
   max-height: 200px;
   overflow: hidden;
@@ -21,10 +21,10 @@
   overflow: hidden;
   overflow-y: auto;
   border: 1px solid #ddd;
-  border-radius: 6px;;
+  border-radius: 6px;
   z-index: 2;
 }
 
-.show {
-  display: block;
-}
+// .show {
+//   display: block;
+// }

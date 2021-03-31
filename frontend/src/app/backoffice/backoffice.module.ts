@@ -12,14 +12,14 @@ import { UploadShpModalComponent } from './projects/upload-shp-modal/upload-shp-
 import { CreateUserModalComponent } from './users/create-user-modal/create-user-modal.component';
 import { EditProjectModalComponent } from './projects/edit-project-modal/edit-project-modal.component';
 import { EditUserModalComponent } from './users/edit-user-modal/edit-user-modal.component';
-import { PipesModule } from '../pipes.module';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   imports: [
+    SharedModule,
     CommonModule,
     ReactiveFormsModule,
     IonicModule,
-    PipesModule,
     BackofficePageRoutingModule,
   ],
   declarations: [
@@ -38,4 +38,4 @@ import { PipesModule } from '../pipes.module';
     EditUserModalComponent,
   ],
 })
-export class BackofficePageModule {}
+export class BackofficePageModule { }
