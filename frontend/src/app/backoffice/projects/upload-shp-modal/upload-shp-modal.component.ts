@@ -3,7 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import { Observable, Subscription } from 'rxjs';
 import { User, UserService } from '../../users/user.service';
-import { ProjectService } from '../project.service';
+import { Project, ProjectService } from '../project.service';
 
 @Component({
   selector: 'app-upload-shp-modal',
@@ -14,6 +14,7 @@ export class UploadShpModalComponent implements OnInit {
 
   form:FormGroup;
   users$: Observable <User[]>;
+  project: Project;
 
 
   constructor(
@@ -25,6 +26,7 @@ export class UploadShpModalComponent implements OnInit {
   ngOnInit() {
 
     this.users$ = this.userService.users$;
+
 
     this.form = new FormGroup({
       collaudatoreufficio: new FormControl(null, {
@@ -39,13 +41,9 @@ export class UploadShpModalComponent implements OnInit {
         updateOn: 'blur',
         validators: [Validators.required, Validators.maxLength(50)]
       }),
-      long_centro_map: new FormControl( null, {
+      coordinate: new FormControl( null , {
         updateOn: 'blur',
-        validators: [Validators.required, Validators.maxLength(50)]
-      }),
-      lat_centro_map: new FormControl( null, {
-        updateOn: 'blur',
-        validators: [Validators.required, Validators.maxLength(50)]
+        validators: [Validators.required, Validators.maxLength(100)],
       }),
       nodi_fisici: new FormControl( null, {
         updateOn: 'blur',
@@ -74,6 +72,9 @@ export class UploadShpModalComponent implements OnInit {
   }
 
   createProject(){
+
+    const coords = this.form.value.coordinate.split(",");
+
     if (!this.form.valid) { return; }
     this.projectService
       .addProject(
@@ -84,8 +85,8 @@ export class UploadShpModalComponent implements OnInit {
         this.form.value.nodi_ottici,
         this.form.value.tratte,
         this.form.value.conn_edif_opta,
-        this.form.value.long_centro_map,
-        this.form.value.lat_centro_map
+        coords[1],
+        coords[0],
         )
       .subscribe(
         res => {
