@@ -12,8 +12,10 @@ import { Project, ProjectService } from '../project.service';
 })
 export class UploadShpModalComponent implements OnInit {
 
-  form: FormGroup;
-  users$: Observable<User[]>;
+  form:FormGroup;
+  users$: Observable <User[]>;
+  project: Project;
+
 
   constructor(
     private userService: UserService,
@@ -24,6 +26,7 @@ export class UploadShpModalComponent implements OnInit {
   ngOnInit() {
 
     this.users$ = this.userService.users$;
+
 
     this.form = new FormGroup({
       collaudatoreufficio: new FormControl(null, {
@@ -38,13 +41,9 @@ export class UploadShpModalComponent implements OnInit {
         updateOn: 'blur',
         validators: [Validators.required, Validators.maxLength(50)]
       }),
-      long_centro_map: new FormControl(null, {
+      coordinate: new FormControl( null , {
         updateOn: 'blur',
-        validators: [Validators.required, Validators.maxLength(50)]
-      }),
-      lat_centro_map: new FormControl(null, {
-        updateOn: 'blur',
-        validators: [Validators.required, Validators.maxLength(50)]
+        validators: [Validators.required, Validators.maxLength(100)],
       }),
       nodi_fisici: new FormControl(null, {
         updateOn: 'blur',
@@ -69,7 +68,10 @@ export class UploadShpModalComponent implements OnInit {
     this.modalCtrl.dismiss(UploadShpModalComponent);
   }
 
-  createProject() {
+  createProject(){
+
+    const coords = this.form.value.coordinate.split(",");
+
     if (!this.form.valid) { return; }
     this.projectService
       .addProject(
@@ -80,9 +82,9 @@ export class UploadShpModalComponent implements OnInit {
         this.form.value.nodi_ottici,
         this.form.value.tratte,
         this.form.value.conn_edif_opta,
-        this.form.value.long_centro_map,
-        this.form.value.lat_centro_map
-      )
+        coords[1],
+        coords[0],
+        )
       .subscribe(
         res => {
           // console.log("Response",res);

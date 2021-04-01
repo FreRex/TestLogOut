@@ -1,8 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ModalController, ToastController } from '@ionic/angular';
-import { async, Observable, Subscription } from 'rxjs';
-import { map, take } from 'rxjs/operators';
+import { async, BehaviorSubject, concat, Observable, of, Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map, switchMap, take } from 'rxjs/operators';
 import { User, UserService } from '../../users/user.service';
 import { Project, ProjectService } from '../project.service';
 
@@ -13,11 +13,13 @@ import { Project, ProjectService } from '../project.service';
 })
 export class EditProjectModalComponent implements OnInit {
   form: FormGroup;
-  private sub: Subscription;
-  users$: Observable<User[]>;
+  
+  searchStream$ = new BehaviorSubject('');
+  users$: Observable <User[]>;
 
   @Input() projectId: number;
   project: Project;
+  // user:User;
 
   constructor(
     private userService: UserService,
@@ -27,12 +29,9 @@ export class EditProjectModalComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-
-    this.users$ = this.userService.users$;
-
+    this.initFilterUsers();
     this.projectService.getProject(this.projectId).subscribe((project) => {
       this.project = project;
-
       this.form = new FormGroup({
         collaudatoreufficio: new FormControl(this.project.collaudatoreufficio, {
           updateOn: 'blur',
@@ -42,35 +41,23 @@ export class EditProjectModalComponent implements OnInit {
           updateOn: 'blur',
           validators: [Validators.required, Validators.maxLength(50)],
         }),
-        coordinate: new FormControl(`${this.project.long_centro_map}, ${this.project.lat_centro_map}`, {
+        coordinate: new FormControl( `${this.project.lat_centro_map} , ${this.project.long_centro_map}`, {
           updateOn: 'blur',
-          validators: [Validators.required, Validators.maxLength(50)],
+          validators: [Validators.required, Validators.maxLength(100)],
         }),
-
-        /*         lat_centro_map: new FormControl(this.project.lat_centro_map, {
-                  updateOn: 'blur',
-                  validators: [Validators.required, Validators.maxLength(50)],
-                }), */
-        /*         nodi_fisici: new FormControl(this.project.nodi_fisici, {
-                  updateOn: 'blur',
-                  validators: [Validators.required, Validators.maxLength(50)],
-                }),
-                nodi_ottici: new FormControl(this.project.nodi_ottici, {
-                  updateOn: 'blur',
-                  validators: [Validators.required, Validators.maxLength(50)],
-                }),
-                tratte: new FormControl(this.project.tratte, {
-                  updateOn: 'blur',
-                  validators: [Validators.required, Validators.maxLength(50)],
-                }),
-                conn_edif_opta: new FormControl(this.project.conn_edif_opta, {
-                  updateOn: 'blur',
-                  validators: [Validators.required, Validators.maxLength(50)],
-                }), */
       });
     });
   }
 
+  /** Filtra Utenti in base alla ricerca */
+  initFilterUsers() {
+    this.users$ = this.searchStream$.pipe(
+      debounceTime(400),
+      distinctUntilChanged(),
+      // startWith(""),
+      switchMap((query) => this.userService.getUsersByFilter(query)));
+  }
+  
   closeModal() {
     this.modalCtrl.dismiss(EditProjectModalComponent);
   }
@@ -86,9 +73,9 @@ export class EditProjectModalComponent implements OnInit {
         this.form.value.collaudatoreufficio,
         this.project.pk_proj,
         this.form.value.nome,
-        coords[0],
         coords[1],
-      ).subscribe(res => {
+        coords[0],
+      ).subscribe(res=>{
         this.presentToast("Progetto Aggiornato");
         this.form.reset();
         this.closeModal();
@@ -103,5 +90,29 @@ export class EditProjectModalComponent implements OnInit {
       buttons: [{ icon: 'close', role: 'cancel' }]
     })
     toast.present();
+  }
+
+  /* MENU A TENDINA  per utenti*/
+  isListOpen: boolean = false;
+  projListOpen() {
+    document.getElementById("myDropdown").classList.add("show");
+    // console.log(this.isListOpen);
+    this.isListOpen = true;
+  }
+  onChooseUser(user: User) {
+    this.projListClose();
+    // this.user = user;
+    this.form.patchValue({
+      collaudatoreufficio: user.collaudatoreufficio
+    });
+  }
+  projListClose() {
+    document.getElementById("myDropdown").classList.remove("show");
+    // console.log(this.isListOpen);
+    this.isListOpen = false;
+  }
+  toggleDropdown() {
+    if(this.isListOpen) this.projListClose();
+    else this.projListOpen();
   }
 }
