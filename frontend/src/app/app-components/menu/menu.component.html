@@ -3,10 +3,10 @@
     <ion-toolbar>
       <ion-buttons slot="start">
         <ion-menu-toggle auto-hide="false">
-        <ion-button>
-          <ion-icon name="close" size="default"></ion-icon>
-        </ion-button>
-      </ion-menu-toggle>
+          <ion-button>
+            <ion-icon name="close" size="default"></ion-icon>
+          </ion-button>
+        </ion-menu-toggle>
       </ion-buttons>
       <ion-title>Menu</ion-title>
     </ion-toolbar>
@@ -25,40 +25,16 @@
           <ion-label>Backoffice</ion-label>
         </ion-item>
       </ion-menu-toggle>
-            <!-- <ion-menu-toggle auto-hide="false">
-        <ion-item lines="none" button="true" (click)="onRiavviaStreaming()">
-          <ion-icon name="tv-outline" slot="start"></ion-icon>
-          <ion-label>Riavvia Streaming</ion-label>
+      <ion-menu-toggle auto-hide="false">
+        <ion-item lines="none" button="true" routerLink="admin">
+          <ion-icon name="lock-closed" slot="start" color="secondary"></ion-icon>
+          <ion-label>Admin</ion-label>
         </ion-item>
       </ion-menu-toggle>
-      <ion-menu-toggle auto-hide="false">
-        <ion-item lines="none" button="true" href="https://www.collaudolive.xyz:9888/admin/streams" target="_blank">
-          <ion-icon name="tv-outline" slot="start"></ion-icon>
-          <ion-label>Admin STREAMING</ion-label>
-        </ion-item>
-      </ion-menu-toggle>
-      <ion-menu-toggle auto-hide="false">
-        <ion-item lines="none" button="true" href="http://www.eaglelive.tv:5080/#/pages/login" target="_blank">
-          <ion-icon name="headset-outline" slot="start"></ion-icon>
-          <ion-label>Admin AUDIO</ion-label>
-        </ion-item>
-      </ion-menu-toggle>
-      <ion-menu-toggle auto-hide="false">
-        <ion-item lines="none" button="true" href="https://www.collaudolive.xyz:9080/geoserver/web/" target="_blank">
-          <ion-icon name="map-outline" slot="start"></ion-icon>
-          <ion-label>Admin GEOSERVER</ion-label>
-        </ion-item>
-      </ion-menu-toggle> -->
       <ion-menu-toggle auto-hide="false">
         <ion-item lines="none" button="true" routerLink="NPerfLink">
           <ion-icon name="cellular" slot="start" color="secondary"></ion-icon>
           <ion-label>Crea Link nPerf</ion-label>
-        </ion-item>
-      </ion-menu-toggle>
-      <ion-menu-toggle auto-hide="false">
-        <ion-item lines="none" button="true">
-          <ion-icon name="exit" slot="start" color="secondary"></ion-icon>
-          <ion-label>Logout</ion-label>
         </ion-item>
       </ion-menu-toggle>
     </ion-list>

@@ -1,0 +1,32 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Admin Backoffice</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-router-outlet></ion-router-outlet>
+  <ion-tabs>
+    <ion-tab-bar slot="bottom">
+      <ion-tab-button tab="dashboard">
+        <ion-label>Dashboard</ion-label>
+        <ion-icon name="tv-outline"></ion-icon>
+      </ion-tab-button>
+      <ion-tab-button tab="rooms">
+        <ion-label>Rooms</ion-label>
+        <ion-icon name="create-outline"></ion-icon>
+      </ion-tab-button>
+      <ion-tab-button tab="projects">
+        <ion-label>Progetti</ion-label>
+        <ion-icon name="map-outline"></ion-icon>
+      </ion-tab-button>
+      <ion-tab-button tab="users">
+        <ion-label>Utenti</ion-label>
+        <ion-icon name="person-circle-outline"></ion-icon>
+      </ion-tab-button>
+    </ion-tab-bar>
+  </ion-tabs>
+</ion-content>

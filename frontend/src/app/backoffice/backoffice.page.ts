@@ -21,9 +21,8 @@ import { AuthService } from '../auth/auth.service';
 export class BackofficePage implements OnInit {
   @ViewChild('searchInput', { static: true }) input: IonSearchbar;
 
-  projects$: Observable<{ type: string; value?: Project[] }>;
   searchStream$ = new BehaviorSubject('');
-
+  projects$: Observable<{ type: string; value?: Project[] }>;
   users$: Observable<{ type: string; value?: User[] }>;
   showProjects: boolean = true;
 

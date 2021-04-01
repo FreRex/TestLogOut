@@ -111,7 +111,8 @@ export class RoomsPage implements OnInit, OnDestroy/* , ViewWillEnter, ViewDidEn
             room.nome_progetto.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1 ||
             room.nome_collaudatore.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1
           );
-        }); break;
+        });
+        break;
       }
     }
   }

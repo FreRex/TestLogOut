@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
-import { Room, RoomService } from '../../room.service';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map, switchMap, tap } from 'rxjs/operators';
+import { Room, RoomService } from '../../rooms/room.service';
 
 @Component({
   selector: 'app-rooms-table',
@@ -20,10 +20,11 @@ export class RoomsTableComponent implements OnInit {
 
   page = 0;
   totalNumberOfRecords: number;
-  totalPages: number;
+  totalPages: number = 1;
   startFromRecord = 0;
   recordsPerPage = 15;
   rooms$: Observable<Room[]>;
+  searchStream$ = new BehaviorSubject('');
 
   constructor(
     private roomService: RoomService,
@@ -34,10 +35,18 @@ export class RoomsTableComponent implements OnInit {
   }
 
   loadPage() {
-    this.rooms$ = this.roomService.rooms$.pipe(
+    this.rooms$ = this.searchStream$.pipe(
+      // debounceTime(200), //FIX
+      distinctUntilChanged(),
+      // startWith(""),
+      switchMap((query) => {
+        // if (query && query.length > 0) this.page = 0; //FIX
+        return this.roomService.getRoomsByFilter(query);
+      }),
       tap(res => {
         this.totalNumberOfRecords = res.length;
         this.totalPages = Math.ceil(this.totalNumberOfRecords / this.recordsPerPage);
+        if (this.page > this.totalPages) this.page = 0;
       }),
       map(res => res.sort((r1: any, r2: any) => {
         if (this.isNumeric) {

@@ -22,7 +22,11 @@ const routes: Routes = [
     path: 'NPerfLink',
     loadChildren: () => import('./nperf-link/nperf-link.module').then(m => m.NPerfLinkPageModule),
     canLoad: [AuthGuard]
+  },  {
+    path: 'admin',
+    loadChildren: () => import('./admin/admin.module').then( m => m.AdminPageModule)
   },
+
 ];
 
 @NgModule({

@@ -45,14 +45,13 @@
     </ion-row>
     <ion-row>
         <ion-col size-md="12" size-lg="8" offset-lg="2">
-            <app-rooms-table></app-rooms-table>
-            <!-- <div class="ion-text-center" *ngIf="isLoading">
+            <div class="ion-text-center" *ngIf="isLoading">
                 <ion-spinner></ion-spinner>
             </div>
             <p class="ion-text-center" *ngIf="!isLoading && rooms.length <= 0">Nessuna Room disponibile</p>
             <ion-list *ngIf="!isLoading && rooms.length > 0">
                 <app-room-item *ngFor="let room of filteredRooms" [room]="room"></app-room-item>
-            </ion-list> -->
+            </ion-list>
         </ion-col>
     </ion-row>
 </ion-content>

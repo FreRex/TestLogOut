@@ -13,7 +13,7 @@ import { NewRoomModalComponent } from './new-room-modal/new-room-modal.component
 import { NewRoomFormComponent } from './new-room-form/new-room-form.component';
 import { EditRoomFormComponent } from './edit-room-form/edit-room-form.component';
 import { SharedModule } from '../shared/shared.module';
-import { RoomsTableComponent } from './components/rooms-table/rooms-table.component';
+import { RoomsTableComponent } from '../admin/rooms-table/rooms-table.component';
 
 @NgModule({
   imports: [
@@ -27,7 +27,6 @@ import { RoomsTableComponent } from './components/rooms-table/rooms-table.compon
   declarations: [
     RoomsPage,
     RoomItemComponent,
-    RoomsTableComponent,
     EditRoomModalComponent,
     NewRoomModalComponent,
     NewRoomFormComponent,
