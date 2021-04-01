@@ -39,8 +39,8 @@ export class RoomService {
     private userService: UserService
   ) { }
 
-  private roomsSubject = new BehaviorSubject<Room[]>([]);  // <-- "_rooms" può emettere eventi perchè è un BehaviourSubject
-  rooms$: Observable<Room[]> = this.roomsSubject.asObservable(); // <-- "rooms" NON può emettere eventi, ma può essere sottoscritto, perchè è un Observable
+  private roomsSubject = new BehaviorSubject<Room[]>([]);  // <-- "roomsSubject" può emettere eventi perchè è un BehaviourSubject
+  rooms$: Observable<Room[]> = this.roomsSubject.asObservable(); // <-- "rooms$" NON può emettere eventi, ma può essere sottoscritto, perchè è un Observable
 
   getRoom(roomId: number): Observable<Room> {
     return this.rooms$
@@ -53,7 +53,7 @@ export class RoomService {
         }));
   }
 
-  getUsersByFilter(query: string): Observable<Room[]> {
+  getRoomsByFilter(query: string): Observable<Room[]> {
     return this.rooms$.pipe(
       map(rooms =>
         rooms.filter(room =>

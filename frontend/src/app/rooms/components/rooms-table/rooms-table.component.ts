@@ -16,9 +16,10 @@ export class RoomsTableComponent implements OnInit {
 
   sortKey = 'id';
   isCrescent = true;
+  isNumeric = true;
 
   page = 0;
-  totalNumberOfRooms: number;
+  totalNumberOfRecords: number;
   totalPages: number;
   startFromRecord = 0;
   recordsPerPage = 15;
@@ -29,57 +30,50 @@ export class RoomsTableComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.sortBy('id', true, true);
+    this.loadPage();
   }
 
-  sortBy(key: any, isNumber: boolean, crescent: boolean) {
+  loadPage() {
     this.rooms$ = this.roomService.rooms$.pipe(
-      tap(rooms => {
-        this.totalNumberOfRooms = rooms.length;
-        this.totalPages = Math.ceil(this.totalNumberOfRooms / this.recordsPerPage);
+      tap(res => {
+        this.totalNumberOfRecords = res.length;
+        this.totalPages = Math.ceil(this.totalNumberOfRecords / this.recordsPerPage);
       }),
-      map(rooms => rooms.sort((r1: any, r2: any) => {
-        if (isNumber) {
-          return crescent ? r1[key] - r2[key] : r2[key] - r1[key];
+      map(res => res.sort((r1: any, r2: any) => {
+        if (this.isNumeric) {
+          return this.isCrescent ? r1[this.sortKey] - r2[this.sortKey] : r2[this.sortKey] - r1[this.sortKey];
         } else {
-          return crescent ?
-            r1[key].toString().localeCompare(r2[key].toString()) :
-            r2[key].toString().localeCompare(r1[key].toString());
+          return this.isCrescent ?
+            r1[this.sortKey].toString().localeCompare(r2[this.sortKey].toString()) :
+            r2[this.sortKey].toString().localeCompare(r1[this.sortKey].toString());
         }
       })),
-      map(rooms => rooms.slice(this.startFromRecord, this.recordsPerPage))
+      map(res => res.slice(this.page * this.recordsPerPage, this.page * this.recordsPerPage + this.recordsPerPage))
     );
   }
-  /* TABELLA */
-  // sort() {
-  //   if (this.sortDirection == 1) {
-  //     this.rooms = this.rooms.sort((a, b) => {
-  //       const valA = a[this.sortKey].toString();
-  //       const valB = b[this.sortKey].toString();
-  //       return valA.localeCompare(valB);
-  //     })
-  //   } else if (this.sortDirection == 2) {
-  //     this.rooms = this.rooms.sort((a, b) => {
-  //       const valA = a[this.sortKey].toString();
-  //       const valB = b[this.sortKey].toString();
-  //       return valB.localeCompare(valA);
-  //     })
-  //   } else {
-  //     this.sortDirection = 0;
-  //     this.sortKey = null;
-  //   }
-  // }
+
+  sortBy(key: any, isNumeric: boolean, isCrescent: boolean) {
+    this.page = 0;
+    this.sortKey = key;
+    this.isNumeric = isNumeric;
+    this.isCrescent = isCrescent;
+    this.loadPage();
+  }
   nextPage() {
-    this.page++;
+    this.page = this.page++ >= this.totalPages - 1 ? this.totalPages - 1 : this.page;
+    this.loadPage();
   }
   prevPage() {
-    this.page--;
+    this.page = this.page-- <= 0 ? 0 : this.page;
+    this.loadPage();
   }
   goFirst() {
     this.page = 0;
+    this.loadPage();
   }
   goLast() {
     this.page = this.totalPages - 1;
+    this.loadPage();
   }
 
 }
