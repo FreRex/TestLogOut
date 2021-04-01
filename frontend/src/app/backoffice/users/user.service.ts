@@ -87,7 +87,7 @@ export class UserService {
       username: username,
       password: password,
       autorizzazioni: autorizzazioni,
-      checkGis: 0 //TODO: cosa passare?
+      checkGis: null //TODO: cosa passare?
     }
     return this.users$
       .pipe(
@@ -138,7 +138,7 @@ export class UserService {
             username: username,
             password: password,
             autorizzazioni: oldUser.autorizzazioni,
-            checkGis: 0 //TODO: cosa passare?
+            checkGis: oldUser.checkGis
           };
           return this.http
             .put(

@@ -16,15 +16,6 @@ export class RoomsPage implements OnInit, OnDestroy/* , ViewWillEnter, ViewDidEn
 
   private sub: Subscription;
   rooms: Room[];
-  /* TABELLA
-  bulkEdit = true;
-  sortKey = '';
-  sortDirection = 0;
-  edit = {};
-  page = 0;
-  totalNumberOfRooms = 0;
-  roomsPerPage = 20;
-  totalPages = 20; */
 
   filteredRooms: Room[] = [];
   isLoading = false;
@@ -60,13 +51,6 @@ export class RoomsPage implements OnInit, OnDestroy/* , ViewWillEnter, ViewDidEn
       this.isLoading = false;
       this.rooms = rooms;
       this.filteredRooms = this.rooms;
-
-      /* TABELLA
-      this.totalNumberOfRooms = rooms.length;
-      this.totalPages = Math.ceil(this.totalNumberOfRooms / this.roomsPerPage);
-      this.rooms = rooms.slice(0, this.roomsPerPage);
-      this.sortBy('nome_progetto'); 
-      */
     });
   }
 
@@ -87,43 +71,7 @@ export class RoomsPage implements OnInit, OnDestroy/* , ViewWillEnter, ViewDidEn
   //   console.log('ionViewDidLeave', 'vuoto? ', document.referrer === '');
   // }
 
-  /* TABELLA
-  sortBy(key: string){
-    this.sortKey = key;
-    this.sortDirection++;
-    this.sort();
-  }
-  sort(){
-    if(this.sortDirection == 1) {
-      this.rooms = this.rooms.sort((a,b) => {
-        const valA = a[this.sortKey].toString();
-        const valB = b[this.sortKey].toString();
-        return valA.localeCompare(valB);
-      })
-    } else if (this.sortDirection == 2 ){
-      this.rooms = this.rooms.sort((a,b) => {
-        const valA = a[this.sortKey].toString();
-        const valB = b[this.sortKey].toString();
-        return valB.localeCompare(valA);
-      })
-    } else {
-      this.sortDirection = 0;
-      this.sortKey = null;
-    }
-  }
-  nextPage(){
-    this.page++;
-  }
-  prevPage(){
-    this.page--;
-  }
-  goFirst(){
-    this.page = 0;
-  }
-  goLast(){
-    this.page = this.totalPages - 1;
-  }
-  */
+
 
   ngOnDestroy() {
     // distruggo la subscription se viene distrutto il componente, per evitare memory leaks
