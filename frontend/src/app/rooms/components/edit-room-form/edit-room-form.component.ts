@@ -3,7 +3,7 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angu
 import { FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
 import { AlertController, ModalController, ToastController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
-import { Room, RoomService } from '../room.service';
+import { Room, RoomService } from '../../room.service';
 
 @Component({
   selector: 'edit-room-form',

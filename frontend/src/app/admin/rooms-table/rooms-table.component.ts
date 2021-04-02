@@ -22,7 +22,7 @@ export class RoomsTableComponent implements OnInit {
   totalNumberOfRecords: number;
   totalPages: number = 1;
   startFromRecord = 0;
-  recordsPerPage = 15;
+  recordsPerPage = 10;
   rooms$: Observable<Room[]>;
   searchStream$ = new BehaviorSubject('');
 

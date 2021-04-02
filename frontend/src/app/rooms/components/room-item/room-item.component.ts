@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { AlertController, IonItemSliding, ModalController, ToastController } from '@ionic/angular';
 import { AuthService } from 'src/app/auth/auth.service';
 import { EditRoomModalComponent } from '../edit-room-modal/edit-room-modal.component';
-import { Room, RoomService } from '../room.service';
+import { Room, RoomService } from '../../room.service';
 
 @Component({
   selector: 'app-room-item',
@@ -29,7 +29,7 @@ export class RoomItemComponent implements OnInit {
   ngOnInit() {
     // this.authService.currentRole$.subscribe(
     //   currentRole => {
-    
+
     // console.log(this.linkProgetto);
     // }
     // );
@@ -60,23 +60,23 @@ export class RoomItemComponent implements OnInit {
       });
   }
 
-  onOpenRoom(){
+  onOpenRoom() {
     this.linkProgetto =
-    'https://www.collaudolive.com:9777/glasses_test/FrontEnd/src/index.php?q='
-    + this.room.projectID
-    + ((this.authService.currentRole === 'admin') ? '&useringresso=admin' : '');
+      'https://www.collaudolive.com:9777/glasses_test/FrontEnd/src/index.php?q='
+      + this.room.projectID
+      + ((this.authService.currentRole === 'admin') ? '&useringresso=admin' : '');
     window.open(this.linkProgetto);
   }
 
   onDownload(slidingItem: IonItemSliding) {
     // TODO: logica download foto
-    slidingItem.close();    
-    const nomeProgetto = this.room.nome_progetto.trim().replace(' ','');
+    slidingItem.close();
+    const nomeProgetto = this.room.nome_progetto.trim().replace(' ', '');
     this.roomsService.checkDownload(nomeProgetto).subscribe(
       (value: boolean) => {
-        if(value) window.open(`https://www.collaudolive.com:9083/downloadzip/${nomeProgetto}`)
+        if (value) window.open(`https://www.collaudolive.com:9083/downloadzip/${nomeProgetto}`)
         else this.presentToast(`Non ci sono foto sul progetto ${nomeProgetto}!`, 'danger')
-        
+
       }
     )
   }

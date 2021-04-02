@@ -3,7 +3,7 @@ import { IonSelect, ModalController, ViewDidEnter, ViewDidLeave, ViewWillEnter, 
 import { Subscription } from 'rxjs';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { Room, RoomService } from './room.service';
-import { NewRoomModalComponent } from './new-room-modal/new-room-modal.component';
+import { NewRoomModalComponent } from './components/new-room-modal/new-room-modal.component';
 import { AuthService } from '../auth/auth.service';
 import { filter, mergeMap, switchMap, tap } from 'rxjs/operators';
 

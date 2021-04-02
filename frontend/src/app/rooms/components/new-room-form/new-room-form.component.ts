@@ -5,7 +5,7 @@ import { AlertController, IonInput, ModalController, ToastController } from '@io
 import { BehaviorSubject, Observable } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map, startWith, switchMap } from 'rxjs/operators';
 import { Project, ProjectService } from 'src/app/backoffice/projects/project.service';
-import { RoomService } from '../room.service';
+import { RoomService } from '../../room.service';
 
 @Component({
   selector: 'new-room-form',
