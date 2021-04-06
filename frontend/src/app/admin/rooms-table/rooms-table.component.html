@@ -1,55 +1,60 @@
-<div>
-  <ion-searchbar (ionInput)="searchStream$.next($event.target.value)"></ion-searchbar>
+<div  class="page">
+  
+  <div class="container">
 
-  <ion-row class="header-row" class="ion-align-items-center">
-    <ion-col size="1" *ngIf="bulkEdit"><b>Select</b></ion-col>
-    <ion-col size="1"><b>ID</b>
+  <ion-searchbar animated debounce="500" class="searchBar" (ionInput)="searchStream$.next($event.target.value)"></ion-searchbar>
+  
+  <ion-row class="header-row" >
+    <!-- <ion-col class=" data" size="1" *ngIf="bulkEdit"><b>Select</b></ion-col> -->
+    <ion-col class=" dataTitle" size="1" offset="1"><b>ID</b>
       <app-order-by-button (event)="sortBy('id', true, $event)"></app-order-by-button>
     </ion-col>
-    <ion-col size="2"><b>Data</b>
+    <ion-col class=" dataTitle" size="2"><b>Data</b>
       <app-order-by-button (event)="sortBy('data_inserimento', true, $event)"></app-order-by-button>
     </ion-col>
-    <ion-col size="3"><b>Collaudatore</b>
+    <ion-col class=" dataTitle" size="3"><b>Collaudatore</b>
       <app-order-by-button (event)="sortBy('nome_collaudatore', false, $event)"></app-order-by-button>
     </ion-col>
-    <ion-col size="5"><b>Progetto</b>
+    <ion-col class=" dataTitle" size="4"><b>Progetto</b>
       <app-order-by-button (event)="sortBy('nome_progetto', false, $event)"></app-order-by-button>
     </ion-col>
   </ion-row>
 
   <ion-row *ngFor="let room of (rooms$ | async); let i = index;" class="data-row">
-    <ion-col size="1" *ngIf="bulkEdit">
-      <ion-checkbox [(ngModel)]='edit[i]'></ion-checkbox>
-    </ion-col>
-    <ion-col size="1">{{room.id}}</ion-col>
-    <ion-col size="2">{{room.data_inserimento | date:'dd/MM/yy'}}</ion-col>
-    <ion-col size="3">{{room.nome_collaudatore}}</ion-col>
-    <ion-col size="5">{{room.nome_progetto}}</ion-col>
+<!--     <ion-col size="1" *ngIf="bulkEdit">
+      <ion-checkbox [(ngModel)]='edit[i]' class=" data"></ion-checkbox>
+    </ion-col> -->
+    <ion-col size="1" offset="1" class=" data">{{room.id}}</ion-col>
+    <ion-col size="2" class=" data">{{room.data_inserimento | date:'dd/MM/yy'}}</ion-col>
+    <ion-col size="3" class=" data">{{room.nome_collaudatore}}</ion-col>
+    <ion-col size="4" class=" data">{{room.nome_progetto}}</ion-col>
   </ion-row>
 
   <ion-row>
-    <ion-col size="2">
+    <ion-col size="1" class="page-btn" offset="3">
       <ion-button fill="clear" (click)="goFirst()">
-        <ion-icon name="play-back" slot="icon-only"></ion-icon>
+        <ion-icon color="primary" size="small" name="play-back" slot="icon-only"></ion-icon>
       </ion-button>
     </ion-col>
-    <ion-col size="2">
+    <ion-col size="1" class="page-btn">
       <ion-button fill="clear" (click)="prevPage()">
-        <ion-icon name="chevron-back" slot="icon-only"></ion-icon>
+        <ion-icon color="primary" size="small" name="chevron-back" slot="icon-only"></ion-icon>
       </ion-button>
     </ion-col>
-    <ion-col size="4">
+    <ion-col size="2" class="page-btn-number ion-margin-vertical" >
       <div>{{ page + 1 }} of {{ totalPages }}</div>
     </ion-col>
-    <ion-col size="2">
+    <ion-col size="1" class="page-btn">
       <ion-button fill="clear" (click)="nextPage()">
-        <ion-icon name="chevron-forward" slot="icon-only"></ion-icon>
+        <ion-icon color="primary" size="small" name="chevron-forward" slot="icon-only"></ion-icon>
       </ion-button>
     </ion-col>
-    <ion-col size="2">
+    <ion-col size="1" class="page-btn">
       <ion-button fill="clear" (click)="goLast()">
-        <ion-icon name="play-forward" slot="icon-only"></ion-icon>
+        <ion-icon color="primary" size="small" name="play-forward" slot="icon-only"></ion-icon>
       </ion-button>
     </ion-col>
   </ion-row>
+
+</div>
 </div>
