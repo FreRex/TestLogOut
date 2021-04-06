@@ -47,7 +47,9 @@ router.get('/vidapp/', controllerVidApp.VidApp);
 router.get('/checkdownloadzip/:folderzip/', controllerDownloadZip.CheckDownloadZip);
 router.get('/downloadzip/:folderzip/', controllerDownloadZip.DownloadZip);
 
+//------------------------------------------------------------------------
 //----------- API-db -----------------------------------------------------
+//------------------------------------------------------------------------
 //Indirizzamento ad API-db di lettura (SELECT)
 //router.get('/s/:table/', [mid.checkAuth], controllerSelect.getSelect);
 //router.get('/s/:table/:id?/', [mid.checkAuth], controllerSelect.getSelect);
