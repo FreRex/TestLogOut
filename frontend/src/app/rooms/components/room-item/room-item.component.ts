@@ -27,12 +27,7 @@ export class RoomItemComponent implements OnInit {
 
 
   ngOnInit() {
-    // this.authService.currentRole$.subscribe(
-    //   currentRole => {
-
-    // console.log(this.linkProgetto);
-    // }
-    // );
+    // console.log(this.room);
   }
 
   /** Apre la pagina di MODIFICA ROOM */

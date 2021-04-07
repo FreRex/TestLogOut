@@ -1,0 +1,21 @@
+<ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+  <ion-refresher-content></ion-refresher-content>
+</ion-refresher>
+
+<ion-row class="ion-align-items-center">
+  <ion-col size-md="12" size-lg="8" offset-lg="2">
+    <ion-searchbar (ionInput)="searchStream$.next($event.target.value)"></ion-searchbar>
+  </ion-col>
+</ion-row>
+
+<ion-row>
+  <ion-col>
+    <ng-template class="ion-text-center" #loading>
+      <ion-spinner></ion-spinner>
+    </ng-template>
+    <div *ngIf="(obs$ | async) as obs; else loading">
+      <p class="ion-text-center" *ngIf="obs.length <= 0">Nessuna Room disponibile</p>
+      <app-room-item *ngFor="let ob of obs" [room]="ob"></app-room-item>
+    </div>
+  </ion-col>
+</ion-row>

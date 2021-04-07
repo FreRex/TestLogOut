@@ -1,15 +1,3 @@
-<ion-row class="ion-align-items-center">
-  <ion-col *ngFor="let data of datas" [size]="data.size"><b>{{data.title}}</b>
-    <app-order-by-button (event)="sortBy(data, $event)"></app-order-by-button>
-  </ion-col>
-</ion-row>
-
-<ion-row *ngFor="let ob of (obs$ | async); let i = index;" class="ion-align-items-center">
-  <ion-col *ngFor="let data of datas" [size]="data.size">
-    {{ data.type === 'date' ? (ob[data.key] | date:'dd/MM/yy') : ob[data.key] }}
-  </ion-col>
-</ion-row>
-
 <ion-row>
   <ion-col size="1" class="page-btn" offset="3">
     <ion-button fill="clear" (click)="goFirst()">

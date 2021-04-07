@@ -6,6 +6,10 @@ import { DropdownComponent } from './dropdown/dropdown.component';
 import { CommonModule } from '@angular/common';
 import { OrderByButtonComponent } from './order-by-button/order-by-button.component';
 import { GenericTableComponent } from './generic-table/generic-table.component';
+import { PaginationComponent } from './pagination/pagination.component';
+import { RoomsTableComponent } from './generic-table/rooms-table/rooms-table.component';
+import { RoomsListComponent } from './generic-list/rooms-list/rooms-list.component';
+import { RoomItemComponent } from '../rooms/components/room-item/room-item.component';
 
 @NgModule({
   declarations: [
@@ -13,7 +17,11 @@ import { GenericTableComponent } from './generic-table/generic-table.component';
     ObsWithStatusPipe,
     DropdownComponent,
     OrderByButtonComponent,
-    GenericTableComponent
+    // GenericTableComponent,
+    RoomsTableComponent,
+    RoomsListComponent,
+    RoomItemComponent,
+    PaginationComponent
   ],
   imports: [
     IonicModule,
@@ -24,7 +32,11 @@ import { GenericTableComponent } from './generic-table/generic-table.component';
     ObsWithStatusPipe,
     DropdownComponent,
     OrderByButtonComponent,
-    GenericTableComponent
+    // GenericTableComponent,
+    RoomsListComponent,
+    RoomsTableComponent,
+    RoomItemComponent,
+    PaginationComponent
   ],
 })
 export class SharedModule { }

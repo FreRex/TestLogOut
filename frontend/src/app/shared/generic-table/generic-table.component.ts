@@ -1,9 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { distinctUntilChanged, map, switchMap, tap } from 'rxjs/operators';
-import { RoomService } from '../../rooms/room.service';
 
-export interface Data {
+export interface TableData {
   title: string;
   key: string;
   type: string;
@@ -12,46 +11,49 @@ export interface Data {
 
 @Component({
   selector: 'app-generic-table',
-  templateUrl: './generic-table.component.html',
+  template: ``,
   styleUrls: ['./generic-table.component.scss'],
 })
-export class GenericTableComponent implements OnInit {
+export abstract class GenericTableComponent implements OnInit {
 
   /* TABELLA */
   // bulkEdit = true;
   // edit = {};
 
-  @Input() datas: Data[] = []
-  @Input() inputObs$: Observable<any[]>;
-  keys = []
+  datas: TableData[] = []
+  searchStream$ = new BehaviorSubject('');
 
   isCrescent = true;
-  selectedData: Data;
+  selectedData: TableData;
 
   page = 0;
   totalNumberOfRecords: number;
   totalPages: number = 1;
-  startFromRecord = 0;
   recordsPerPage = 10;
   obs$: Observable<any[]>;
 
-  constructor(
-    private roomService: RoomService,
-  ) { }
+  constructor() { }
 
   ngOnInit() {
-    [...this.datas].map(data => { if (data.type === 'string') this.keys.push(data.key) });
-    console.log(this.keys);
-    this.loadPage();
+    this.page = 0;
+    this.loadPage(this.page);
   }
 
-  loadPage() {
-    this.obs$ = this.inputObs$.pipe(tap(res => {
-      // console.log(res);
-      this.totalNumberOfRecords = res.length;
-      this.totalPages = Math.ceil(this.totalNumberOfRecords / this.recordsPerPage);
-      if (this.page > this.totalPages) this.page = 0;
-    }),
+  loadPage(page: number) {
+    this.page = page;
+    this.obs$ = this.searchStream$.pipe(
+      // debounceTime(200), //FIX
+      distinctUntilChanged(),
+      // startWith(""),
+      switchMap((query) => {
+        return this.filterData(query);
+      }),
+      tap(res => {
+        // console.log(res);
+        this.totalNumberOfRecords = res.length;
+        this.totalPages = Math.ceil(this.totalNumberOfRecords / this.recordsPerPage);
+        if (this.page > this.totalPages) this.page = 0;
+      }),
       map(res => res.sort((r1: any, r2: any) => {
         if (this.selectedData) {
           if (this.selectedData.type === 'number' || this.selectedData.type === 'date') {
@@ -69,26 +71,28 @@ export class GenericTableComponent implements OnInit {
     );
   }
 
-  sortBy(data: Data, isCrescent: boolean) {
-    this.page = 0;
+  abstract filterData(query): Observable<any[]>;
+
+  sortBy(data: TableData, isCrescent: boolean) {
     this.selectedData = data;
     this.isCrescent = isCrescent;
-    this.loadPage();
-  }
-  nextPage() {
-    this.page = this.page++ >= this.totalPages - 1 ? this.totalPages - 1 : this.page;
-    this.loadPage();
-  }
-  prevPage() {
-    this.page = this.page-- <= 0 ? 0 : this.page;
-    this.loadPage();
-  }
-  goFirst() {
     this.page = 0;
-    this.loadPage();
+    this.loadPage(this.page);
   }
-  goLast() {
-    this.page = this.totalPages - 1;
-    this.loadPage();
-  }
+  // nextPage() {
+  //   this.page = this.page++ >= this.totalPages - 1 ? this.totalPages - 1 : this.page;
+  //   this.loadPage();
+  // }
+  // prevPage() {
+  //   this.page = this.page-- <= 0 ? 0 : this.page;
+  //   this.loadPage();
+  // }
+  // goFirst() {
+  //   this.page = 0;
+  //   this.loadPage();
+  // }
+  // goLast() {
+  //   this.page = this.totalPages - 1;
+  //   this.loadPage();
+  // }
 }
