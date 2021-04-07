@@ -1,51 +1,13 @@
-<ion-searchbar (ionInput)="searchStream$.next($event.target.value)"></ion-searchbar>
-
 <ion-row class="ion-align-items-center">
-  <!-- <ion-col size="1" *ngIf="bulkEdit"><b>Select</b></ion-col> -->
   <ion-col *ngFor="let data of datas" [size]="data.size"><b>{{data.title}}</b>
     <app-order-by-button (event)="sortBy(data, $event)"></app-order-by-button>
   </ion-col>
-  <!-- <ion-col size="1"><b>Edit</b></ion-col>
-  <ion-col size="1"><b>Delete</b></ion-col>
-  <ion-col size="1"><b>ID</b>
-    <app-order-by-button (event)="sortBy('id', true, $event)"></app-order-by-button>
-  </ion-col>
-  <ion-col size="1"><b>Data</b>
-    <app-order-by-button (event)="sortBy('data_inserimento', true, $event)"></app-order-by-button>
-  </ion-col>
-  <ion-col size="2"><b>Collaudatore</b>
-    <app-order-by-button (event)="sortBy('nome_collaudatore', false, $event)"></app-order-by-button>
-  </ion-col>
-  <ion-col size="2"><b>Usermobile</b>
-    <app-order-by-button (event)="sortBy('usermobile', false, $event)"></app-order-by-button>
-  </ion-col>
-  <ion-col size="4"><b>Progetto</b>
-    <app-order-by-button (event)="sortBy('nome_progetto', false, $event)"></app-order-by-button>
-  </ion-col> -->
 </ion-row>
 
 <ion-row *ngFor="let ob of (obs$ | async); let i = index;" class="ion-align-items-center">
-  <!-- <ion-col size="1" *ngIf="bulkEdit">
-      <ion-checkbox [(ngModel)]='edit[i]'></ion-checkbox>
-    </ion-col> -->
   <ion-col *ngFor="let data of datas" [size]="data.size">
     {{ data.type === 'date' ? (ob[data.key] | date:'dd/MM/yy') : ob[data.key] }}
   </ion-col>
-  <!-- <ion-col size="1">
-    <ion-button expand="block" fill="clear">
-      <ion-icon name="create-outline"></ion-icon>
-    </ion-button>
-  </ion-col>
-  <ion-col size="1">
-    <ion-button expand="block" fill="clear">
-      <ion-icon name="trash" button="true" tappable></ion-icon>
-    </ion-button>
-  </ion-col>
-  <ion-col size="1">{{room.id}}</ion-col>
-  <ion-col size="1">{{room.data_inserimento | date:'dd/MM/yy'}}</ion-col>
-  <ion-col size="2">{{room.nome_collaudatore}}</ion-col>
-  <ion-col size="2">{{room.usermobile}}</ion-col>
-  <ion-col size="4">{{room.nome_progetto}}</ion-col> -->
 </ion-row>
 
 <ion-row>

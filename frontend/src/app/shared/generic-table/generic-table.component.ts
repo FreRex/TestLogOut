@@ -34,7 +34,6 @@ export class GenericTableComponent implements OnInit {
   startFromRecord = 0;
   recordsPerPage = 10;
   obs$: Observable<any[]>;
-  searchStream$ = new BehaviorSubject('');
 
   constructor(
     private roomService: RoomService,
@@ -47,36 +46,12 @@ export class GenericTableComponent implements OnInit {
   }
 
   loadPage() {
-    this.obs$ = this.searchStream$.pipe(
-      // debounceTime(200), //FIX
-      distinctUntilChanged(),
-      // startWith(""),
-      switchMap((query) => {
-        // if (query && query.length > 0) this.page = 0; //FIX
-        // return this.roomService.getRoomsByFilter(query)
-        // return combineLatest([this.inputObs$, of(...this.keys)]).pipe(
-        //   map(([obs, key]) =>
-        //     obs.filter(ob =>
-        //       ob[key].toString().toLowerCase().includes(query.toLowerCase())
-        //     )
-        //   )
-        // )
-        return this.inputObs$.pipe(
-          map(obs =>
-            obs.filter(ob =>
-              ob['usermobile'].toString().toLowerCase().includes(query.toLowerCase()) ||
-              ob['nome_progetto'].toString().toLowerCase().includes(query.toLowerCase()) ||
-              ob['nome_collaudatore'].toString().toLowerCase().includes(query.toLowerCase())
-            )
-          )
-        )
-      }),
-      tap(res => {
-        // console.log(res);
-        this.totalNumberOfRecords = res.length;
-        this.totalPages = Math.ceil(this.totalNumberOfRecords / this.recordsPerPage);
-        if (this.page > this.totalPages) this.page = 0;
-      }),
+    this.obs$ = this.inputObs$.pipe(tap(res => {
+      // console.log(res);
+      this.totalNumberOfRecords = res.length;
+      this.totalPages = Math.ceil(this.totalNumberOfRecords / this.recordsPerPage);
+      if (this.page > this.totalPages) this.page = 0;
+    }),
       map(res => res.sort((r1: any, r2: any) => {
         if (this.selectedData) {
           if (this.selectedData.type === 'number' || this.selectedData.type === 'date') {

@@ -17,6 +17,8 @@ export interface Data {
 })
 export class RoomsTableComponent implements OnInit {
 
+  searchStream$ = new BehaviorSubject('');
+
   rooms$;
 
   constructor(
@@ -24,7 +26,14 @@ export class RoomsTableComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.rooms$ = this.roomService.rooms$;
+    this.rooms$ = this.searchStream$.pipe(
+      // debounceTime(200), //FIX
+      distinctUntilChanged(),
+      // startWith(""),
+      switchMap((query) => {
+        return this.roomService.getRoomsByFilter(query);
+      }));
+
   }
 
 }
