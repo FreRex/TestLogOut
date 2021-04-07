@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingController } from '@ionic/angular';
 import { forkJoin } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
@@ -7,8 +6,7 @@ import { AuthService } from './auth/auth.service';
 import { ProjectService } from './backoffice/projects/project.service';
 import { UserService } from './backoffice/users/user.service';
 import { RoomService } from './rooms/room.service';
-import { StorageDataService } from './shared/storage-data.service';
-
+import { Storage } from '@ionic/storage-angular';
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
@@ -22,21 +20,25 @@ export class AppComponent implements OnInit {
     private userService: UserService,
     private projectService: ProjectService,
     private roomService: RoomService,
+    private storage: Storage
   ) { }
 
   ngOnInit() {
+    this.authService.token = sessionStorage.getItem('tokenfromlogin');
     this.loadingController
       .create({ keyboardClose: true, message: 'Loading...' })
       .then(loadingEl => {
         loadingEl.present();
-        this.authService.getToken().pipe(
-          switchMap(token =>
-            forkJoin({
-              requestUsers: this.userService.loadUsers(),
-              requestProjects: this.projectService.loadProjects(),
-              requestRooms: this.roomService.loadRooms(),
-            })
-          )
+        // this.authService.getToken().pipe(
+        // switchMap(token =>
+        console.log(this.authService.token);
+        forkJoin({
+          requestUsers: this.userService.loadUsers(),
+          requestProjects: this.projectService.loadProjects(),
+          requestRooms: this.roomService.loadRooms(),
+        }
+          // )
+          // )
         ).subscribe(({ requestUsers, requestProjects, requestRooms }) => {
           // console.log(requestUsers);
           // console.log(requestProjects);

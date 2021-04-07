@@ -19,20 +19,29 @@ export class AuthService {
   // set userId(user: number) { this._userId = user; }
 
 
-  token: string = '';
-  getToken() {
+  private _token: string = '';
+  get token() { return this._token; }
+  set token(token: string) { this._token = token; }
+
+  fetchToken() {
     return this.http
       .post<{ [key: string]: string }>(`${environment.apiUrl}/token/`, {})
       .pipe(tap(res => {
-        this.token = res['token'];
+        this._token = res['token'];
       }));
   }
 
   // currentRole: BehaviorSubject<string> = new BehaviorSubject(null);
   // currentRole$ = this.currentRole.asObservable();
 
-  userId: string = '0';
-  currentRole: string = '';
+  _userId: string = '0';
+  get userId() { return this._userId; };
+  set userId(userId: string) { this._userId = userId; };
+
+  _currentRole: string = '';
+  get currentRole() { return this._currentRole; };
+  set currentRole(currentRole: string) { this._currentRole = currentRole; };
+
   onLogin(userId: string) {
     if (this.currentRole == '') {
       this.userId = userId;
