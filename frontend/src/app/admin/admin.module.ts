@@ -7,7 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { AdminPageRoutingModule } from './admin-routing.module';
 
 import { AdminPage } from './admin.page';
-import { RoomsTableComponent } from './rooms-table/rooms-table.component';
+import { RoomsTableComponent } from '../rooms/components/rooms-table/rooms-table.component';
 import { SharedModule } from '../shared/shared.module';
 import { ProjectsTableComponent } from './projects-table/projects-table.component';
 import { UsersTableComponent } from './users-table/users-table.component';
@@ -23,7 +23,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
   ],
   declarations: [
     AdminPage,
-    RoomsTableComponent,
+     // RoomsTableComponent,
     ProjectsTableComponent,
     UsersTableComponent,
     DashboardComponent

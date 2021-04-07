@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { RoomsTableComponent } from './rooms-table/rooms-table.component';
+import { RoomsTableComponent } from '../rooms/components/rooms-table/rooms-table.component';
 
 import { AdminPage } from './admin.page';
 import { UsersTableComponent } from './users-table/users-table.component';
