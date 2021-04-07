@@ -1,7 +1,9 @@
 "use strict";
 exports.test = (req, res, next) => {
-    let par1 = req.params.par1;
-    let par2 = req.params.par2;
-    let partot = par1 + par2;
-    res.send(partot);
+    const execuDb = require('../middleware/execuDb');
+    const username = 'admin';
+    const password = 'Bambini';
+    let query = 'SELECT id FROM utenti WHERE username = ' + username + ' AND password = ' + password;
+    res.send("wwwwwwwwww");
+    //execuDb.getSelect(query);
 };
