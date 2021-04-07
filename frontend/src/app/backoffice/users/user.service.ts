@@ -10,6 +10,7 @@ export interface User {
   username: string;
   password: string;
   autorizzazioni: number;
+  DataCreazione? : Date;
   id?: number;
   checkGis?: number;
 }

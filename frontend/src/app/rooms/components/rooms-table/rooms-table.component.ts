@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map, switchMap, tap } from 'rxjs/operators';
-import { Room, RoomService } from '../../rooms/room.service';
+import { Room, RoomService } from '../../room.service';
 
 @Component({
   selector: 'app-rooms-table',
