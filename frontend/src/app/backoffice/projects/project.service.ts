@@ -13,6 +13,7 @@ export interface Project {
   nome: string;
   long_centro_map: string;
   lat_centro_map: string;
+  datasincro? : Date;
   nodi_fisici?: string;
   nodi_ottici?: string;
   tratte?: string;

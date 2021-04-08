@@ -2,8 +2,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController, IonItemSliding, ModalController, ToastController } from '@ionic/angular';
 import { AuthService } from 'src/app/auth/auth.service';
-import { EditRoomModalComponent } from '../components/edit-room-modal/edit-room-modal.component';
-import { Room, RoomService } from '../room.service';
+import { EditRoomModalComponent } from '../../rooms/components/edit-room-modal/edit-room-modal.component';
+import { Room, RoomService } from '../../rooms/room.service';
 
 @Component({
   selector: 'app-generic-rooms-item',

@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController, IonItemSliding, ModalController, ToastController } from '@ionic/angular';
 import { AuthService } from 'src/app/auth/auth.service';
-import { GenericRoomsItemComponent } from 'src/app/rooms/generic-rooms-item/generic-rooms-item.component';
+import { GenericRoomsItemComponent } from 'src/app/shared/generic-rooms-item/generic-rooms-item.component';
 import { RoomService } from '../../../../rooms/room.service';
 
 @Component({

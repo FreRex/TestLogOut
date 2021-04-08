@@ -2,24 +2,16 @@
   <ion-refresher-content></ion-refresher-content>
 </ion-refresher>
 
-<ion-row class="ion-align-items-center">
-  <ion-col size="11">
-    <ion-searchbar (ionInput)="searchStream$.next($event.target.value)"></ion-searchbar>
-  </ion-col>
-  <ion-col size="1">
-    <ion-button expand="block" fill="clear" (click)="createRoom()">
-      <ion-icon name="add"></ion-icon>
-    </ion-button>
-  </ion-col>
-</ion-row>
+<div class="searchbarAdd">
+  <ion-searchbar class="search-bar" (ionInput)="searchStream$.next($event.target.value)"></ion-searchbar>
+  <ion-button color="secondary">
+    <ion-icon name="add" slot="icon-only"></ion-icon>
+  </ion-button>
+</div>
 
-<ion-row>
-  <ion-col>
-    <div *ngIf="(obs$ | async) as obs" class="ion-text-center">
-      <div class="ion-text-center" *ngIf="obs.length <= 0">
-        <ion-spinner></ion-spinner>
-      </div>
-      <app-rooms-list-item *ngFor="let ob of obs" [room]="ob"></app-rooms-list-item>
-    </div>
-  </ion-col>
-</ion-row>
+<div *ngIf="(obs$ | async) as obs" class="ion-text-center">
+  <div class="ion-text-center" *ngIf="obs.length <= 0">
+    <ion-spinner></ion-spinner>
+  </div>
+  <app-rooms-list-item *ngFor="let ob of obs" [room]="ob"></app-rooms-list-item>
+</div>

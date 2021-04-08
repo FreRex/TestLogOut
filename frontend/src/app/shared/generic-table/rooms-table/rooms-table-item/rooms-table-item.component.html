@@ -1,5 +1,5 @@
 <ion-row>
-  <ion-col *ngFor="let data of datas" [size]="data.size">
+  <ion-col class="data-item" *ngFor="let data of datas" [size]="data.size">
     <div *ngIf="data.type !== 'buttons'">{{ data.type === 'date' ? (room[data.key] | date:'dd/MM/yy') : room[data.key]
       }}</div>
     <div *ngIf="data.type === 'buttons'" class="btns">

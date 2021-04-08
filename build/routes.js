@@ -4,9 +4,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const controllerTest = require('./ctrl/controllerTest');
+const controllerDownloadZip = require('./ctrl/controllerDownloadZip');
 const controllerToken = require('./ctrl/controllerToken');
 const controllerVidApp = require('./ctrl/controllerVidApp');
-const controllerDownloadZip = require('./ctrl/controllerDownloadZip');
 const controllerSelect = require('./ctrl/controllerSelect');
 const controllerUpdate = require('./ctrl/controllerUpdate');
 const controllerDelete = require('./ctrl/controllerDelete');
@@ -30,14 +31,20 @@ router.use(function (req, res, next) {
 //----------------------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------------
+//--------------------------------------------------
+//Test
+router.post('/test/', controllerTest.test);
+//--------------------------------------------------
+//Downloadzip (download foto compresse)
+router.get('/checkdownloadzip/:folderzip/', controllerDownloadZip.CheckDownloadZip);
+router.get('/downloadzip/:folderzip/', controllerDownloadZip.DownloadZip);
 //Token
 router.post('/token/', controllerToken.getToken);
 //VidApp (riavvio Node Media Server)
 router.get('/vidapp/', controllerVidApp.VidApp);
-//Downloadzip (download foto compresse)
-router.get('/checkdownloadzip/:folderzip/', controllerDownloadZip.CheckDownloadZip);
-router.get('/downloadzip/:folderzip/', controllerDownloadZip.DownloadZip);
+//------------------------------------------------------------------------
 //----------- API-db -----------------------------------------------------
+//------------------------------------------------------------------------
 //Indirizzamento ad API-db di lettura (SELECT)
 //router.get('/s/:table/', [mid.checkAuth], controllerSelect.getSelect);
 //router.get('/s/:table/:id?/', [mid.checkAuth], controllerSelect.getSelect);

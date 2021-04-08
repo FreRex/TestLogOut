@@ -48,6 +48,13 @@
     font-size: small;
 }
 
+.searchbarAdd {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
 .head-menu {
     background-color: var(--ion-color-tertiary-tint);
 }
