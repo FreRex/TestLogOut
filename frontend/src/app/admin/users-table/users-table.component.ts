@@ -82,5 +82,8 @@ export class UsersTableComponent implements OnInit {
     this.page = this.totalPages - 1;
     this.loadPage();
   }
+  doRefresh(event) {
+    this.userService.loadUsers().subscribe(res => { event.target.complete(); });
+  }
 
 }

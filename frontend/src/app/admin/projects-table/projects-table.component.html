@@ -1,79 +1,143 @@
-
 <!-- desktop -->
-<ion-content>
+<ion-content class="ion-hide-md-down">
 
-  <ion-searchbar class="search-bar" (ionInput)="searchStream$.next($event.target.value)"></ion-searchbar>
-  
-  
-  
-    <ion-row class="ion-align-items-center head-menu">
-      <!-- <ion-col size="1" *ngIf="bulkEdit"><b>Select</b></ion-col> -->
-    
-      <ion-col class="head-table-menu" size="1"><b>ID</b>
-        <app-order-by-button (event)="sortBy('idprogetto', true, $event)"></app-order-by-button>
-      </ion-col>
-      <ion-col class="head-table-menu" size="1"><b>SHP</b>
-        <app-order-by-button (event)="sortBy('conn_edif_opta', true, $event)"></app-order-by-button>
-      </ion-col>
-      <ion-col class="head-table-menu" size="1"><b>Data</b>
-        <app-order-by-button (event)="sortBy('datasincro', true, $event)"></app-order-by-button>
-      </ion-col>
-      <ion-col class="head-table-menu" size="2"><b>PK Project</b>
-        <app-order-by-button (event)="sortBy('pk_proj', false, $event)"></app-order-by-button>
-      </ion-col>
-      <ion-col class="head-table-menu" size="3"><b>Nome Progetto</b>
-        <app-order-by-button (event)="sortBy('nome', false, $event)"></app-order-by-button>
-      </ion-col>
-      <ion-col class="head-table-menu" size="2"><b>Collaudatore</b>
-        <app-order-by-button (event)="sortBy('collaudatoreufficio', false, $event)"></app-order-by-button>
-      </ion-col>
-      <ion-col class="head-table-menu" size="2"><b>Azioni</b></ion-col>
-    </ion-row>
-    <ion-row *ngFor="let proj of (projects$ | async); let i = index;" class="ion-align-items-center row-data">
+  <div class="searchbarAdd">
+    <ion-searchbar class="search-bar" (ionInput)="searchStream$.next($event.target.value)"></ion-searchbar>
+    <ion-button color="secondary">
+      <ion-icon  name="add" slot="icon-only"></ion-icon>
+    </ion-button>
+  </div>
 
-      <ion-col class="data-item" size="1">{{proj.idprogetto}}</ion-col>
-      <ion-col class="data-item" size="1">{{ proj.conn_edif_opta === "CollaudoLiveGisfo:view_connessione_edificio_pta" ? "S":"M" }}</ion-col>
-      <ion-col class="data-item" size="1">{{proj.datasincro| date:'dd/MM/yy'}}</ion-col>
-      <ion-col class="data-item" size="2">{{proj.pk_proj}}</ion-col>
-      <ion-col class="data-item" size="3">{{proj.nome}}</ion-col>
-      <ion-col class="data-item" size="2">{{proj.collaudatoreufficio}}</ion-col>
-      <ion-col class="data-item" size="2">
-        <div class="btns">
-          <ion-button size="small" class="ion-no-margin" expand="block" fill="clear">
-            <ion-icon name="globe-outline" button="true" tappable></ion-icon>
-          </ion-button>
-          <ion-button size="small" class="ion-no-margin" expand="block" fill="clear">
-            <ion-icon name="create-outline"></ion-icon>
-          </ion-button>
-          <ion-button size="small" class="ion-no-margin" expand="block" fill="clear">
-            <ion-icon name="trash-outline" button="true" tappable></ion-icon>
-          </ion-button>
-        </div>
-      </ion-col>
-    </ion-row>
-    <ion-row class="footer">
-      <ion-col size="1" class="page-btn" offset="3">
-        <ion-button fill="clear" (click)="goFirst()">
-          <ion-icon color="primary" size="small" name="play-back" slot="icon-only"></ion-icon>
+  <ion-row class="ion-align-items-center head-menu">
+
+    <ion-col class="head-table-menu" size="1"><b>ID</b>
+      <app-order-by-button (event)="sortBy('idprogetto', true, $event)"></app-order-by-button>
+    </ion-col>
+    <ion-col class="head-table-menu" size="1"><b>SHP</b>
+      <app-order-by-button (event)="sortBy('conn_edif_opta', true, $event)"></app-order-by-button>
+    </ion-col>
+    <ion-col class="head-table-menu" size="1"><b>Data</b>
+      <app-order-by-button (event)="sortBy('datasincro', true, $event)"></app-order-by-button>
+    </ion-col>
+    <ion-col class="head-table-menu" size="2"><b>PK Project</b>
+      <app-order-by-button (event)="sortBy('pk_proj', false, $event)"></app-order-by-button>
+    </ion-col>
+    <ion-col class="head-table-menu" size="3"><b>Nome Progetto</b>
+      <app-order-by-button (event)="sortBy('nome', false, $event)"></app-order-by-button>
+    </ion-col>
+    <ion-col class="head-table-menu" size="2"><b>Collaudatore</b>
+      <app-order-by-button (event)="sortBy('collaudatoreufficio', false, $event)"></app-order-by-button>
+    </ion-col>
+    <ion-col class="head-table-menu" size="2"><b>Azioni</b></ion-col>
+  </ion-row>
+  <ion-row *ngFor="let proj of (projects$ | async); let i = index;" class="ion-align-items-center row-data">
+
+    <ion-col class="data-item" size="1">{{proj.idprogetto}}</ion-col>
+    <ion-col class="data-item" size="1">{{ proj.conn_edif_opta === "CollaudoLiveGisfo:view_connessione_edificio_pta" ?
+      "S":"M" }}</ion-col>
+    <ion-col class="data-item" size="1">{{proj.datasincro| date:'dd/MM/yy'}}</ion-col>
+    <ion-col class="data-item" size="2">{{proj.pk_proj}}</ion-col>
+    <ion-col class="data-item" size="3">{{proj.nome}}</ion-col>
+    <ion-col class="data-item" size="2">{{proj.collaudatoreufficio}}</ion-col>
+    <ion-col class="data-item" size="2">
+      <div class="btns">
+        <ion-button size="small" class="ion-no-margin" expand="block" fill="clear">
+          <ion-icon name="globe-outline" button="true" tappable></ion-icon>
         </ion-button>
-      </ion-col>
-      <ion-col size="1" class="page-btn">
-        <ion-button fill="clear" (click)="prevPage()">
-          <ion-icon color="primary" size="small" name="chevron-back" slot="icon-only"></ion-icon>
+        <ion-button size="small" class="ion-no-margin" expand="block" fill="clear">
+          <ion-icon name="create-outline"></ion-icon>
         </ion-button>
-      </ion-col>
-      <ion-col size="2" class="page-btn-number ion-margin-vertical">
-        <div>{{ page + 1 }} of {{ totalPages }}</div>
-      </ion-col>
-      <ion-col size="1" class="page-btn">
-        <ion-button fill="clear" (click)="nextPage()">
-          <ion-icon color="primary" size="small" name="chevron-forward" slot="icon-only"></ion-icon>
+        <ion-button size="small" class="ion-no-margin" expand="block" fill="clear">
+          <ion-icon name="trash-outline" button="true" tappable></ion-icon>
         </ion-button>
-      </ion-col>
-      <ion-col size="1" class="page-btn">
-        <ion-button fill="clear" (click)="goLast()">
-          <ion-icon color="primary" size="small" name="play-forward" slot="icon-only"></ion-icon>
+      </div>
+    </ion-col>
+  </ion-row>
+  <ion-row class="footer">
+    <ion-col size="1" class="page-btn" offset="3">
+      <ion-button fill="clear" (click)="goFirst()">
+        <ion-icon color="primary" size="small" name="play-back" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-col>
+    <ion-col size="1" class="page-btn">
+      <ion-button fill="clear" (click)="prevPage()">
+        <ion-icon color="primary" size="small" name="chevron-back" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-col>
+    <ion-col size="2" class="page-btn-number ion-margin-vertical">
+      <div>{{ page + 1 }} of {{ totalPages }}</div>
+    </ion-col>
+    <ion-col size="1" class="page-btn">
+      <ion-button fill="clear" (click)="nextPage()">
+        <ion-icon color="primary" size="small" name="chevron-forward" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-col>
+    <ion-col size="1" class="page-btn">
+      <ion-button fill="clear" (click)="goLast()">
+        <ion-icon color="primary" size="small" name="play-forward" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-col>
+  </ion-row>
+</ion-content>
+
+<!-- Mobile -->
+<ion-content class="ion-hide-md-up">
+
+  <!-- refresh -->
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+
+  <!-- searchbar + add -->
+  <div class="searchbarAdd">
+    <ion-searchbar class="search-bar" (ionInput)="searchStream$.next($event.target.value)"></ion-searchbar>
+    <ion-button color="secondary">
+      <ion-icon  name="add" slot="icon-only"></ion-icon>
+    </ion-button>
+  </div>
+  <!-- Item -->
+
+  <ion-item-sliding #slidingItem *ngFor="let proj of (projects$ | async); let i = index;">
+    <ion-item>
+      <ion-label class="ion-margin-end">
+        <ion-text color="dark">
+          <h2><b> {{ proj.nome }}</b></h2>
+        </ion-text>
+        <ion-text color="medium">
+          <p>
+            <b>{{ proj.conn_edif_opta === "CollaudoLiveGisfo:view_connessione_edificio_pta" ? "S":"M" }}</b>
+            <b></b> {{ proj.datasincro| date:'dd/MM/yy' }} -
+
+            <b> {{ proj.collaudatoreufficio }} </b>
+          </p>
+        </ion-text>
+      </ion-label>
+
+      <div class="ion-hide-md-down">
+        <ion-button shape="round" fill="outline" size="default" class="ion-margin-end">
+          <ion-label>Foto</ion-label>
+          <ion-icon name="cloud-download-outline" slot="end"></ion-icon>
         </ion-button>
-      </ion-col>
-    </ion-row>
+        <ion-button shape="round" fill="solid" size="default">
+          <ion-label>Room</ion-label>
+          <ion-icon name="chevron-forward" slot="end"></ion-icon>
+        </ion-button>
+      </div>
+    </ion-item>
+
+    <ion-item-options side="start">
+      <ion-item-option color="primary">
+        <ion-icon name="create-outline" slot="icon-only"></ion-icon>
+      </ion-item-option>
+      <ion-item-option color="danger">
+        <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+      </ion-item-option>
+      <ion-item-option color="secondary">
+        <ion-icon name="globe-outline" slot="icon-only"></ion-icon>
+      </ion-item-option>
+    </ion-item-options>
+  </ion-item-sliding>
+
+
 </ion-content>

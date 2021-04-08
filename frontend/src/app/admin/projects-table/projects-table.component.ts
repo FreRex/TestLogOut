@@ -86,4 +86,8 @@ export class ProjectsTableComponent implements OnInit {
     this.loadPage();
   }
 
+  doRefresh(event) {
+    this.projectService.loadProjects().subscribe(res => { event.target.complete(); });
+  }
+
 }
