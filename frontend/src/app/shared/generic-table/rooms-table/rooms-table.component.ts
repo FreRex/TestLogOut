@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { GenericTableComponent } from 'src/app/shared/generic-table/generic-table.component';
-import { Room, RoomService } from '../../../rooms/room.service';
+import { Observable } from 'rxjs';
+import { GenericTableComponent, TableData } from 'src/app/shared/generic-table/generic-table.component';
+import { RoomService } from '../../../rooms/room.service';
 
 @Component({
   selector: 'app-rooms-table',
@@ -10,7 +10,7 @@ import { Room, RoomService } from '../../../rooms/room.service';
 })
 export class RoomsTableComponent extends GenericTableComponent {
 
-  datas = [
+  datas: TableData[] = [
     { title: 'ID', key: 'id', type: 'number', size: 1 },
     { title: 'Data', key: 'data_inserimento', type: 'date', size: 1 },
     { title: 'Collaudatore', key: 'nome_collaudatore', type: 'string', size: 2 },

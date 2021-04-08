@@ -6,10 +6,10 @@ import { EditRoomModalComponent } from '../components/edit-room-modal/edit-room-
 import { Room, RoomService } from '../room.service';
 
 @Component({
-  selector: 'app-abstract-rooms-item',
+  selector: 'app-generic-rooms-item',
   template: ``,
 })
-export class AbstractRoomsItemComponent implements OnInit {
+export class GenericRoomsItemComponent implements OnInit {
 
   @Input() room: Room;
   linkProgetto: string;

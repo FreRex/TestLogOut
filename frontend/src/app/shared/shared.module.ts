@@ -8,7 +8,7 @@ import { OrderByButtonComponent } from './order-by-button/order-by-button.compon
 import { PaginationComponent } from './pagination/pagination.component';
 import { RoomsTableComponent } from './generic-table/rooms-table/rooms-table.component';
 import { RoomsListComponent } from './generic-list/rooms-list/rooms-list.component';
-import { RoomListItemComponent } from './generic-list/rooms-list/room-list-item/room-list-item.component';
+import { RoomsListItemComponent } from './generic-list/rooms-list/rooms-list-item/rooms-list-item.component';
 import { RoomsTableItemComponent } from './generic-table/rooms-table/rooms-table-item/rooms-table-item.component';
 
 @NgModule({
@@ -20,7 +20,7 @@ import { RoomsTableItemComponent } from './generic-table/rooms-table/rooms-table
     RoomsTableComponent,
     RoomsTableItemComponent,
     RoomsListComponent,
-    RoomListItemComponent,
+    RoomsListItemComponent,
     PaginationComponent
   ],
   imports: [
@@ -35,7 +35,7 @@ import { RoomsTableItemComponent } from './generic-table/rooms-table/rooms-table
     RoomsTableComponent,
     RoomsTableItemComponent,
     RoomsListComponent,
-    RoomListItemComponent,
+    RoomsListItemComponent,
     PaginationComponent
   ],
 })

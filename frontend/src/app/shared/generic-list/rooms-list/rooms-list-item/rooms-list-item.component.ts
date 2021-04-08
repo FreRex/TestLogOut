@@ -1,17 +1,16 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController, IonItemSliding, ModalController, ToastController } from '@ionic/angular';
 import { AuthService } from 'src/app/auth/auth.service';
-import { AbstractRoomsItemComponent } from 'src/app/rooms/abstract-rooms-item/abstract-rooms-item.component';
-import { EditRoomModalComponent } from '../../../../rooms/components/edit-room-modal/edit-room-modal.component';
-import { Room, RoomService } from '../../../../rooms/room.service';
+import { GenericRoomsItemComponent } from 'src/app/rooms/generic-rooms-item/generic-rooms-item.component';
+import { RoomService } from '../../../../rooms/room.service';
 
 @Component({
-  selector: 'app-room-list-item',
-  templateUrl: './room-list-item.component.html',
-  styleUrls: ['./room-list-item.component.scss'],
+  selector: 'app-rooms-list-item',
+  templateUrl: './rooms-list-item.component.html',
+  styleUrls: ['./rooms-list-item.component.scss'],
 })
-export class RoomListItemComponent extends AbstractRoomsItemComponent {
+export class RoomsListItemComponent extends GenericRoomsItemComponent {
 
   constructor(
     public router: Router,

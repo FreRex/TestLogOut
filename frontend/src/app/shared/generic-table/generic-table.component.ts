@@ -79,20 +79,4 @@ export abstract class GenericTableComponent implements OnInit {
     this.page = 0;
     this.loadPage(this.page);
   }
-  // nextPage() {
-  //   this.page = this.page++ >= this.totalPages - 1 ? this.totalPages - 1 : this.page;
-  //   this.loadPage();
-  // }
-  // prevPage() {
-  //   this.page = this.page-- <= 0 ? 0 : this.page;
-  //   this.loadPage();
-  // }
-  // goFirst() {
-  //   this.page = 0;
-  //   this.loadPage();
-  // }
-  // goLast() {
-  //   this.page = this.totalPages - 1;
-  //   this.loadPage();
-  // }
 }

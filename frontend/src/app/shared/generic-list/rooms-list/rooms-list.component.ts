@@ -11,12 +11,6 @@ import { GenericListComponent } from '../generic-list.component';
 })
 export class RoomsListComponent extends GenericListComponent {
 
-  rooms$: Observable<Room[]>;
-  datas = [
-    { title: 'Progetto', key: 'nome_progetto', type: 'string', primary: true },
-    { title: 'Usermobile', key: 'usermobile', type: 'string', primary: false },
-  ];
-
   constructor(private roomService: RoomService) {
     super();
   }
@@ -24,6 +18,7 @@ export class RoomsListComponent extends GenericListComponent {
   filterData(query: any): Observable<any[]> {
     return this.roomService.getRoomsByFilter(query);
   }
+
   doRefresh(event) {
     this.roomService.loadRooms().subscribe(res => { event.target.complete(); });
   }

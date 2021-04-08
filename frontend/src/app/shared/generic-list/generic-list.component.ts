@@ -3,13 +3,6 @@ import { BehaviorSubject } from 'rxjs';
 import { Observable } from 'rxjs';
 import { distinctUntilChanged, switchMap } from 'rxjs/operators';
 
-export interface ListData {
-  title: string;
-  key: string;
-  type: string;
-  primary: boolean;
-}
-
 @Component({
   selector: 'app-generic-list',
   template: ``,
@@ -17,13 +10,8 @@ export interface ListData {
 })
 export abstract class GenericListComponent implements OnInit {
 
-  datas: ListData[] = []
-  inputObs$: Observable<any[]>;
   searchStream$ = new BehaviorSubject('');
   obs$: Observable<any[]>;
-
-  isCrescent = true;
-  selectedData: ListData;
 
   constructor() { }
 

@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController, ModalController, ToastController } from '@ionic/angular';
 import { AuthService } from 'src/app/auth/auth.service';
-import { AbstractRoomsItemComponent } from 'src/app/rooms/abstract-rooms-item/abstract-rooms-item.component';
+import { GenericRoomsItemComponent } from 'src/app/rooms/generic-rooms-item/generic-rooms-item.component';
 import { RoomService } from 'src/app/rooms/room.service';
 
 @Component({
@@ -10,7 +10,7 @@ import { RoomService } from 'src/app/rooms/room.service';
   templateUrl: './rooms-table-item.component.html',
   styleUrls: ['./rooms-table-item.component.scss'],
 })
-export class RoomsTableItemComponent extends AbstractRoomsItemComponent {
+export class RoomsTableItemComponent extends GenericRoomsItemComponent {
 
   @Input() datas;
 
