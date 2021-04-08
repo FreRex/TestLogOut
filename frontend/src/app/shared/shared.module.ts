@@ -5,11 +5,11 @@ import { IonicModule } from '@ionic/angular';
 import { DropdownComponent } from './dropdown/dropdown.component';
 import { CommonModule } from '@angular/common';
 import { OrderByButtonComponent } from './order-by-button/order-by-button.component';
-import { GenericTableComponent } from './generic-table/generic-table.component';
 import { PaginationComponent } from './pagination/pagination.component';
 import { RoomsTableComponent } from './generic-table/rooms-table/rooms-table.component';
 import { RoomsListComponent } from './generic-list/rooms-list/rooms-list.component';
-import { RoomItemComponent } from '../rooms/components/room-item/room-item.component';
+import { RoomListItemComponent } from './generic-list/rooms-list/room-list-item/room-list-item.component';
+import { RoomsTableItemComponent } from './generic-table/rooms-table/rooms-table-item/rooms-table-item.component';
 
 @NgModule({
   declarations: [
@@ -17,10 +17,10 @@ import { RoomItemComponent } from '../rooms/components/room-item/room-item.compo
     ObsWithStatusPipe,
     DropdownComponent,
     OrderByButtonComponent,
-    // GenericTableComponent,
     RoomsTableComponent,
+    RoomsTableItemComponent,
     RoomsListComponent,
-    RoomItemComponent,
+    RoomListItemComponent,
     PaginationComponent
   ],
   imports: [
@@ -32,10 +32,10 @@ import { RoomItemComponent } from '../rooms/components/room-item/room-item.compo
     ObsWithStatusPipe,
     DropdownComponent,
     OrderByButtonComponent,
-    // GenericTableComponent,
-    RoomsListComponent,
     RoomsTableComponent,
-    RoomItemComponent,
+    RoomsTableItemComponent,
+    RoomsListComponent,
+    RoomListItemComponent,
     PaginationComponent
   ],
 })

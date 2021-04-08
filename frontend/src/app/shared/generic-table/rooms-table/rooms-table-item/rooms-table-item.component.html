@@ -1,0 +1,23 @@
+<ion-row>
+  <ion-col *ngFor="let data of datas" [size]="data.size">
+    <div *ngIf="data.type !== 'buttons'">{{ data.type === 'date' ? (room[data.key] | date:'dd/MM/yy') : room[data.key]
+      }}</div>
+    <div *ngIf="data.type === 'buttons'" class="btns">
+      <ion-button size="small" class="ion-no-margin" expand="block" fill="clear" (click)="copyLink()">
+        <ion-icon name="copy-outline"></ion-icon>
+      </ion-button>
+      <ion-button size="small" class="ion-no-margin" expand="block" fill="clear" (click)="editRoom()">
+        <ion-icon name="create-outline"></ion-icon>
+      </ion-button>
+      <ion-button size="small" class="ion-no-margin" expand="block" fill="clear" (click)="deleteRoom()">
+        <ion-icon name="trash-outline"></ion-icon>
+      </ion-button>
+      <ion-button size="small" class="ion-no-margin" expand="block" fill="clear" (click)="downloadFoto()">
+        <ion-icon name="images-outline"></ion-icon>
+      </ion-button>
+      <ion-button size="small" class="ion-no-margin" expand="block" fill="clear" (click)="enterRoom()">
+        <ion-icon name="enter-outline"></ion-icon>
+      </ion-button>
+    </div>
+  </ion-col>
+</ion-row>

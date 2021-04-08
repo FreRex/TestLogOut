@@ -43,5 +43,5 @@ export abstract class GenericListComponent implements OnInit {
   }
 
   abstract filterData(query): Observable<any[]>;
-
+  abstract doRefresh(event);
 }

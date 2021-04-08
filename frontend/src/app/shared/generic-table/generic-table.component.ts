@@ -58,7 +58,7 @@ export abstract class GenericTableComponent implements OnInit {
         if (this.selectedData) {
           if (this.selectedData.type === 'number' || this.selectedData.type === 'date') {
             return this.isCrescent ? r1[this.selectedData.key] - r2[this.selectedData.key] : r2[this.selectedData.key] - r1[this.selectedData.key];
-          } else {
+          } else if (this.selectedData.type === 'string') {
             return this.isCrescent ?
               r1[this.selectedData.key].toString().localeCompare(r2[this.selectedData.key].toString()) :
               r2[this.selectedData.key].toString().localeCompare(r1[this.selectedData.key].toString());

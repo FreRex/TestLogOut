@@ -83,39 +83,39 @@ export class RoomsPage implements OnInit, OnDestroy/* , ViewWillEnter, ViewDidEn
   }
 
   /** Funzione che filtra i progetti in base al fitro impostato e all'input */
-  onFilter(eventValue: Event, filterValue?: string) {
-    let searchTerm = (<HTMLInputElement>eventValue.target).value;
-    switch (filterValue) {
-      case "collaudatore": {
-        this.filteredRooms = this.rooms.filter((room) => {
-          return room.nome_collaudatore.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1;
-        });
-        break;
-      }
-      case "usermobile": {
-        this.filteredRooms = this.rooms.filter((room) => {
-          return room.usermobile.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1;
-        });
-        break;
-      }
-      case "progetto": {
-        this.filteredRooms = this.rooms.filter((room) => {
-          return room.nome_progetto.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1;
-        });
-        break;
-      }
-      default: {
-        this.filteredRooms = this.rooms.filter((room) => {
-          return (
-            room.usermobile.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1 ||
-            room.nome_progetto.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1 ||
-            room.nome_collaudatore.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1
-          );
-        });
-        break;
-      }
-    }
-  }
+  // onFilter(eventValue: Event, filterValue?: string) {
+  //   let searchTerm = (<HTMLInputElement>eventValue.target).value;
+  //   switch (filterValue) {
+  //     case "collaudatore": {
+  //       this.filteredRooms = this.rooms.filter((room) => {
+  //         return room.nome_collaudatore.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1;
+  //       });
+  //       break;
+  //     }
+  //     case "usermobile": {
+  //       this.filteredRooms = this.rooms.filter((room) => {
+  //         return room.usermobile.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1;
+  //       });
+  //       break;
+  //     }
+  //     case "progetto": {
+  //       this.filteredRooms = this.rooms.filter((room) => {
+  //         return room.nome_progetto.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1;
+  //       });
+  //       break;
+  //     }
+  //     default: {
+  //       this.filteredRooms = this.rooms.filter((room) => {
+  //         return (
+  //           room.usermobile.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1 ||
+  //           room.nome_progetto.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1 ||
+  //           room.nome_collaudatore.toLowerCase().indexOf(searchTerm.toLowerCase()) > -1
+  //         );
+  //       });
+  //       break;
+  //     }
+  //   }
+  // }
 
   /** Apre il popover per la selezione del filtro */
   openSelect(event: UIEvent, filterSelectRef: IonSelect) {

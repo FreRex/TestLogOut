@@ -12,7 +12,11 @@
     </ion-toolbar>
 </ion-header>
 <ion-content>
-    <app-rooms-list></app-rooms-list>
+    <ion-row>
+        <ion-col size-md="12" size-lg="8" offset-lg="2">
+            <app-rooms-list></app-rooms-list>
+        </ion-col>
+    </ion-row>
     <!-- <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
         <ion-refresher-content></ion-refresher-content>
     </ion-refresher>

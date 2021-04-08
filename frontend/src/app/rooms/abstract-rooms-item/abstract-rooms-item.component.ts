@@ -2,43 +2,37 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController, IonItemSliding, ModalController, ToastController } from '@ionic/angular';
 import { AuthService } from 'src/app/auth/auth.service';
-import { EditRoomModalComponent } from '../edit-room-modal/edit-room-modal.component';
-import { Room, RoomService } from '../../room.service';
+import { EditRoomModalComponent } from '../components/edit-room-modal/edit-room-modal.component';
+import { Room, RoomService } from '../room.service';
 
 @Component({
-  selector: 'app-room-item',
-  templateUrl: './room-item.component.html',
-  styleUrls: ['./room-item.component.scss'],
+  selector: 'app-abstract-rooms-item',
+  template: ``,
 })
-export class RoomItemComponent implements OnInit {
+export class AbstractRoomsItemComponent implements OnInit {
 
   @Input() room: Room;
   linkProgetto: string;
   isFavourite: boolean;
 
   constructor(
-    private router: Router,
-    private roomsService: RoomService,
-    private authService: AuthService,
-    private alertController: AlertController,
-    private modalController: ModalController,
-    private toastController: ToastController
+    public router: Router,
+    public roomsService: RoomService,
+    public authService: AuthService,
+    public alertController: AlertController,
+    public modalController: ModalController,
+    public toastController: ToastController
   ) { }
 
-
-  ngOnInit() {
-    // console.log(this.room);
-  }
-
-  /** Apre la pagina di MODIFICA ROOM */
-  onOpenEditRoomPage(slidingItem: IonItemSliding) {
-    slidingItem.close();
-    this.router.navigate(['/', 'rooms', 'edit', this.room.id]);
-  }
+  ngOnInit() { }
 
   /** Apre il modale di MODIFICA ROOM */
-  onOpenEditRoomModal(slidingItem: IonItemSliding) {
-    slidingItem.close();
+  editRoom(slidingItem?: IonItemSliding) {
+    console.log(this.room.id);
+
+    if (slidingItem) {
+      slidingItem.close();
+    }
     this.modalController
       .create({
         component: EditRoomModalComponent,
@@ -55,7 +49,10 @@ export class RoomItemComponent implements OnInit {
       });
   }
 
-  onOpenRoom() {
+  enterRoom(slidingItem?: IonItemSliding) {
+    if (slidingItem) {
+      slidingItem.close();
+    }
     this.linkProgetto =
       'https://www.collaudolive.com:9777/glasses_test/FrontEnd/src/index.php?q='
       + this.room.projectID
@@ -63,9 +60,17 @@ export class RoomItemComponent implements OnInit {
     window.open(this.linkProgetto);
   }
 
-  onDownload(slidingItem: IonItemSliding) {
-    // TODO: logica download foto
-    slidingItem.close();
+  copyLink(slidingItem?: IonItemSliding) {
+    if (slidingItem) {
+      slidingItem.close();
+    }
+    console.log('link copiato');
+  }
+
+  downloadFoto(slidingItem?: IonItemSliding) {
+    if (slidingItem) {
+      slidingItem.close();
+    }
     const nomeProgetto = this.room.nome_progetto.trim().replace(' ', '');
     this.roomsService.checkDownload(nomeProgetto).subscribe(
       (value: boolean) => {
@@ -76,8 +81,10 @@ export class RoomItemComponent implements OnInit {
     )
   }
 
-  onDelete(slidingItem: IonItemSliding) {
-    slidingItem.close();
+  deleteRoom(slidingItem?: IonItemSliding) {
+    if (slidingItem) {
+      slidingItem.close();
+    }
     this.alertController.create(
       {
         header: 'Sei sicuro?',
@@ -116,4 +123,5 @@ export class RoomItemComponent implements OnInit {
     console.log("My favourite room!");
     this.isFavourite = !this.isFavourite;
   }
+
 }
