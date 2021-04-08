@@ -9,12 +9,21 @@
     <ion-icon name="add" slot="icon-only"></ion-icon>
   </ion-button>
 </div>
-<!-- items -->
+<!-- header-row -->
+<ion-row class="ion-align-items-center head-menu">
+  <ion-col class="head-table-menu" *ngFor="let data of datas" [size]="data.size"><b>{{data.title}}</b>
+    <app-order-by-button *ngIf="data.type !== 'buttons'" (event)="sortBy(data, $event)"></app-order-by-button>
+  </ion-col>
+</ion-row>
+<!-- data-row -->
 <ion-row>
   <ion-col *ngIf="(obs$ | async) as obs" class="ion-text-center">
     <div class="ion-text-center" *ngIf="obs.length <= 0">
       <ion-spinner></ion-spinner>
     </div>
-    <app-rooms-list-item *ngFor="let ob of obs" [room]="ob"></app-rooms-list-item>
+    <app-users-table-item *ngFor="let ob of obs" [user]="ob" [datas]="datas">
+    </app-users-table-item>
   </ion-col>
 </ion-row>
+<!-- footer -->
+<app-pagination [totalPages]="totalPages" [page]="page" (event)="loadPage($event)"></app-pagination>

@@ -1,11 +1,10 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { RoomsTableComponent } from '../shared/generic-table/rooms-table/rooms-table.component';
-
 import { AdminPage } from './admin.page';
-import { UsersTableComponent } from './users-table/users-table.component';
-import { ProjectsTableComponent } from './projects-table/projects-table.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { ProjectsTabComponent } from './projects-tab/projects-tab.component';
+import { RoomsTabComponent } from './rooms-tab/rooms-tab.component';
+import { UsersTabComponent } from './users-tab/users-tab.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/admin/tabs/dashboard', pathMatch: 'full' },
@@ -15,15 +14,15 @@ const routes: Routes = [
     children: [
       {
         path: 'rooms',
-        component: RoomsTableComponent
+        component: RoomsTabComponent
       },
       {
         path: 'users',
-        component: UsersTableComponent
+        component: UsersTabComponent
       },
       {
         path: 'projects',
-        component: ProjectsTableComponent
+        component: ProjectsTabComponent
       },
       {
         path: 'dashboard',

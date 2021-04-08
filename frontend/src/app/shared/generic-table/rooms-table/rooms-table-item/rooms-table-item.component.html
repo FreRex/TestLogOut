@@ -1,4 +1,4 @@
-<ion-row>
+<ion-row class="ion-align-items-center row-data">
   <ion-col class="data-item" *ngFor="let data of datas" [size]="data.size">
     <div *ngIf="data.type !== 'buttons'">{{ data.type === 'date' ? (room[data.key] | date:'dd/MM/yy') : room[data.key]
       }}</div>

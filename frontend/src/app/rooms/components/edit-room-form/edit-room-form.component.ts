@@ -25,8 +25,6 @@ export class EditRoomFormComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    console.log(this.roomId);
-
     // mi sottoscrivo all'osservabile "getRoom()" che restituisce una singola room per ID
     this.isLoading = true;
     this.roomsService.getRoom(this.roomId).subscribe(

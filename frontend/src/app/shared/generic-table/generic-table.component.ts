@@ -72,6 +72,7 @@ export abstract class GenericTableComponent implements OnInit {
   }
 
   abstract filterData(query): Observable<any[]>;
+  abstract doRefresh(event);
 
   sortBy(data: TableData, isCrescent: boolean) {
     this.selectedData = data;

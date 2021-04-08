@@ -1,0 +1,18 @@
+<ion-row class="ion-align-items-center row-data">
+  <ion-col *ngFor="let data of datas" [size]="data.size">
+    <div class="data-item" *ngIf="data.type !== 'buttons'">{{ data.type === 'date' ? (user[data.key] |
+      date:'dd/MM/yy') : user[data.key]
+      }}</div>
+    <div *ngIf="data.type === 'buttons'" class="btns">
+      <ion-button size="small" class="ion-no-margin" expand="block" fill="clear">
+        <ion-icon name="globe-outline" button="true" tappable></ion-icon>
+      </ion-button>
+      <ion-button size="small" class="ion-no-margin" expand="block" fill="clear">
+        <ion-icon name="create-outline"></ion-icon>
+      </ion-button>
+      <ion-button size="small" class="ion-no-margin" expand="block" fill="clear">
+        <ion-icon name="trash-outline" button="true" tappable></ion-icon>
+      </ion-button>
+    </div>
+  </ion-col>
+</ion-row>

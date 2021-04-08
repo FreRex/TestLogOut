@@ -14,18 +14,13 @@ export class RoomsListComponent extends GenericListComponent {
   constructor(private roomService: RoomService) {
     super();
   }
-
   filterData(query: any): Observable<any[]> {
     return this.roomService.getRoomsByFilter(query);
   }
-
   doRefresh(event) {
     this.roomService.loadRooms().subscribe(res => { event.target.complete(); });
   }
-
   createRoom() {
 
   }
-
-
 }

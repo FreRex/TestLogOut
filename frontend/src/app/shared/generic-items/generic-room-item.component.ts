@@ -6,10 +6,10 @@ import { EditRoomModalComponent } from '../../rooms/components/edit-room-modal/e
 import { Room, RoomService } from '../../rooms/room.service';
 
 @Component({
-  selector: 'app-generic-rooms-item',
+  selector: 'app-generic-room-item',
   template: ``,
 })
-export class GenericRoomsItemComponent implements OnInit {
+export class GenericRoomItemComponent implements OnInit {
 
   @Input() room: Room;
   linkProgetto: string;
@@ -28,8 +28,6 @@ export class GenericRoomsItemComponent implements OnInit {
 
   /** Apre il modale di MODIFICA ROOM */
   editRoom(slidingItem?: IonItemSliding) {
-    console.log(this.room.id);
-
     if (slidingItem) {
       slidingItem.close();
     }
