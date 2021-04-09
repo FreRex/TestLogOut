@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertController, ModalController, ToastController } from '@ionic/angular';
+import { AlertController, IonItemSliding, ModalController, ToastController } from '@ionic/angular';
 import { AuthService } from 'src/app/auth/auth.service';
 import { Project, ProjectService } from 'src/app/shared/project.service';
 import { EditProjectModalComponent } from '../modals/edit-project-modal/edit-project-modal.component';
@@ -23,10 +23,17 @@ export class GenericProjectItemComponent implements OnInit {
     ) { }
     ngOnInit() { }
 
-    createLinkNPerf(lat, lng) {
-        window.open("https://www.nperf.com/it/map/IT/-/230.TIM/signal/?ll=" + lat + "&lg=" + lng + "&zoom=13");
+    createLinkNPerf(slidingItem?: IonItemSliding) {
+        if (slidingItem) { slidingItem.close(); }
+
+        window.open("https://www.nperf.com/it/map/IT/-/230.TIM/signal/?ll="
+            + this.project.lat_centro_map + "&lg="
+            + this.project.long_centro_map + "&zoom=13");
     }
-    editProject() {
+
+    editProject(slidingItem?: IonItemSliding) {
+        if (slidingItem) { slidingItem.close(); }
+
         this.modalController
             .create({
                 component: EditProjectModalComponent,
@@ -34,11 +41,14 @@ export class GenericProjectItemComponent implements OnInit {
             }).then((modalEl) => {
                 modalEl.present();
                 return modalEl.onDidDismiss();
-            }).then(res =>
-                this.presentToast('Progetto Aggiornato', 'secondary')
-            );
+            }).then(res => {
+                this.presentToast('Progetto Aggiornato', 'secondary');
+            });
     }
-    deleteProject() {
+
+    deleteProject(slidingItem?: IonItemSliding) {
+        if (slidingItem) { slidingItem.close(); }
+
         this.alertController.create(
             {
                 header: 'Sei sicuro?',
@@ -53,6 +63,7 @@ export class GenericProjectItemComponent implements OnInit {
             }
         ).then(alertEl => { alertEl.present(); });
     }
+
     async presentToast(message: string, color: string) {
         const toast = await this.toastController.create({
             message: message,

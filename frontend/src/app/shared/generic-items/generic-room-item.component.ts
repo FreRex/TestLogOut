@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController, IonItemSliding, ModalController, ToastController } from '@ionic/angular';
 import { AuthService } from 'src/app/auth/auth.service';
-import { EditRoomModalComponent } from '../../rooms/components/edit-room-modal/edit-room-modal.component';
+import { EditRoomModalComponent } from '../modals/edit-room-modal/edit-room-modal.component';
 import { Room, RoomService } from '../../rooms/room.service';
 
 @Component({
@@ -42,15 +42,14 @@ export class GenericRoomItemComponent implements OnInit {
         modalEl.present();
         return modalEl.onDidDismiss();
       })
-      .then(resultData => {
-        console.log(resultData.data, resultData.role);
+      .then(res => {
+        this.presentToast('Room Aggiornata', 'secondary');
       });
   }
 
   enterRoom(slidingItem?: IonItemSliding) {
-    if (slidingItem) {
-      slidingItem.close();
-    }
+    if (slidingItem) { slidingItem.close(); }
+
     this.linkProgetto =
       'https://www.collaudolive.com:9777/glasses_test/FrontEnd/src/index.php?q='
       + this.room.projectID
@@ -59,16 +58,13 @@ export class GenericRoomItemComponent implements OnInit {
   }
 
   copyLink(slidingItem?: IonItemSliding) {
-    if (slidingItem) {
-      slidingItem.close();
-    }
+    if (slidingItem) { slidingItem.close(); }
     console.log('link copiato');
   }
 
   downloadFoto(slidingItem?: IonItemSliding) {
-    if (slidingItem) {
-      slidingItem.close();
-    }
+    if (slidingItem) { slidingItem.close(); }
+
     const nomeProgetto = this.room.nome_progetto.trim().replace(' ', '');
     this.roomsService.checkDownload(nomeProgetto).subscribe(
       (value: boolean) => {
@@ -80,27 +76,19 @@ export class GenericRoomItemComponent implements OnInit {
   }
 
   deleteRoom(slidingItem?: IonItemSliding) {
-    if (slidingItem) {
-      slidingItem.close();
-    }
+    if (slidingItem) { slidingItem.close(); }
+
     this.alertController.create(
       {
         header: 'Sei sicuro?',
         message: 'Vuoi davvero cancellare il progetto?',
-        buttons: [
-          {
-            text: 'Annulla',
-            role: 'cancel'
-          },
-          {
-            text: 'Elimina',
-            handler: () => {
-              this.roomsService.deleteRoom(this.room.id).subscribe(res => {
-                this.presentToast('Room Eliminata', 'secondary');
-              });
-            }
-          }
-        ]
+        buttons: [{ text: 'Annulla', role: 'cancel' },
+        {
+          text: 'Elimina',
+          handler: () =>
+            this.roomsService.deleteRoom(this.room.id)
+              .subscribe(res => this.presentToast('Room Eliminata', 'secondary'))
+        }]
       }
     ).then(alertEl => { alertEl.present(); });
   }

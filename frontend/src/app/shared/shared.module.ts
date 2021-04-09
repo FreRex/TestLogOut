@@ -24,6 +24,8 @@ import { HasRoleDirective } from './has-role.directive';
 import { ObsWithStatusPipe } from './obs-with-status.pipe';
 import { OrderByButtonComponent } from './order-by-button/order-by-button.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { EditRoomModalComponent } from './modals/edit-room-modal/edit-room-modal.component';
+import { NewRoomModalComponent } from './modals/new-room-modal/new-room-modal.component';
 
 @NgModule({
   declarations: [
@@ -31,24 +33,29 @@ import { ReactiveFormsModule } from '@angular/forms';
     ObsWithStatusPipe,
     DropdownComponent,
     OrderByButtonComponent,
+    PaginationComponent,
+
     RoomsTableComponent,
     RoomsTableItemComponent,
     ProjectsTableComponent,
     ProjectsTableItemComponent,
     UsersTableComponent,
     UsersTableItemComponent,
+
     RoomsListComponent,
     RoomsListItemComponent,
     ProjectsListComponent,
     ProjectsListItemComponent,
     UsersListComponent,
     UsersListItemComponent,
-    PaginationComponent,
+
     GisfoSyncModalComponent,
     UploadShpModalComponent,
     CreateUserModalComponent,
     EditProjectModalComponent,
     EditUserModalComponent,
+    EditRoomModalComponent,
+    NewRoomModalComponent
   ],
   imports: [
     IonicModule,
@@ -60,24 +67,29 @@ import { ReactiveFormsModule } from '@angular/forms';
     ObsWithStatusPipe,
     DropdownComponent,
     OrderByButtonComponent,
+    PaginationComponent,
+
     RoomsTableComponent,
     RoomsTableItemComponent,
     ProjectsTableComponent,
     ProjectsTableItemComponent,
     UsersTableComponent,
     UsersTableItemComponent,
+
     RoomsListComponent,
     RoomsListItemComponent,
     ProjectsListComponent,
     ProjectsListItemComponent,
     UsersListComponent,
     UsersListItemComponent,
-    PaginationComponent,
+
     GisfoSyncModalComponent,
     UploadShpModalComponent,
     CreateUserModalComponent,
     EditProjectModalComponent,
     EditUserModalComponent,
+    EditRoomModalComponent,
+    NewRoomModalComponent
   ],
   entryComponents: [
     GisfoSyncModalComponent,
@@ -85,6 +97,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     CreateUserModalComponent,
     EditProjectModalComponent,
     EditUserModalComponent,
+    EditRoomModalComponent,
+    NewRoomModalComponent
   ],
 })
 export class SharedModule { }

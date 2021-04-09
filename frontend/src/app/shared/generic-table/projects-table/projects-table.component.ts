@@ -40,6 +40,7 @@ export class ProjectsTableComponent extends GenericTableComponent {
     this.modalController
       .create({
         component: GisfoSyncModalComponent,
+        backdropDismiss: false,
       })
       .then((modalEl) => {
         modalEl.present();
@@ -54,6 +55,6 @@ export class ProjectsTableComponent extends GenericTableComponent {
       .then((modalEl) => {
         modalEl.present();
         return modalEl.onDidDismiss();
-      })
+      });
   }
 }

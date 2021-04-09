@@ -22,13 +22,13 @@ export class EditProjectModalComponent implements OnInit {
 
   constructor(
     private userService: UserService,
-    private modalCtrl: ModalController,
+    private modalController: ModalController,
     private projectService: ProjectService,
   ) { }
 
   ngOnInit() {
     this.users$ = this.userService.users$;
-    this.projectService.getProject(this.projectId).subscribe((project) => {
+    this.projectService.getProject(this.projectId).subscribe(project => {
       this.project = project;
       this.form = new FormGroup({
         collaudatoreufficio: new FormControl(this.project.collaudatoreufficio, {
@@ -48,13 +48,11 @@ export class EditProjectModalComponent implements OnInit {
   }
 
   closeModal() {
-    this.modalCtrl.dismiss(EditProjectModalComponent);
+    this.modalController.dismiss(EditProjectModalComponent);
   }
 
   updateProject() {
-    if (!this.form.valid) {
-      return;
-    }
+    if (!this.form.valid) { return; }
     const coords = this.form.value.coordinate.split(",");
     this.projectService
       .updateProject(

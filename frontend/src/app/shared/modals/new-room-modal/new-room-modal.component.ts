@@ -1,53 +1,48 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { AlertController, ModalController, ToastController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { Project, ProjectService } from 'src/app/shared/project.service';
-import { RoomService } from '../../room.service';
+import { RoomService } from '../../../rooms/room.service';
 
 @Component({
-  selector: 'new-room-form',
-  templateUrl: './new-room-form.component.html',
-  styleUrls: ['./new-room-form.component.scss'],
+  selector: 'app-new-room-modal',
+  templateUrl: './new-room-modal.component.html',
+  styleUrls: ['./new-room-modal.component.scss'],
 })
-export class NewRoomFormComponent implements OnInit {
+export class NewRoomModalComponent implements OnInit {
 
-  // @ViewChild('searchInput', { static: true }) input: IonInput;
+  form: FormGroup;
   projects$: Observable<Project[]>;
   isListOpen: boolean = false;
-  form: FormGroup;
   selectedProject: Project;
 
   constructor(
     private modalController: ModalController,
     private roomsService: RoomService,
-    private alertController: AlertController,
-    private toastController: ToastController,
     private projectService: ProjectService
   ) { }
 
   ngOnInit() {
     this.projects$ = this.projectService.projects$;
-
     this.form = new FormGroup({
       usermobile: new FormControl(null, {
         updateOn: 'blur',
-        validators: [Validators.required, Validators.maxLength(12)]
+        validators: [Validators.required, Validators.maxLength(30)]
       }),
       nome_progetto: new FormControl(null, {
         updateOn: 'blur',
-        validators: [Validators.required, Validators.maxLength(30)]
+        validators: [Validators.required, Validators.maxLength(50)]
       }),
       nome_collaudatore: new FormControl(null, {
         updateOn: 'blur',
-        validators: [Validators.required, Validators.maxLength(30)]
+        validators: [Validators.required, Validators.maxLength(50)]
       }),
     });
   }
 
   onChooseProject(project: Project) {
-    // this.toggle();
     this.isListOpen = false;
     this.selectedProject = project;
     this.form.patchValue({
@@ -56,7 +51,7 @@ export class NewRoomFormComponent implements OnInit {
     });
   }
 
-  onCreateRoom() {
+  createRoom() {
     if (!this.form.valid) { return; }
     this.roomsService
       .addRoom(
@@ -66,38 +61,18 @@ export class NewRoomFormComponent implements OnInit {
         this.form.value.nome_collaudatore)
       .subscribe(
         res => {
-          console.log("Response", res);
-          this.presentToast('Room creata!');
           this.form.reset();
           this.modalController.dismiss({ message: 'room saved' }, 'save');
         },
         (err: HttpErrorResponse) => {
-          console.log("Error:", err.error['text']);
-          this.createErrorAlert(err.error['text']);
+          this.form.reset();
+          this.modalController.dismiss({ message: err.error['text'] }, 'error');
         }
       );
   }
 
-  async createErrorAlert(error: string) {
-    const alert = await this.alertController.create({
-      header: "Errore:",
-      message: error,
-      buttons: [{ text: 'Annulla', role: 'cancel' },]
-    });
-    // FIX: si può fare in entrambi i modi, qual'è il più giusto?
-    // .then(alertEl => { alertEl.present(); });
-    alert.present();
+  onCancel() {
+    this.modalController.dismiss(null, 'cancel');
   }
 
-  async presentToast(message: string) {
-    const toast = await this.toastController.create({
-      message: message,
-      color: 'secondary',
-      duration: 2000,
-      buttons: [{ icon: 'close', role: 'cancel' }]
-    })
-    // FIX: si può fare in entrambi i modi, qual'è il più giusto?
-    // .then(toastEl => toastEl.present());
-    toast.present();
-  }
 }

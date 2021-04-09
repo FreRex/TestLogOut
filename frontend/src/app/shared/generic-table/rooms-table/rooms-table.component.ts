@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
+import { ModalController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { GenericTableComponent, TableData } from 'src/app/shared/generic-table/generic-table.component';
 import { RoomService } from '../../../rooms/room.service';
+import { NewRoomModalComponent } from '../../modals/new-room-modal/new-room-modal.component';
 
 @Component({
   selector: 'app-rooms-table',
@@ -19,16 +21,27 @@ export class RoomsTableComponent extends GenericTableComponent {
     { title: 'Azioni', key: 'azioni', type: 'buttons', size: 3 },
   ];
 
-  constructor(private roomService: RoomService) {
-    super();
-  }
+  constructor(
+    private roomService: RoomService,
+    private modalController: ModalController
+  ) { super(); }
+
   filterData(query: any): Observable<any[]> {
     return this.roomService.getRoomsByFilter(query);
   }
   doRefresh(event) {
     this.roomService.loadRooms().subscribe(res => { event.target.complete(); });
   }
+  /** Apre il modale di MODIFICA ROOM */
   createRoom() {
-
+    this.modalController
+      .create({
+        component: NewRoomModalComponent,
+        backdropDismiss: false,
+      })
+      .then(modalEl => {
+        modalEl.present();
+        return modalEl.onDidDismiss();
+      });
   }
 }
