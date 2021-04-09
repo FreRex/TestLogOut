@@ -4,7 +4,7 @@ import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, map, switchMap, take, tap } from 'rxjs/operators';
 import { AuthService } from 'src/app/auth/auth.service';
 import { environment } from 'src/environments/environment';
-import { UserService } from '../users/user.service';
+import { UserService } from './user.service';
 
 export interface Project {
   idprogetto: number;
@@ -13,7 +13,7 @@ export interface Project {
   nome: string;
   long_centro_map: string;
   lat_centro_map: string;
-  datasincro? : Date;
+  datasincro?: Date;
   nodi_fisici?: string;
   nodi_ottici?: string;
   tratte?: string;

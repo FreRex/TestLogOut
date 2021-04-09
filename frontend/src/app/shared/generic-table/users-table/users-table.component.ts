@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
-import { UserService } from 'src/app/backoffice/users/user.service';
+import { UserService } from 'src/app/shared/user.service';
 import { GenericTableComponent, TableData } from '../generic-table.component';
 
 @Component({

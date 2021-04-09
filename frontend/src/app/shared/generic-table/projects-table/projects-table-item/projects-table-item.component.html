@@ -4,14 +4,15 @@
       date:'dd/MM/yy') : project[data.key]
       }}</div>
     <div *ngIf="data.type === 'buttons'" class="btns">
-      <ion-button size="small" class="ion-no-margin" expand="block" fill="clear">
-        <ion-icon name="globe-outline" button="true" tappable></ion-icon>
+      <ion-button size="small" class="ion-no-margin" expand="block" fill="clear"
+        (click)="createLinkNPerf(project.lat_centro_map, project.long_centro_map)">
+        <ion-icon name="globe-outline"></ion-icon>
       </ion-button>
-      <ion-button size="small" class="ion-no-margin" expand="block" fill="clear">
+      <ion-button size="small" class="ion-no-margin" expand="block" fill="clear" (click)="editProject()">
         <ion-icon name="create-outline"></ion-icon>
       </ion-button>
-      <ion-button size="small" class="ion-no-margin" expand="block" fill="clear">
-        <ion-icon name="trash-outline" button="true" tappable></ion-icon>
+      <ion-button size="small" class="ion-no-margin" expand="block" fill="clear" (click)="deleteProject()">
+        <ion-icon name="trash-outline"></ion-icon>
       </ion-button>
     </div>
   </ion-col>

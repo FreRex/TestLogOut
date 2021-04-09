@@ -1,6 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
+import { EditProjectModalComponent } from './modals/edit-project-modal/edit-project-modal.component';
+import { GisfoSyncModalComponent } from './modals/gisfo-sync-modal/gisfo-sync-modal.component';
+import { UploadShpModalComponent } from './modals/upload-shp-modal/upload-shp-modal.component';
+import { CreateUserModalComponent } from './modals/create-user-modal/create-user-modal.component';
+import { EditUserModalComponent } from './modals/edit-user-modal/edit-user-modal.component';
 import { DropdownComponent } from './dropdown/dropdown.component';
 import { ProjectsListItemComponent } from './generic-list/projects-list/projects-list-item/projects-list-item.component';
 import { ProjectsListComponent } from './generic-list/projects-list/projects-list.component';
@@ -18,6 +23,7 @@ import { UsersTableComponent } from './generic-table/users-table/users-table.com
 import { HasRoleDirective } from './has-role.directive';
 import { ObsWithStatusPipe } from './obs-with-status.pipe';
 import { OrderByButtonComponent } from './order-by-button/order-by-button.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -37,11 +43,17 @@ import { OrderByButtonComponent } from './order-by-button/order-by-button.compon
     ProjectsListItemComponent,
     UsersListComponent,
     UsersListItemComponent,
-    PaginationComponent
+    PaginationComponent,
+    GisfoSyncModalComponent,
+    UploadShpModalComponent,
+    CreateUserModalComponent,
+    EditProjectModalComponent,
+    EditUserModalComponent,
   ],
   imports: [
     IonicModule,
-    CommonModule
+    CommonModule,
+    ReactiveFormsModule
   ],
   exports: [
     HasRoleDirective,
@@ -60,7 +72,19 @@ import { OrderByButtonComponent } from './order-by-button/order-by-button.compon
     ProjectsListItemComponent,
     UsersListComponent,
     UsersListItemComponent,
-    PaginationComponent
+    PaginationComponent,
+    GisfoSyncModalComponent,
+    UploadShpModalComponent,
+    CreateUserModalComponent,
+    EditProjectModalComponent,
+    EditUserModalComponent,
+  ],
+  entryComponents: [
+    GisfoSyncModalComponent,
+    UploadShpModalComponent,
+    CreateUserModalComponent,
+    EditProjectModalComponent,
+    EditUserModalComponent,
   ],
 })
 export class SharedModule { }

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { UserService } from 'src/app/backoffice/users/user.service';
+import { UserService } from 'src/app/shared/user.service';
 import { GenericListComponent } from '../generic-list.component';
 
 @Component({

@@ -1,14 +1,14 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { AlertController, IonSearchbar, ModalController, ToastController } from '@ionic/angular';
-import { GisfoSyncModalComponent } from './projects/gisfo-sync-modal/gisfo-sync-modal.component';
-import { CreateUserModalComponent } from './users/create-user-modal/create-user-modal.component';
-import { UploadShpModalComponent } from './projects/upload-shp-modal/upload-shp-modal.component';
+import { GisfoSyncModalComponent } from '../shared/modals/gisfo-sync-modal/gisfo-sync-modal.component';
+import { CreateUserModalComponent } from '../shared/modals/create-user-modal/create-user-modal.component';
+import { UploadShpModalComponent } from '../shared/modals/upload-shp-modal/upload-shp-modal.component';
 import { BehaviorSubject, concat, Observable, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
-import { Project, ProjectService } from './projects/project.service';
-import { User, UserService } from './users/user.service';
-import { EditProjectModalComponent } from './projects/edit-project-modal/edit-project-modal.component';
-import { EditUserModalComponent } from './users/edit-user-modal/edit-user-modal.component';
+import { Project, ProjectService } from '../shared/project.service';
+import { User, UserService } from '../shared/user.service';
+import { EditProjectModalComponent } from '../shared/modals/edit-project-modal/edit-project-modal.component';
+import { EditUserModalComponent } from '../shared/modals/edit-user-modal/edit-user-modal.component';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { AuthService } from '../auth/auth.service';
@@ -74,16 +74,16 @@ export class BackofficePage implements OnInit {
 
   /* *********************** MODALS *********************** */
 
-  openGisfoUpload() {
-    this.modalCtrl
-      .create({
-        component: GisfoSyncModalComponent,
-      })
-      .then((modalEl) => {
-        modalEl.present();
-        return modalEl.onDidDismiss();
-      })
-  }
+  // openGisfoUpload() {
+  //   this.modalCtrl
+  //     .create({
+  //       component: GisfoSyncModalComponent,
+  //     })
+  //     .then((modalEl) => {
+  //       modalEl.present();
+  //       return modalEl.onDidDismiss();
+  //     })
+  // }
 
   openUploadShp() {
     this.modalCtrl
@@ -107,17 +107,17 @@ export class BackofficePage implements OnInit {
       })
   }
 
-  openEditProject(projectId: number) {
-    this.modalCtrl
-      .create({
-        component: EditProjectModalComponent,
-        componentProps: { projectId: projectId }
-      })
-      .then((modalEl) => {
-        modalEl.present();
-        return modalEl.onDidDismiss();
-      })
-  }
+  /*   openEditProject(projectId: number) {
+      this.modalCtrl
+        .create({
+          component: EditProjectModalComponent,
+          componentProps: { projectId: projectId }
+        })
+        .then((modalEl) => {
+          modalEl.present();
+          return modalEl.onDidDismiss();
+        })
+    } */
 
   openEditUser(userId: number) {
     this.modalCtrl
@@ -172,28 +172,28 @@ export class BackofficePage implements OnInit {
     ).then(alertEl => { alertEl.present(); });
   }
 
-  onDeleteProject(projectId: number) {
-    this.alertController.create(
-      {
-        header: 'Sei sicuro?',
-        message: "Vuoi davvero cancellare il progetto?",
-        buttons: [
-          {
-            text: 'Annulla',
-            role: 'cancel'
-          },
-          {
-            text: 'Elimina',
-            handler: () => {
-              this.projectService.deleteProject(projectId).subscribe(res => {
-                this.presentToast('Progetto Eliminato');
-              });
+  /*   onDeleteProject(projectId: number) {
+      this.alertController.create(
+        {
+          header: 'Sei sicuro?',
+          message: "Vuoi davvero cancellare il progetto?",
+          buttons: [
+            {
+              text: 'Annulla',
+              role: 'cancel'
+            },
+            {
+              text: 'Elimina',
+              handler: () => {
+                this.projectService.deleteProject(projectId).subscribe(res => {
+                  this.presentToast('Progetto Eliminato');
+                });
+              }
             }
-          }
-        ]
-      }
-    ).then(alertEl => { alertEl.present(); });
-  }
+          ]
+        }
+      ).then(alertEl => { alertEl.present(); });
+    } */
 
   onRiavviaStreaming() {
     this.alertController.create(

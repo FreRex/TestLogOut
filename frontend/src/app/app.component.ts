@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { LoadingController } from '@ionic/angular';
 import { forkJoin } from 'rxjs';
 import { AuthService } from './auth/auth.service';
-import { ProjectService } from './backoffice/projects/project.service';
-import { UserService } from './backoffice/users/user.service';
+import { ProjectService } from './shared/project.service';
+import { UserService } from './shared/user.service';
 import { RoomService } from './rooms/room.service';
 @Component({
   selector: 'app-root',

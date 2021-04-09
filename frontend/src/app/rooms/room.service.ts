@@ -4,7 +4,7 @@ import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, map, switchMap, take, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { AuthService } from '../auth/auth.service';
-import { UserService } from '../backoffice/users/user.service';
+import { UserService } from '../shared/user.service';
 
 /** Interfaccia che definisce la Room all'interno del progetto */
 export interface Room {

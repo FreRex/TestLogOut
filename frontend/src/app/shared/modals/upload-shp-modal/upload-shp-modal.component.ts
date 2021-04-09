@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import { Observable, Subscription } from 'rxjs';
-import { User, UserService } from '../../users/user.service';
-import { Project, ProjectService } from '../project.service';
+import { User, UserService } from '../../user.service';
+import { Project, ProjectService } from '../../project.service';
 
 @Component({
   selector: 'app-upload-shp-modal',
@@ -12,10 +12,10 @@ import { Project, ProjectService } from '../project.service';
 })
 export class UploadShpModalComponent implements OnInit {
 
-  form:FormGroup;
-  users$: Observable <User[]>;
-  project: Project;
-
+  form: FormGroup;
+  users$: Observable<User[]>;
+  selectedUser: User;
+  isListOpen: boolean = false;
 
   constructor(
     private userService: UserService,
@@ -24,10 +24,7 @@ export class UploadShpModalComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-
     this.users$ = this.userService.users$;
-
-
     this.form = new FormGroup({
       collaudatoreufficio: new FormControl(null, {
         updateOn: 'blur',
@@ -41,7 +38,7 @@ export class UploadShpModalComponent implements OnInit {
         updateOn: 'blur',
         validators: [Validators.required, Validators.maxLength(50)]
       }),
-      coordinate: new FormControl( null , {
+      coordinate: new FormControl(null, {
         updateOn: 'blur',
         validators: [Validators.required, Validators.maxLength(100)],
       }),
@@ -63,15 +60,15 @@ export class UploadShpModalComponent implements OnInit {
       }),
     });
   }
-
-  closeModal() {
-    this.modalCtrl.dismiss(UploadShpModalComponent);
+  onChooseUser(user: User) {
+    this.isListOpen = false;
+    this.selectedUser = user;
+    this.form.patchValue({
+      collaudatoreufficio: this.selectedUser.collaudatoreufficio,
+    });
   }
-
-  createProject(){
-
+  createProject() {
     const coords = this.form.value.coordinate.split(",");
-
     if (!this.form.valid) { return; }
     this.projectService
       .addProject(
@@ -84,18 +81,14 @@ export class UploadShpModalComponent implements OnInit {
         this.form.value.conn_edif_opta,
         coords[1],
         coords[0],
-        )
-      .subscribe(
+      ).subscribe(
         res => {
-          // console.log("Response",res);
-          // this.presentToast('Room creata!');
           this.form.reset();
           this.modalCtrl.dismiss({ message: 'Project Create' }, 'save');
         },
-        // (err: HttpErrorResponse) => {
-        //   console.log("Error:", err.error['text']);
-        //   this.createErrorAlert(err.error['text']);
-        // }
       );
+  }
+  closeModal() {
+    this.modalCtrl.dismiss(UploadShpModalComponent);
   }
 }

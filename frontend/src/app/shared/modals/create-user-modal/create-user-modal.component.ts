@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
-import { UserService } from '../user.service';
+import { UserService } from '../../user.service';
 
 @Component({
   selector: 'app-create-user-modal',
@@ -10,7 +10,7 @@ import { UserService } from '../user.service';
 })
 export class CreateUserModalComponent implements OnInit {
 
-  form:FormGroup;
+  form: FormGroup;
 
   constructor(
     private modalCtrl: ModalController,
@@ -28,11 +28,11 @@ export class CreateUserModalComponent implements OnInit {
         updateOn: 'blur',
         validators: [Validators.required, Validators.maxLength(50)]
       }),
-      password: new FormControl( null, {
+      password: new FormControl(null, {
         updateOn: 'blur',
         validators: [Validators.required, Validators.maxLength(30)]
       }),
-      autorizzazioni: new FormControl( null, {
+      autorizzazioni: new FormControl(null, {
         updateOn: 'blur',
         validators: [Validators.required, Validators.maxLength(1)]
       }),
@@ -42,11 +42,11 @@ export class CreateUserModalComponent implements OnInit {
 
   }
 
-  closeModal(){
+  closeModal() {
     this.modalCtrl.dismiss(CreateUserModalComponent);
   }
 
-  createUser(){
+  createUser() {
     if (!this.form.valid) { return; }
     this.userService
       .addUser(

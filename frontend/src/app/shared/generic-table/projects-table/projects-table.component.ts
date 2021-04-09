@@ -1,7 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { ModalController } from '@ionic/angular';
 import { BehaviorSubject, concat, Observable, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map, switchMap, tap } from 'rxjs/operators';
-import { Project, ProjectService } from 'src/app/backoffice/projects/project.service';
+import { GisfoSyncModalComponent } from 'src/app/shared/modals/gisfo-sync-modal/gisfo-sync-modal.component';
+import { Project, ProjectService } from 'src/app/shared/project.service';
+import { UploadShpModalComponent } from 'src/app/shared/modals/upload-shp-modal/upload-shp-modal.component';
 import { GenericTableComponent, TableData } from '../generic-table.component';
 
 @Component({
@@ -21,7 +24,10 @@ export class ProjectsTableComponent extends GenericTableComponent {
     { title: 'Azioni', key: 'azioni', type: 'buttons', size: 2 },
   ];
 
-  constructor(private projectService: ProjectService) {
+  constructor(
+    private projectService: ProjectService,
+    private modalController: ModalController
+  ) {
     super();
   }
   filterData(query: any): Observable<any[]> {
@@ -30,7 +36,24 @@ export class ProjectsTableComponent extends GenericTableComponent {
   doRefresh(event) {
     this.projectService.loadProjects().subscribe(res => { event.target.complete(); });
   }
-  createRoom() {
-
+  openGisfoUpload() {
+    this.modalController
+      .create({
+        component: GisfoSyncModalComponent,
+      })
+      .then((modalEl) => {
+        modalEl.present();
+        return modalEl.onDidDismiss();
+      })
+  }
+  openManualUpload() {
+    this.modalController
+      .create({
+        component: UploadShpModalComponent,
+      })
+      .then((modalEl) => {
+        modalEl.present();
+        return modalEl.onDidDismiss();
+      })
   }
 }

@@ -4,7 +4,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AlertController, IonInput, ModalController, ToastController } from '@ionic/angular';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map, startWith, switchMap } from 'rxjs/operators';
-import { Project, ProjectService } from 'src/app/backoffice/projects/project.service';
+import { Project, ProjectService } from 'src/app/shared/project.service';
 import { RoomService } from '../../room.service';
 
 @Component({
@@ -16,9 +16,9 @@ export class NewRoomFormComponent implements OnInit {
 
   // @ViewChild('searchInput', { static: true }) input: IonInput;
   projects$: Observable<Project[]>;
+  isListOpen: boolean = false;
   form: FormGroup;
   selectedProject: Project;
-  isListOpen: boolean = false;
 
   constructor(
     private modalController: ModalController,

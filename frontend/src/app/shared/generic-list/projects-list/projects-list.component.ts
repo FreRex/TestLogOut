@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { ModalController } from '@ionic/angular';
 import { Observable } from 'rxjs';
-import { ProjectService } from 'src/app/backoffice/projects/project.service';
+import { GisfoSyncModalComponent } from 'src/app/shared/modals/gisfo-sync-modal/gisfo-sync-modal.component';
+import { ProjectService } from 'src/app/shared/project.service';
+import { UploadShpModalComponent } from 'src/app/shared/modals/upload-shp-modal/upload-shp-modal.component';
 import { GenericListComponent } from '../generic-list.component';
 
 @Component({
@@ -10,7 +13,10 @@ import { GenericListComponent } from '../generic-list.component';
 })
 export class ProjectsListComponent extends GenericListComponent {
 
-  constructor(private projectService: ProjectService) {
+  constructor(
+    private projectService: ProjectService,
+    private modalController: ModalController
+  ) {
     super();
   }
   filterData(query: any): Observable<any[]> {
@@ -19,7 +25,24 @@ export class ProjectsListComponent extends GenericListComponent {
   doRefresh(event) {
     this.projectService.loadProjects().subscribe(res => { event.target.complete(); });
   }
-  createRoom() {
-
+  openGisfoUpload() {
+    this.modalController
+      .create({
+        component: GisfoSyncModalComponent,
+      })
+      .then((modalEl) => {
+        modalEl.present();
+        return modalEl.onDidDismiss();
+      })
+  }
+  openManualUpload() {
+    this.modalController
+      .create({
+        component: UploadShpModalComponent,
+      })
+      .then((modalEl) => {
+        modalEl.present();
+        return modalEl.onDidDismiss();
+      })
   }
 }

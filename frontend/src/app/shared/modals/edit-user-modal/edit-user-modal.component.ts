@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ModalController, ToastController } from '@ionic/angular';
-import { User, UserService } from '../user.service';
+import { User, UserService } from '../../user.service';
 
 @Component({
   selector: 'app-edit-user-modal',
@@ -17,7 +17,7 @@ export class EditUserModalComponent implements OnInit {
     private modalCtrl: ModalController,
     private userService: UserService,
     private toastController: ToastController
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.userService.getUser(this.userId).subscribe((user) => {
@@ -43,8 +43,8 @@ export class EditUserModalComponent implements OnInit {
     this.modalCtrl.dismiss(EditUserModalComponent);
   }
 
-  updateUser(){
-    if(!this.form.valid){
+  updateUser() {
+    if (!this.form.valid) {
       return
     }
     this.userService.updateUser(
@@ -52,7 +52,7 @@ export class EditUserModalComponent implements OnInit {
       this.form.value.username,
       this.form.value.password,
       this.user.id
-    ).subscribe(res=>{
+    ).subscribe(res => {
       this.presentToast("Utente Aggiornato");
       this.form.reset();
       this.closeModal();
@@ -64,7 +64,7 @@ export class EditUserModalComponent implements OnInit {
       message: message,
       color: 'secondary',
       duration: 2000,
-      buttons: [ { icon: 'close', role: 'cancel'}]
+      buttons: [{ icon: 'close', role: 'cancel' }]
     })
     toast.present();
   }
