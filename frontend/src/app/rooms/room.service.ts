@@ -125,7 +125,7 @@ export class RoomService {
           return rooms;
         }),
         // <-- emette il nuovo array come valore del BehaviourSubject _rooms
-        tap((rooms: Room[]) => { this.roomsSubject.next(rooms); })
+        tap((rooms: Room[]) => this.roomsSubject.next(rooms))
       );
   }
 

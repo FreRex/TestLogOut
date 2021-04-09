@@ -16,7 +16,7 @@ export class ProjectsTableComponent extends GenericTableComponent {
 
   datas: TableData[] = [
     { title: 'ID', key: 'idprogetto', type: 'number', size: 1 },
-    { title: 'SHP', key: 'conn_edif_opta', type: 'number', size: 1 },
+    { title: 'Sync', key: 'sync', type: 'boolean', size: 1 },
     { title: 'Data', key: 'datasincro', type: 'date', size: 1 },
     { title: 'PK Project', key: 'pk_proj', type: 'string', size: 2 },
     { title: 'Nome Progetto', key: 'nome', type: 'string', size: 3 },

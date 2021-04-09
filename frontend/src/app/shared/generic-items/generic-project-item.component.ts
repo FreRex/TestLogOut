@@ -43,20 +43,13 @@ export class GenericProjectItemComponent implements OnInit {
             {
                 header: 'Sei sicuro?',
                 message: "Vuoi davvero cancellare il progetto?",
-                buttons: [
-                    {
-                        text: 'Annulla',
-                        role: 'cancel'
-                    },
-                    {
-                        text: 'Elimina',
-                        handler: () => {
-                            this.projectService.deleteProject(this.project.idprogetto).subscribe(res => {
-                                this.presentToast('Progetto Eliminato', 'secondary');
-                            });
-                        }
-                    }
-                ]
+                buttons: [{ text: 'Annulla', role: 'cancel' },
+                {
+                    text: 'Elimina',
+                    handler: () =>
+                        this.projectService.deleteProject(this.project.idprogetto)
+                            .subscribe(res => this.presentToast('Progetto Eliminato', 'secondary'))
+                }]
             }
         ).then(alertEl => { alertEl.present(); });
     }

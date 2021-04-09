@@ -1,8 +1,14 @@
 <ion-row class="ion-align-items-center row-data">
   <ion-col *ngFor="let data of datas" [size]="data.size">
-    <div class="data-item" *ngIf="data.type !== 'buttons'">{{ data.type === 'date' ? (project[data.key] |
-      date:'dd/MM/yy') : project[data.key]
-      }}</div>
+    <div class="data-item" *ngIf="data.type === 'string' || data.type === 'number'">
+      {{ project[data.key] }}
+    </div>
+    <div class="data-item" *ngIf="data.type === 'date'">
+      {{ project[data.key] | date:'dd/MM/yy'}}
+    </div>
+    <div *ngIf="data.type === 'boolean'">
+      <ion-icon name="ellipse-sharp" [color]="project.sync === true ? 'success' : 'warning'"></ion-icon>
+    </div>
     <div *ngIf="data.type === 'buttons'" class="btns">
       <ion-button size="small" class="ion-no-margin" expand="block" fill="clear"
         (click)="createLinkNPerf(project.lat_centro_map, project.long_centro_map)">

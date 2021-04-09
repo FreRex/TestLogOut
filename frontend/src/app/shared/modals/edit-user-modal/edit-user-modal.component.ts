@@ -9,6 +9,7 @@ import { User, UserService } from '../../user.service';
   styleUrls: ['./edit-user-modal.component.scss'],
 })
 export class EditUserModalComponent implements OnInit {
+
   form: FormGroup;
   @Input() userId: number;
   user: User;
@@ -16,7 +17,6 @@ export class EditUserModalComponent implements OnInit {
   constructor(
     private modalCtrl: ModalController,
     private userService: UserService,
-    private toastController: ToastController
   ) { }
 
   ngOnInit() {
@@ -53,19 +53,8 @@ export class EditUserModalComponent implements OnInit {
       this.form.value.password,
       this.user.id
     ).subscribe(res => {
-      this.presentToast("Utente Aggiornato");
       this.form.reset();
       this.closeModal();
     });
-  }
-
-  async presentToast(message: string) {
-    const toast = await this.toastController.create({
-      message: message,
-      color: 'secondary',
-      duration: 2000,
-      buttons: [{ icon: 'close', role: 'cancel' }]
-    })
-    toast.present();
   }
 }

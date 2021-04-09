@@ -1,16 +1,21 @@
 <ion-row class="ion-align-items-center row-data">
   <ion-col *ngFor="let data of datas" [size]="data.size">
-    <div class="data-item" *ngIf="data.type !== 'buttons'">{{ data.type === 'date' ? (user[data.key] |
-      date:'dd/MM/yy') : user[data.key]
-      }}</div>
-    <div *ngIf="data.type === 'buttons'" class="btns">
-      <ion-button size="small" class="ion-no-margin" expand="block" fill="clear">
-        <ion-icon name="globe-outline" button="true" tappable></ion-icon>
-      </ion-button>
-      <ion-button size="small" class="ion-no-margin" expand="block" fill="clear">
+    <div class="data-item" *ngIf="data.type === 'string' || data.type === 'number'">
+      {{ user[data.key] }}
+    </div>
+    <div class="data-item" *ngIf="data.type === 'date'">
+      {{ user[data.key] | date:'dd/MM/yy'}}
+    </div>
+    <div *ngIf="data.type === 'icon'">
+      <ion-icon class="data-icon" name="person-circle-outline"
+        [color]="user.autorizzazioni === 1 ? 'danger' : 'secondary'">
+      </ion-icon>
+    </div>
+    <div class="btns" *ngIf="data.type === 'buttons'">
+      <ion-button size="small" class="ion-no-margin" expand="block" fill="clear" (click)="editUser()">
         <ion-icon name="create-outline"></ion-icon>
       </ion-button>
-      <ion-button size="small" class="ion-no-margin" expand="block" fill="clear">
+      <ion-button size="small" class="ion-no-margin" expand="block" fill="clear" (click)="deleteUser()">
         <ion-icon name="trash-outline" button="true" tappable></ion-icon>
       </ion-button>
     </div>

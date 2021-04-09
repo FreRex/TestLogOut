@@ -1,9 +1,8 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { AlertController, IonInput, ModalController, ToastController } from '@ionic/angular';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { debounceTime, distinctUntilChanged, map, startWith, switchMap } from 'rxjs/operators';
+import { AlertController, ModalController, ToastController } from '@ionic/angular';
+import { Observable } from 'rxjs';
 import { Project, ProjectService } from 'src/app/shared/project.service';
 import { RoomService } from '../../room.service';
 

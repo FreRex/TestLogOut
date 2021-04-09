@@ -1,17 +1,14 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { AlertController, IonSearchbar, ModalController, ToastController } from '@ionic/angular';
-import { GisfoSyncModalComponent } from '../shared/modals/gisfo-sync-modal/gisfo-sync-modal.component';
 import { CreateUserModalComponent } from '../shared/modals/create-user-modal/create-user-modal.component';
 import { UploadShpModalComponent } from '../shared/modals/upload-shp-modal/upload-shp-modal.component';
 import { BehaviorSubject, concat, Observable, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 import { Project, ProjectService } from '../shared/project.service';
 import { User, UserService } from '../shared/user.service';
-import { EditProjectModalComponent } from '../shared/modals/edit-project-modal/edit-project-modal.component';
 import { EditUserModalComponent } from '../shared/modals/edit-user-modal/edit-user-modal.component';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'app-backoffice',
@@ -85,27 +82,27 @@ export class BackofficePage implements OnInit {
   //     })
   // }
 
-  openUploadShp() {
-    this.modalCtrl
-      .create({
-        component: UploadShpModalComponent,
-      })
-      .then((modalEl) => {
-        modalEl.present();
-        return modalEl.onDidDismiss();
-      })
-  }
+  // openUploadShp() {
+  //   this.modalCtrl
+  //     .create({
+  //       component: UploadShpModalComponent,
+  //     })
+  //     .then((modalEl) => {
+  //       modalEl.present();
+  //       return modalEl.onDidDismiss();
+  //     })
+  // }
 
-  openCreateUser() {
-    this.modalCtrl
-      .create({
-        component: CreateUserModalComponent,
-      })
-      .then((modalEl) => {
-        modalEl.present();
-        return modalEl.onDidDismiss();
-      })
-  }
+  // openCreateUser() {
+  //   this.modalCtrl
+  //     .create({
+  //       component: CreateUserModalComponent,
+  //     })
+  //     .then((modalEl) => {
+  //       modalEl.present();
+  //       return modalEl.onDidDismiss();
+  //     })
+  // }
 
   /*   openEditProject(projectId: number) {
       this.modalCtrl
@@ -119,17 +116,17 @@ export class BackofficePage implements OnInit {
         })
     } */
 
-  openEditUser(userId: number) {
-    this.modalCtrl
-      .create({
-        component: EditUserModalComponent,
-        componentProps: { userId: userId }
-      })
-      .then((modalEl) => {
-        modalEl.present();
-        return modalEl.onDidDismiss();
-      })
-  }
+  // openEditUser(userId: number) {
+  //   this.modalCtrl
+  //     .create({
+  //       component: EditUserModalComponent,
+  //       componentProps: { userId: userId }
+  //     })
+  //     .then((modalEl) => {
+  //       modalEl.present();
+  //       return modalEl.onDidDismiss();
+  //     })
+  // }
   /* *************************END MODALS*********************************** */
   showProjectsClick() {
     this.showProjects = true;
@@ -149,28 +146,28 @@ export class BackofficePage implements OnInit {
     toast.present();
   }
 
-  onDeleteUser(userId: number) {
-    this.alertController.create(
-      {
-        header: 'Sei sicuro?',
-        message: "Vuoi davvero cancellare l'Utente?",
-        buttons: [
-          {
-            text: 'Annulla',
-            role: 'cancel'
-          },
-          {
-            text: 'Elimina',
-            handler: () => {
-              this.userService.deleteUser(userId).subscribe(res => {
-                this.presentToast('Utente Eliminato');
-              });
-            }
-          }
-        ]
-      }
-    ).then(alertEl => { alertEl.present(); });
-  }
+  // onDeleteUser(userId: number) {
+  //   this.alertController.create(
+  //     {
+  //       header: 'Sei sicuro?',
+  //       message: "Vuoi davvero cancellare l'Utente?",
+  //       buttons: [
+  //         {
+  //           text: 'Annulla',
+  //           role: 'cancel'
+  //         },
+  //         {
+  //           text: 'Elimina',
+  //           handler: () => {
+  //             this.userService.deleteUser(userId).subscribe(res => {
+  //               this.presentToast('Utente Eliminato');
+  //             });
+  //           }
+  //         }
+  //       ]
+  //     }
+  //   ).then(alertEl => { alertEl.present(); });
+  // }
 
   /*   onDeleteProject(projectId: number) {
       this.alertController.create(

@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { AlertController, ModalController, ToastController } from '@ionic/angular';
 import { AuthService } from 'src/app/auth/auth.service';
 import { User, UserService } from 'src/app/shared/user.service';
+import { EditUserModalComponent } from '../modals/edit-user-modal/edit-user-modal.component';
 
 @Component({
     selector: 'app-generic-user-item',
@@ -23,6 +24,30 @@ export class GenericUserItemComponent implements OnInit {
 
     ngOnInit() { }
 
+    editUser() {
+        this.modalController
+            .create({
+                component: EditUserModalComponent,
+                componentProps: { userId: this.user.id }
+            }).then((modalEl) => {
+                modalEl.present();
+                return modalEl.onDidDismiss();
+            }).then(res =>
+                this.presentToast('Utente Aggiornato', 'secondary')
+            );
+    }
+    deleteUser() {
+        this.alertController.create({
+            header: 'Sei sicuro?',
+            message: "Vuoi davvero cancellare l'Utente?",
+            buttons: [{ text: 'Annulla', role: 'cancel' },
+            {
+                text: 'Elimina',
+                handler: () => this.userService.deleteUser(this.user.id)
+                    .subscribe(res => this.presentToast('Utente Eliminato', 'secondary'))
+            }]
+        }).then(alertEl => { alertEl.present(); });
+    }
     async presentToast(message: string, color: string) {
         const toast = await this.toastController.create({
             message: message,
@@ -34,5 +59,4 @@ export class GenericUserItemComponent implements OnInit {
         // .then(toastEl => toastEl.present());
         toast.present();
     }
-
 }

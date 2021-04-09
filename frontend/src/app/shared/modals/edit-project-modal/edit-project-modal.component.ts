@@ -1,8 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ModalController, ToastController } from '@ionic/angular';
-import { async, BehaviorSubject, concat, Observable, of, Subscription } from 'rxjs';
-import { debounceTime, distinctUntilChanged, map, switchMap, take } from 'rxjs/operators';
+import { ModalController } from '@ionic/angular';
+import { Observable } from 'rxjs';
 import { User, UserService } from '../../user.service';
 import { Project, ProjectService } from '../../project.service';
 
@@ -14,11 +13,12 @@ import { Project, ProjectService } from '../../project.service';
 export class EditProjectModalComponent implements OnInit {
 
   form: FormGroup;
+  @Input() projectId: number;
+  project: Project;
+
   users$: Observable<User[]>;
   selectedUser: User;
   isListOpen: boolean = false;
-  @Input() projectId: number;
-  project: Project;
 
   constructor(
     private userService: UserService,
@@ -46,9 +46,11 @@ export class EditProjectModalComponent implements OnInit {
       });
     });
   }
+
   closeModal() {
     this.modalCtrl.dismiss(EditProjectModalComponent);
   }
+
   updateProject() {
     if (!this.form.valid) {
       return;
@@ -67,6 +69,7 @@ export class EditProjectModalComponent implements OnInit {
         this.closeModal();
       });
   }
+
   onChooseUser(user: User) {
     this.isListOpen = false;
     this.selectedUser = user;

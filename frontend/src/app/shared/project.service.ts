@@ -6,6 +6,21 @@ import { AuthService } from 'src/app/auth/auth.service';
 import { environment } from 'src/environments/environment';
 import { UserService } from './user.service';
 
+export interface ProjectData {
+  idprogetto: number;
+  collaudatoreufficio: string;
+  pk_proj: number;
+  nome: string;
+  long_centro_map: string;
+  lat_centro_map: string;
+  datasincro?: Date;
+  nodi_fisici?: string;
+  nodi_ottici?: string;
+  tratte?: string;
+  conn_edif_opta?: string;
+  idutente?: number;
+}
+
 export interface Project {
   idprogetto: number;
   collaudatoreufficio: string;
@@ -14,6 +29,7 @@ export interface Project {
   long_centro_map: string;
   lat_centro_map: string;
   datasincro?: Date;
+  sync?: boolean;
   nodi_fisici?: string;
   nodi_ottici?: string;
   tratte?: string;
@@ -61,12 +77,34 @@ export class ProjectService {
   /** SELECT progetti */
   loadProjects(): Observable<Project[]> {
     return this.http
-      .get<Project[]>(`${environment.apiUrl}/s/progetti/`,
+      .get<ProjectData[]>(`${environment.apiUrl}/s/progetti/`,
         { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
       ).pipe(
-        tap(projects => {
-          this.projSubject.next(projects);
-        })
+        // <-- Rimappa i dati che arrivano dal server sull'interfaccia della Room
+        map(data => {
+          const projects: Project[] = [];
+          for (const key in data) {
+            if (data.hasOwnProperty(key)) {
+              projects.push({
+                idprogetto: data[key].idprogetto,
+                collaudatoreufficio: data[key].collaudatoreufficio,
+                pk_proj: data[key].pk_proj,
+                nome: data[key].nome,
+                long_centro_map: data[key].long_centro_map,
+                lat_centro_map: data[key].lat_centro_map,
+                datasincro: data[key].datasincro,
+                sync: (data[key].conn_edif_opta === 'CollaudoLiveGisfo:view_connessione_edificio_pta' ? true : false),
+                nodi_fisici: data[key].nodi_fisici,
+                nodi_ottici: data[key].nodi_ottici,
+                tratte: data[key].tratte,
+                conn_edif_opta: data[key].conn_edif_opta,
+                idutente: data[key].idprogetto,
+              });
+            }
+          }
+          return projects;
+        }),
+        tap((projects: Project[]) => this.projSubject.next(projects))
       );
   }
 
@@ -75,12 +113,12 @@ export class ProjectService {
     collaudatoreufficio: string,
     pk_proj: number,
     nome: string,
+    long_centro_map: string,
+    lat_centro_map: string,
     nodi_fisici: string,
     nodi_ottici: string,
     tratte: string,
     conn_edif_opta: string,
-    long_centro_map: string,
-    lat_centro_map: string,
   ) {
     let updatedProjetcs: Project[];
     const newProject =
@@ -91,6 +129,8 @@ export class ProjectService {
       nome: nome,
       long_centro_map: long_centro_map,
       lat_centro_map: lat_centro_map,
+      datasincro: new Date(),
+      sync: false,
       nodi_fisici: nodi_fisici,
       nodi_ottici: nodi_ottici,
       tratte: tratte,
@@ -108,12 +148,12 @@ export class ProjectService {
                 "idutente": this.userService.getUserIdByName(collaudatoreufficio),
                 "pk_proj": pk_proj,
                 "nome": nome,
+                "long_centro_map": long_centro_map,
+                "lat_centro_map": lat_centro_map,
                 "nodi_fisici": nodi_fisici,
                 "nodi_ottici": nodi_ottici,
                 "tratte": tratte,
                 "conn_edif_opta": conn_edif_opta,
-                "long_centro_map": long_centro_map,
-                "lat_centro_map": lat_centro_map,
               },
               { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
             );
@@ -153,6 +193,8 @@ export class ProjectService {
             nome: nome,
             long_centro_map: long_centro_map,
             lat_centro_map: lat_centro_map,
+            datasincro: oldProject.datasincro,
+            sync: oldProject.sync,
             nodi_fisici: oldProject.nodi_fisici,
             nodi_ottici: oldProject.nodi_ottici,
             tratte: oldProject.tratte,
