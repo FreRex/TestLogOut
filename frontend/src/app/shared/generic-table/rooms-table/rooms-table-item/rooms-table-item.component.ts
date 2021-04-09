@@ -12,7 +12,7 @@ import { RoomService } from 'src/app/rooms/room.service';
 })
 export class RoomsTableItemComponent extends GenericRoomItemComponent {
 
-  @Input() datas;
+  @Input() columns;
 
   constructor(
     public router: Router,

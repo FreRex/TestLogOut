@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { distinctUntilChanged, startWith, switchMap } from 'rxjs/operators';
+import { User, UserService } from 'src/app/shared/user.service';
 
 @Component({
   selector: 'app-users-tab',
@@ -7,8 +10,23 @@ import { Component, OnInit } from '@angular/core';
 })
 export class UsersTabComponent implements OnInit {
 
-  constructor() { }
+  searchStream$ = new BehaviorSubject('');
+  users$: Observable<User[]>
 
-  ngOnInit() {}
+  constructor(private userService: UserService,) { }
+
+  ngOnInit() {
+    this.users$ = this.searchStream$.pipe(
+      // debounceTime(200), //FIX
+      distinctUntilChanged(),
+      startWith(""),
+      switchMap((query) => {
+        return this.userService.getUsersByFilter(query)
+      })
+    );
+  }
+  doRefresh(event) {
+    this.userService.loadUsers().subscribe(res => { event.target.complete(); });
+  }
 
 }

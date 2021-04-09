@@ -11,17 +11,18 @@ export interface TableData {
 
 @Component({
   selector: 'app-generic-table',
-  template: ``,
+  templateUrl: './generic-table.component.html',
   styleUrls: ['./generic-table.component.scss'],
 })
-export abstract class GenericTableComponent implements OnInit {
+export class GenericTableComponent implements OnInit {
 
   /* TABELLA */
   // bulkEdit = true;
   // edit = {};
 
-  datas: TableData[] = []
-  searchStream$ = new BehaviorSubject('');
+  @Input() columns: TableData[] = []
+  @Input() inputDatas$: Observable<any[]>;
+  datas$: Observable<any[]>;
 
   isCrescent = true;
   selectedData: TableData;
@@ -30,24 +31,19 @@ export abstract class GenericTableComponent implements OnInit {
   totalNumberOfRecords: number;
   totalPages: number = 1;
   recordsPerPage = 10;
-  obs$: Observable<any[]>;
 
   constructor() { }
 
   ngOnInit() {
     this.page = 0;
+    console.log(this.inputDatas$);
     this.loadPage(this.page);
+    console.log(this.columns);
   }
 
   loadPage(page: number) {
     this.page = page;
-    this.obs$ = this.searchStream$.pipe(
-      // debounceTime(200), //FIX
-      distinctUntilChanged(),
-      // startWith(""),
-      switchMap((query) => {
-        return this.filterData(query);
-      }),
+    this.datas$ = this.inputDatas$.pipe(
       tap(res => {
         // console.log(res);
         this.totalNumberOfRecords = res.length;
@@ -71,8 +67,8 @@ export abstract class GenericTableComponent implements OnInit {
     );
   }
 
-  abstract filterData(query): Observable<any[]>;
-  abstract doRefresh(event);
+  // abstract filterData(query): Observable<any[]>;
+  // abstract doRefresh(event);
 
   sortBy(data: TableData, isCrescent: boolean) {
     this.selectedData = data;

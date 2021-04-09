@@ -12,7 +12,7 @@ import { NewRoomModalComponent } from '../../modals/new-room-modal/new-room-moda
 })
 export class RoomsTableComponent extends GenericTableComponent {
 
-  datas: TableData[] = [
+  columns: TableData[] = [
     { title: 'ID', key: 'id', type: 'number', size: 1 },
     { title: 'Data', key: 'data_inserimento', type: 'date', size: 1 },
     { title: 'Collaudatore', key: 'nome_collaudatore', type: 'string', size: 2 },

@@ -14,7 +14,7 @@ import { GenericTableComponent, TableData } from '../generic-table.component';
 })
 export class ProjectsTableComponent extends GenericTableComponent {
 
-  datas: TableData[] = [
+  columns: TableData[] = [
     { title: 'ID', key: 'idprogetto', type: 'number', size: 1 },
     { title: 'Sync', key: 'sync', type: 'boolean', size: 1 },
     { title: 'Data', key: 'datasincro', type: 'date', size: 1 },

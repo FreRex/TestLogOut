@@ -12,7 +12,7 @@ import { GenericTableComponent, TableData } from '../generic-table.component';
 })
 export class UsersTableComponent extends GenericTableComponent {
 
-  datas: TableData[] = [
+  columns: TableData[] = [
     { title: 'ID', key: 'id', type: 'number', size: 1 },
     { title: 'Data', key: 'DataCreazione', type: 'date', size: 1 },
     { title: 'Collaudatore', key: 'collaudatoreufficio', type: 'string', size: 3 },

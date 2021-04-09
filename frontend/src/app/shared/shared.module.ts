@@ -26,6 +26,8 @@ import { OrderByButtonComponent } from './order-by-button/order-by-button.compon
 import { ReactiveFormsModule } from '@angular/forms';
 import { EditRoomModalComponent } from './modals/edit-room-modal/edit-room-modal.component';
 import { NewRoomModalComponent } from './modals/new-room-modal/new-room-modal.component';
+import { GenericTableComponent } from './generic-table/generic-table.component';
+import { GenericListComponent } from './generic-list/generic-list.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +37,9 @@ import { NewRoomModalComponent } from './modals/new-room-modal/new-room-modal.co
     OrderByButtonComponent,
     PaginationComponent,
 
-    RoomsTableComponent,
+    GenericListComponent,
+    GenericTableComponent,
+    // RoomsTableComponent,
     RoomsTableItemComponent,
     ProjectsTableComponent,
     ProjectsTableItemComponent,
@@ -69,7 +73,9 @@ import { NewRoomModalComponent } from './modals/new-room-modal/new-room-modal.co
     OrderByButtonComponent,
     PaginationComponent,
 
-    RoomsTableComponent,
+    GenericTableComponent,
+    GenericListComponent,
+    // RoomsTableComponent,
     RoomsTableItemComponent,
     ProjectsTableComponent,
     ProjectsTableItemComponent,

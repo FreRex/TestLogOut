@@ -1,8 +1,8 @@
-<ion-row class="ion-align-items-center row-data">
-  <ion-col class="data-item" *ngFor="let data of datas" [size]="data.size">
-    <div *ngIf="data.type !== 'buttons'">{{ data.type === 'date' ? (room[data.key] | date:'dd/MM/yy') : room[data.key]
+<ion-row class="ion-align-items-center row-col">
+  <ion-col class="col-item" *ngFor="let col of columns" [size]="col.size">
+    <div *ngIf="col.type !== 'buttons'">{{ col.type === 'date' ? (room[col.key] | date:'dd/MM/yy') : room[col.key]
       }}</div>
-    <div *ngIf="data.type === 'buttons'" class="btns">
+    <div *ngIf="col.type === 'buttons'" class="btns">
       <ion-button size="small" class="ion-no-margin" expand="block" fill="clear" (click)="copyLink()">
         <ion-icon name="copy-outline"></ion-icon>
       </ion-button>
