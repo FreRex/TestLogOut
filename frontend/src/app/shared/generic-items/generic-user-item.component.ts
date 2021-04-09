@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertController, ModalController, ToastController } from '@ionic/angular';
+import { AlertController, IonItemSliding, ModalController, ToastController } from '@ionic/angular';
 import { AuthService } from 'src/app/auth/auth.service';
 import { User, UserService } from 'src/app/shared/user.service';
 import { EditUserModalComponent } from '../modals/edit-user-modal/edit-user-modal.component';
@@ -24,7 +24,10 @@ export class GenericUserItemComponent implements OnInit {
 
     ngOnInit() { }
 
-    editUser() {
+    editUser(slidingItem?: IonItemSliding) {
+        if (slidingItem) {
+            slidingItem.close();
+        }
         this.modalController
             .create({
                 component: EditUserModalComponent,
@@ -36,7 +39,10 @@ export class GenericUserItemComponent implements OnInit {
                 this.presentToast('Utente Aggiornato', 'secondary')
             );
     }
-    deleteUser() {
+    deleteUser(slidingItem?: IonItemSliding) {
+        if (slidingItem) {
+            slidingItem.close();
+        }
         this.alertController.create({
             header: 'Sei sicuro?',
             message: "Vuoi davvero cancellare l'Utente?",

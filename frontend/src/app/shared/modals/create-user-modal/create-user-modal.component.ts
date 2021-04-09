@@ -18,7 +18,6 @@ export class CreateUserModalComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-
     this.form = new FormGroup({
       collaudatoreufficio: new FormControl(null, {
         updateOn: 'blur',
@@ -36,14 +35,7 @@ export class CreateUserModalComponent implements OnInit {
         updateOn: 'blur',
         validators: [Validators.required, Validators.maxLength(1)]
       }),
-
     });
-
-
-  }
-
-  closeModal() {
-    this.modalCtrl.dismiss(CreateUserModalComponent);
   }
 
   createUser() {
@@ -56,16 +48,12 @@ export class CreateUserModalComponent implements OnInit {
         +this.form.value.autorizzazioni)
       .subscribe(
         res => {
-          // console.log("Response",res);
-          // this.presentToast('Room creata!');
           this.form.reset();
           this.modalCtrl.dismiss({ message: 'user create' }, 'save');
         },
-        // (err: HttpErrorResponse) => {
-        //   console.log("Error:", err.error['text']);
-        //   this.createErrorAlert(err.error['text']);
-        // }
       );
-
+  }
+  closeModal() {
+    this.modalCtrl.dismiss(CreateUserModalComponent);
   }
 }
