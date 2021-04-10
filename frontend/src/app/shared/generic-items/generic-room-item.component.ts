@@ -27,10 +27,13 @@ export class GenericRoomItemComponent implements OnInit {
   ngOnInit() { }
 
   /** Apre il modale di MODIFICA ROOM */
-  editRoom(slidingItem?: IonItemSliding) {
-    if (slidingItem) {
-      slidingItem.close();
-    }
+  editRoom(room?: Room, slidingItem?: IonItemSliding) {
+    console.log(room);
+
+
+    if (slidingItem) slidingItem.close();
+    if (room) this.room = room;
+
     this.modalController
       .create({
         component: EditRoomModalComponent,
@@ -47,8 +50,9 @@ export class GenericRoomItemComponent implements OnInit {
       });
   }
 
-  enterRoom(slidingItem?: IonItemSliding) {
-    if (slidingItem) { slidingItem.close(); }
+  enterRoom(room?: Room, slidingItem?: IonItemSliding) {
+    if (slidingItem) slidingItem.close();
+    if (room) this.room = room;
 
     this.linkProgetto =
       'https://www.collaudolive.com:9777/glasses_test/FrontEnd/src/index.php?q='
@@ -57,13 +61,16 @@ export class GenericRoomItemComponent implements OnInit {
     window.open(this.linkProgetto);
   }
 
-  copyLink(slidingItem?: IonItemSliding) {
-    if (slidingItem) { slidingItem.close(); }
+  copyLink(room?: Room, slidingItem?: IonItemSliding) {
+    if (slidingItem) slidingItem.close();
+    if (room) this.room = room;
+
     console.log('link copiato');
   }
 
-  downloadFoto(slidingItem?: IonItemSliding) {
-    if (slidingItem) { slidingItem.close(); }
+  downloadFoto(room?: Room, slidingItem?: IonItemSliding) {
+    if (slidingItem) slidingItem.close();
+    if (room) this.room = room;
 
     const nomeProgetto = this.room.nome_progetto.trim().replace(' ', '');
     this.roomsService.checkDownload(nomeProgetto).subscribe(
@@ -75,8 +82,9 @@ export class GenericRoomItemComponent implements OnInit {
     )
   }
 
-  deleteRoom(slidingItem?: IonItemSliding) {
-    if (slidingItem) { slidingItem.close(); }
+  deleteRoom(room?: Room, slidingItem?: IonItemSliding) {
+    if (slidingItem) slidingItem.close();
+    if (room) this.room = room;
 
     this.alertController.create(
       {

@@ -1,15 +1,19 @@
 <ion-row class="ion-align-items-center head-menu">
   <ion-col class="head-table-menu" *ngFor="let col of columns" [size]="col.size"><b>{{col.title}}</b>
-    <app-order-by-button *ngIf="col.type !== 'buttons'" (event)="sortBy(col, $event)"></app-order-by-button>
+    <app-order-by-button *ngIf="col.orderEnabled" (event)="sortBy(col, $event)"></app-order-by-button>
   </ion-col>
 </ion-row>
-<ion-row>
-  <ion-col *ngIf="(datas$ | async) as datas" class="ion-text-center">
-    <div class="ion-text-center" *ngIf="datas.length <= 0">
-      <ion-spinner></ion-spinner>
-    </div>
-    <app-rooms-table-item *ngFor="let data of datas" [room]="data" [columns]="columns">
-    </app-rooms-table-item>
-  </ion-col>
-</ion-row>
+<div *ngIf="(datas$ | async) as datas">
+  <ion-row class="ion-align-items-center row-col" *ngFor="let data of datas">
+    <ion-col class="col-item" *ngFor="let col of columns" [size]="col.size">
+      <div class="ion-text-center" *ngIf="datas.length <= 0">
+        <ion-spinner></ion-spinner>
+      </div>
+      <div>{{ col.type === 'date' ? (data[col.key] | date:'dd/MM/yy') : data[col.key] }}
+        <ng-container *ngTemplateOutlet="col.cellTemplate ? col.cellTemplate : null; context: {data: data}">
+        </ng-container>
+      </div>
+    </ion-col>
+  </ion-row>
+</div>
 <app-pagination [totalPages]="totalPages" [page]="page" (event)="loadPage($event)"></app-pagination>

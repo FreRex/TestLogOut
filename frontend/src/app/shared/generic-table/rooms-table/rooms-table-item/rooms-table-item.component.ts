@@ -31,4 +31,9 @@ export class RoomsTableItemComponent extends GenericRoomItemComponent {
       toastController
     );
   }
+
+  ngOnInit() {
+    console.log('here');
+
+  }
 }

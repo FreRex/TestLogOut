@@ -12,17 +12,37 @@
 <!-- items -->
 <!-- Desktop -->
 <ion-content class="ion-hide-md-down">
-  <app-generic-table [columns]="[
-  { title: 'ID', key: 'idprogetto', type: 'number', size: 1 },
-  { title: 'Sync', key: 'sync', type: 'boolean', size: 1 },
-  { title: 'Data', key: 'datasincro', type: 'date', size: 1 },
-  { title: 'PK Project', key: 'pk_proj', type: 'string', size: 2 },
-  { title: 'Nome Progetto', key: 'nome', type: 'string', size: 3 },
-  { title: 'Collaudatore', key: 'collaudatoreufficio', type: 'string', size: 2 },
-  { title: 'Azioni', key: 'azioni', type: 'buttons', size: 2 }
-  ]" [inputDatas$]="projects$"></app-generic-table>
+  <app-generic-table [columns]="columns" [inputDatas$]="projects$">
+    <ng-template #buttons let-room='data'>
+      <div class="btns">
+        <ion-button size="small" class="ion-no-margin" expand="block" fill="clear" (click)="createLinkNPerf()">
+          <ion-icon name="globe-outline"></ion-icon>
+        </ion-button>
+        <ion-button size="small" class="ion-no-margin" expand="block" fill="clear" (click)="editProject()">
+          <ion-icon name="create-outline"></ion-icon>
+        </ion-button>
+        <ion-button size="small" class="ion-no-margin" expand="block" fill="clear" (click)="deleteProject()">
+          <ion-icon name="trash-outline"></ion-icon>
+        </ion-button>
+      </div>
+    </ng-template>
+  </app-generic-table>
 </ion-content>
 <!-- Mobile -->
 <ion-content class="ion-hide-md-up">
-  <app-generic-list [inputDatas$]="projects$"></app-generic-list>
+  <app-generic-list [inputDatas$]="projects$" [optionsTemplate]="optionsTemplate">
+    <ng-template #optionsTemplate let-room='data' let-slidingItem='item'>
+      <ion-item-options side="start">
+        <ion-item-option color="primary" (click)="editProject()">
+          <ion-icon name="create-outline" slot="icon-only"></ion-icon>
+        </ion-item-option>
+        <ion-item-option color="danger" (click)="deleteProject()">
+          <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+        </ion-item-option>
+        <ion-item-option color="secondary" (click)="createLinkNPerf()">
+          <ion-icon name="globe-outline" slot="icon-only"></ion-icon>
+        </ion-item-option>
+      </ion-item-options>
+    </ng-template>
+  </app-generic-list>
 </ion-content>

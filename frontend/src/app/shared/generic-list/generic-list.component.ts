@@ -1,7 +1,6 @@
+import { TemplateRef } from '@angular/core';
 import { Component, Input, OnInit } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
 import { Observable } from 'rxjs';
-import { distinctUntilChanged, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-generic-list',
@@ -11,6 +10,7 @@ import { distinctUntilChanged, switchMap } from 'rxjs/operators';
 export class GenericListComponent implements OnInit {
 
   @Input() inputDatas$: Observable<any[]>;
+  @Input() optionsTemplate: TemplateRef<any>;
 
   constructor() { }
 

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, ContentChild, Input, OnInit, TemplateRef } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { distinctUntilChanged, map, switchMap, tap } from 'rxjs/operators';
 
@@ -7,6 +7,8 @@ export interface TableData {
   key: string;
   type: string;
   size: number;
+  orderEnabled?: boolean
+  cellTemplate?: TemplateRef<any>;
 }
 
 @Component({
@@ -19,7 +21,7 @@ export class GenericTableComponent implements OnInit {
   /* TABELLA */
   // bulkEdit = true;
   // edit = {};
-
+  // @Input() itemTemplate: TemplateRef<any>;
   @Input() columns: TableData[] = []
   @Input() inputDatas$: Observable<any[]>;
   datas$: Observable<any[]>;
@@ -36,9 +38,7 @@ export class GenericTableComponent implements OnInit {
 
   ngOnInit() {
     this.page = 0;
-    console.log(this.inputDatas$);
     this.loadPage(this.page);
-    console.log(this.columns);
   }
 
   loadPage(page: number) {

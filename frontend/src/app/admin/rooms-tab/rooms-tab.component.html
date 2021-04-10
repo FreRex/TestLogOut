@@ -12,16 +12,48 @@
 <!-- items -->
 <!-- Desktop -->
 <ion-content class="ion-hide-md-down">
-  <app-generic-table [columns]="[
-  { title: 'ID', key: 'id', type: 'number', size: 1 },
-  { title: 'Data', key: 'data_inserimento', type: 'date', size: 1 },
-  { title: 'Collaudatore', key: 'nome_collaudatore', type: 'string', size: 2 },
-  { title: 'Usermobile', key: 'usermobile', type: 'string', size: 2 },
-  { title: 'Progetto', key: 'nome_progetto', type: 'string', size: 3 },
-  { title: 'Azioni', key: 'azioni', type: 'buttons', size: 3 }
-  ]" [inputDatas$]="rooms$"></app-generic-table>
+  <app-generic-table [columns]="columns" [inputDatas$]="rooms$">
+    <ng-template #buttons let-room='data'>
+      <div class="btns">
+        <ion-button size="small" class="ion-no-margin" expand="block" fill="clear" (click)="copyLink(room)">
+          <ion-icon name="copy-outline"></ion-icon>
+        </ion-button>
+        <ion-button size="small" class="ion-no-margin" expand="block" fill="clear" (click)="editRoom(room)">
+          <ion-icon name="create-outline"></ion-icon>
+        </ion-button>
+        <ion-button size="small" class="ion-no-margin" expand="block" fill="clear" (click)="deleteRoom(room)">
+          <ion-icon name="trash-outline"></ion-icon>
+        </ion-button>
+        <ion-button size="small" class="ion-no-margin" expand="block" fill="clear" (click)="downloadFoto(room)">
+          <ion-icon name="images-outline"></ion-icon>
+        </ion-button>
+        <ion-button size="small" class="ion-no-margin" expand="block" fill="clear" (click)="enterRoom(room)">
+          <ion-icon name="enter-outline"></ion-icon>
+        </ion-button>
+      </div>
+    </ng-template>
+  </app-generic-table>
 </ion-content>
 <!-- Mobile -->
 <ion-content class="ion-hide-md-up">
-  <app-generic-list [inputDatas$]="rooms$"></app-generic-list>
+  <app-generic-list [inputDatas$]="rooms$" [optionsTemplate]="optionsTemplate">
+    <ng-template #optionsTemplate let-room='data' let-slidingItem='item'>
+      <ion-item-options side="start">
+        <ion-item-option color="primary" (click)="editRoom(room, slidingItem)">
+          <ion-icon name="create" slot="icon-only"></ion-icon>
+        </ion-item-option>
+        <ion-item-option color="danger" (click)="deleteRoom(room,slidingItem)">
+          <ion-icon name="trash" slot="icon-only"></ion-icon>
+        </ion-item-option>
+      </ion-item-options>
+      <ion-item-options side="end">
+        <ion-item-option color="primary" (click)="downloadFoto(room,slidingItem)">
+          <ion-icon name="images-outline" slot="icon-only"></ion-icon>
+        </ion-item-option>
+        <ion-item-option color="success" (click)="enterRoom(room,slidingItem)">
+          <ion-icon name="enter-outline" slot="icon-only"></ion-icon>
+        </ion-item-option>
+      </ion-item-options>
+    </ng-template>
+  </app-generic-list>
 </ion-content>
