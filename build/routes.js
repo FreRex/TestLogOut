@@ -33,7 +33,7 @@ router.use(function (req, res, next) {
 //----------------------------------------------------------------------------------------------------
 //--------------------------------------------------
 //Test
-router.post('/test/', controllerTest.test);
+router.get('/test/', controllerTest.test);
 //--------------------------------------------------
 //Downloadzip (download foto compresse)
 router.get('/checkdownloadzip/:folderzip/', controllerDownloadZip.CheckDownloadZip);
@@ -46,8 +46,6 @@ router.get('/vidapp/', controllerVidApp.VidApp);
 //----------- API-db -----------------------------------------------------
 //------------------------------------------------------------------------
 //Indirizzamento ad API-db di lettura (SELECT)
-//router.get('/s/:table/', [mid.checkAuth], controllerSelect.getSelect);
-//router.get('/s/:table/:id?/', [mid.checkAuth], controllerSelect.getSelect);
 router.get('/s/:table/:collaudatoreufficio?/:id?/', [mid.checkAuth], controllerSelect.getSelect);
 //Indirizzamento ad API-db di modifica (UPDATE)
 router.put('/ur/', [mid.checkAuth], controllerUpdate.putUpdateRoom);
