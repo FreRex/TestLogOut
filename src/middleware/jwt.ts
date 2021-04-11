@@ -7,14 +7,12 @@ let option = {
 }
 
 let getPayload = (token: any) => {
-
     let decode = jwt.decode(token, {complete: true});
     return decode.payload;
-
 }
 
-let setToken = (id: any, username: any)=>{
-    let payload = {id: id, username: username};
+let setToken = (idutente: any)=>{
+    let payload = {id: idutente};
     let chiaveprivata = fs.readFileSync('/etc/letsencrypt/live/www.collaudolive.com/privkey.pem');
     let token = jwt.sign(payload, chiaveprivata, option);
     return token;
