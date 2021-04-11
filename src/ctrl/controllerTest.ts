@@ -1,16 +1,10 @@
+import { createSecretKey } from "node:crypto";
+
 exports.test = (req: any, res: any, next: any) => { 
 
-    const execuDb = require('../middleware/execuDb');
 
-    const username = 'admin';
-    const password = 'Bambini';
+    let username = req.params.username;
 
-    let query ='SELECT id FROM utenti WHERE username = '+ username +' AND password = '+ password;  
-
-    res.send("wwwwwwwwww")
-
-    //execuDb.getSelect(query);
-
-
-
-}
+    res.send(username);
+  
+};

@@ -6,7 +6,7 @@ import fs from 'fs';
 const routes = require('./routes');
  
 const app = express();
-const port = 9083;
+const port = 9111;
 
 app.use(express.json());
 
@@ -32,6 +32,18 @@ https.createServer({
   }, app)
     
   .listen(port, () => { 
+
+    console.log(`-------------------- TEST ------------------------------`);
+    console.log(`https://www.collaudolive.com:${port}/test`); 
+
+    console.log(`-------------------- FRONTEND ------------------------------`);
+    console.log(`https://www.collaudolive.com:${port}/auth`); 
+    console.log(`https://www.collaudolive.com:${port}/backoffice`);
+    console.log(`https://www.collaudolive.com:${port}/rooms`); 
+    
+    console.log(`-------------------- FRONTEND ------------------------------`);
+    console.log(`https://www.collaudolive.com:${port}/vidapp`); 
+
     console.log(`-------------------- API SELECT-----------------------------------`);
     console.log(`https://www.collaudolive.com:${port}/s/room`); 
     console.log(`https://www.collaudolive.com:${port}/s/progetti`);       
@@ -42,11 +54,5 @@ https.createServer({
     console.log(`https://www.collaudolive.com:${port}/up/`); 
     console.log(`https://www.collaudolive.com:${port}/uu/`); 
 
-    console.log(`-------------------- FRONTEND ------------------------------`);
-    console.log(`https://www.collaudolive.com:${port}/auth`); 
-    console.log(`https://www.collaudolive.com:${port}/backoffice`);
-    console.log(`https://www.collaudolive.com:${port}/rooms`); 
     
-    console.log(`-------------------- FRONTEND ------------------------------`);
-    console.log(`https://www.collaudolive.com:${port}/vidapp`); 
   })

@@ -1,6 +1,6 @@
-const db = require('../conf/db');
+const db_old = require('../conf/db');
 
-let getSelect = async (sql: any) => {
+let getSelect_old = async (sql: any) => {
 
   await db.query(sql, (err: any, rows: any, fields: any) => {
     if(err){
@@ -14,5 +14,5 @@ let getSelect = async (sql: any) => {
 }
 
 module.exports = {
-  getSelect
+  getSelect_old
 }
