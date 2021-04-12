@@ -22,7 +22,7 @@ export class AppComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.authService.token = sessionStorage.getItem(environment.tokenString);
+    this.authService.token = sessionStorage.getItem('token');
     this.loadingController
       .create({ keyboardClose: true, message: 'Loading...' })
       .then(loadingEl => {
