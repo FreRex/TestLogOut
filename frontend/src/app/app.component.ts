@@ -6,6 +6,7 @@ import { ProjectService } from './shared/project.service';
 import { UserService } from './shared/user.service';
 import { RoomService } from './rooms/room.service';
 import { environment } from 'src/environments/environment';
+import { switchMap } from 'rxjs/operators';
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
@@ -22,21 +23,22 @@ export class AppComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.authService.token = sessionStorage.getItem('token');
+    //this.authService.token = sessionStorage.getItem('token');
+    //this.authService.token = localStorage.getItem('token');
     this.loadingController
       .create({ keyboardClose: true, message: 'Loading...' })
       .then(loadingEl => {
         loadingEl.present();
-        // this.authService.getToken().pipe(
-        // switchMap(token =>
-        console.log(this.authService.token);
+        this.authService.fetchToken().pipe(
+        switchMap(token =>
+        //console.log(this.authService.token);
         forkJoin({
           requestUsers: this.userService.loadUsers(),
           requestProjects: this.projectService.loadProjects(),
           requestRooms: this.roomService.loadRooms(),
         }
-          // )
-          // )
+         )
+         )
         ).subscribe(({ requestUsers, requestProjects, requestRooms }) => {
           // console.log(requestUsers);
           // console.log(requestProjects);
