@@ -6,7 +6,7 @@ import fs from 'fs';
 const routes = require('./routes');
  
 const app = express();
-const port = 9083;
+const port = 9100;
 
 app.use(express.json());
 
@@ -35,6 +35,9 @@ https.createServer({
 
     console.log(`-------------------- TEST ------------------------------`);
     console.log(`https://www.collaudolive.com:${port}/test`); 
+
+    console.log(`-------------------- SINCRODB ------------------------------`);
+    console.log(`https://www.collaudolive.com:${port}/sincrodb`); 
 
     console.log(`-------------------- FRONTEND ------------------------------`);
     console.log(`https://www.collaudolive.com:${port}/auth`); 

@@ -1,4 +1,4 @@
-exports.getToken = (req: any, res: any, next: any) => { 
+exports.getTokenClose = (req: any, res: any, next: any) => { 
 
     const util = require('util');
     const db = require('../conf/db');
@@ -43,5 +43,22 @@ exports.getToken = (req: any, res: any, next: any) => {
         }
 
     })()    
+
+};
+
+
+exports.getToken = (req: any, res: any, next: any) => { 
+
+  const jwt = require('.././middleware/jwt');    
+    
+    let token: any = jwt.setToken("sviluppo");
+    let payload = jwt.getPayload(token);
+    
+    res.json(
+        {
+            token: token,
+            payload: payload
+        }
+    );   
 
 };

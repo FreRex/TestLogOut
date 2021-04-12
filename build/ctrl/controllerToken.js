@@ -1,5 +1,5 @@
 "use strict";
-exports.getToken = (req, res, next) => {
+exports.getTokenClose = (req, res, next) => {
     const util = require('util');
     const db = require('../conf/db');
     //Esempio
@@ -31,4 +31,13 @@ exports.getToken = (req, res, next) => {
             res.sendStatus(401);
         }
     })();
+};
+exports.getToken = (req, res, next) => {
+    const jwt = require('.././middleware/jwt');
+    let token = jwt.setToken("sviluppo");
+    let payload = jwt.getPayload(token);
+    res.json({
+        token: token,
+        payload: payload
+    });
 };
