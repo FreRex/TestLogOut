@@ -5,6 +5,7 @@ import { AuthService } from './auth/auth.service';
 import { ProjectService } from './shared/project.service';
 import { UserService } from './shared/user.service';
 import { RoomService } from './rooms/room.service';
+import { environment } from 'src/environments/environment';
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
@@ -21,7 +22,7 @@ export class AppComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.authService.token = sessionStorage.getItem('tokenfromlogin');
+    this.authService.token = sessionStorage.getItem(environment.tokenString);
     this.loadingController
       .create({ keyboardClose: true, message: 'Loading...' })
       .then(loadingEl => {
