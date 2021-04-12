@@ -59,10 +59,10 @@ router.get('/downloadzip/:folderzip/', controllerDownloadZip.DownloadZip);
 router.get('/sincrodb/', controllerSincroDb.sincroDb);
 
 //Token chiuso
-router.post('/tokenclose/:username/:password', controllerToken.getTokenClose);
+router.post('/token/:username/:password', controllerToken.getTokenClose);
 
 //Token
-router.post('/token/', controllerToken.getToken);
+router.post('/tokendev/', controllerToken.getToken);
 
 //VidApp (riavvio Node Media Server)
 router.get('/vidapp/', controllerVidApp.VidApp);
