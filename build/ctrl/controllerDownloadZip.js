@@ -1,10 +1,9 @@
 "use strict";
 exports.CheckDownloadZip = (req, res, next) => {
     const fs = require('fs');
-    const nameFolder = '../datasave/';
     //-- Determinazione cartella da verificare
     let nameRooms = req.params.folderzip;
-    let path = nameFolder + nameRooms;
+    const path = '/var/www/html/glasses_test/FrontEnd/datasave/' + nameRooms;
     //-- Controllo se cartella: (non-esiste o vuota) => true; se esiste e non è vuota => false
     function isFull(path) {
         try {
@@ -21,13 +20,15 @@ exports.DownloadZip = (req, res, next) => {
     const zip = new AdmZip();
     const fs = require('fs');
     //----------- determinazione path
-    const nameFolder = '../datasave/';
+    const nameFolder = '/var/www/html/glasses_test/FrontEnd/datasave/';
     let nameRooms = req.params.folderzip;
+    console.log(nameRooms);
+    console.log('------------------------');
     //-- Creazione cartella compressa
     fs.readdirSync(nameFolder + nameRooms).forEach((file) => {
         zip.addLocalFile(nameFolder + nameRooms + '/' + file);
     });
-    // --- Esecuzuone download
+    // --- Esecuzione download
     const downloadName = `${nameRooms}.zip`;
     const data = zip.toBuffer();
     res.set('Content-Type', 'application/octet-stream');

@@ -1,9 +1,6 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.test = (req, res, next) => {
-    const execuDb = require('../middleware/execuDb');
-    const username = 'admin';
-    const password = 'Bambini';
-    let query = 'SELECT id FROM utenti WHERE username = ' + username + ' AND password = ' + password;
-    res.send("wwwwwwwwww");
-    //execuDb.getSelect(query);
+    let username = req.params.username;
+    res.send(username);
 };

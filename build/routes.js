@@ -15,6 +15,7 @@ const controllerCreate = require('./ctrl/controllerCreate');
 const mid = require('./middleware/mid');
 const router = express_1.default.Router();
 const cors = require('cors');
+//__________________________________________________________________________________
 router.use(cors());
 router.use(function (req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -33,13 +34,13 @@ router.use(function (req, res, next) {
 //----------------------------------------------------------------------------------------------------
 //--------------------------------------------------
 //Test
-router.get('/test/', controllerTest.test);
+router.post('/test/:username', controllerTest.test);
 //--------------------------------------------------
 //Downloadzip (download foto compresse)
 router.get('/checkdownloadzip/:folderzip/', controllerDownloadZip.CheckDownloadZip);
 router.get('/downloadzip/:folderzip/', controllerDownloadZip.DownloadZip);
 //Token
-router.post('/token/', controllerToken.getToken);
+router.post('/token/:username/:password', controllerToken.getToken);
 //VidApp (riavvio Node Media Server)
 router.get('/vidapp/', controllerVidApp.VidApp);
 //------------------------------------------------------------------------

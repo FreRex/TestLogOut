@@ -27,6 +27,14 @@ https_1.default.createServer({
     cert: fs_1.default.readFileSync('/etc/letsencrypt/live/www.collaudolive.com/cert.pem')
 }, app)
     .listen(port, () => {
+    console.log(`-------------------- TEST ------------------------------`);
+    console.log(`https://www.collaudolive.com:${port}/test`);
+    console.log(`-------------------- FRONTEND ------------------------------`);
+    console.log(`https://www.collaudolive.com:${port}/auth`);
+    console.log(`https://www.collaudolive.com:${port}/backoffice`);
+    console.log(`https://www.collaudolive.com:${port}/rooms`);
+    console.log(`-------------------- FRONTEND ------------------------------`);
+    console.log(`https://www.collaudolive.com:${port}/vidapp`);
     console.log(`-------------------- API SELECT-----------------------------------`);
     console.log(`https://www.collaudolive.com:${port}/s/room`);
     console.log(`https://www.collaudolive.com:${port}/s/progetti`);
@@ -35,10 +43,4 @@ https_1.default.createServer({
     console.log(`https://www.collaudolive.com:${port}/ur/`);
     console.log(`https://www.collaudolive.com:${port}/up/`);
     console.log(`https://www.collaudolive.com:${port}/uu/`);
-    console.log(`-------------------- FRONTEND ------------------------------`);
-    console.log(`https://www.collaudolive.com:${port}/auth`);
-    console.log(`https://www.collaudolive.com:${port}/backoffice`);
-    console.log(`https://www.collaudolive.com:${port}/rooms`);
-    console.log(`-------------------- FRONTEND ------------------------------`);
-    console.log(`https://www.collaudolive.com:${port}/vidapp`);
 });

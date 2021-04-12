@@ -1,6 +1,6 @@
 "use strict";
-const db = require('../conf/db');
-let getSelect = async (sql) => {
+const db_old = require('../conf/db');
+let getSelect_old = async (sql) => {
     await db.query(sql, (err, rows, fields) => {
         if (err) {
             console.log('Query error: ' + err.sqlMessage);
@@ -12,5 +12,5 @@ let getSelect = async (sql) => {
     });
 };
 module.exports = {
-    getSelect
+    getSelect_old
 };
