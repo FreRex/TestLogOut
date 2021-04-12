@@ -3,6 +3,7 @@ import express from 'express';
 const controllerTest = require('./ctrl/controllerTest');
 
 const controllerDownloadZip = require('./ctrl/controllerDownloadZip');
+const controllerSincroDb = require('./ctrl/controllerSincroDb');
 const controllerToken = require('./ctrl/controllerToken');
 const controllerVidApp = require('./ctrl/controllerVidApp');
 
@@ -42,10 +43,10 @@ router.use(function(req, res, next) {
 //----------------------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------------
 
-//--------------------------------------------------
+//---------------------------------------------------------------------
 //Test
 router.post('/test/:username', controllerTest.test);
-//--------------------------------------------------
+//--------------------------------------------------------------------
 
 
 
@@ -53,6 +54,9 @@ router.post('/test/:username', controllerTest.test);
 //Downloadzip (download foto compresse)
 router.get('/checkdownloadzip/:folderzip/', controllerDownloadZip.CheckDownloadZip);
 router.get('/downloadzip/:folderzip/', controllerDownloadZip.DownloadZip);
+
+//SincroDb
+router.get('/sincrodb/', controllerSincroDb.sincroDb);
 
 //Token
 router.post('/token/:username/:password', controllerToken.getToken);
