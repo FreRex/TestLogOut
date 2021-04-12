@@ -10,7 +10,7 @@ exports.checkAuth = (req: any, res: any, next: any)=>{
         {
             let token = req.headers['authorization'];        
             token = token.slice(7,token.length);
-            jwtRecall.checkToken(token);            ;
+            jwtRecall.checkToken(token);     
             next();
         }        
     } catch (err) {
