@@ -10,18 +10,8 @@ const routes: Routes = [
     component: RoomsPage
   },
   {
-    path: 'new',
-    loadChildren: () => import('./new-room-page/new-room.module').then(m => m.NewRoomPageModule),
-    canLoad: [AuthGuard]
-  },
-  {
     path: ':roomId',
     loadChildren: () => import('./room-detail/room-detail.module').then(m => m.RoomDetailPageModule),
-    canLoad: [AuthGuard]
-  },
-  {
-    path: 'edit/:roomId',
-    loadChildren: () => import('./edit-room-page/edit-room.module').then(m => m.EditRoomPageModule),
     canLoad: [AuthGuard]
   },
 ];
