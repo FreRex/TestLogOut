@@ -80,7 +80,6 @@ export class GenericRoomItemComponent implements OnInit {
       (value: boolean) => {
         if (value) window.open(`https://www.collaudolive.com:9083/downloadzip/${nomeProgetto}`)
         else this.presentToast(`Non ci sono foto sul progetto ${nomeProgetto}!`, 'danger')
-
       }
     )
   }

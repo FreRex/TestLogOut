@@ -12,12 +12,18 @@
       </ion-icon>
     </div>
     <div class="btns" *ngIf="data.type === 'buttons'">
+
+      <span data-tooltip="Modifica" data-tooltip-position="top">
       <ion-button size="small" class="ion-no-margin" expand="block" fill="clear" (click)="editUser()">
         <ion-icon name="create-outline"></ion-icon>
       </ion-button>
+    </span>
+    
+    <span data-tooltip="Elimina" data-tooltip-position="top">
       <ion-button size="small" class="ion-no-margin" expand="block" fill="clear" (click)="deleteUser()">
         <ion-icon name="trash-outline" button="true" tappable></ion-icon>
       </ion-button>
+</span>
     </div>
   </ion-col>
 </ion-row>
