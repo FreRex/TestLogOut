@@ -15,8 +15,8 @@ exports.sincroDb = (req, res, next) => {
     let datamodGisfo;
     let idpk;
     let idDataModifica = new Array();
-    const mymodule = require('../conf/connInfo');
-    //const mymodule = require('../conf/db');
+    //const mymodule = require('./connInfo');
+    const mymodule = require('../conf/db');
     const pool_collaudolive = mymodule.conn_info_collaudolive_ssl_cry;
     const pool_gisfo = mymodule.conn_info_gisfo_ssl_cry;
     // Funzioni Connessioni
@@ -83,7 +83,7 @@ exports.sincroDb = (req, res, next) => {
                 let elemento = records[idrow][idcol];
                 //console.log(elemento);
                 //ELABORAZIONE ELEMENTO
-                // - Verifica elemento vuoto
+                //Verifica elemento vuoto
                 if (typeof (elemento) != 'boolean' && elemento == '') {
                     elemento = 0;
                 }
@@ -94,23 +94,23 @@ exports.sincroDb = (req, res, next) => {
                     valorecampiGisfo = elemento;
                 }
                 else {
-                    // - Elemento NON null e NON numero
+                    // Elemento NON null e NON numero
                     if (elemento !== null && isNaN(elemento)) {
                         //if(elemento!==null && (typeof elemento != 'number')){
                         elemento = elemento.replace(/'/g, "''");
-                        // - Elemento DataModifica eseguire formattazione    
+                        // Elemento DataModifica eseguire formattazione    
                         //if(idcol==idDataModifica){  
                         if (idDataModifica.indexOf(idcol) != -1) {
                             let formatted_date = formattaData(elemento);
                             elemento = formatted_date;
                             datamodGisfo = elemento;
                         }
-                        // - Elemento NON numeric inserirlo tra gli apici "'"                    
+                        // Elemento NON numeric inserirlo tra gli apici "'"                    
                         elemento = "'" + elemento + "'";
                         //console.log("A");                 
                     }
                     else {
-                        // - Elemento DataModifica eseguire formattazione    
+                        // Elemento DataModifica eseguire formattazione    
                         //if(idcol==idDataModifica){  
                         if ((idDataModifica.indexOf(idcol) != -1) && elemento != null) {
                             //Formattazione datamodifica
@@ -387,17 +387,14 @@ exports.sincroDb = (req, res, next) => {
             idDataModifica = [];
         }
     }
-    //Pee test
-    drawing = 1580779760;
-    //-----------------
     main(drawing).then(() => {
         //res.status(status).send('2');
-        res.json(true);
+        //res.send('1'); 
         console.error('OPERAZIONE COMPLETATA.');
         process.exit(0);
     })
         .catch((err) => {
-        res.json(false);
+        //res.send('0');
         //res.status(status).send('Error: %s', err);
         //res.send('Error: %s', err); 
         console.error('Error: %s', err);
