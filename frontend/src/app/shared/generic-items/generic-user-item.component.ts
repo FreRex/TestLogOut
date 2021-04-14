@@ -35,10 +35,11 @@ export class GenericUserItemComponent implements OnInit {
             }).then((modalEl) => {
                 modalEl.present();
                 return modalEl.onDidDismiss();
-            }).then(res =>
+            });/* .then(res =>
                 this.presentToast('Utente Aggiornato', 'secondary')
-            );
+            ); */
     }
+    
     deleteUser(slidingItem?: IonItemSliding) {
         if (slidingItem) {
             slidingItem.close();

@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ModalController } from '@ionic/angular';
+import { ModalController, ToastController } from '@ionic/angular';
 import { User, UserService } from '../../user.service';
 
 @Component({
@@ -17,6 +17,7 @@ export class EditUserModalComponent implements OnInit {
   constructor(
     private modalCtrl: ModalController,
     private userService: UserService,
+    private toastController: ToastController
   ) { }
 
   ngOnInit() {
@@ -56,5 +57,18 @@ export class EditUserModalComponent implements OnInit {
       this.form.reset();
       this.closeModal();
     });
+    this.presentToast('Utente Aggiornato', 'secondary')
   }
+
+  async presentToast(message: string, color: string) {
+    const toast = await this.toastController.create({
+        message: message,
+        color: color,
+        duration: 2000,
+        buttons: [{ icon: 'close', role: 'cancel' }]
+    })
+    // FIX: si può fare in entrambi i modi, qual'è il più giusto?
+    // .then(toastEl => toastEl.present());
+    toast.present();
+}
 }

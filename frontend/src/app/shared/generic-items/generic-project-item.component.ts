@@ -41,9 +41,9 @@ export class GenericProjectItemComponent implements OnInit {
             }).then((modalEl) => {
                 modalEl.present();
                 return modalEl.onDidDismiss();
-            }).then(res => {
+            });/* .then(res => {
                 this.presentToast('Progetto Aggiornato', 'secondary');
-            });
+            }); */
     }
 
     deleteProject(slidingItem?: IonItemSliding) {

@@ -46,10 +46,10 @@ export class GenericRoomItemComponent implements OnInit {
       .then(modalEl => {
         modalEl.present();
         return modalEl.onDidDismiss();
-      })
-      .then(res => {
-        this.presentToast('Room Aggiornata', 'secondary');
       });
+/*       .then(res => {
+        this.presentToast('Room Aggiornata', 'secondary');
+      }); */
   }
 
   enterRoom(slidingItem?: IonItemSliding) {

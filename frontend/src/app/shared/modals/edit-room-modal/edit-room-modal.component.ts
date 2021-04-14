@@ -18,7 +18,8 @@ export class EditRoomModalComponent implements OnInit {
   constructor(
     private roomsService: RoomService,
     private alertController: AlertController,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private toastController: ToastController
   ) { }
 
   ngOnInit() {
@@ -49,6 +50,19 @@ export class EditRoomModalComponent implements OnInit {
           this.form.reset();
           this.closeModal();
         });
+        this.presentToast('Room Aggiornata', 'secondary');
+  }
+
+  async presentToast(message: string, color: string) {
+    const toast = await this.toastController.create({
+      message: message,
+      color: color,
+      duration: 2000,
+      buttons: [{ icon: 'close', role: 'cancel' }]
+    })
+    // FIX: si può fare in entrambi i modi, qual'è il più giusto?
+    // .then(toastEl => toastEl.present());
+    toast.present();
   }
 
 }

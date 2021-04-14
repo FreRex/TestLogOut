@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ModalController } from '@ionic/angular';
+import { ModalController, ToastController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { User, UserService } from '../../user.service';
 import { Project, ProjectService } from '../../project.service';
@@ -24,6 +24,7 @@ export class EditProjectModalComponent implements OnInit {
     private userService: UserService,
     private modalController: ModalController,
     private projectService: ProjectService,
+    public toastController: ToastController
   ) { }
 
   ngOnInit() {
@@ -60,13 +61,25 @@ export class EditProjectModalComponent implements OnInit {
         this.form.value.collaudatoreufficio,
         this.project.pk_proj,
         this.form.value.nome,
-        coords[1],
-        coords[0],
+        coords[1].slice(0,14),
+        coords[0].slice(0,14),
       ).subscribe(res => {
         this.form.reset();
         this.closeModal();
       });
+      this.presentToast('Progetto Aggiornato', 'secondary');
   }
+
+  async presentToast(message: string, color: string) {
+    const toast = await this.toastController.create({
+        message: message,
+        color: color,
+        duration: 2000,
+        buttons: [{ icon: 'close', role: 'cancel' }]
+    })
+    // .then(toastEl => toastEl.present());
+    toast.present();
+}
 
   onChooseUser(user: User) {
     this.isListOpen = false;

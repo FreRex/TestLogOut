@@ -73,14 +73,14 @@ export class UploadShpModalComponent implements OnInit {
     this.projectService
       .addProject(
         this.form.value.collaudatoreufficio,
-        +this.form.value.pk_proj,
+        this.form.value.pk_proj,
         this.form.value.nome,
         this.form.value.nodi_fisici,
         this.form.value.nodi_ottici,
         this.form.value.tratte,
         this.form.value.conn_edif_opta,
-        coords[1],
-        coords[0],
+        coords[1].slice(0,14),
+        coords[0].slice(0,14),
       ).subscribe(
         res => {
           this.form.reset();
