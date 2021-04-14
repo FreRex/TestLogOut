@@ -35,7 +35,7 @@ export class EditRoomModalComponent implements OnInit {
   }
 
   closeModal() {
-    this.modalController.dismiss(null, 'cancel');
+    this.modalController.dismiss(EditRoomModalComponent);
   }
 
   updateRoom() {
