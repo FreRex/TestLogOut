@@ -29,7 +29,7 @@ export interface Project {
   long_centro_map: string;
   lat_centro_map: string;
   datasincro?: Date;
-  sync?: boolean;
+  sync?: string;
   nodi_fisici?: string;
   nodi_ottici?: string;
   tratte?: string;
@@ -93,7 +93,7 @@ export class ProjectService {
                 long_centro_map: data[key].long_centro_map,
                 lat_centro_map: data[key].lat_centro_map,
                 datasincro: data[key].datasincro,
-                sync: (data[key].conn_edif_opta === 'CollaudoLiveGisfo:view_connessione_edificio_pta' ? true : false),
+                sync: (data[key].conn_edif_opta === 'CollaudoLiveGisfo:view_connessione_edificio_pta' ? 'auto' : 'manual'),
                 nodi_fisici: data[key].nodi_fisici,
                 nodi_ottici: data[key].nodi_ottici,
                 tratte: data[key].tratte,
@@ -130,7 +130,7 @@ export class ProjectService {
       long_centro_map: long_centro_map,
       lat_centro_map: lat_centro_map,
       datasincro: new Date(),
-      sync: false,
+      sync: 'manual',
       nodi_fisici: nodi_fisici,
       nodi_ottici: nodi_ottici,
       tratte: tratte,

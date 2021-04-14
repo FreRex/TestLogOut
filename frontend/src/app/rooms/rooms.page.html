@@ -1,16 +1,52 @@
 <ion-header>
     <ion-toolbar color="primary">
-        <ion-buttons *userIsAdmin slot="start">
+        <ion-buttons slot="start">
             <ion-menu-button></ion-menu-button>
         </ion-buttons>
         <ion-title>Lista Room</ion-title>
     </ion-toolbar>
 </ion-header>
+<!-- refresh -->
+<ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+</ion-refresher>
+<!-- searchbar + add -->
+<div class="searchbarAdd">
+    <ion-searchbar class="search-bar" (ionInput)="searchStream$.next($event.target.value)"></ion-searchbar>
+    <ion-button color="secondary" (click)="createRoom()">
+        <ion-icon name="add" slot="icon-only"></ion-icon>
+    </ion-button>
+</div>
+<!-- items -->
 <!-- Desktop -->
 <ion-content class="ion-hide-md-down">
-    <app-rooms-table></app-rooms-table>
+    <app-generic-table [columns]="columns" [inputDatas$]="rooms$">
+        <ng-template #desktopButtons let-room='data'>
+            <div class="btns">
+                <ion-button size="small" class="ion-no-margin" expand="block" fill="clear" (click)="copyLink(room)">
+                    <ion-icon name="copy-outline"></ion-icon>
+                </ion-button>
+                <ion-button size="small" class="ion-no-margin" expand="block" fill="clear" (click)="editRoom(room)">
+                    <ion-icon name="create-outline"></ion-icon>
+                </ion-button>
+                <ion-button size="small" class="ion-no-margin" expand="block" fill="clear" (click)="deleteRoom(room)">
+                    <ion-icon name="trash-outline"></ion-icon>
+                </ion-button>
+                <ion-button size="small" class="ion-no-margin" expand="block" fill="clear" (click)="downloadFoto(room)">
+                    <ion-icon name="images-outline"></ion-icon>
+                </ion-button>
+                <ion-button size="small" class="ion-no-margin" expand="block" fill="clear" (click)="enterRoom(room)">
+                    <ion-icon name="enter-outline"></ion-icon>
+                </ion-button>
+            </div>
+        </ng-template>
+    </app-generic-table>
 </ion-content>
 <!-- Mobile -->
 <ion-content class="ion-hide-md-up">
-    <app-rooms-list></app-rooms-list>
+    <app-generic-list [inputDatas$]="rooms$" [mobileItem]="mobileItem">
+        <ng-template #mobileItem let-data='data'>
+            <app-rooms-list-item [room]="data"></app-rooms-list-item>
+        </ng-template>
+    </app-generic-list>
 </ion-content>

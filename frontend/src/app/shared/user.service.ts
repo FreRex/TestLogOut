@@ -5,14 +5,24 @@ import { catchError, map, switchMap, take, tap } from 'rxjs/operators';
 import { AuthService } from 'src/app/auth/auth.service';
 import { environment } from 'src/environments/environment';
 
-export interface User {
+
+export interface UserData {
   collaudatoreufficio: string;
   username: string;
   password: string;
   autorizzazioni: number;
-  DataCreazione? : Date;
+  commessa?: string;
+  DataCreazione?: Date;
   id?: number;
-  checkGis?: number;
+}
+export interface User {
+  collaudatoreufficio: string;
+  username: string;
+  password: string;
+  autorizzazioni: string;
+  commessa?: string;
+  DataCreazione?: Date;
+  id?: number;
 }
 
 @Injectable({
@@ -67,6 +77,24 @@ export class UserService {
       .get<User[]>('https://www.collaudolive.com:9083/s/utenti/',
         { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
       ).pipe(
+        // <-- Rimappa i dati che arrivano dal server sull'interfaccia della Room
+        map(data => {
+          const users: User[] = [];
+          for (const key in data) {
+            if (data.hasOwnProperty(key)) {
+              users.push({
+                id: data[key].id,
+                collaudatoreufficio: data[key].collaudatoreufficio,
+                username: data[key].username,
+                password: data[key].password,
+                autorizzazioni: data[key].autorizzazioni.toString() === '1' ? 'admin' : 'user',
+                commessa: 'commessa',
+                DataCreazione: data[key].DataCreazione,
+              });
+            }
+          }
+          return users;
+        }),
         tap((users: User[]) => {
           this.usersSubject.next(users);
         })
@@ -78,7 +106,7 @@ export class UserService {
     collaudatoreufficio: string,
     username: string,
     password: string,
-    autorizzazioni: number,
+    autorizzazioni: string,
   ) {
     let updatedUsers: User[];
     const newUser =
@@ -87,8 +115,8 @@ export class UserService {
       collaudatoreufficio: collaudatoreufficio,
       username: username,
       password: password,
+      commessa: 'commessa',
       autorizzazioni: autorizzazioni,
-      checkGis: null //TODO: cosa passare?
     }
     return this.users$
       .pipe(
@@ -102,7 +130,7 @@ export class UserService {
                 "collaudatoreufficio": collaudatoreufficio,
                 "username": username,
                 "password": password,
-                "autorizzazioni": autorizzazioni,
+                "autorizzazioni": autorizzazioni === 'user' ? 1 : 2,
               },
               { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
             );
@@ -139,7 +167,6 @@ export class UserService {
             username: username,
             password: password,
             autorizzazioni: oldUser.autorizzazioni,
-            checkGis: oldUser.checkGis
           };
           return this.http
             .put(

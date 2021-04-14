@@ -2,13 +2,13 @@ import { Component, ContentChild, Input, OnInit, TemplateRef } from '@angular/co
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { distinctUntilChanged, map, switchMap, tap } from 'rxjs/operators';
 
-export interface TableData {
+export interface TableColumns {
   title: string;
   key: string;
   type: string;
   size: number;
   orderEnabled?: boolean
-  cellTemplate?: TemplateRef<any>;
+  customTemplate?: TemplateRef<any>;
 }
 
 @Component({
@@ -22,12 +22,12 @@ export class GenericTableComponent implements OnInit {
   // bulkEdit = true;
   // edit = {};
   // @Input() itemTemplate: TemplateRef<any>;
-  @Input() columns: TableData[] = []
+  @Input() columns: TableColumns[] = [];
   @Input() inputDatas$: Observable<any[]>;
   datas$: Observable<any[]>;
 
   isCrescent = true;
-  selectedData: TableData;
+  selectedData: TableColumns;
 
   page = 0;
   totalNumberOfRecords: number;
@@ -38,11 +38,10 @@ export class GenericTableComponent implements OnInit {
 
   ngOnInit() {
     this.page = 0;
-    this.loadPage(this.page);
+    this.loadPage();
   }
 
-  loadPage(page: number) {
-    this.page = page;
+  loadPage() {
     this.datas$ = this.inputDatas$.pipe(
       tap(res => {
         // console.log(res);
@@ -70,10 +69,27 @@ export class GenericTableComponent implements OnInit {
   // abstract filterData(query): Observable<any[]>;
   // abstract doRefresh(event);
 
-  sortBy(data: TableData, isCrescent: boolean) {
+  sortBy(data: TableColumns, isCrescent: boolean) {
     this.selectedData = data;
     this.isCrescent = isCrescent;
     this.page = 0;
-    this.loadPage(this.page);
+    this.loadPage();
+  }
+
+  nextPage() {
+    this.page = this.page++ >= this.totalPages - 1 ? this.totalPages - 1 : this.page;
+    this.loadPage();
+  }
+  prevPage() {
+    this.page = this.page-- <= 0 ? 0 : this.page;
+    this.loadPage();
+  }
+  goFirst() {
+    this.page = 0;
+    this.loadPage();
+  }
+  goLast() {
+    this.page = this.totalPages - 1;
+    this.loadPage();
   }
 }

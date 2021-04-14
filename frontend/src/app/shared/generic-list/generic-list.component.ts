@@ -2,6 +2,15 @@ import { TemplateRef } from '@angular/core';
 import { Component, Input, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 
+export interface ListFields {
+  title: string;
+  key: string;
+  type: string;
+  size?: number;
+  orderEnabled?: boolean
+  customTemplate?: TemplateRef<any>;
+}
+
 @Component({
   selector: 'app-generic-list',
   templateUrl: './generic-list.component.html',
@@ -10,7 +19,8 @@ import { Observable } from 'rxjs';
 export class GenericListComponent implements OnInit {
 
   @Input() inputDatas$: Observable<any[]>;
-  @Input() optionsTemplate: TemplateRef<any>;
+  @Input() fields: ListFields[] = [];
+  @Input() mobileItem: TemplateRef<any>;
 
   constructor() { }
 

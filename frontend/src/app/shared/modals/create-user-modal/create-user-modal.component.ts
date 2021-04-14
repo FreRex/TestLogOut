@@ -45,7 +45,7 @@ export class CreateUserModalComponent implements OnInit {
         this.form.value.collaudatoreufficio,
         this.form.value.username,
         this.form.value.password,
-        +this.form.value.autorizzazioni)
+        this.form.value.autorizzazioni)
       .subscribe(
         res => {
           this.form.reset();

@@ -5,24 +5,36 @@
 <!-- searchbar + add -->
 <div class="searchbarAdd">
   <ion-searchbar class="search-bar" (ionInput)="searchStream$.next($event.target.value)"></ion-searchbar>
-  <ion-button color="secondary">
+  <ion-button color="secondary" (click)="createUser()">
     <ion-icon name="add" slot="icon-only"></ion-icon>
   </ion-button>
 </div>
 <!-- items -->
 <!-- Desktop -->
 <ion-content class="ion-hide-md-down">
-  <app-generic-table [columns]="[
-  { title: 'ID', key: 'id', type: 'number', size: 1 },
-  { title: 'Data', key: 'DataCreazione', type: 'date', size: 1 },
-  { title: 'Collaudatore', key: 'collaudatoreufficio', type: 'string', size: 3 },
-  { title: 'User', key: 'username', type: 'string', size: 2 },
-  { title: 'Password', key: 'password', type: 'string', size: 2 },
-  { title: 'Ruolo', key: 'autorizzazioni', type: 'icon', size: 1 },
-  { title: 'Azioni', key: 'azioni', type: 'buttons', size: 2 }
-  ]" [inputDatas$]="users$"></app-generic-table>
+  <app-generic-table [columns]="columns" [inputDatas$]="users$">
+    <ng-template #desktopButtons let-user='data'>
+      <div class="btns">
+        <ion-button size="small" class="ion-no-margin" expand="block" fill="clear" (click)="editUser(user)">
+          <ion-icon name="create-outline"></ion-icon>
+        </ion-button>
+        <ion-button size="small" class="ion-no-margin" expand="block" fill="clear" (click)="deleteUser(user)">
+          <ion-icon name="trash-outline"></ion-icon>
+        </ion-button>
+      </div>
+    </ng-template>
+    <ng-template #role let-data='data'>
+      <ion-icon class="data-icon" name="person-circle-outline"
+        [color]="data.autorizzazioni === 'admin' ? 'danger' : 'secondary'">
+      </ion-icon>
+    </ng-template>
+  </app-generic-table>
 </ion-content>
 <!-- Mobile -->
 <ion-content class="ion-hide-md-up">
-  <app-generic-list [inputDatas$]="users$"></app-generic-list>
+  <app-generic-list [inputDatas$]="users$" [mobileItem]="mobileItem">
+    <ng-template #mobileItem let-data='data'>
+      <app-users-list-item [user]="data"></app-users-list-item>
+    </ng-template>
+  </app-generic-list>
 </ion-content>

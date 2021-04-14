@@ -5,7 +5,7 @@
 <!-- searchbar + add -->
 <div class="searchbarAdd">
   <ion-searchbar class="search-bar" (ionInput)="searchStream$.next($event.target.value)"></ion-searchbar>
-  <ion-button color="secondary">
+  <ion-button color="secondary" (click)="createRoom()">
     <ion-icon name="add" slot="icon-only"></ion-icon>
   </ion-button>
 </div>
@@ -13,7 +13,7 @@
 <!-- Desktop -->
 <ion-content class="ion-hide-md-down">
   <app-generic-table [columns]="columns" [inputDatas$]="rooms$">
-    <ng-template #buttons let-room='data'>
+    <ng-template #desktopButtons let-room='data'>
       <div class="btns">
         <ion-button size="small" class="ion-no-margin" expand="block" fill="clear" (click)="copyLink(room)">
           <ion-icon name="copy-outline"></ion-icon>
@@ -36,24 +36,9 @@
 </ion-content>
 <!-- Mobile -->
 <ion-content class="ion-hide-md-up">
-  <app-generic-list [inputDatas$]="rooms$" [optionsTemplate]="optionsTemplate">
-    <ng-template #optionsTemplate let-room='data' let-slidingItem='item'>
-      <ion-item-options side="start">
-        <ion-item-option color="primary" (click)="editRoom(room, slidingItem)">
-          <ion-icon name="create" slot="icon-only"></ion-icon>
-        </ion-item-option>
-        <ion-item-option color="danger" (click)="deleteRoom(room,slidingItem)">
-          <ion-icon name="trash" slot="icon-only"></ion-icon>
-        </ion-item-option>
-      </ion-item-options>
-      <ion-item-options side="end">
-        <ion-item-option color="primary" (click)="downloadFoto(room,slidingItem)">
-          <ion-icon name="images-outline" slot="icon-only"></ion-icon>
-        </ion-item-option>
-        <ion-item-option color="success" (click)="enterRoom(room,slidingItem)">
-          <ion-icon name="enter-outline" slot="icon-only"></ion-icon>
-        </ion-item-option>
-      </ion-item-options>
+  <app-generic-list [inputDatas$]="rooms$" [mobileItem]="mobileItem">
+    <ng-template #mobileItem let-data='data'>
+      <app-rooms-list-item [room]="data"></app-rooms-list-item>
     </ng-template>
   </app-generic-list>
 </ion-content>

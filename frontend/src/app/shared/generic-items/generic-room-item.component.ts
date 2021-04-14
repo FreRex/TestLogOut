@@ -4,6 +4,7 @@ import { AlertController, IonItemSliding, ModalController, ToastController } fro
 import { AuthService } from 'src/app/auth/auth.service';
 import { EditRoomModalComponent } from '../modals/edit-room-modal/edit-room-modal.component';
 import { Room, RoomService } from '../../rooms/room.service';
+import { NewRoomModalComponent } from '../modals/new-room-modal/new-room-modal.component';
 
 @Component({
   selector: 'app-generic-room-item',
@@ -17,7 +18,7 @@ export class GenericRoomItemComponent implements OnInit {
 
   constructor(
     public router: Router,
-    public roomsService: RoomService,
+    public roomService: RoomService,
     public authService: AuthService,
     public alertController: AlertController,
     public modalController: ModalController,
@@ -25,6 +26,23 @@ export class GenericRoomItemComponent implements OnInit {
   ) { }
 
   ngOnInit() { }
+
+  doRefresh(event) {
+    this.roomService.loadRooms().subscribe(res => { event.target.complete(); });
+  }
+
+  /** Apre il modale di CREAZIONE ROOM */
+  createRoom() {
+    this.modalController
+      .create({
+        component: NewRoomModalComponent,
+        backdropDismiss: false,
+      })
+      .then(modalEl => {
+        modalEl.present();
+        return modalEl.onDidDismiss();
+      });
+  }
 
   /** Apre il modale di MODIFICA ROOM */
   editRoom(room?: Room, slidingItem?: IonItemSliding) {
@@ -50,6 +68,7 @@ export class GenericRoomItemComponent implements OnInit {
       });
   }
 
+  /** Apre il link della ROOM */
   enterRoom(room?: Room, slidingItem?: IonItemSliding) {
     if (slidingItem) slidingItem.close();
     if (room) this.room = room;
@@ -61,6 +80,7 @@ export class GenericRoomItemComponent implements OnInit {
     window.open(this.linkProgetto);
   }
 
+  /** Copia il link della ROOM */
   copyLink(room?: Room, slidingItem?: IonItemSliding) {
     if (slidingItem) slidingItem.close();
     if (room) this.room = room;
@@ -68,20 +88,21 @@ export class GenericRoomItemComponent implements OnInit {
     console.log('link copiato');
   }
 
+  /** Avvia il download delle foto della ROOM */
   downloadFoto(room?: Room, slidingItem?: IonItemSliding) {
     if (slidingItem) slidingItem.close();
     if (room) this.room = room;
 
     const nomeProgetto = this.room.nome_progetto.trim().replace(' ', '');
-    this.roomsService.checkDownload(nomeProgetto).subscribe(
+    this.roomService.checkDownload(nomeProgetto).subscribe(
       (value: boolean) => {
         if (value) window.open(`https://www.collaudolive.com:9083/downloadzip/${nomeProgetto}`)
         else this.presentToast(`Non ci sono foto sul progetto ${nomeProgetto}!`, 'danger')
-
       }
     )
   }
 
+  /** Crea un alert per la cancellazione della ROOM */
   deleteRoom(room?: Room, slidingItem?: IonItemSliding) {
     if (slidingItem) slidingItem.close();
     if (room) this.room = room;
@@ -90,13 +111,15 @@ export class GenericRoomItemComponent implements OnInit {
       {
         header: 'Sei sicuro?',
         message: 'Vuoi davvero cancellare il progetto?',
-        buttons: [{ text: 'Annulla', role: 'cancel' },
-        {
-          text: 'Elimina',
-          handler: () =>
-            this.roomsService.deleteRoom(this.room.id)
-              .subscribe(res => this.presentToast('Room Eliminata', 'secondary'))
-        }]
+        buttons: [
+          { text: 'Annulla', role: 'cancel' },
+          {
+            text: 'Elimina',
+            handler: () =>
+              this.roomService.deleteRoom(this.room.id)
+                .subscribe(res => this.presentToast('Room Eliminata', 'secondary'))
+          }
+        ]
       }
     ).then(alertEl => { alertEl.present(); });
   }

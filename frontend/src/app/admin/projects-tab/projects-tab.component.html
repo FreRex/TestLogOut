@@ -5,44 +5,40 @@
 <!-- searchbar + add -->
 <div class="searchbarAdd">
   <ion-searchbar class="search-bar" (ionInput)="searchStream$.next($event.target.value)"></ion-searchbar>
-  <ion-button color="secondary">
+  <ion-button color="secondary" (click)="createProjectManual()">
     <ion-icon name="add" slot="icon-only"></ion-icon>
+  </ion-button>
+  <ion-button color="secondary" (click)="createProjectAuto()">
+    <ion-icon name="cloud-download-outline" slot="icon-only"></ion-icon>
   </ion-button>
 </div>
 <!-- items -->
 <!-- Desktop -->
 <ion-content class="ion-hide-md-down">
   <app-generic-table [columns]="columns" [inputDatas$]="projects$">
-    <ng-template #buttons let-room='data'>
+    <ng-template #desktopButtons let-proj='data'>
       <div class="btns">
-        <ion-button size="small" class="ion-no-margin" expand="block" fill="clear" (click)="createLinkNPerf()">
+        <ion-button size="small" class="ion-no-margin" expand="block" fill="clear" (click)="createLinkNPerf(proj)">
           <ion-icon name="globe-outline"></ion-icon>
         </ion-button>
-        <ion-button size="small" class="ion-no-margin" expand="block" fill="clear" (click)="editProject()">
+        <ion-button size="small" class="ion-no-margin" expand="block" fill="clear" (click)="editProject(proj)">
           <ion-icon name="create-outline"></ion-icon>
         </ion-button>
-        <ion-button size="small" class="ion-no-margin" expand="block" fill="clear" (click)="deleteProject()">
+        <ion-button size="small" class="ion-no-margin" expand="block" fill="clear" (click)="deleteProject(proj)">
           <ion-icon name="trash-outline"></ion-icon>
         </ion-button>
       </div>
+    </ng-template>
+    <ng-template #sync let-data='data'>
+      <ion-icon name="ellipse-sharp" [color]="data['sync'] === 'auto' ? 'success' : 'warning'"></ion-icon>
     </ng-template>
   </app-generic-table>
 </ion-content>
 <!-- Mobile -->
 <ion-content class="ion-hide-md-up">
-  <app-generic-list [inputDatas$]="projects$" [optionsTemplate]="optionsTemplate">
-    <ng-template #optionsTemplate let-room='data' let-slidingItem='item'>
-      <ion-item-options side="start">
-        <ion-item-option color="primary" (click)="editProject()">
-          <ion-icon name="create-outline" slot="icon-only"></ion-icon>
-        </ion-item-option>
-        <ion-item-option color="danger" (click)="deleteProject()">
-          <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
-        </ion-item-option>
-        <ion-item-option color="secondary" (click)="createLinkNPerf()">
-          <ion-icon name="globe-outline" slot="icon-only"></ion-icon>
-        </ion-item-option>
-      </ion-item-options>
+  <app-generic-list [inputDatas$]="projects$" [mobileItem]="mobileItem">
+    <ng-template #mobileItem let-data='data'>
+      <app-projects-list-item [proj]="data"></app-projects-list-item>
     </ng-template>
   </app-generic-list>
 </ion-content>

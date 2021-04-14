@@ -1,22 +1,20 @@
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController, ModalController, ToastController } from '@ionic/angular';
 import { AuthService } from 'src/app/auth/auth.service';
-import { GenericUserItemComponent } from 'src/app/shared/generic-items/generic-user-item.component';
-import { UserService } from 'src/app/shared/user.service';
+import { RoomService } from 'src/app/rooms/room.service';
+import { GenericRoomItemComponent } from 'src/app/shared/generic-items/generic-room-item.component';
 
 @Component({
-  selector: 'app-users-table-item',
-  templateUrl: './users-table-item.component.html',
-  styleUrls: ['./users-table-item.component.scss'],
+  selector: 'app-rooms-list-item',
+  templateUrl: './rooms-list-item.component.html',
+  styleUrls: ['./rooms-list-item.component.scss'],
 })
-export class UsersTableItemComponent extends GenericUserItemComponent {
-
-  @Input() datas;
+export class RoomsListItemComponent extends GenericRoomItemComponent {
 
   constructor(
     public router: Router,
-    public usersService: UserService,
+    public roomsService: RoomService,
     public authService: AuthService,
     public alertController: AlertController,
     public modalController: ModalController,
@@ -24,11 +22,12 @@ export class UsersTableItemComponent extends GenericUserItemComponent {
   ) {
     super(
       router,
-      usersService,
+      roomsService,
       authService,
       alertController,
       modalController,
       toastController
     );
   }
+
 }
