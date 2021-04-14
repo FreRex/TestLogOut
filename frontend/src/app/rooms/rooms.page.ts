@@ -17,8 +17,8 @@ export class RoomsPage extends GenericRoomItemComponent implements OnInit {
 
   searchStream$ = new BehaviorSubject('');
   rooms$: Observable<Room[]>;
-  @ViewChild('desktopButtons', { static: true }) desktopButtons: TemplateRef<any>;
   columns: TableColumns[] = [];
+  // @ViewChild('desktopButtons', { static: true }) desktopButtons: TemplateRef<any>;
 
   ngOnInit() {
     this.columns = [
@@ -27,7 +27,7 @@ export class RoomsPage extends GenericRoomItemComponent implements OnInit {
       { title: 'Collaudatore', key: 'nome_collaudatore', type: 'string', size: 2, orderEnabled: true },
       { title: 'Usermobile', key: 'usermobile', type: 'string', size: 2, orderEnabled: true },
       { title: 'Progetto', key: 'nome_progetto', type: 'string', size: 3, orderEnabled: true },
-      { title: 'Azioni', key: '', type: 'buttons', size: 3, orderEnabled: false, customTemplate: this.desktopButtons },
+      { title: 'Azioni', key: '', type: 'buttons', size: 3, orderEnabled: false/* , customTemplate: this.desktopButtons */ },
     ];
 
     this.rooms$ = this.searchStream$.pipe(

@@ -25,7 +25,12 @@ export class GenericRoomItemComponent implements OnInit {
     public toastController: ToastController
   ) { }
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.linkProgetto =
+      'https://www.collaudolive.com:9777/glasses_test/FrontEnd/src/index.php?q='
+      + this.room.projectID
+      + ((this.authService.currentRole === 'admin') ? '&useringresso=admin' : '');
+  }
 
   doRefresh(event) {
     this.roomService.loadRooms().subscribe(res => { event.target.complete(); });
@@ -62,10 +67,9 @@ export class GenericRoomItemComponent implements OnInit {
       .then(modalEl => {
         modalEl.present();
         return modalEl.onDidDismiss();
-      })
-      .then(res => {
-        this.presentToast('Room Aggiornata', 'secondary');
-      });
+      });/*.then(res => {
+            this.presentToast('Room Aggiornata', 'secondary');
+      }); */
   }
 
   /** Apre il link della ROOM */
@@ -85,7 +89,17 @@ export class GenericRoomItemComponent implements OnInit {
     if (slidingItem) slidingItem.close();
     if (room) this.room = room;
 
-    console.log('link copiato');
+    /* Copy the text inside the text field */
+    let dummy = document.createElement("textarea");
+    // to avoid breaking orgain page when copying more words
+    // cant copy when adding below this code
+    dummy.style.display = 'none'
+    document.body.appendChild(dummy);
+    //Be careful if you use texarea. setAttribute('value', value), which works with "input" does not work with "textarea". – Eduard
+    dummy.value = this.linkProgetto;
+    dummy.select();
+    document.execCommand("copy");
+    document.body.removeChild(dummy);
   }
 
   /** Avvia il download delle foto della ROOM */

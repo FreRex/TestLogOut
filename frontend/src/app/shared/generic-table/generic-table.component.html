@@ -4,17 +4,19 @@
   </ion-col>
 </ion-row>
 <div *ngIf="(datas$ | async) as datas">
-  <ion-row class="ion-align-items-center row-data" *ngFor="let data of datas">
-    <ion-col class="data-item" *ngFor="let col of columns" [size]="col.size">
-      <div class="ion-text-center" *ngIf="datas.length <= 0">
-        <ion-spinner></ion-spinner>
-      </div>
-      <div>{{ col.type === 'date' ? (data[col.key] | date:'dd/MM/yy') : data[col.key] }}
-        <ng-container *ngTemplateOutlet="col.customTemplate ? col.customTemplate : null; context: {data: data}">
-        </ng-container>
-      </div>
-    </ion-col>
-  </ion-row>
+  <div class="ion-text-center" *ngIf="datas.length <= 0">
+    <ion-spinner></ion-spinner>
+  </div>
+  <div *ngFor="let data of datas">
+    <!-- <ion-row class="ion-align-items-center row-data" *ngFor="let data of datas"> -->
+    <!-- <ion-col class="data-item" *ngFor="let col of columns" [size]="col.size"> -->
+    <!-- <div>{{ col.type === 'date' ? (data[col.key] | date:'dd/MM/yy') : data[col.key] }} -->
+    <ng-container *ngTemplateOutlet="desktopItem ? desktopItem : null; context: {data: data}">
+    </ng-container>
+    <!-- </div> -->
+    <!-- </ion-col> -->
+    <!-- </ion-row> -->
+  </div>
 </div>
 <ion-row class="footer">
   <ion-col size="1" class="page-btn" offset="3">

@@ -8,7 +8,7 @@ import { GenericRoomItemComponent } from 'src/app/shared/generic-items/generic-r
 @Component({
   selector: 'app-rooms-list-item',
   templateUrl: './rooms-list-item.component.html',
-  styleUrls: ['./rooms-list-item.component.scss'],
+  styleUrls: ['../../generic-list/generic-list.component.scss'],
 })
 export class RoomsListItemComponent extends GenericRoomItemComponent {
 

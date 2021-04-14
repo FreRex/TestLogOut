@@ -18,6 +18,9 @@ import { GenericListComponent } from './generic-list/generic-list.component';
 import { ProjectsListItemComponent } from './generic-items/projects-list-item/projects-list-item.component';
 import { RoomsListItemComponent } from './generic-items/rooms-list-item/rooms-list-item.component';
 import { UsersListItemComponent } from './generic-items/users-list-item/users-list-item.component';
+import { ProjectsTableItemComponent } from './generic-items/projects-table-item/projects-table-item.component';
+import { RoomsTableItemComponent } from './generic-items/rooms-table-item/rooms-table-item.component';
+import { UsersTableItemComponent } from './generic-items/users-table-item/users-table-item.component';
 
 @NgModule({
   declarations: [
@@ -29,11 +32,11 @@ import { UsersListItemComponent } from './generic-items/users-list-item/users-li
     GenericTableComponent,
     // PaginationComponent,
     // RoomsTableComponent,
-    // RoomsTableItemComponent,
+    RoomsTableItemComponent,
     // ProjectsTableComponent,
-    // ProjectsTableItemComponent,
+    ProjectsTableItemComponent,
     // UsersTableComponent,
-    // UsersTableItemComponent,
+    UsersTableItemComponent,
     // RoomsListComponent,
     RoomsListItemComponent,
     // ProjectsListComponent,
@@ -62,11 +65,11 @@ import { UsersListItemComponent } from './generic-items/users-list-item/users-li
     GenericListComponent,
     // PaginationComponent,
     // RoomsTableComponent,
-    // RoomsTableItemComponent,
+    RoomsTableItemComponent,
     // ProjectsTableComponent,
-    // ProjectsTableItemComponent,
+    ProjectsTableItemComponent,
     // UsersTableComponent,
-    // UsersTableItemComponent,
+    UsersTableItemComponent,
     // RoomsListComponent,
     RoomsListItemComponent,
     // ProjectsListComponent,

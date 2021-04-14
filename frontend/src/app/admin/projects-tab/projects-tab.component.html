@@ -1,43 +1,41 @@
-<!-- refresh -->
-<ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
-  <ion-refresher-content></ion-refresher-content>
-</ion-refresher>
-<!-- searchbar + add -->
+<!-- Searchbar  -->
 <div class="searchbarAdd">
   <ion-searchbar class="search-bar" (ionInput)="searchStream$.next($event.target.value)"></ion-searchbar>
+  <!-- Create Project Button -->
   <ion-button color="secondary" (click)="createProjectManual()">
     <ion-icon name="add" slot="icon-only"></ion-icon>
   </ion-button>
+  <!-- Sync Project Button -->
   <ion-button color="secondary" (click)="createProjectAuto()">
     <ion-icon name="cloud-download-outline" slot="icon-only"></ion-icon>
   </ion-button>
 </div>
-<!-- items -->
+
 <!-- Desktop -->
 <ion-content class="ion-hide-md-down">
-  <app-generic-table [columns]="columns" [inputDatas$]="projects$">
-    <ng-template #desktopButtons let-proj='data'>
-      <div class="btns">
-        <ion-button size="small" class="ion-no-margin" expand="block" fill="clear" (click)="createLinkNPerf(proj)">
-          <ion-icon name="globe-outline"></ion-icon>
-        </ion-button>
-        <ion-button size="small" class="ion-no-margin" expand="block" fill="clear" (click)="editProject(proj)">
-          <ion-icon name="create-outline"></ion-icon>
-        </ion-button>
-        <ion-button size="small" class="ion-no-margin" expand="block" fill="clear" (click)="deleteProject(proj)">
-          <ion-icon name="trash-outline"></ion-icon>
-        </ion-button>
-      </div>
-    </ng-template>
-    <ng-template #sync let-data='data'>
-      <ion-icon name="ellipse-sharp" [color]="data['sync'] === 'auto' ? 'success' : 'warning'"></ion-icon>
+  <!-- Refresh -->
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <!-- Projects Table -->
+  <app-generic-table [inputDatas$]="projects$" [columns]="columns" [desktopItem]="desktopItem">
+    <ng-template #desktopItem let-data='data'>
+      <!-- Projects Table Item -->
+      <app-projects-table-item [proj]="data" [columns]="columns"></app-projects-table-item>
     </ng-template>
   </app-generic-table>
 </ion-content>
+
 <!-- Mobile -->
 <ion-content class="ion-hide-md-up">
+  <!-- Refresh -->
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <!-- Projects List -->
   <app-generic-list [inputDatas$]="projects$" [mobileItem]="mobileItem">
     <ng-template #mobileItem let-data='data'>
+      <!-- Projects List Item -->
       <app-projects-list-item [proj]="data"></app-projects-list-item>
     </ng-template>
   </app-generic-list>

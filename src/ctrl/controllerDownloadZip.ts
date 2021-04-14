@@ -1,12 +1,11 @@
   exports.CheckDownloadZip = (req: any, res: any, next: any) => {  
-
-    const fs = require('fs');
-    const nameFolder: any = '../datasave/'; 
+    
+    const fs = require('fs');  
     
     //-- Determinazione cartella da verificare
-    let nameRooms: any = req.params.folderzip;
-    let path = nameFolder+nameRooms;  
-  
+    let nameRooms: any = req.params.folderzip;    
+    const path: any = '/var/www/html/glasses_test/FrontEnd/datasave/'+nameRooms;
+    
     //-- Controllo se cartella: (non-esiste o vuota) => true; se esiste e non è vuota => false
     function isFull(path: any) {
       try {
@@ -22,26 +21,29 @@
   
   exports.DownloadZip = (req: any, res: any, next: any) => {
     
-     const AdmZip = require('adm-zip');  
-     const zip = new AdmZip();  
-     const fs = require('fs');
-    
-     //----------- determinazione path
-      const nameFolder = '../datasave/';    
-      let nameRooms = req.params.folderzip;
-      
-      //-- Creazione cartella compressa
-      fs.readdirSync(nameFolder+nameRooms).forEach((file: string) => {           
-        zip.addLocalFile(nameFolder + nameRooms + '/' + file);          
-      });
-    
-      // --- Esecuzuone download
-      const downloadName = `${nameRooms}.zip`;
-      const data = zip.toBuffer();
-      res.set('Content-Type','application/octet-stream');
-      res.set('Content-Disposition',`attachment; filename=${downloadName}`);
-      res.set('Content-Length',data.length);
-      res.send(data);
+    const AdmZip = require('adm-zip');  
+    const zip = new AdmZip();  
+    const fs = require('fs');
+   
+    //----------- determinazione path
+     const nameFolder = '/var/www/html/glasses_test/FrontEnd/datasave/';    
+     let nameRooms = req.params.folderzip;
+     
+    console.log(nameRooms)
+    console.log('------------------------')
+
+     //-- Creazione cartella compressa
+     fs.readdirSync(nameFolder+nameRooms).forEach((file: string) => {           
+       zip.addLocalFile(nameFolder + nameRooms + '/' + file);          
+     });
+   
+     // --- Esecuzione download
+     const downloadName = `${nameRooms}.zip`;
+     const data = zip.toBuffer();
+     res.set('Content-Type','application/octet-stream');
+     res.set('Content-Disposition',`attachment; filename=${downloadName}`);
+     res.set('Content-Length',data.length);
+     res.send(data);
     
   
   };

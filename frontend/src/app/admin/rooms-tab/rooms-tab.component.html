@@ -1,43 +1,37 @@
-<!-- refresh -->
-<ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
-  <ion-refresher-content></ion-refresher-content>
-</ion-refresher>
-<!-- searchbar + add -->
+<!-- Searchbar  -->
 <div class="searchbarAdd">
   <ion-searchbar class="search-bar" (ionInput)="searchStream$.next($event.target.value)"></ion-searchbar>
+  <!-- Create Room Button -->
   <ion-button color="secondary" (click)="createRoom()">
     <ion-icon name="add" slot="icon-only"></ion-icon>
   </ion-button>
 </div>
-<!-- items -->
+
 <!-- Desktop -->
 <ion-content class="ion-hide-md-down">
-  <app-generic-table [columns]="columns" [inputDatas$]="rooms$">
-    <ng-template #desktopButtons let-room='data'>
-      <div class="btns">
-        <ion-button size="small" class="ion-no-margin" expand="block" fill="clear" (click)="copyLink(room)">
-          <ion-icon name="copy-outline"></ion-icon>
-        </ion-button>
-        <ion-button size="small" class="ion-no-margin" expand="block" fill="clear" (click)="editRoom(room)">
-          <ion-icon name="create-outline"></ion-icon>
-        </ion-button>
-        <ion-button size="small" class="ion-no-margin" expand="block" fill="clear" (click)="deleteRoom(room)">
-          <ion-icon name="trash-outline"></ion-icon>
-        </ion-button>
-        <ion-button size="small" class="ion-no-margin" expand="block" fill="clear" (click)="downloadFoto(room)">
-          <ion-icon name="images-outline"></ion-icon>
-        </ion-button>
-        <ion-button size="small" class="ion-no-margin" expand="block" fill="clear" (click)="enterRoom(room)">
-          <ion-icon name="enter-outline"></ion-icon>
-        </ion-button>
-      </div>
+  <!-- Refresh -->
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <!-- Rooms Table -->
+  <app-generic-table [inputDatas$]="rooms$" [columns]="columns" [desktopItem]="desktopItem">
+    <ng-template #desktopItem let-data='data'>
+      <!-- Rooms Table Item -->
+      <app-rooms-table-item [room]="data" [columns]="columns"></app-rooms-table-item>
     </ng-template>
   </app-generic-table>
 </ion-content>
+
 <!-- Mobile -->
 <ion-content class="ion-hide-md-up">
+  <!-- Refresh -->
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <!-- Rooms List -->
   <app-generic-list [inputDatas$]="rooms$" [mobileItem]="mobileItem">
     <ng-template #mobileItem let-data='data'>
+      <!-- Rooms List Item -->
       <app-rooms-list-item [room]="data"></app-rooms-list-item>
     </ng-template>
   </app-generic-list>

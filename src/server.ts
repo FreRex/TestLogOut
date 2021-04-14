@@ -11,9 +11,9 @@ const port = 9083;
 app.use(express.json());
 
 
-//--------------------
+//-----------------------------------------------------------------------------------------------------------
 //SEZIONE ROUTE NODEJS
-//--------------------
+//-----------------------------------------------------------------------------------------------------------
 
 // Indirizzamento verso route API
 app.use('/', routes);
@@ -22,9 +22,9 @@ app.use('/', routes);
 app.use('/',express.static(path.join(__dirname, '../frontend/www')));
 app.use('/*', (req, res) => { res.sendFile(path.join(__dirname, '../frontend/www/index.html')); });
 
-//-------------------------------------
-//-------------------------------------
-//-------------------------------------
+//----------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------
 
 https.createServer({
     key: fs.readFileSync('/etc/letsencrypt/live/www.collaudolive.com/privkey.pem'),
@@ -32,6 +32,21 @@ https.createServer({
   }, app)
     
   .listen(port, () => { 
+
+    console.log(`-------------------- TEST ------------------------------`);
+    console.log(`https://www.collaudolive.com:${port}/test`); 
+
+    console.log(`-------------------- SINCRODB ------------------------------`);
+    console.log(`https://www.collaudolive.com:${port}/sincrodb`); 
+
+    console.log(`-------------------- FRONTEND ------------------------------`);
+    console.log(`https://www.collaudolive.com:${port}/auth`); 
+    console.log(`https://www.collaudolive.com:${port}/backoffice`);
+    console.log(`https://www.collaudolive.com:${port}/rooms`); 
+    
+    console.log(`-------------------- FRONTEND ------------------------------`);
+    console.log(`https://www.collaudolive.com:${port}/vidapp`); 
+
     console.log(`-------------------- API SELECT-----------------------------------`);
     console.log(`https://www.collaudolive.com:${port}/s/room`); 
     console.log(`https://www.collaudolive.com:${port}/s/progetti`);       
@@ -42,11 +57,5 @@ https.createServer({
     console.log(`https://www.collaudolive.com:${port}/up/`); 
     console.log(`https://www.collaudolive.com:${port}/uu/`); 
 
-    console.log(`-------------------- FRONTEND ------------------------------`);
-    console.log(`https://www.collaudolive.com:${port}/auth`); 
-    console.log(`https://www.collaudolive.com:${port}/backoffice`);
-    console.log(`https://www.collaudolive.com:${port}/rooms`); 
     
-    console.log(`-------------------- FRONTEND ------------------------------`);
-    console.log(`https://www.collaudolive.com:${port}/vidapp`); 
   })

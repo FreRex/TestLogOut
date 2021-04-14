@@ -1,4 +1,4 @@
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController, ModalController, ToastController } from '@ionic/angular';
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -18,12 +18,11 @@ export class UsersTabComponent extends GenericUserItemComponent implements OnIni
   searchStream$ = new BehaviorSubject('');
   users$: Observable<User[]>;
 
-  @ViewChild('desktopButtons', { static: true }) desktopButtons: TemplateRef<any>;
+  // @ViewChild('desktopButtons', { static: true }) desktopButtons: TemplateRef<any>;
   // @ViewChild('mobileOptions', { static: true }) mobileOptions: TemplateRef<any>;
-  @ViewChild('role', { static: true }) role: TemplateRef<any>;
+  // @ViewChild('role', { static: true }) role: TemplateRef<any>;
 
   columns: TableColumns[] = [];
-  // fields: ListFields[] = [];
 
   ngOnInit() {
     this.columns = [
@@ -32,17 +31,9 @@ export class UsersTabComponent extends GenericUserItemComponent implements OnIni
       { title: 'Collaudatore', key: 'collaudatoreufficio', type: 'string', size: 3, orderEnabled: true },
       { title: 'User', key: 'username', type: 'string', size: 2, orderEnabled: true },
       { title: 'Password', key: 'password', type: 'string', size: 2, orderEnabled: true },
-      { title: 'Ruolo', key: 'autorizzazioni', type: 'string', size: 1, orderEnabled: true, customTemplate: this.role },
-      { title: 'Azioni', key: '', type: 'buttons', size: 2, orderEnabled: false, customTemplate: this.desktopButtons }
+      { title: 'Ruolo', key: 'autorizzazioni', type: 'string', size: 1, orderEnabled: true/* , customTemplate: this.role */ },
+      { title: 'Azioni', key: '', type: 'buttons', size: 2, orderEnabled: false/* , customTemplate: this.desktopButtons */ }
     ];
-
-    // this.fields = [
-    //   { title: 'Collaudatore', key: 'collaudatoreufficio', type: 'string', },
-    //   { title: 'Ruolo', key: 'autorizzazioni', type: 'string', customTemplate: this.role },
-    //   { title: 'User', key: 'username', type: 'string', },
-    //   { title: 'Commessa', key: 'commessa', type: 'string', },
-    //   { title: 'Azioni', key: '', type: 'buttons', customTemplate: this.mobileOptions }
-    // ];
 
     this.users$ = this.searchStream$.pipe(
       // debounceTime(200), //FIX

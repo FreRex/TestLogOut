@@ -1,0 +1,34 @@
+<ion-row class="ion-align-items-center row-data">
+  <ion-col class="col-item" *ngFor="let col of columns" [size]="col.size">
+    <div *ngIf="col.type !== 'buttons'" class="data-item">{{ col.type === 'date' ? (room[col.key] | date:'dd/MM/yy') :
+      room[col.key]
+      }}</div>
+    <div *ngIf="col.type === 'buttons'" class="btns">
+      <span data-tooltip="Copia Link della Room" data-tooltip-position="top">
+        <ion-button size="small" class="ion-no-margin" expand="block" fill="clear" (click)="copyLink()">
+          <ion-icon name="copy-outline"></ion-icon>
+        </ion-button>
+      </span>
+      <span data-tooltip="Modifica" data-tooltip-position="top">
+        <ion-button size="small" class="ion-no-margin" expand="block" fill="clear" (click)="editRoom()">
+          <ion-icon name="create-outline"></ion-icon>
+        </ion-button>
+      </span>
+      <span data-tooltip="Elimina" data-tooltip-position="top">
+        <ion-button size="small" class="ion-no-margin" expand="block" fill="clear" (click)="deleteRoom()">
+          <ion-icon name="trash-outline"></ion-icon>
+        </ion-button>
+      </span>
+      <span data-tooltip="Download Foto" data-tooltip-position="top">
+        <ion-button size="small" class="ion-no-margin" expand="block" fill="clear" (click)="downloadFoto()">
+          <ion-icon name="images-outline"></ion-icon>
+        </ion-button>
+      </span>
+      <span data-tooltip="Entra nella Room" data-tooltip-position="top">
+        <ion-button size="small" class="ion-no-margin" expand="block" fill="clear" (click)="enterRoom()">
+          <ion-icon name="enter-outline"></ion-icon>
+        </ion-button>
+      </span>
+    </div>
+  </ion-col>
+</ion-row>

@@ -51,9 +51,9 @@ export class GenericUserItemComponent implements OnInit {
       }).then((modalEl) => {
         modalEl.present();
         return modalEl.onDidDismiss();
-      }).then(res =>
-        this.presentToast('Utente Aggiornato', 'secondary')
-      );
+      });/* .then(res =>
+                this.presentToast('Utente Aggiornato', 'secondary')
+      ); */
   }
 
   deleteUser(user?: User, slidingItem?: IonItemSliding) {

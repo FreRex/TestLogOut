@@ -24,6 +24,7 @@ export class GenericTableComponent implements OnInit {
   // @Input() itemTemplate: TemplateRef<any>;
   @Input() columns: TableColumns[] = [];
   @Input() inputDatas$: Observable<any[]>;
+  @Input() desktopItem: TemplateRef<any>;
   datas$: Observable<any[]>;
 
   isCrescent = true;

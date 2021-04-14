@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const controllerTest = require('./ctrl/controllerTest');
 const controllerDownloadZip = require('./ctrl/controllerDownloadZip');
+const controllerSincroDb = require('./ctrl/controllerSincroDb');
 const controllerToken = require('./ctrl/controllerToken');
 const controllerVidApp = require('./ctrl/controllerVidApp');
 const controllerSelect = require('./ctrl/controllerSelect');
@@ -15,6 +16,7 @@ const controllerCreate = require('./ctrl/controllerCreate');
 const mid = require('./middleware/mid');
 const router = express_1.default.Router();
 const cors = require('cors');
+//__________________________________________________________________________________
 router.use(cors());
 router.use(function (req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -31,13 +33,15 @@ router.use(function (req, res, next) {
 //----------------------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------------------
-//--------------------------------------------------
+//---------------------------------------------------------------------
 //Test
-router.post('/test/', controllerTest.test);
-//--------------------------------------------------
+router.post('/test/:username', controllerTest.test);
+//--------------------------------------------------------------------
 //Downloadzip (download foto compresse)
 router.get('/checkdownloadzip/:folderzip/', controllerDownloadZip.CheckDownloadZip);
 router.get('/downloadzip/:folderzip/', controllerDownloadZip.DownloadZip);
+//SincroDb
+router.get('/sincrodb/', controllerSincroDb.sincroDb);
 //Token
 router.post('/token/', controllerToken.getToken);
 //VidApp (riavvio Node Media Server)
@@ -46,8 +50,6 @@ router.get('/vidapp/', controllerVidApp.VidApp);
 //----------- API-db -----------------------------------------------------
 //------------------------------------------------------------------------
 //Indirizzamento ad API-db di lettura (SELECT)
-//router.get('/s/:table/', [mid.checkAuth], controllerSelect.getSelect);
-//router.get('/s/:table/:id?/', [mid.checkAuth], controllerSelect.getSelect);
 router.get('/s/:table/:collaudatoreufficio?/:id?/', [mid.checkAuth], controllerSelect.getSelect);
 //Indirizzamento ad API-db di modifica (UPDATE)
 router.put('/ur/', [mid.checkAuth], controllerUpdate.putUpdateRoom);
