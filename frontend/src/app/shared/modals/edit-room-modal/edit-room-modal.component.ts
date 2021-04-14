@@ -35,7 +35,7 @@ export class EditRoomModalComponent implements OnInit {
   }
 
   closeModal() {
-    this.modalController.dismiss(EditRoomModalComponent);
+    this.modalController.dismiss(null, 'cancel');
   }
 
   updateRoom() {
@@ -46,9 +46,19 @@ export class EditRoomModalComponent implements OnInit {
         this.form.value.usermobile)
       .subscribe(
         res => {
+          /** Il server risponde con 200 ma non ha fatto cambiamenti (non so se esiste come risposta)
+          if(ok) this.modalController.dismiss({ message: 'room updated' }, 'ok');
+          else this.modalController.dismiss(null, 'cancel');
+          */
           this.form.reset();
-          this.closeModal();
-        });
+          this.modalController.dismiss({ message: 'room updated' }, 'ok');
+        },
+        /** Il serrver risponde con un errore */
+        err => {
+          this.form.reset();
+          this.modalController.dismiss({ message: err.error['text'] }, 'error');
+        }
+      );
     this.presentToast('Room Aggiornata', 'secondary');
   }
 

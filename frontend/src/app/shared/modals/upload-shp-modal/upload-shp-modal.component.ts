@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
-import { Observable, Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
 import { User, UserService } from '../../user.service';
-import { Project, ProjectService } from '../../project.service';
+import { ProjectService } from '../../project.service';
 
 @Component({
   selector: 'app-upload-shp-modal',
@@ -18,8 +18,8 @@ export class UploadShpModalComponent implements OnInit {
   isListOpen: boolean = false;
 
   constructor(
-    private userService: UserService,
     private modalCtrl: ModalController,
+    private userService: UserService,
     private projectService: ProjectService
   ) { }
 
@@ -60,6 +60,7 @@ export class UploadShpModalComponent implements OnInit {
       }),
     });
   }
+
   onChooseUser(user: User) {
     this.isListOpen = false;
     this.selectedUser = user;
@@ -67,9 +68,10 @@ export class UploadShpModalComponent implements OnInit {
       collaudatoreufficio: this.selectedUser.collaudatoreufficio,
     });
   }
+
   createProject() {
-    const coords = this.form.value.coordinate.split(",");
     if (!this.form.valid) { return; }
+    const coords = this.form.value.coordinate.split(",");
     this.projectService
       .addProject(
         this.form.value.collaudatoreufficio,
@@ -79,15 +81,16 @@ export class UploadShpModalComponent implements OnInit {
         this.form.value.nodi_ottici,
         this.form.value.tratte,
         this.form.value.conn_edif_opta,
-        coords[1].slice(0,14),
-        coords[0].slice(0,14),
+        coords[1].slice(0, 14),
+        coords[0].slice(0, 14),
       ).subscribe(
         res => {
           this.form.reset();
-          this.modalCtrl.dismiss({ message: 'Project Create' }, 'save');
+          this.modalCtrl.dismiss({ message: 'project created' }, 'ok');
         },
       );
   }
+
   closeModal() {
     this.modalCtrl.dismiss(UploadShpModalComponent);
   }

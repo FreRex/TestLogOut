@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import { Observable } from 'rxjs';
+import { ProjectService } from '../../project.service';
 import { User, UserService } from '../../user.service';
 
 @Component({
@@ -17,8 +18,9 @@ export class GisfoSyncModalComponent implements OnInit {
   isListOpen: boolean = false;
 
   constructor(
+    private modalController: ModalController,
     private userService: UserService,
-    private modalCtrl: ModalController
+    private projectService: ProjectService
   ) { }
 
   ngOnInit() {
@@ -34,6 +36,24 @@ export class GisfoSyncModalComponent implements OnInit {
       }),
     });
   }
+
+  syncProject() {
+    if (!this.form.valid) { return; }
+    this.modalController.dismiss({ message: 'begin sync' }, 'begin');
+
+    this.projectService
+      .syncProject(
+        this.form.value.collaudatoreufficio,
+        this.form.value.pk_proj
+      ).subscribe(
+        res => {
+          console.log(res);
+          /** Error: Uncaught (in promise): overlay does not exist */
+          this.modalController.dismiss({ message: 'end sync' }, 'end');
+        }
+      );
+  }
+
   onChooseUser(user: User) {
     this.isListOpen = false;
     this.selectedUser = user;
@@ -41,7 +61,8 @@ export class GisfoSyncModalComponent implements OnInit {
       collaudatoreufficio: this.selectedUser.collaudatoreufficio,
     });
   }
+
   closeModal() {
-    this.modalCtrl.dismiss(GisfoSyncModalComponent);
+    this.modalController.dismiss(null, 'cancel');
   }
 }

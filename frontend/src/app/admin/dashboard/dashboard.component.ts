@@ -1,6 +1,10 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit } from '@angular/core';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { AlertController, ToastController } from '@ionic/angular';
+import { Observable } from 'rxjs';
+import { ProjectService } from 'src/app/shared/project.service';
+import { User, UserService } from 'src/app/shared/user.service';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -10,18 +14,58 @@ import { environment } from 'src/environments/environment';
 })
 export class DashboardComponent implements OnInit {
 
+  form: FormGroup;
+  users$: Observable<User[]>;
+  selectedUser: User;
+  isListOpen: boolean = false;
   coordinate: string = '';
 
   constructor(
     private toastController: ToastController,
     private alertController: AlertController,
-    private http: HttpClient
+    private http: HttpClient,
+    private userService: UserService,
+    private projectService: ProjectService
   ) { }
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.users$ = this.userService.users$;
+    this.form = new FormGroup({
+      collaudatoreufficio: new FormControl(null, {
+        updateOn: 'blur',
+        validators: [Validators.required, Validators.maxLength(50)]
+      }),
+      pk_proj: new FormControl(null, {
+        updateOn: 'blur',
+        validators: [Validators.required, Validators.maxLength(30)]
+      }),
+    });
+  }
 
-  createLink() {
-    let coords = this.coordinate.replace(' ', '').split(',');
+  syncProject() {
+    if (!this.form.valid) { return; }
+
+    this.projectService
+      .syncProject(
+        this.form.value.collaudatoreufficio,
+        this.form.value.pk_proj
+      ).subscribe(
+        res => {
+          console.log(res);
+        }
+      );
+  }
+
+  onChooseUser(user: User) {
+    this.isListOpen = false;
+    this.selectedUser = user;
+    this.form.patchValue({
+      collaudatoreufficio: this.selectedUser.collaudatoreufficio,
+    });
+  }
+
+  createLink(coordinate: string) {
+    let coords = coordinate.replace(' ', '').split(',');
     window.open("https://www.nperf.com/it/map/IT/-/230.TIM/signal/?ll=" + coords[0] + "&lg=" + coords[1] + "&zoom=13");
   }
 
@@ -53,10 +97,11 @@ export class DashboardComponent implements OnInit {
     ).then(alertEl => { alertEl.present(); });
   }
 
-  async presentToast(message: string) {
+  async presentToast(message: string, color?: string) {
     const toast = await this.toastController.create({
       message: message,
-      color: 'secondary',
+      color: color ? color : 'secondary',
+      cssClass: 'custom-toast',
       duration: 2000
     })
   }

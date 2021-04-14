@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, throwError } from 'rxjs';
-import { catchError, map, switchMap, take, tap } from 'rxjs/operators';
+import { BehaviorSubject, interval, Observable, throwError } from 'rxjs';
+import { catchError, delay, map, switchMap, take, tap } from 'rxjs/operators';
 import { AuthService } from 'src/app/auth/auth.service';
 import { environment } from 'src/environments/environment';
 import { UserService } from './user.service';
@@ -106,6 +106,21 @@ export class ProjectService {
         }),
         tap((projects: Project[]) => this.projSubject.next(projects))
       );
+  }
+
+  syncProject(
+    collaudatoreufficio: string,
+    pk_proj: number) {
+    return this.http
+      .get(
+        // `${environment.apiUrl}/sincroDb/`,'
+        'https://jsonplaceholder.typicode.com/posts/1',
+        // {
+        //   "idutente": this.userService.getUserIdByName(collaudatoreufficio),
+        //   "pk_proj": pk_proj,
+        // },
+        { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
+      ).pipe(delay(2000));
   }
 
   /** CREATE progetti */
@@ -243,7 +258,4 @@ export class ProjectService {
         tap(res => { this.projSubject.next(updatedProjetcs) })
       );
   }
-
-
-
 }

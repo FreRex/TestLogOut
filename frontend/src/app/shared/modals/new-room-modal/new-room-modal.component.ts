@@ -1,4 +1,4 @@
-import { HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { AlertController, ModalController, ToastController } from '@ionic/angular';
@@ -60,7 +60,7 @@ export class NewRoomModalComponent implements OnInit {
         this.form.value.nome_progetto,
         this.form.value.nome_collaudatore)
       .subscribe(
-        res => {
+        (res: HttpResponse<JSON>) => {
           this.form.reset();
           this.modalController.dismiss({ message: 'room saved' }, 'save');
         },

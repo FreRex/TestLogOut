@@ -40,6 +40,7 @@ export class GenericProjectItemComponent implements OnInit {
         modalEl.present();
         return modalEl.onDidDismiss();
       })
+      .then(res => console.log(res));
   }
 
   createProjectManual() {

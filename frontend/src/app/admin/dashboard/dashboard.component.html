@@ -1,27 +1,27 @@
 <ion-grid>
   <ion-row>
-    <ion-col >
-      <ion-button href="https://www.collaudolive.xyz:9888/admin/streams" target="_blank" expand="full">
+    <ion-col size-xs="6" size-md="3">
+      <ion-button href="https://www.collaudolive.xyz:9888/admin/streams" target="_blank" expand="block">
         <ion-icon slot="start" name="tv-outline"></ion-icon>
-        NodeMedia Server
+        NodeMedia
       </ion-button>
     </ion-col>
-    <ion-col >
-      <ion-button href="http://www.eaglelive.tv:5080/#/pages/login" target="_blank" expand="full">
+    <ion-col size-xs="6" size-md="3">
+      <ion-button href="http://www.eaglelive.tv:5080/#/pages/login" target="_blank" expand="block">
         <ion-icon slot="start" name="headset-outline"></ion-icon>
-        AntMedia Server
+        AntMedia
       </ion-button>
     </ion-col>
-    <ion-col >
-      <ion-button href="https://www.collaudolive.com:9080/geoserver/web/" target="_blank" expand="full">
+    <ion-col size-xs="6" size-md="3">
+      <ion-button href="https://www.collaudolive.com:9080/geoserver/web/" target="_blank" expand="block">
         <ion-icon slot="start" name="map-outline"></ion-icon>
         Geoserver
       </ion-button>
     </ion-col>
-    <ion-col>
-      <ion-button (click)="onRiavviaStreaming()" expand="full" >
+    <ion-col size-xs="6" size-md="3">
+      <ion-button (click)="onRiavviaStreaming()" expand="block">
         <ion-icon slot="start" name="videocam-off-outline" color="danger"></ion-icon>
-        Riavvia Streaming
+        Riavvia
       </ion-button>
     </ion-col>
   </ion-row>
@@ -36,11 +36,44 @@
             <ion-label position="floating" class="ion-text-wrap">
               Inserisci qui le coordinate separate dalla virgola
             </ion-label>
-            <ion-input type="text" [(ngModel)]="coordinate"></ion-input>
+            <ion-input type="text" #coordinate></ion-input>
           </ion-item>
           <div class="ion-margin-vertical ion-text-right ">
-            <ion-button shape="round" fill="outline" color="primary" (click)="createLink()">
-              <ion-icon slot="start" name="caret-forward-circle-outline"></ion-icon>LINK
+            <ion-button shape="round" fill="outline" color="primary" (click)="createLink(coordinate.value.toString())">
+              <ion-icon slot="start" name="caret-forward-circle-outline"></ion-icon>Link
+            </ion-button>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-col>
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title color="primary">Sincronizza Progetto</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <form [formGroup]="form" class="ion-padding">
+            <ion-item>
+              <ion-label position="floating">Collaudatore</ion-label>
+              <ion-input formControlName="collaudatoreufficio" type="search" (click)="isListOpen = true" #searchInput>
+              </ion-input>
+              <ion-button fill="clear" slot="end" class="ion-align-self-center" (click)="isListOpen = !isListOpen">
+                <ion-icon [name]="isListOpen ? 'close' : 'chevron-down-outline'" slot="icon-only"></ion-icon>
+              </ion-button>
+            </ion-item>
+            <app-dropdown [isListOpen]="isListOpen" [obs$]="users$" [input]="searchInput"
+              [searchValue]="'collaudatoreufficio'" (event)="onChooseUser($event)">
+            </app-dropdown>
+            <ion-item>
+              <ion-label position="floating" class="ion-margin">Inserisci il PK Projects</ion-label>
+              <ion-input type="text" formControlName="pk_proj"></ion-input>
+            </ion-item>
+          </form>
+          <div class="ion-margin-vertical ion-text-right ">
+            <ion-button color="primary" fill="outline" shape="round" (click)="syncProject()">
+              <ion-icon slot="start" name="sync-circle-outline"></ion-icon>Sync
             </ion-button>
           </div>
         </ion-card-content>
