@@ -9,7 +9,7 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { environment } from '../environments/environment';
 import { SharedModule } from './shared/shared.module';
-import { MenuComponent } from './app-components/menu/menu.component';
+import { MenuComponent } from './menu/menu.component';
 
 @NgModule({
   declarations: [AppComponent, MenuComponent],

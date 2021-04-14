@@ -17,7 +17,6 @@ export class EditRoomModalComponent implements OnInit {
 
   constructor(
     private roomsService: RoomService,
-    private alertController: AlertController,
     private modalController: ModalController,
     private toastController: ToastController
   ) { }
@@ -50,7 +49,7 @@ export class EditRoomModalComponent implements OnInit {
           this.form.reset();
           this.closeModal();
         });
-        this.presentToast('Room Aggiornata', 'secondary');
+    this.presentToast('Room Aggiornata', 'secondary');
   }
 
   async presentToast(message: string, color: string) {

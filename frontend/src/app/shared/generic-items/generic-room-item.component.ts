@@ -13,8 +13,8 @@ import { NewRoomModalComponent } from '../modals/new-room-modal/new-room-modal.c
 export class GenericRoomItemComponent implements OnInit {
 
   @Input() room: Room;
-  linkProgetto: string;
   isFavourite: boolean;
+  baseUrl = 'https://www.collaudolive.com:9777/glasses_test/FrontEnd/src/index.php?q=';
 
   constructor(
     public router: Router,
@@ -25,12 +25,7 @@ export class GenericRoomItemComponent implements OnInit {
     public toastController: ToastController
   ) { }
 
-  ngOnInit() {
-    this.linkProgetto =
-      'https://www.collaudolive.com:9777/glasses_test/FrontEnd/src/index.php?q='
-      + this.room.projectID
-      + ((this.authService.currentRole === 'admin') ? '&useringresso=admin' : '');
-  }
+  ngOnInit() { }
 
   doRefresh(event) {
     this.roomService.loadRooms().subscribe(res => { event.target.complete(); });
@@ -51,9 +46,6 @@ export class GenericRoomItemComponent implements OnInit {
 
   /** Apre il modale di MODIFICA ROOM */
   editRoom(room?: Room, slidingItem?: IonItemSliding) {
-    console.log(room);
-
-
     if (slidingItem) slidingItem.close();
     if (room) this.room = room;
 
@@ -77,11 +69,8 @@ export class GenericRoomItemComponent implements OnInit {
     if (slidingItem) slidingItem.close();
     if (room) this.room = room;
 
-    this.linkProgetto =
-      'https://www.collaudolive.com:9777/glasses_test/FrontEnd/src/index.php?q='
-      + this.room.projectID
-      + ((this.authService.currentRole === 'admin') ? '&useringresso=admin' : '');
-    window.open(this.linkProgetto);
+    const linkProgetto = this.baseUrl + this.room.projectID + ((this.authService.currentRole === 'admin') ? '&useringresso=admin' : '');
+    window.open(linkProgetto);
   }
 
   /** Copia il link della ROOM */
@@ -89,17 +78,13 @@ export class GenericRoomItemComponent implements OnInit {
     if (slidingItem) slidingItem.close();
     if (room) this.room = room;
 
-    /* Copy the text inside the text field */
-    let dummy = document.createElement("textarea");
-    // to avoid breaking orgain page when copying more words
-    // cant copy when adding below this code
-    dummy.style.display = 'none'
-    document.body.appendChild(dummy);
-    //Be careful if you use texarea. setAttribute('value', value), which works with "input" does not work with "textarea". – Eduard
-    dummy.value = this.linkProgetto;
-    dummy.select();
-    document.execCommand("copy");
-    document.body.removeChild(dummy);
+    document.addEventListener('copy', (e: ClipboardEvent) => {
+      e.clipboardData.setData('text/plain', (this.baseUrl + this.room.projectID));
+      e.preventDefault();
+      document.removeEventListener('copy', null);
+    });
+    document.execCommand('copy');
+    this.presentToast('Link copiato.', 'secondary');
   }
 
   /** Avvia il download delle foto della ROOM */
@@ -143,7 +128,7 @@ export class GenericRoomItemComponent implements OnInit {
       message: message,
       color: color,
       duration: 2000,
-      buttons: [{ icon: 'close', role: 'cancel' }]
+      cssClass: 'custom-toast',
     })
     // FIX: si può fare in entrambi i modi, qual'è il più giusto?
     // .then(toastEl => toastEl.present());

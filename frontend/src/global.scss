@@ -98,3 +98,9 @@ div.fixed {
   bottom: 10px;
   width: 100%;
 }
+
+.custom-toast {
+  text-align: center;
+  --max-width: fit-content;
+  --border-radius: 50px;
+}
