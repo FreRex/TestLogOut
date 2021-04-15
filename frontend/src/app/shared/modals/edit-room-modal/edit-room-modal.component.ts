@@ -18,7 +18,6 @@ export class EditRoomModalComponent implements OnInit {
   constructor(
     private roomsService: RoomService,
     private modalController: ModalController,
-    private toastController: ToastController
   ) { }
 
   ngOnInit() {
@@ -45,33 +44,26 @@ export class EditRoomModalComponent implements OnInit {
         this.room.id,
         this.form.value.usermobile)
       .subscribe(
+        /** Il server risponde con 200 */
         res => {
-          /** Il server risponde con 200 ma non ha fatto cambiamenti (non so se esiste come risposta)
-          if(ok) this.modalController.dismiss({ message: 'room updated' }, 'ok');
-          else this.modalController.dismiss(null, 'cancel');
-          */
-          this.form.reset();
-          this.modalController.dismiss({ message: 'room updated' }, 'ok');
+          // non ci sono errori
+          if (res['affectedRows'] === 1) {
+            this.form.reset();
+            this.modalController.dismiss({ message: 'Room Aggiornata' }, 'ok');
+          }
+          // possibili errori
+          else {
+            this.form.reset();
+            this.modalController.dismiss({ message: res['message'] }, 'error');
+          }
         },
-        /** Il serrver risponde con un errore */
+        /** Il server risponde con un errore */
         err => {
           this.form.reset();
           this.modalController.dismiss({ message: err.error['text'] }, 'error');
         }
       );
-    this.presentToast('Room Aggiornata', 'secondary');
-  }
-
-  async presentToast(message: string, color: string) {
-    const toast = await this.toastController.create({
-      message: message,
-      color: color,
-      duration: 2000,
-      buttons: [{ icon: 'close', role: 'cancel' }]
-    })
-    // FIX: si può fare in entrambi i modi, qual'è il più giusto?
-    // .then(toastEl => toastEl.present());
-    toast.present();
+    // this.presentToast('Room Aggiornata', 'secondary');
   }
 
 }

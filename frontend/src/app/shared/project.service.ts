@@ -11,14 +11,14 @@ export interface ProjectData {
   collaudatoreufficio: string;
   pk_proj: number;
   nome: string;
+  datasincro: Date;
+  nodi_fisici: string;
+  nodi_ottici: string;
+  tratte: string;
+  conn_edif_opta: string;
   long_centro_map: string;
   lat_centro_map: string;
-  datasincro?: Date;
-  nodi_fisici?: string;
-  nodi_ottici?: string;
-  tratte?: string;
-  conn_edif_opta?: string;
-  idutente?: number;
+  idutente: number;
 }
 
 export interface Project {
@@ -26,15 +26,15 @@ export interface Project {
   collaudatoreufficio: string;
   pk_proj: number;
   nome: string;
+  datasincro: Date;
+  nodi_fisici: string;
+  nodi_ottici: string;
+  tratte: string;
+  conn_edif_opta: string;
   long_centro_map: string;
   lat_centro_map: string;
-  datasincro?: Date;
-  sync?: string;
-  nodi_fisici?: string;
-  nodi_ottici?: string;
-  tratte?: string;
-  conn_edif_opta?: string;
-  idutente?: number;
+  // idutente: number;
+  sync: string;
 }
 
 @Injectable({
@@ -90,15 +90,15 @@ export class ProjectService {
                 collaudatoreufficio: data[key].collaudatoreufficio,
                 pk_proj: data[key].pk_proj,
                 nome: data[key].nome,
-                long_centro_map: data[key].long_centro_map,
-                lat_centro_map: data[key].lat_centro_map,
                 datasincro: data[key].datasincro,
-                sync: (data[key].conn_edif_opta === 'CollaudoLiveGisfo:view_connessione_edificio_pta' ? 'auto' : 'manual'),
                 nodi_fisici: data[key].nodi_fisici,
                 nodi_ottici: data[key].nodi_ottici,
                 tratte: data[key].tratte,
                 conn_edif_opta: data[key].conn_edif_opta,
-                idutente: data[key].idprogetto,
+                long_centro_map: data[key].long_centro_map.replace(' ', '').trim(),
+                lat_centro_map: data[key].lat_centro_map.replace(' ', '').trim(),
+                // idutente: data[key].idprogetto,
+                sync: (data[key].conn_edif_opta === 'CollaudoLiveGisfo:view_connessione_edificio_pta' ? 'auto' : 'manual'),
               });
             }
           }
@@ -128,12 +128,12 @@ export class ProjectService {
     collaudatoreufficio: string,
     pk_proj: number,
     nome: string,
-    long_centro_map: string,
-    lat_centro_map: string,
     nodi_fisici: string,
     nodi_ottici: string,
     tratte: string,
     conn_edif_opta: string,
+    long_centro_map: string,
+    lat_centro_map: string,
   ) {
     let updatedProjetcs: Project[];
     const newProject =
@@ -142,14 +142,14 @@ export class ProjectService {
       collaudatoreufficio: collaudatoreufficio,
       pk_proj: pk_proj,
       nome: nome,
-      long_centro_map: long_centro_map,
-      lat_centro_map: lat_centro_map,
       datasincro: new Date(),
-      sync: 'manual',
       nodi_fisici: nodi_fisici,
       nodi_ottici: nodi_ottici,
       tratte: tratte,
       conn_edif_opta: conn_edif_opta,
+      long_centro_map: long_centro_map,
+      lat_centro_map: lat_centro_map,
+      sync: 'manual',
     }
     return this.projects$
       .pipe(
@@ -163,12 +163,12 @@ export class ProjectService {
                 "idutente": this.userService.getUserIdByName(collaudatoreufficio),
                 "pk_proj": pk_proj,
                 "nome": nome,
-                "long_centro_map": long_centro_map,
-                "lat_centro_map": lat_centro_map,
                 "nodi_fisici": nodi_fisici,
                 "nodi_ottici": nodi_ottici,
                 "tratte": tratte,
                 "conn_edif_opta": conn_edif_opta,
+                "long_centro_map": long_centro_map,
+                "lat_centro_map": lat_centro_map,
               },
               { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
             );
@@ -206,14 +206,14 @@ export class ProjectService {
             collaudatoreufficio: collaudatoreufficio,
             pk_proj: pk_proj,
             nome: nome,
-            long_centro_map: long_centro_map,
-            lat_centro_map: lat_centro_map,
             datasincro: oldProject.datasincro,
-            sync: oldProject.sync,
             nodi_fisici: oldProject.nodi_fisici,
             nodi_ottici: oldProject.nodi_ottici,
             tratte: oldProject.tratte,
             conn_edif_opta: oldProject.conn_edif_opta,
+            long_centro_map: long_centro_map,
+            lat_centro_map: lat_centro_map,
+            sync: oldProject.sync,
           };
           return this.http
             .put(

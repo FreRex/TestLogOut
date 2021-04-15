@@ -60,18 +60,28 @@ export class NewRoomModalComponent implements OnInit {
         this.form.value.nome_progetto,
         this.form.value.nome_collaudatore)
       .subscribe(
-        (res: HttpResponse<JSON>) => {
-          this.form.reset();
-          this.modalController.dismiss({ message: 'room saved' }, 'save');
+        /** Il server risponde con 200 */
+        res => {
+          // non ci sono errori
+          if (res['affectedRows'] === 1) {
+            this.form.reset();
+            this.modalController.dismiss({ message: 'Room Creata' }, 'ok');
+          }
+          // possibili errori
+          else {
+            this.form.reset();
+            this.modalController.dismiss({ message: res['message'] }, 'error');
+          }
         },
-        (err: HttpErrorResponse) => {
+        /** Il server risponde con un errore */
+        err => {
           this.form.reset();
           this.modalController.dismiss({ message: err.error['text'] }, 'error');
         }
       );
   }
 
-  onCancel() {
+  closeModal() {
     this.modalController.dismiss(null, 'cancel');
   }
 

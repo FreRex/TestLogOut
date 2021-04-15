@@ -30,7 +30,7 @@ export class GenericProjectItemComponent implements OnInit {
     this.projectService.loadProjects().subscribe(res => { event.target.complete(); });
   }
 
-  createProjectAuto() {
+  syncProject() {
     this.modalController
       .create({
         component: GisfoSyncModalComponent,
@@ -43,7 +43,7 @@ export class GenericProjectItemComponent implements OnInit {
       .then(res => console.log(res));
   }
 
-  createProjectManual() {
+  createProject() {
     this.modalController
       .create({
         component: UploadShpModalComponent,
@@ -51,6 +51,12 @@ export class GenericProjectItemComponent implements OnInit {
       .then((modalEl) => {
         modalEl.present();
         return modalEl.onDidDismiss();
+      }).then(res => {
+        if (res.role === 'ok') {
+          this.presentToast(res.data['message'], 'secondary');
+        } else if (res.role === 'error') {
+          this.presentToast(`Aggiornamento fallito.\n ${res.data['message']}`, 'danger', 5000);
+        }
       });
   }
 
@@ -74,9 +80,13 @@ export class GenericProjectItemComponent implements OnInit {
       }).then((modalEl) => {
         modalEl.present();
         return modalEl.onDidDismiss();
-      });/* .then(res => {
-                this.presentToast('Progetto Aggiornato', 'secondary');
-      }); */
+      }).then(res => {
+        if (res.role === 'ok') {
+          this.presentToast(res.data['message'], 'secondary');
+        } else if (res.role === 'error') {
+          this.presentToast(`Aggiornamento fallito.\n ${res.data['message']}`, 'danger', 5000);
+        }
+      });
   }
 
   deleteProject(project?: Project, slidingItem?: IonItemSliding) {
@@ -100,13 +110,14 @@ export class GenericProjectItemComponent implements OnInit {
     ).then(alertEl => { alertEl.present(); });
   }
 
-  async presentToast(message: string, color: string) {
+  async presentToast(message: string, color?: string, duration?: number) {
     const toast = await this.toastController.create({
       message: message,
-      color: color,
-      duration: 2000,
-      buttons: [{ icon: 'close', role: 'cancel' }]
+      color: color ? color : 'secondary',
+      duration: duration ? duration : 2000,
+      cssClass: 'custom-toast',
     })
+    // FIX: si può fare in entrambi i modi, qual'è il più giusto?
     // .then(toastEl => toastEl.present());
     toast.present();
   }
