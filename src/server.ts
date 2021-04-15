@@ -37,7 +37,7 @@ https.createServer({
     console.log(`https://www.collaudolive.com:${port}/test`); 
 
     console.log(`-------------------- SINCRODB ------------------------------`);
-    console.log(`https://www.collaudolive.com:${port}/sincrodb`); 
+    console.log(`https://www.collaudolive.com:${port}/sincrodb/42/129743824`);   
 
     console.log(`-------------------- FRONTEND ------------------------------`);
     console.log(`https://www.collaudolive.com:${port}/auth`); 

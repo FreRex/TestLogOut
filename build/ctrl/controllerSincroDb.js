@@ -1,5 +1,5 @@
 "use strict";
-exports.sincroDb = (req, res, next) => {
+exports.sincroDb = async (req, res, next) => {
     const { isNull } = require("util");
     const { Console } = require("console");
     const { Verify } = require("crypto");
@@ -7,7 +7,7 @@ exports.sincroDb = (req, res, next) => {
     // Data
     let db;
     let tableName;
-    let drawing;
+    ;
     let campiTabella;
     let campiTabellaCount;
     let valorecampiGisfo;
@@ -15,6 +15,8 @@ exports.sincroDb = (req, res, next) => {
     let datamodGisfo;
     let idpk;
     let idDataModifica = new Array();
+    let idutente = req.params.idutente;
+    let drawing = req.params.drawing;
     const mymodule = require('../conf/connInfo');
     //const mymodule = require('../conf/db');
     const pool_collaudolive = mymodule.conn_info_collaudolive_ssl_cry;
@@ -348,12 +350,75 @@ exports.sincroDb = (req, res, next) => {
         }
         return v;
     }
+    async function insertMysql(idutente, pk_proj) {
+        const sql = "SELECT * FROM information_schema.columns WHERE table_name = $1 order by ordinal_position asc";
+        const result = await pool_collaudolive.query(sql, [tableName]);
+        // NOME LOCALITA' -------------------------------- 
+        let nome = '';
+        const sql_name = { text: 'SELECT projects.pk_projects, projects.fk_comune, id_comune_decode.pk_comune, id_comune_decode.nome FROM newfont_dati.projects INNER JOIN newfont_dati.id_comune_decode ON projects.fk_comune = id_comune_decode.pk_comune WHERE projects.pk_projects = $1', rowMode: 'array' };
+        const namecolla = await pool_collaudolive.query(sql_name, [pk_proj]);
+        let namecolla1 = namecolla.rows;
+        // verifica presenza nome località su db 
+        if (namecolla1.length < 1) {
+            const sql_name2 = { text: 'SELECT projects.pk_projects, projects.name FROM newfont_dati.projects WHERE projects.pk_projects = $1', rowMode: 'array' };
+            const namecolla2 = await pool_collaudolive.query(sql_name2, [pk_proj]);
+            let namecolla3 = namecolla2.rows;
+            nome = namecolla3[0][1];
+        }
+        else {
+            nome = namecolla1[0][3];
+        }
+        console.log(nome);
+        // Coordinate 
+        let coord_terminazione;
+        const sql_coord = { text: 'SELECT coord_terminazione FROM newfont_dati.prj_nodes WHERE prj_nodes.coord_terminazione IS NOT NULL AND prj_nodes.drawing = $1 LIMIT 1', rowMode: 'array' };
+        const coordcolla = await pool_collaudolive.query(sql_coord, [pk_proj]);
+        let coordcolla1 = coordcolla.rows;
+        if (coordcolla1[0][0]) {
+            coord_terminazione = coordcolla1[0][0];
+        }
+        else {
+            coord_terminazione = '43.092922,12.361422';
+        }
+        console.log(coord_terminazione);
+        let coo = coord_terminazione.split(",");
+        let lat_centro_map;
+        let long_centro_map;
+        lat_centro_map = coo[0];
+        long_centro_map = coo[1];
+        console.log(lat_centro_map);
+        console.log(long_centro_map);
+        //SALVATAGGIO DATI IN rappre_prog_gisfo MYSQL
+        const db = require('../conf/db');
+        let nodi_fisici = 'CollaudoLiveGisfo:prj_nodes';
+        let nodi_ottici = 'CollaudoLiveGisfo:view_pcab_nodes';
+        let tratte = 'CollaudoLiveGisfo:prj_lines_trenches';
+        let conn_edif_opta = 'CollaudoLiveGisfo:view_connessione_edificio_pta';
+        //Controllo presenza pk_proj in tabella "rappre_prog_gisfo"        
+        //let sqlSelect: any = 'SELECT pk_proj FROM rappre_prog_gisfo WHERE pk_proj = '+pk_proj+'';
+        //console.log(sqlSelect);
+        let sqlSelect = "SELECT pk_proj FROM rappre_prog_gisfo WHERE pk_proj = ?";
+        let datiMysql = [pk_proj];
+        await db.query(sqlSelect, datiMysql, function (err, result, fields) {
+            //await db.query(sqlSelect, function (err: any, result: any, fields: any) {    
+            //if (err) throw err;          
+            if (result.length < 1) {
+                let queryInsert = [idutente, pk_proj, nome, nodi_fisici, nodi_ottici, tratte, conn_edif_opta, long_centro_map, lat_centro_map];
+                let sqlInsert = "INSERT INTO rappre_prog_gisfo (idutente, pk_proj, nome, nodi_fisici, nodi_ottici, tratte, conn_edif_opta, long_centro_map, lat_centro_map) VALUES (?,?,?,?,?,?,?,?,?)";
+                db.query(sqlInsert, queryInsert);
+            }
+            else {
+                console.log('pk_proj già presente nella tabella "rappre_prog_gisfo" ');
+            }
+        });
+    }
     //----------------------------------------------------------------
     // Funzione Principale (main)
-    async function main(drawing) {
+    async function main(idutente, drawing) {
+        console.log(idutente);
+        console.log(drawing);
         let tableName = ["area_pfs", "fib_joints", "fib_ports", "pcab_nodes", "prj_lines_trenches", "prj_nodes", "splitter_primario", "splitter_secondario", "projects"];
         //let tableName = ["area_pfs", "fib_joints"];      
-        //let drawing=138472866;
         let y;
         let drawingProjects;
         for (y = 0; y < tableName.length; y++) {
@@ -378,74 +443,36 @@ exports.sincroDb = (req, res, next) => {
                 console.log('=====================================================');
             }
             else {
-                await ConnessioneCollaudoLive();
-                await QueryXCampiCollaudoLive(tableName[y]);
-                await ConnessioneGisfo();
-                await QuerySelectGisfo(campiTabellaCount, campiTabella, drawing, idDataModifica, tableName[y], drawingProjects);
-                await delRecCollaudoLive(tableName[y], drawing, drawingProjects);
+                /*
+                  await ConnessioneCollaudoLive();
+                  await QueryXCampiCollaudoLive(tableName[y]);
+                  await ConnessioneGisfo();
+                  await QuerySelectGisfo(campiTabellaCount,campiTabella,drawing,idDataModifica,tableName[y],drawingProjects);
+                  await delRecCollaudoLive(tableName[y],drawing,drawingProjects);
+                 */
             }
             idDataModifica = [];
         }
+        //--Postgresql
+        await ConnessioneCollaudoLive();
+        //console.log(await comune(drawing))
+        //--Mysql
+        await insertMysql(idutente, drawing);
     }
-    //Pee test
-    drawing = 1580779760;
+    //Per test
+    //idutente=42;
+    //drawing=129743824;
     //-----------------
-    main(drawing).then(() => {
-        //res.status(status).send('2');
+    try {
+        await main(idutente, drawing);
         res.json(true);
         console.error('OPERAZIONE COMPLETATA.');
-        process.exit(0);
-    })
-        .catch((err) => {
+    }
+    catch (err) {
         res.json(false);
         //res.status(status).send('Error: %s', err);
         //res.send('Error: %s', err); 
         console.error('Error: %s', err);
         console.error('Error: %s', err.stack);
-        process.exit(1);
-    });
-    /*
-    //--------------------------- MAIN ----------------------
-    let express = require('express')
-    let cors = require('cors')
-    let fs = require('fs')
-    let https = require('https')
-    let app = express()
-    
-    app.use(cors());
-    
-    app.get('/sincroDb', function(req: { query: { pk_proj: any; }; }, res: { send: (arg0: string) => void; }) {
-    
-        //res.send('Elaborazione iniziata !');
-    
-        let drawing=req.query.pk_proj;
-    
-        console.log('drawing: '+drawing)
-    
-        main(drawing).then (() => {
-            //res.status(status).send('2');
-            res.send('1');
-            console.error('OPERAZIONE COMPLETATA.');
-            process.exit(0);
-        })
-        .catch((err) => {
-            res.send('0');
-            //res.status(status).send('Error: %s', err);
-            //res.send('Error: %s', err);
-            console.error('Error: %s', err);
-            console.error('Error: %s', err.stack);
-            process.exit(1);
-        });
-        
-    });
-    
-    https.createServer({
-        key: fs.readFileSync('/etc/letsencrypt/live/www.collaudolive.com/privkey.pem'),
-        cert: fs.readFileSync('/etc/letsencrypt/live/www.collaudolive.com/cert.pem')
-      }, app)
-      
-      .listen(9333, function () {
-        console.log('https://www.collaudolive.com:9333/sincroDb?pk_proj=1556180108')
-      })
-   */
+    }
 };

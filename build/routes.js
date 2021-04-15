@@ -35,13 +35,13 @@ router.use(function (req, res, next) {
 //----------------------------------------------------------------------------------------------------
 //---------------------------------------------------------------------
 //Test
-router.post('/test/:username', controllerTest.test);
+router.get('/test/', controllerTest.test);
 //--------------------------------------------------------------------
 //Downloadzip (download foto compresse)
 router.get('/checkdownloadzip/:folderzip/', controllerDownloadZip.CheckDownloadZip);
 router.get('/downloadzip/:folderzip/', controllerDownloadZip.DownloadZip);
 //SincroDb
-router.get('/sincrodb/', controllerSincroDb.sincroDb);
+router.get('/sincrodb/:idutente?/:drawing?', controllerSincroDb.sincroDb);
 //Token
 router.post('/token/', controllerToken.getToken);
 //VidApp (riavvio Node Media Server)
