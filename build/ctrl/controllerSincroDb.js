@@ -18,7 +18,7 @@ exports.sincroDb = async (req, res, next) => {
     let idutente = req.params.idutente;
     let drawing = req.params.drawing;
     const mymodule = require('../conf/connInfo');
-    //const mymodule = require('../conf/db');
+    const sincroDbMysql = require('.././middleware/sincroDbMysql');
     const pool_collaudolive = mymodule.conn_info_collaudolive_ssl_cry;
     const pool_gisfo = mymodule.conn_info_gisfo_ssl_cry;
     // Funzioni Connessioni
@@ -303,13 +303,10 @@ exports.sincroDb = async (req, res, next) => {
                 let res_confrontaDatamodifica_gisfo = result_confrontaDatamodifica_gisfo.rows;
                 let dataconfGisfo0 = formattaData(res_confrontaDatamodifica_gisfo[0][0]);
             }
-            //Formattazione data       
+            //Formattazione data           
             dataconfGisfo = formattaData(dataconfGisfo0);
             dataconfGisfo1 = new Date(dataconfGisfo);
             dataconfGisfo2 = dataconfGisfo1.getTime();
-            //console.log("Data Gisfo: " +dataconfGisfo);
-            //console.log("Data Gisfo1: " +dataconfGisfo1);
-            //console.log("Data Gisfo2: " + dataconfGisfo2);
             //Verifica se datamodifica in Gisfo aggiornata
             if ((dataconfGisfo2 - dataconfCollaudoLive2 == 0)) {
                 //NON presente alcuna datamodifica aggiornata in Gisfo        
@@ -395,17 +392,17 @@ exports.sincroDb = async (req, res, next) => {
         let tratte = 'CollaudoLiveGisfo:prj_lines_trenches';
         let conn_edif_opta = 'CollaudoLiveGisfo:view_connessione_edificio_pta';
         //Controllo presenza pk_proj in tabella "rappre_prog_gisfo"        
-        //let sqlSelect: any = 'SELECT pk_proj FROM rappre_prog_gisfo WHERE pk_proj = '+pk_proj+'';
-        //console.log(sqlSelect);
+        //let sqlSelect: any = 'SELECT pk_proj FROM rappre_prog_gisfo WHERE pk_proj = '+pk_proj+'';               
         let sqlSelect = "SELECT pk_proj FROM rappre_prog_gisfo WHERE pk_proj = ?";
         let datiMysql = [pk_proj];
         await db.query(sqlSelect, datiMysql, function (err, result, fields) {
-            //await db.query(sqlSelect, function (err: any, result: any, fields: any) {    
-            //if (err) throw err;          
             if (result.length < 1) {
+                //Creazione Progetto su Collaudolive              
                 let queryInsert = [idutente, pk_proj, nome, nodi_fisici, nodi_ottici, tratte, conn_edif_opta, long_centro_map, lat_centro_map];
                 let sqlInsert = "INSERT INTO rappre_prog_gisfo (idutente, pk_proj, nome, nodi_fisici, nodi_ottici, tratte, conn_edif_opta, long_centro_map, lat_centro_map) VALUES (?,?,?,?,?,?,?,?,?)";
                 db.query(sqlInsert, queryInsert);
+                // Creazione room su Collaudolive
+                sincroDbMysql.sincroDbMysqlMultistreaming(pk_proj, nome, idutente);
             }
             else {
                 console.log('pk_proj già presente nella tabella "rappre_prog_gisfo" ');
