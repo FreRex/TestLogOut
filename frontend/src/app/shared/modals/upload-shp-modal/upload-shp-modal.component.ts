@@ -18,7 +18,7 @@ export class UploadShpModalComponent implements OnInit {
   isListOpen: boolean = false;
 
   constructor(
-    private modalCtrl: ModalController,
+    private modalController: ModalController,
     private userService: UserService,
     private projectService: ProjectService
   ) { }
@@ -71,11 +71,11 @@ export class UploadShpModalComponent implements OnInit {
 
   createProject() {
     if (!this.form.valid) { return; }
-    const coords = this.form.value.coordinate.split(",");
+    const coords = this.form.value.coordinate.replace(' ', '').split(",");
     this.projectService
       .addProject(
         this.form.value.collaudatoreufficio,
-        this.form.value.pk_proj,
+        +this.form.value.pk_proj,
         this.form.value.nome,
         this.form.value.nodi_fisici,
         this.form.value.nodi_ottici,
@@ -84,14 +84,28 @@ export class UploadShpModalComponent implements OnInit {
         coords[1].slice(0, 14),
         coords[0].slice(0, 14),
       ).subscribe(
+        /** Il server risponde con 200 */
         res => {
-          this.form.reset();
-          this.modalCtrl.dismiss({ message: 'project created' }, 'ok');
+          // non ci sono errori
+          if (res['affectedRows'] === 1) {
+            this.form.reset();
+            this.modalController.dismiss({ message: 'Progetto Creato' }, 'ok');
+          }
+          // possibili errori
+          else {
+            this.form.reset();
+            this.modalController.dismiss({ message: res['message'] }, 'error');
+          }
         },
+        /** Il server risponde con un errore */
+        err => {
+          this.form.reset();
+          this.modalController.dismiss({ message: err.error['text'] }, 'error');
+        }
       );
   }
 
   closeModal() {
-    this.modalCtrl.dismiss(UploadShpModalComponent);
+    this.modalController.dismiss(null, 'cancel');
   }
 }

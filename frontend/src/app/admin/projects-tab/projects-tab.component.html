@@ -2,11 +2,11 @@
 <div class="searchbarAdd">
   <ion-searchbar class="search-bar" (ionInput)="searchStream$.next($event.target.value)"></ion-searchbar>
   <!-- Create Project Button -->
-  <ion-button color="secondary" (click)="createProjectManual()">
+  <ion-button color="secondary" (click)="createProject()">
     <ion-icon name="add" slot="icon-only"></ion-icon>
   </ion-button>
   <!-- Sync Project Button -->
-  <ion-button color="secondary" (click)="createProjectAuto()">
+  <ion-button color="secondary" (click)="syncProject()">
     <ion-icon name="cloud-download-outline" slot="icon-only"></ion-icon>
   </ion-button>
 </div>

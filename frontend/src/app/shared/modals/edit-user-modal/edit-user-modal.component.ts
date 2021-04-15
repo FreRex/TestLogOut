@@ -15,9 +15,8 @@ export class EditUserModalComponent implements OnInit {
   user: User;
 
   constructor(
-    private modalCtrl: ModalController,
+    private modalController: ModalController,
     private userService: UserService,
-    private toastController: ToastController
   ) { }
 
   ngOnInit() {
@@ -40,35 +39,36 @@ export class EditUserModalComponent implements OnInit {
     });
   }
 
-  closeModal() {
-    this.modalCtrl.dismiss(EditUserModalComponent);
-  }
-
   updateUser() {
-    if (!this.form.valid) {
-      return
-    }
+    if (!this.form.valid) { return }
     this.userService.updateUser(
       this.form.value.collaudatoreufficio,
       this.form.value.username,
       this.form.value.password,
       this.user.id
-    ).subscribe(res => {
-      this.form.reset();
-      this.closeModal();
-    });
-    this.presentToast('Utente Aggiornato', 'secondary')
+    ).subscribe(
+      /** Il server risponde con 200 */
+      res => {
+        // non ci sono errori
+        if (res['affectedRows'] === 1) {
+          this.form.reset();
+          this.modalController.dismiss({ message: 'Utente Aggiornato' }, 'ok');
+        }
+        // possibili errori
+        else {
+          this.form.reset();
+          this.modalController.dismiss({ message: res['message'] }, 'error');
+        }
+      },
+      /** Il server risponde con un errore */
+      err => {
+        this.form.reset();
+        this.modalController.dismiss({ message: err.error['text'] }, 'error');
+      }
+    );
   }
 
-  async presentToast(message: string, color: string) {
-    const toast = await this.toastController.create({
-        message: message,
-        color: color,
-        duration: 2000,
-        buttons: [{ icon: 'close', role: 'cancel' }]
-    })
-    // FIX: si può fare in entrambi i modi, qual'è il più giusto?
-    // .then(toastEl => toastEl.present());
-    toast.present();
-}
+  closeModal() {
+    this.modalController.dismiss(null, 'cancel');
+  }
 }

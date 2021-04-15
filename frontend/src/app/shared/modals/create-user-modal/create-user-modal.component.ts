@@ -13,7 +13,7 @@ export class CreateUserModalComponent implements OnInit {
   form: FormGroup;
 
   constructor(
-    private modalCtrl: ModalController,
+    private modalController: ModalController,
     private userService: UserService
   ) { }
 
@@ -33,7 +33,7 @@ export class CreateUserModalComponent implements OnInit {
       }),
       autorizzazioni: new FormControl(null, {
         updateOn: 'blur',
-        validators: [Validators.required, Validators.maxLength(1)]
+        validators: [Validators.required, Validators.maxLength(10)]
       }),
     });
   }
@@ -47,13 +47,27 @@ export class CreateUserModalComponent implements OnInit {
         this.form.value.password,
         this.form.value.autorizzazioni)
       .subscribe(
+        /** Il server risponde con 200 */
         res => {
-          this.form.reset();
-          this.modalCtrl.dismiss({ message: 'user create' }, 'save');
+          // non ci sono errori
+          if (res['affectedRows'] === 1) {
+            this.form.reset();
+            this.modalController.dismiss({ message: 'Utente Creato' }, 'ok');
+          }
+          // possibili errori
+          else {
+            this.form.reset();
+            this.modalController.dismiss({ message: res['message'] }, 'error');
+          }
         },
+        /** Il server risponde con un errore */
+        err => {
+          this.form.reset();
+          this.modalController.dismiss({ message: err.error['text'] }, 'error');
+        }
       );
   }
   closeModal() {
-    this.modalCtrl.dismiss(CreateUserModalComponent);
+    this.modalController.dismiss(null, 'cancel');
   }
 }

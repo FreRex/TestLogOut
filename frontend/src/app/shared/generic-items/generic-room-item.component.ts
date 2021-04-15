@@ -41,6 +41,12 @@ export class GenericRoomItemComponent implements OnInit {
       .then(modalEl => {
         modalEl.present();
         return modalEl.onDidDismiss();
+      }).then(res => {
+        if (res.role === 'ok') {
+          this.presentToast(res.data['message'], 'secondary');
+        } else if (res.role === 'error') {
+          this.presentToast(`Aggiornamento fallito.\n ${res.data['message']}`, 'danger', 5000);
+        }
       });
   }
 
@@ -53,15 +59,17 @@ export class GenericRoomItemComponent implements OnInit {
       .create({
         component: EditRoomModalComponent,
         backdropDismiss: false,
-        cssClass: 'test-custom-modal-css',
         componentProps: { roomId: this.room.id }
-      })
-      .then(modalEl => {
+      }).then(modalEl => {
         modalEl.present();
         return modalEl.onDidDismiss();
-      });/*.then(res => {
-            this.presentToast('Room Aggiornata', 'secondary');
-      }); */
+      }).then(res => {
+        if (res.role === 'ok') {
+          this.presentToast(res.data['message'], 'secondary');
+        } else if (res.role === 'error') {
+          this.presentToast(`Aggiornamento fallito.\n ${res.data['message']}`, 'danger', 5000);
+        }
+      });
   }
 
   /** Apre il link della ROOM */
@@ -123,11 +131,11 @@ export class GenericRoomItemComponent implements OnInit {
     ).then(alertEl => { alertEl.present(); });
   }
 
-  async presentToast(message: string, color: string) {
+  async presentToast(message: string, color?: string, duration?: number) {
     const toast = await this.toastController.create({
       message: message,
-      color: color,
-      duration: 2000,
+      color: color ? color : 'secondary',
+      duration: duration ? duration : 2000,
       cssClass: 'custom-toast',
     })
     // FIX: si può fare in entrambi i modi, qual'è il più giusto?

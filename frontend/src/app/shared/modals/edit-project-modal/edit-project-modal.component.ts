@@ -40,7 +40,7 @@ export class EditProjectModalComponent implements OnInit {
           updateOn: 'blur',
           validators: [Validators.required, Validators.maxLength(50)],
         }),
-        coordinate: new FormControl(`${this.project.lat_centro_map} , ${this.project.long_centro_map}`, {
+        coordinate: new FormControl(`${this.project.lat_centro_map}, ${this.project.long_centro_map}`, {
           updateOn: 'blur',
           validators: [Validators.required, Validators.maxLength(100)],
         }),
@@ -48,44 +48,48 @@ export class EditProjectModalComponent implements OnInit {
     });
   }
 
-  closeModal() {
-    this.modalController.dismiss(EditProjectModalComponent);
-  }
-
-  updateProject() {
-    if (!this.form.valid) { return; }
-    const coords = this.form.value.coordinate.split(",");
-    this.projectService
-      .updateProject(
-        this.project.idprogetto,
-        this.form.value.collaudatoreufficio,
-        this.project.pk_proj,
-        this.form.value.nome,
-        coords[1].slice(0,14),
-        coords[0].slice(0,14),
-      ).subscribe(res => {
-        this.form.reset();
-        this.closeModal();
-      });
-      this.presentToast('Progetto Aggiornato', 'secondary');
-  }
-
-  async presentToast(message: string, color: string) {
-    const toast = await this.toastController.create({
-        message: message,
-        color: color,
-        duration: 2000,
-        buttons: [{ icon: 'close', role: 'cancel' }]
-    })
-    // .then(toastEl => toastEl.present());
-    toast.present();
-}
-
   onChooseUser(user: User) {
     this.isListOpen = false;
     this.selectedUser = user;
     this.form.patchValue({
       collaudatoreufficio: this.selectedUser.collaudatoreufficio,
     });
+  }
+
+  updateProject() {
+    if (!this.form.valid) { return; }
+    const coords = this.form.value.coordinate.replace(' ', '').split(",");
+    this.projectService
+      .updateProject(
+        this.project.idprogetto,
+        this.form.value.collaudatoreufficio,
+        this.project.pk_proj,
+        this.form.value.nome,
+        coords[1].slice(0, 14),
+        coords[0].slice(0, 14),
+      ).subscribe(
+        /** Il server risponde con 200 */
+        res => {
+          // non ci sono errori
+          if (res['affectedRows'] === 1) {
+            this.form.reset();
+            this.modalController.dismiss({ message: 'Progetto Aggiornato' }, 'ok');
+          }
+          // possibili errori
+          else {
+            this.form.reset();
+            this.modalController.dismiss({ message: res['message'] }, 'error');
+          }
+        },
+        /** Il server risponde con un errore */
+        err => {
+          this.form.reset();
+          this.modalController.dismiss({ message: err.error['text'] }, 'error');
+        }
+      );
+  }
+
+  closeModal() {
+    this.modalController.dismiss(null, 'cancel');
   }
 }

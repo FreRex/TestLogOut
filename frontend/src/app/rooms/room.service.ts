@@ -207,7 +207,7 @@ export class RoomService {
               `${environment.apiUrl}/ur`,
               {
                 "id": roomId,
-                "usermobile": newUsermobile
+                // "usermobile": newUsermobile
               },
               { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
             );
