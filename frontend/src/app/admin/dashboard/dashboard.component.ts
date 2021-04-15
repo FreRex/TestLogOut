@@ -3,6 +3,7 @@ import { Component, ElementRef, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { AlertController, ToastController } from '@ionic/angular';
 import { Observable } from 'rxjs';
+import { delay, tap } from 'rxjs/operators';
 import { ProjectService } from 'src/app/shared/project.service';
 import { User, UserService } from 'src/app/shared/user.service';
 import { environment } from 'src/environments/environment';
@@ -45,14 +46,29 @@ export class DashboardComponent implements OnInit {
   syncProject() {
     if (!this.form.valid) { return; }
 
+    console.log('diomeda');
+
+    this.toastController.create({
+      message: 'Click to Close',
+      position: 'top',
+      buttons: [{
+        text: 'Done',
+        role: 'cancel',
+        handler: () => { console.log('Cancel clicked'); }
+      }]
+    }).then(toastEl => {
+      toastEl.present();
+      return toastEl.onDidDismiss();
+    }).then(res => {
+      console.log('onDidDismiss resolved with role', res.role);
+    });
+
     this.projectService
       .syncProject(
         this.form.value.collaudatoreufficio,
         this.form.value.pk_proj
       ).subscribe(
-        res => {
-          console.log(res);
-        }
+        res => console.log('end', res)
       );
   }
 

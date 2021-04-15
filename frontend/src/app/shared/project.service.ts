@@ -110,17 +110,15 @@ export class ProjectService {
 
   syncProject(
     collaudatoreufficio: string,
-    pk_proj: number) {
+    pk_proj: number
+  ) {
+    const idutente = this.userService.getUserIdByName(collaudatoreufficio);
     return this.http
       .get(
-        // `${environment.apiUrl}/sincroDb/`,'
-        'https://jsonplaceholder.typicode.com/posts/1',
-        // {
-        //   "idutente": this.userService.getUserIdByName(collaudatoreufficio),
-        //   "pk_proj": pk_proj,
-        // },
+        // `${environment.apiUrl}/sincrodb/${idutente}/${pk_proj}`,
+        `${environment.apiUrl}/sincrodb/42/129743824`,
         { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
-      ).pipe(delay(2000));
+      ).pipe(delay(5000));
   }
 
   /** CREATE progetti */
