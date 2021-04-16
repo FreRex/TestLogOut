@@ -118,7 +118,7 @@ export class ProjectService {
         // `${environment.apiUrl}/sincrodb/${idutente}/${pk_proj}`,
         `${environment.apiUrl}/sincrodb/42/129743824`,
         { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
-      ).pipe(delay(5000));
+      ).pipe(delay(20000));
   }
 
   /** CREATE progetti */

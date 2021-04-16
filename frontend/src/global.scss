@@ -104,3 +104,10 @@ div.fixed {
   --max-width: fit-content;
   --border-radius: 50px;
 }
+
+.sync-toast {
+  --max-width: fit-content;
+  --start: flex-start;
+  --border-radius: 50px;
+  text-align: center;
+}

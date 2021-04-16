@@ -8,6 +8,12 @@ import { ProjectService } from 'src/app/shared/project.service';
 import { User, UserService } from 'src/app/shared/user.service';
 import { environment } from 'src/environments/environment';
 
+export interface Log {
+  pk_proj: string;
+  message: string;
+  date: Date;
+}
+
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -20,7 +26,8 @@ export class DashboardComponent implements OnInit {
   selectedUser: User;
   isListOpen: boolean = false;
   coordinate: string = '';
-  log: [] = [];
+  logs: Log[] = [];
+  syncToast: HTMLIonToastElement;
 
   constructor(
     private toastController: ToastController,
@@ -47,30 +54,43 @@ export class DashboardComponent implements OnInit {
   syncProject() {
     if (!this.form.valid) { return; }
 
-    console.log('diomeda');
-
     this.toastController.create({
-      message: 'Click to Close',
-      position: 'top',
-      buttons: [{
-        text: 'Done',
-        role: 'cancel',
-        handler: () => { console.log('Cancel clicked'); }
-      }]
+      message: 'Sincronizzazione in corso...',
+      position: 'bottom',
+      cssClass: 'sync-toast',
+      color: 'secondary'
     }).then(toastEl => {
       toastEl.present();
+      this.logs.push(
+        {
+          pk_proj: this.form.value.pk_proj,
+          message: 'Sync started',
+          date: new Date()
+        }
+      );
+      this.projectService
+        .syncProject(
+          this.form.value.collaudatoreufficio,
+          this.form.value.pk_proj
+        ).subscribe(
+          res => {
+            toastEl.dismiss();
+            this.logs.push(
+              {
+                pk_proj: this.form.value.pk_proj,
+                message: 'Sync ended',
+                date: new Date()
+              }
+            );
+            // this.presentToast('Sincronizzazione effettuata');
+          }
+        );
       return toastEl.onDidDismiss();
     }).then(res => {
       console.log('onDidDismiss resolved with role', res.role);
     });
 
-    this.projectService
-      .syncProject(
-        this.form.value.collaudatoreufficio,
-        this.form.value.pk_proj
-      ).subscribe(
-        res => console.log('end', res)
-      );
+
   }
 
   onChooseUser(user: User) {
@@ -120,7 +140,8 @@ export class DashboardComponent implements OnInit {
       color: color ? color : 'secondary',
       cssClass: 'custom-toast',
       duration: 2000
-    })
+    });
+    toast.present();
   }
 
 }
