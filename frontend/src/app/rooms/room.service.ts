@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, map, switchMap, take, tap } from 'rxjs/operators';
@@ -207,7 +207,7 @@ export class RoomService {
               `${environment.apiUrl}/ur`,
               {
                 "id": roomId,
-                // "usermobile": newUsermobile
+                "usermobile": newUsermobile
               },
               { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
             );
@@ -246,6 +246,18 @@ export class RoomService {
     return this.http.get(
       `${environment.apiUrl}/checkdownloadzip/${nomeProgetto}`,
       { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) });
+  }
+
+  downloadFoto(nomeProgetto: string) {
+    return this.http.get(
+      `${environment.apiUrl}/downloadzip/${nomeProgetto}`,
+      {
+        responseType: 'arraybuffer',
+        reportProgress: true,
+        observe: 'events',
+        headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`)
+      }
+    );
   }
 
 }

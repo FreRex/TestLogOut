@@ -5,6 +5,7 @@ import { AlertController, ToastController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { delay, tap } from 'rxjs/operators';
 import { ProjectService } from 'src/app/shared/project.service';
+import { UiManagerService } from 'src/app/shared/ui-manager.service';
 import { User, UserService } from 'src/app/shared/user.service';
 import { environment } from 'src/environments/environment';
 
@@ -34,7 +35,8 @@ export class DashboardComponent implements OnInit {
     private alertController: AlertController,
     private http: HttpClient,
     private userService: UserService,
-    private projectService: ProjectService
+    private projectService: ProjectService,
+    private uiManager: UiManagerService
   ) { }
 
   ngOnInit() {
@@ -53,6 +55,18 @@ export class DashboardComponent implements OnInit {
 
   syncProject() {
     if (!this.form.valid) { return; }
+
+    // this.uiManager.createSyncToast();
+    // this.projectService
+    //   .syncProject(
+    //     this.form.value.collaudatoreufficio,
+    //     this.form.value.pk_proj
+    //   ).subscribe(
+    //     res => {
+    //       this.uiManager.didsmissSyncToast();
+    //       // TODO: ricaricare room e progetti alla fine della sincronizzazione
+    //     }
+    //   );
 
     this.toastController.create({
       message: 'Sincronizzazione in corso...',
@@ -82,7 +96,7 @@ export class DashboardComponent implements OnInit {
                 date: new Date()
               }
             );
-            // this.presentToast('Sincronizzazione effettuata');
+            // TODO: ricaricare room e progetti all fine della sincronizzazione
           }
         );
       return toastEl.onDidDismiss();
