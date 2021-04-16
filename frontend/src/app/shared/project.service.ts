@@ -115,8 +115,8 @@ export class ProjectService {
     const idutente = this.userService.getUserIdByName(collaudatoreufficio);
     return this.http
       .get(
-        // `${environment.apiUrl}/sincrodb/${idutente}/${pk_proj}`,
-        `${environment.apiUrl}/sincrodb/42/129743824`,
+        `${environment.apiUrl}/sincrodb/${idutente}/${pk_proj}`,
+        // `${environment.apiUrl}/sincrodb/42/129743824`,
         { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
       ).pipe(delay(20000));
   }
