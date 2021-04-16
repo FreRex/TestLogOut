@@ -20,6 +20,7 @@ export class DashboardComponent implements OnInit {
   selectedUser: User;
   isListOpen: boolean = false;
   coordinate: string = '';
+  log: [] = [];
 
   constructor(
     private toastController: ToastController,

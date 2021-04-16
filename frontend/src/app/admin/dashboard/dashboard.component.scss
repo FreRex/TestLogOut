@@ -1,0 +1,147 @@
+.nperf-card{
+    height: 30vh;
+
+}
+
+.gisfo-sync-card{
+    overflow: auto;
+    height: 40vh;
+
+}
+
+.console{
+    --background: var(--ion-color-dark);
+    height: 70vh;
+
+}
+
+.colorW{
+    color: #fff;
+}
+
+
+
+
+/* console */
+.flexdirLog{
+    display: flex;
+    flex-direction: row;
+}
+
+.outputLog{
+    color: #fff;
+}
+
+.line{
+    color: #fff;
+    -webkit-animation: type .5s 10.75s steps(20, end) forwards;
+    -moz-animation: type .5s 10.75s steps(20, end) forwards;
+    -o-animation: type .5s 10.75s steps(20, end) forwards;
+    animation: type .5s 10.75s steps(20, end) forwards;
+  }
+
+.cursor {
+    -webkit-animation: blink 1s  infinite;
+    -moz-animation: blink 1s  infinite;
+    -o-animation: blink 1s  infinite;
+    animation: blink 1s  infinite;
+  }
+
+
+  
+  @-webkit-keyframes blink {
+    0% {
+      opacity: 0;
+    }
+    40% {
+      opacity: 0;
+    }
+    50% {
+      opacity: 1;
+    }
+    90% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+  
+  @-moz-keyframes blink {
+    0% {
+      opacity: 0;
+    }
+    40% {
+      opacity: 0;
+    }
+    50% {
+      opacity: 1;
+    }
+    90% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+  
+  @-o-keyframes blink {
+    0% {
+      opacity: 0;
+    }
+    40% {
+      opacity: 0;
+    }
+    50% {
+      opacity: 1;
+    }
+    90% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+  
+  @keyframes blink {
+    0% {
+      opacity: 0;
+    }
+    40% {
+      opacity: 0;
+    }
+    50% {
+      opacity: 1;
+    }
+    90% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+
+  
+@-webkit-keyframes type {
+    to {
+      width: 17em;
+    }
+  }
+  
+  @-moz-keyframes type {
+    to {
+      width: 17em;
+    }
+  }
+  
+  @-o-keyframes type {
+    to {
+      width: 17em;
+    }
+  }
+  
+  @keyframes type {
+    to {
+      width: 17em;
+    }
+  }
