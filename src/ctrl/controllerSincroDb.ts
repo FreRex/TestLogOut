@@ -1,9 +1,12 @@
-exports.sincroDb = async (req: any, res: any, next: any) => {    
+//exports.sincroDb = async (req: any, res: any, next: any) => {   
+exports.sincroDb = async (req: any, res: any, next: any) => {  
 
     const { isNull } = require("util");
     const { Console } = require("console");
     const { Verify } = require("crypto");
     const Pool = require("pg").Pool;
+    const dateFormat = require("dateformat");
+    const now = new Date();
     
     // Data
     let db;
@@ -17,6 +20,7 @@ exports.sincroDb = async (req: any, res: any, next: any) => {
     let idDataModifica = new Array(); 
     let idutente: number = req.params.idutente;
     let drawing: number = req.params.drawing;
+    let codicecasuale: string = req.params.codicecasuale;
         
     
     const mymodule = require('../conf/connInfo');
@@ -455,72 +459,73 @@ exports.sincroDb = async (req: any, res: any, next: any) => {
         return v;
     }
     
-    async function insertMysql(idutente: number, pk_proj: number){ 
+    async function insertMysql(idutente: number, pk_proj: number, codicecasuale: string){ 
 
-        const sql = "SELECT * FROM information_schema.columns WHERE table_name = $1 order by ordinal_position asc";    
-        const result = await pool_collaudolive.query(sql,[tableName])     
-
-        // NOME LOCALITA' -------------------------------- 
-        let nome: string = '';
-        const sql_name = {text: 'SELECT projects.pk_projects, projects.fk_comune, id_comune_decode.pk_comune, id_comune_decode.nome FROM newfont_dati.projects INNER JOIN newfont_dati.id_comune_decode ON projects.fk_comune = id_comune_decode.pk_comune WHERE projects.pk_projects = $1', rowMode: 'array'};
-		const namecolla = await pool_collaudolive.query(sql_name,[pk_proj]);
-        let namecolla1 = namecolla.rows;
-        
-        // verifica presenza nome località su db 
-        if(namecolla1.length < 1){
-            const sql_name2 = {text: 'SELECT projects.pk_projects, projects.name FROM newfont_dati.projects WHERE projects.pk_projects = $1', rowMode: 'array'};
-            const namecolla2 = await pool_collaudolive.query(sql_name2,[pk_proj]);
-            let namecolla3 = namecolla2.rows;
-            nome = namecolla3[0][1];
-        }
-        else{
-            nome = namecolla1[0][3];
-        }
-
-        console.log(nome);  
-        
-        // Coordinate 
-        let coord_terminazione: string;	
-        const sql_coord = {text: 'SELECT coord_terminazione FROM newfont_dati.prj_nodes WHERE prj_nodes.coord_terminazione IS NOT NULL AND prj_nodes.drawing = $1 LIMIT 1', rowMode: 'array'};
-		const coordcolla = await pool_collaudolive.query(sql_coord,[pk_proj]);
-        let coordcolla1 = coordcolla.rows;
-
-        if(coordcolla1[0][0]){
-            coord_terminazione = coordcolla1[0][0];            
-        }
-        else
-        {
-            coord_terminazione = '43.092922,12.361422';
-        }
-    
-        console.log(coord_terminazione);
-
-        let coo = coord_terminazione.split(",");         
-        let lat_centro_map: string;
-        let long_centro_map: string;
-    	lat_centro_map=coo[0];    	
-        long_centro_map=coo[1];	
-
-        console.log(lat_centro_map);
-        console.log(long_centro_map);
-
-        //SALVATAGGIO DATI IN rappre_prog_gisfo MYSQL
-        const db = require('../conf/db');      
-        let nodi_fisici: string = 'CollaudoLiveGisfo:prj_nodes';
-        let nodi_ottici: string = 'CollaudoLiveGisfo:view_pcab_nodes';
-        let tratte: string = 'CollaudoLiveGisfo:prj_lines_trenches';
-        let conn_edif_opta: string = 'CollaudoLiveGisfo:view_connessione_edificio_pta'; 
+        //INSERIMENTO DATI IN MYSQL PER UTILIZZO PROGETTO IN MAPPA
+        const db = require('../conf/db');    
 
         //Controllo presenza pk_proj in tabella "rappre_prog_gisfo"        
         //let sqlSelect: any = 'SELECT pk_proj FROM rappre_prog_gisfo WHERE pk_proj = '+pk_proj+'';               
         let sqlSelect: any = "SELECT pk_proj FROM rappre_prog_gisfo WHERE pk_proj = ?"; 
-        let datiMysql :any = [pk_proj];            
+        let datiMysql :any = [pk_proj]; 
+
+        db.query(sqlSelect, datiMysql, function (err: any, result: any, fields: any) {               
+            
+            if(result.length < 1){ 
+                
+                let nodi_fisici: string = 'CollaudoLiveGisfo:prj_nodes';
+                let nodi_ottici: string = 'CollaudoLiveGisfo:view_pcab_nodes';
+                let tratte: string = 'CollaudoLiveGisfo:prj_lines_trenches';
+                let conn_edif_opta: string = 'CollaudoLiveGisfo:view_connessione_edificio_pta'; 
+                let codcasuale = codicecasuale;
+
+                // NOME LOCALITA' -------------------------------- 
+                let nome: string = '';
+                const sql_name = {text: 'SELECT projects.pk_projects, projects.fk_comune, id_comune_decode.pk_comune, id_comune_decode.nome FROM newfont_dati.projects INNER JOIN newfont_dati.id_comune_decode ON projects.fk_comune = id_comune_decode.pk_comune WHERE projects.pk_projects = $1', rowMode: 'array'};
+		        const namecolla = pool_collaudolive.query(sql_name,[pk_proj]);
+                let namecolla1 = namecolla.rows;
         
-        await db.query(sqlSelect, datiMysql, function (err: any, result: any, fields: any) {               
-            if(result.length < 1){  
+                // verifica presenza nome località su db 
+                if(namecolla1.length < 1){
+                    const sql_name2 = {text: 'SELECT projects.pk_projects, projects.name FROM newfont_dati.projects WHERE projects.pk_projects = $1', rowMode: 'array'};
+                    const namecolla2 = pool_collaudolive.query(sql_name2,[pk_proj]);
+                    let namecolla3 = namecolla2.rows;
+                    nome = namecolla3[0][1];
+                }
+                else{
+                    nome = namecolla1[0][3];
+                }
+
+                console.log(nome);  
+        
+                // COORDINATE  --------------------------------
+                let coord_terminazione: string;	
+                const sql_coord = {text: 'SELECT coord_terminazione FROM newfont_dati.prj_nodes WHERE prj_nodes.coord_terminazione IS NOT NULL AND prj_nodes.drawing = $1 LIMIT 1', rowMode: 'array'};
+		        const coordcolla = pool_collaudolive.query(sql_coord,[pk_proj]);
+                let coordcolla1 = coordcolla.rows;
+
+                if(coordcolla1[0][0]){
+                    coord_terminazione = coordcolla1[0][0];            
+                }
+                else
+                {
+                    coord_terminazione = '43.092922,12.361422';
+                }
+    
+                console.log(coord_terminazione);
+
+                let coo = coord_terminazione.split(",");         
+                let lat_centro_map: string;
+                let long_centro_map: string;
+    	        lat_centro_map=coo[0];    	
+                long_centro_map=coo[1];	
+
+                console.log(lat_centro_map);
+                console.log(long_centro_map);        
+        
                 //Creazione Progetto su Collaudolive              
-                let queryInsert:any = [idutente,pk_proj, nome, nodi_fisici, nodi_ottici, tratte, conn_edif_opta, long_centro_map, lat_centro_map];
-                let sqlInsert: any = "INSERT INTO rappre_prog_gisfo (idutente, pk_proj, nome, nodi_fisici, nodi_ottici, tratte, conn_edif_opta, long_centro_map, lat_centro_map) VALUES (?,?,?,?,?,?,?,?,?)";          
+                let queryInsert:any = [idutente,pk_proj, nome, nodi_fisici, nodi_ottici, tratte, conn_edif_opta, long_centro_map, lat_centro_map, codicecasuale];
+                let sqlInsert: any = "INSERT INTO rappre_prog_gisfo (idutente, pk_proj, nome, nodi_fisici, nodi_ottici, tratte, conn_edif_opta, long_centro_map, lat_centro_map,codcasuale) VALUES (?,?,?,?,?,?,?,?,?,?)";          
                 db.query(sqlInsert, queryInsert);
                 
                 // Creazione room su Collaudolive
@@ -528,7 +533,18 @@ exports.sincroDb = async (req: any, res: any, next: any) => {
             }
             else
             {
-                console.log('pk_proj già presente nella tabella "rappre_prog_gisfo" ')
+                //Aggiornare data e codcasuale
+                let datalastsincro1: any=dateFormat(now, "isoDateTime");
+                let datalastsincro2: any = (datalastsincro1.replace('T', ' ')); 
+                let datalastsincro3: any = datalastsincro2.split('+');
+                let datalastsincro: any = datalastsincro3[0];
+                
+                console.log(datalastsincro);     
+                let sqlUpdate: any = 'UPDATE rappre_prog_gisfo SET codcasuale = ?, DataLastSincro = ? WHERE pk_proj = '+pk_proj+''; 
+                let queryUpdate:any = [codicecasuale, datalastsincro];         
+                db.query(sqlUpdate, queryUpdate);
+                
+                console.log('pk_proj già presente nella tabella "rappre_prog_gisfo => aggiornamento codicecasuale"')
             }
         });
 
@@ -537,10 +553,11 @@ exports.sincroDb = async (req: any, res: any, next: any) => {
         
     //----------------------------------------------------------------
     // Funzione Principale (main)
-    async function main(idutente: number, drawing: any) {
+    async function main(idutente: number, drawing: any, codicecasuale: string) {
 
         console.log(idutente);
         console.log(drawing);
+        console.log(codicecasuale);
 
         let tableName = ["area_pfs", "fib_joints", "fib_ports", "pcab_nodes","prj_lines_trenches", "prj_nodes", "splitter_primario", "splitter_secondario","projects"];
         //let tableName = ["area_pfs", "fib_joints"];      
@@ -571,22 +588,21 @@ exports.sincroDb = async (req: any, res: any, next: any) => {
             
             console.log(drawingProjects); 
     
+            /*
             if((await verDimTabel(tableName[y],drawing,drawingProjects)==0) && (await confrontaDatamodifica(tableName[y],drawing,drawingProjects)==0)){
                 console.log('TABELLA '+tableName[y]+' NON DEVE ESSERE AGGIORNATA.'); 
                 console.log('=====================================================')           
             }
             else
-            {            
-              /*
+            {          
                 await ConnessioneCollaudoLive();
                 await QueryXCampiCollaudoLive(tableName[y]);
                 await ConnessioneGisfo();
                 await QuerySelectGisfo(campiTabellaCount,campiTabella,drawing,idDataModifica,tableName[y],drawingProjects);        
-                await delRecCollaudoLive(tableName[y],drawing,drawingProjects);
-               */
-               
-            }
-    
+                await delRecCollaudoLive(tableName[y],drawing,drawingProjects);                      
+            }    
+            */
+
             idDataModifica = [];
     
         }    
@@ -597,7 +613,7 @@ exports.sincroDb = async (req: any, res: any, next: any) => {
         //console.log(await comune(drawing))
 
         //--Mysql
-        await insertMysql(idutente,drawing);
+        await insertMysql(idutente,drawing,codicecasuale);
 
     }
 
@@ -607,7 +623,7 @@ exports.sincroDb = async (req: any, res: any, next: any) => {
 
     //-----------------
     try {        
-        await main(idutente,drawing)
+        await main(idutente,drawing,codicecasuale)        
         res.json(true); 
         console.error('OPERAZIONE COMPLETATA.');         
     } catch (err) {
@@ -619,4 +635,30 @@ exports.sincroDb = async (req: any, res: any, next: any) => {
     }
     
     
+};
+
+
+exports.sincroDbCheck = async (req: any, res: any, next: any) => { 
+
+    //Controllo presenza codicecasuale in tabella "rappre_prog_gisfo" 
+
+    const db = require('../conf/db');
+    let codicecasuale: string = req.params.codicecasuale; 
+                   
+    let sqlSelect: any = "SELECT pk_proj FROM rappre_prog_gisfo WHERE codcasuale = ?"; 
+    let datiMysql :any = [codicecasuale]; 
+
+    await db.query(sqlSelect, datiMysql, function (err: any, result: any, fields: any) { 
+        if(result.length < 1){
+            console.log(codicecasuale + ' NON PRESENTE');          
+            res.json(false);
+        }
+        else
+        { 
+            console.log(codicecasuale + ' GIA` PRESENTE');          
+            res.json(true);
+        }
+        
+    });
+
 };

@@ -32,7 +32,8 @@ https.createServer({
   }, app)
     
   .listen(port, () => { 
-
+    console.log(`https://www.collaudolive.com:${port}/alfanumcasuale`); 
+    
     console.log(`-------------------- TEST ------------------------------`);
     console.log(`https://www.collaudolive.com:${port}/test`); 
 

@@ -2,6 +2,7 @@ import express from 'express';
 
 const controllerTest = require('./ctrl/controllerTest');
 
+const controllerAlfaNumCasuale = require('./ctrl/controllerAlfaNumCasuale');
 const controllerDownloadZip = require('./ctrl/controllerDownloadZip');
 const controllerSincroDb = require('./ctrl/controllerSincroDb');
 const controllerToken = require('./ctrl/controllerToken');
@@ -49,22 +50,20 @@ router.get('/test/', controllerTest.test);
 //--------------------------------------------------------------------
 
 
-
-
 //Downloadzip (download foto compresse)
 router.get('/checkdownloadzip/:folderzip/', controllerDownloadZip.CheckDownloadZip);
 router.get('/downloadzip/:folderzip/', controllerDownloadZip.DownloadZip);
 
 //SincroDb
-router.get('/sincrodb/:idutente?/:drawing?', controllerSincroDb.sincroDb);
+router.get('/alfanumcasuale/', controllerAlfaNumCasuale.getAlfaNumeCasuale);
+router.get('/sincrodb/:idutente?/:drawing?/:codicecasuale', controllerSincroDb.sincroDb);
+router.get('/checksincrodb/:codicecasuale', controllerSincroDb.sincroDbCheck);
 
 //Token
 router.post('/token/', controllerToken.getToken);
 
 //VidApp (riavvio Node Media Server)
 router.get('/vidapp/', controllerVidApp.VidApp);
-
-
 
 
 

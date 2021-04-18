@@ -1,9 +1,12 @@
 "use strict";
-exports.sincroDb = async (req, res, next) => {
+//exports.sincroDb = async (req: any, res: any, next: any) => {   
+exports.sincroDb = async (req) => {
     const { isNull } = require("util");
     const { Console } = require("console");
     const { Verify } = require("crypto");
     const Pool = require("pg").Pool;
+    const dateFormat = require("dateformat");
+    const now = new Date();
     // Data
     let db;
     let tableName;
@@ -17,6 +20,7 @@ exports.sincroDb = async (req, res, next) => {
     let idDataModifica = new Array();
     let idutente = req.params.idutente;
     let drawing = req.params.drawing;
+    let codicecasuale = req.params.codicecasuale;
     const mymodule = require('../conf/connInfo');
     const sincroDbMysql = require('.././middleware/sincroDbMysql');
     const pool_collaudolive = mymodule.conn_info_collaudolive_ssl_cry;
@@ -347,73 +351,82 @@ exports.sincroDb = async (req, res, next) => {
         }
         return v;
     }
-    async function insertMysql(idutente, pk_proj) {
-        const sql = "SELECT * FROM information_schema.columns WHERE table_name = $1 order by ordinal_position asc";
-        const result = await pool_collaudolive.query(sql, [tableName]);
-        // NOME LOCALITA' -------------------------------- 
-        let nome = '';
-        const sql_name = { text: 'SELECT projects.pk_projects, projects.fk_comune, id_comune_decode.pk_comune, id_comune_decode.nome FROM newfont_dati.projects INNER JOIN newfont_dati.id_comune_decode ON projects.fk_comune = id_comune_decode.pk_comune WHERE projects.pk_projects = $1', rowMode: 'array' };
-        const namecolla = await pool_collaudolive.query(sql_name, [pk_proj]);
-        let namecolla1 = namecolla.rows;
-        // verifica presenza nome località su db 
-        if (namecolla1.length < 1) {
-            const sql_name2 = { text: 'SELECT projects.pk_projects, projects.name FROM newfont_dati.projects WHERE projects.pk_projects = $1', rowMode: 'array' };
-            const namecolla2 = await pool_collaudolive.query(sql_name2, [pk_proj]);
-            let namecolla3 = namecolla2.rows;
-            nome = namecolla3[0][1];
-        }
-        else {
-            nome = namecolla1[0][3];
-        }
-        console.log(nome);
-        // Coordinate 
-        let coord_terminazione;
-        const sql_coord = { text: 'SELECT coord_terminazione FROM newfont_dati.prj_nodes WHERE prj_nodes.coord_terminazione IS NOT NULL AND prj_nodes.drawing = $1 LIMIT 1', rowMode: 'array' };
-        const coordcolla = await pool_collaudolive.query(sql_coord, [pk_proj]);
-        let coordcolla1 = coordcolla.rows;
-        if (coordcolla1[0][0]) {
-            coord_terminazione = coordcolla1[0][0];
-        }
-        else {
-            coord_terminazione = '43.092922,12.361422';
-        }
-        console.log(coord_terminazione);
-        let coo = coord_terminazione.split(",");
-        let lat_centro_map;
-        let long_centro_map;
-        lat_centro_map = coo[0];
-        long_centro_map = coo[1];
-        console.log(lat_centro_map);
-        console.log(long_centro_map);
-        //SALVATAGGIO DATI IN rappre_prog_gisfo MYSQL
+    async function insertMysql(idutente, pk_proj, codicecasuale) {
+        //INSERIMENTO DATI IN MYSQL PER UTILIZZO PROGETTO IN MAPPA
         const db = require('../conf/db');
-        let nodi_fisici = 'CollaudoLiveGisfo:prj_nodes';
-        let nodi_ottici = 'CollaudoLiveGisfo:view_pcab_nodes';
-        let tratte = 'CollaudoLiveGisfo:prj_lines_trenches';
-        let conn_edif_opta = 'CollaudoLiveGisfo:view_connessione_edificio_pta';
         //Controllo presenza pk_proj in tabella "rappre_prog_gisfo"        
         //let sqlSelect: any = 'SELECT pk_proj FROM rappre_prog_gisfo WHERE pk_proj = '+pk_proj+'';               
         let sqlSelect = "SELECT pk_proj FROM rappre_prog_gisfo WHERE pk_proj = ?";
         let datiMysql = [pk_proj];
-        await db.query(sqlSelect, datiMysql, function (err, result, fields) {
+        db.query(sqlSelect, datiMysql, function (err, result, fields) {
             if (result.length < 1) {
+                let nodi_fisici = 'CollaudoLiveGisfo:prj_nodes';
+                let nodi_ottici = 'CollaudoLiveGisfo:view_pcab_nodes';
+                let tratte = 'CollaudoLiveGisfo:prj_lines_trenches';
+                let conn_edif_opta = 'CollaudoLiveGisfo:view_connessione_edificio_pta';
+                let codcasuale = codicecasuale;
+                // NOME LOCALITA' -------------------------------- 
+                let nome = '';
+                const sql_name = { text: 'SELECT projects.pk_projects, projects.fk_comune, id_comune_decode.pk_comune, id_comune_decode.nome FROM newfont_dati.projects INNER JOIN newfont_dati.id_comune_decode ON projects.fk_comune = id_comune_decode.pk_comune WHERE projects.pk_projects = $1', rowMode: 'array' };
+                const namecolla = pool_collaudolive.query(sql_name, [pk_proj]);
+                let namecolla1 = namecolla.rows;
+                // verifica presenza nome località su db 
+                if (namecolla1.length < 1) {
+                    const sql_name2 = { text: 'SELECT projects.pk_projects, projects.name FROM newfont_dati.projects WHERE projects.pk_projects = $1', rowMode: 'array' };
+                    const namecolla2 = pool_collaudolive.query(sql_name2, [pk_proj]);
+                    let namecolla3 = namecolla2.rows;
+                    nome = namecolla3[0][1];
+                }
+                else {
+                    nome = namecolla1[0][3];
+                }
+                console.log(nome);
+                // COORDINATE  --------------------------------
+                let coord_terminazione;
+                const sql_coord = { text: 'SELECT coord_terminazione FROM newfont_dati.prj_nodes WHERE prj_nodes.coord_terminazione IS NOT NULL AND prj_nodes.drawing = $1 LIMIT 1', rowMode: 'array' };
+                const coordcolla = pool_collaudolive.query(sql_coord, [pk_proj]);
+                let coordcolla1 = coordcolla.rows;
+                if (coordcolla1[0][0]) {
+                    coord_terminazione = coordcolla1[0][0];
+                }
+                else {
+                    coord_terminazione = '43.092922,12.361422';
+                }
+                console.log(coord_terminazione);
+                let coo = coord_terminazione.split(",");
+                let lat_centro_map;
+                let long_centro_map;
+                lat_centro_map = coo[0];
+                long_centro_map = coo[1];
+                console.log(lat_centro_map);
+                console.log(long_centro_map);
                 //Creazione Progetto su Collaudolive              
-                let queryInsert = [idutente, pk_proj, nome, nodi_fisici, nodi_ottici, tratte, conn_edif_opta, long_centro_map, lat_centro_map];
-                let sqlInsert = "INSERT INTO rappre_prog_gisfo (idutente, pk_proj, nome, nodi_fisici, nodi_ottici, tratte, conn_edif_opta, long_centro_map, lat_centro_map) VALUES (?,?,?,?,?,?,?,?,?)";
+                let queryInsert = [idutente, pk_proj, nome, nodi_fisici, nodi_ottici, tratte, conn_edif_opta, long_centro_map, lat_centro_map, codicecasuale];
+                let sqlInsert = "INSERT INTO rappre_prog_gisfo (idutente, pk_proj, nome, nodi_fisici, nodi_ottici, tratte, conn_edif_opta, long_centro_map, lat_centro_map,codcasuale) VALUES (?,?,?,?,?,?,?,?,?,?)";
                 db.query(sqlInsert, queryInsert);
                 // Creazione room su Collaudolive
                 sincroDbMysql.sincroDbMysqlMultistreaming(pk_proj, nome, idutente);
             }
             else {
-                console.log('pk_proj già presente nella tabella "rappre_prog_gisfo" ');
+                //Aggiornare data e codcasuale
+                let datalastsincro1 = dateFormat(now, "isoDateTime");
+                let datalastsincro2 = (datalastsincro1.replace('T', ' '));
+                let datalastsincro3 = datalastsincro2.split('+');
+                let datalastsincro = datalastsincro3[0];
+                console.log(datalastsincro);
+                let sqlUpdate = 'UPDATE rappre_prog_gisfo SET codcasuale = ?, DataLastSincro = ? WHERE pk_proj = ' + pk_proj + '';
+                let queryUpdate = [codicecasuale, datalastsincro];
+                db.query(sqlUpdate, queryUpdate);
+                console.log('pk_proj già presente nella tabella "rappre_prog_gisfo => aggiornamento codicecasuale"');
             }
         });
     }
     //----------------------------------------------------------------
     // Funzione Principale (main)
-    async function main(idutente, drawing) {
+    async function main(idutente, drawing, codicecasuale) {
         console.log(idutente);
         console.log(drawing);
+        console.log(codicecasuale);
         let tableName = ["area_pfs", "fib_joints", "fib_ports", "pcab_nodes", "prj_lines_trenches", "prj_nodes", "splitter_primario", "splitter_secondario", "projects"];
         //let tableName = ["area_pfs", "fib_joints"];      
         let y;
@@ -435,41 +448,59 @@ exports.sincroDb = async (req, res, next) => {
                 drawingProjects = 'drawing=' + drawing;
             }
             console.log(drawingProjects);
-            if ((await verDimTabel(tableName[y], drawing, drawingProjects) == 0) && (await confrontaDatamodifica(tableName[y], drawing, drawingProjects) == 0)) {
-                console.log('TABELLA ' + tableName[y] + ' NON DEVE ESSERE AGGIORNATA.');
-                console.log('=====================================================');
+            /*
+            if((await verDimTabel(tableName[y],drawing,drawingProjects)==0) && (await confrontaDatamodifica(tableName[y],drawing,drawingProjects)==0)){
+                console.log('TABELLA '+tableName[y]+' NON DEVE ESSERE AGGIORNATA.');
+                console.log('=====================================================')
             }
-            else {
-                /*
-                  await ConnessioneCollaudoLive();
-                  await QueryXCampiCollaudoLive(tableName[y]);
-                  await ConnessioneGisfo();
-                  await QuerySelectGisfo(campiTabellaCount,campiTabella,drawing,idDataModifica,tableName[y],drawingProjects);
-                  await delRecCollaudoLive(tableName[y],drawing,drawingProjects);
-                 */
+            else
+            {
+                await ConnessioneCollaudoLive();
+                await QueryXCampiCollaudoLive(tableName[y]);
+                await ConnessioneGisfo();
+                await QuerySelectGisfo(campiTabellaCount,campiTabella,drawing,idDataModifica,tableName[y],drawingProjects);
+                await delRecCollaudoLive(tableName[y],drawing,drawingProjects);
             }
+            */
             idDataModifica = [];
         }
         //--Postgresql
         await ConnessioneCollaudoLive();
         //console.log(await comune(drawing))
         //--Mysql
-        await insertMysql(idutente, drawing);
+        await insertMysql(idutente, drawing, codicecasuale);
     }
     //Per test
     //idutente=42;
     //drawing=129743824;
     //-----------------
     try {
-        await main(idutente, drawing);
-        res.json(true);
+        await main(idutente, drawing, codicecasuale);
+        //res.json(true); 
         console.error('OPERAZIONE COMPLETATA.');
     }
     catch (err) {
-        res.json(false);
+        //res.json(false); 
         //res.status(status).send('Error: %s', err);
         //res.send('Error: %s', err); 
         console.error('Error: %s', err);
         console.error('Error: %s', err.stack);
     }
+};
+exports.sincroDbCheck = async (req, res, next) => {
+    //Controllo presenza codicecasuale in tabella "rappre_prog_gisfo" 
+    const db = require('../conf/db');
+    let codicecasuale = req.params.codicecasuale;
+    let sqlSelect = "SELECT pk_proj FROM rappre_prog_gisfo WHERE codcasuale = ?";
+    let datiMysql = [codicecasuale];
+    await db.query(sqlSelect, datiMysql, function (err, result, fields) {
+        if (result.length < 1) {
+            console.log(codicecasuale + ' NON PRESENTE');
+            res.json(false);
+        }
+        else {
+            console.log(codicecasuale + ' GIA` PRESENTE');
+            res.json(true);
+        }
+    });
 };

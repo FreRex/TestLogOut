@@ -9,7 +9,7 @@ const https_1 = __importDefault(require("https"));
 const fs_1 = __importDefault(require("fs"));
 const routes = require('./routes');
 const app = express_1.default();
-const port = 9122;
+const port = 9197;
 app.use(express_1.default.json());
 //-----------------------------------------------------------------------------------------------------------
 //SEZIONE ROUTE NODEJS
@@ -27,6 +27,7 @@ https_1.default.createServer({
     cert: fs_1.default.readFileSync('/etc/letsencrypt/live/www.collaudolive.com/cert.pem')
 }, app)
     .listen(port, () => {
+    console.log(`https://www.collaudolive.com:${port}/alfanumcasuale`);
     console.log(`-------------------- TEST ------------------------------`);
     console.log(`https://www.collaudolive.com:${port}/test`);
     console.log(`-------------------- SINCRODB ------------------------------`);
