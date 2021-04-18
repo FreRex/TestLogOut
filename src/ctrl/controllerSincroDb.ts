@@ -461,6 +461,52 @@ exports.sincroDb = async (req: any, res: any, next: any) => {
     
     async function insertMysql(idutente: number, pk_proj: number, codicecasuale: string){ 
 
+        //Dati per MYSQL da POSTGRESQL 
+
+         // NOME LOCALITA' -------------------------------- 
+         let nome: string = '';
+         const sql_name = {text: 'SELECT projects.pk_projects, projects.fk_comune, id_comune_decode.pk_comune, id_comune_decode.nome FROM newfont_dati.projects INNER JOIN newfont_dati.id_comune_decode ON projects.fk_comune = id_comune_decode.pk_comune WHERE projects.pk_projects = $1', rowMode: 'array'};
+         const namecolla = await pool_collaudolive.query(sql_name,[pk_proj]);
+         let namecolla1 = namecolla.rows;
+ 
+         // verifica presenza nome località su db 
+         if(namecolla1.length < 1){
+             const sql_name2 = {text: 'SELECT projects.pk_projects, projects.name FROM newfont_dati.projects WHERE projects.pk_projects = $1', rowMode: 'array'};
+             const namecolla2 = await pool_collaudolive.query(sql_name2,[pk_proj]);
+             let namecolla3 = namecolla2.rows;
+             nome = namecolla3[0][1];
+         }
+         else{
+             nome = namecolla1[0][3];
+         }
+
+         console.log(nome);  
+ 
+         // COORDINATE  --------------------------------
+         let coord_terminazione: string;	
+         const sql_coord = {text: 'SELECT coord_terminazione FROM newfont_dati.prj_nodes WHERE prj_nodes.coord_terminazione IS NOT NULL AND prj_nodes.drawing = $1 LIMIT 1', rowMode: 'array'};
+         const coordcolla = await pool_collaudolive.query(sql_coord,[pk_proj]);
+         let coordcolla1 = coordcolla.rows;
+
+         if(coordcolla1[0][0]){
+             coord_terminazione = coordcolla1[0][0];            
+         }
+         else
+         {
+             coord_terminazione = '43.092922,12.361422';
+         }
+
+         console.log(coord_terminazione);
+
+         let coo = coord_terminazione.split(",");         
+         let lat_centro_map: string;
+         let long_centro_map: string;
+         lat_centro_map=coo[0];    	
+         long_centro_map=coo[1];	
+
+         console.log(lat_centro_map);
+         console.log(long_centro_map);   
+
         //INSERIMENTO DATI IN MYSQL PER UTILIZZO PROGETTO IN MAPPA
         const db = require('../conf/db');    
 
@@ -477,51 +523,7 @@ exports.sincroDb = async (req: any, res: any, next: any) => {
                 let nodi_ottici: string = 'CollaudoLiveGisfo:view_pcab_nodes';
                 let tratte: string = 'CollaudoLiveGisfo:prj_lines_trenches';
                 let conn_edif_opta: string = 'CollaudoLiveGisfo:view_connessione_edificio_pta'; 
-                let codcasuale = codicecasuale;
-
-                // NOME LOCALITA' -------------------------------- 
-                let nome: string = '';
-                const sql_name = {text: 'SELECT projects.pk_projects, projects.fk_comune, id_comune_decode.pk_comune, id_comune_decode.nome FROM newfont_dati.projects INNER JOIN newfont_dati.id_comune_decode ON projects.fk_comune = id_comune_decode.pk_comune WHERE projects.pk_projects = $1', rowMode: 'array'};
-		        const namecolla = pool_collaudolive.query(sql_name,[pk_proj]);
-                let namecolla1 = namecolla.rows;
-        
-                // verifica presenza nome località su db 
-                if(namecolla1.length < 1){
-                    const sql_name2 = {text: 'SELECT projects.pk_projects, projects.name FROM newfont_dati.projects WHERE projects.pk_projects = $1', rowMode: 'array'};
-                    const namecolla2 = pool_collaudolive.query(sql_name2,[pk_proj]);
-                    let namecolla3 = namecolla2.rows;
-                    nome = namecolla3[0][1];
-                }
-                else{
-                    nome = namecolla1[0][3];
-                }
-
-                console.log(nome);  
-        
-                // COORDINATE  --------------------------------
-                let coord_terminazione: string;	
-                const sql_coord = {text: 'SELECT coord_terminazione FROM newfont_dati.prj_nodes WHERE prj_nodes.coord_terminazione IS NOT NULL AND prj_nodes.drawing = $1 LIMIT 1', rowMode: 'array'};
-		        const coordcolla = pool_collaudolive.query(sql_coord,[pk_proj]);
-                let coordcolla1 = coordcolla.rows;
-
-                if(coordcolla1[0][0]){
-                    coord_terminazione = coordcolla1[0][0];            
-                }
-                else
-                {
-                    coord_terminazione = '43.092922,12.361422';
-                }
-    
-                console.log(coord_terminazione);
-
-                let coo = coord_terminazione.split(",");         
-                let lat_centro_map: string;
-                let long_centro_map: string;
-    	        lat_centro_map=coo[0];    	
-                long_centro_map=coo[1];	
-
-                console.log(lat_centro_map);
-                console.log(long_centro_map);        
+                let codcasuale = codicecasuale;                    
         
                 //Creazione Progetto su Collaudolive              
                 let queryInsert:any = [idutente,pk_proj, nome, nodi_fisici, nodi_ottici, tratte, conn_edif_opta, long_centro_map, lat_centro_map, codicecasuale];
@@ -588,7 +590,7 @@ exports.sincroDb = async (req: any, res: any, next: any) => {
             
             console.log(drawingProjects); 
     
-            /*
+          
             if((await verDimTabel(tableName[y],drawing,drawingProjects)==0) && (await confrontaDatamodifica(tableName[y],drawing,drawingProjects)==0)){
                 console.log('TABELLA '+tableName[y]+' NON DEVE ESSERE AGGIORNATA.'); 
                 console.log('=====================================================')           
@@ -601,7 +603,7 @@ exports.sincroDb = async (req: any, res: any, next: any) => {
                 await QuerySelectGisfo(campiTabellaCount,campiTabella,drawing,idDataModifica,tableName[y],drawingProjects);        
                 await delRecCollaudoLive(tableName[y],drawing,drawingProjects);                      
             }    
-            */
+          
 
             idDataModifica = [];
     
