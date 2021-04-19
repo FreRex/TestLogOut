@@ -484,25 +484,38 @@ exports.sincroDb = async (req: any, res: any, next: any) => {
  
          // COORDINATE  --------------------------------
          let coord_terminazione: string;	
-         const sql_coord = {text: 'SELECT coord_terminazione FROM newfont_dati.prj_nodes WHERE prj_nodes.coord_terminazione IS NOT NULL AND prj_nodes.drawing = $1 LIMIT 1', rowMode: 'array'};
+         let lat_centro_map: string ='';
+         let long_centro_map: string = '';
+
+         const sql_coord = {text: 'select ST_AsEWKT(geometry) from newfont_dati.prj_nodes WHERE geometry IS NOT NULL AND prj_nodes.drawing = $1 Order by datamodifica desc limit 1', rowMode: 'array'};
          const coordcolla = await pool_collaudolive.query(sql_coord,[pk_proj]);
          let coordcolla1 = coordcolla.rows;
 
-         if(coordcolla1[0][0]){
-             coord_terminazione = coordcolla1[0][0];            
+         let nCollaudoLive=coordcolla1.length;    
+         console.log(nCollaudoLive)
+
+         if(nCollaudoLive>0){
+            let geometria=coordcolla1[0][0];
+            console.log(geometria);
+
+            let geometria_netta = geometria.replace('POINT(', '');
+            geometria_netta = geometria_netta.replace(')', '');
+
+            console.log(geometria_netta);
+
+            let coordinate = geometria_netta.split(" ");
+
+            lat_centro_map = coordinate[1];
+            long_centro_map = coordinate[0];
+
+            console.log(lat_centro_map);
+            console.log(long_centro_map);
          }
          else
-         {
-             coord_terminazione = '43.092922,12.361422';
-         }
-
-         console.log(coord_terminazione);
-
-         let coo = coord_terminazione.split(",");         
-         let lat_centro_map: string;
-         let long_centro_map: string;
-         lat_centro_map=coo[0];    	
-         long_centro_map=coo[1];	
+         {           
+            lat_centro_map='43.092922';
+            long_centro_map='12.361422';
+         }       	
 
          console.log(lat_centro_map);
          console.log(long_centro_map);   
@@ -551,11 +564,12 @@ exports.sincroDb = async (req: any, res: any, next: any) => {
         });
 
     }
-
         
     //----------------------------------------------------------------
     // Funzione Principale (main)
     async function main(idutente: number, drawing: any, codicecasuale: string) {
+        
+        res.json(true);
 
         console.log(idutente);
         console.log(drawing);
@@ -590,7 +604,7 @@ exports.sincroDb = async (req: any, res: any, next: any) => {
             
             console.log(drawingProjects); 
     
-          
+       
             if((await verDimTabel(tableName[y],drawing,drawingProjects)==0) && (await confrontaDatamodifica(tableName[y],drawing,drawingProjects)==0)){
                 console.log('TABELLA '+tableName[y]+' NON DEVE ESSERE AGGIORNATA.'); 
                 console.log('=====================================================')           
@@ -603,7 +617,7 @@ exports.sincroDb = async (req: any, res: any, next: any) => {
                 await QuerySelectGisfo(campiTabellaCount,campiTabella,drawing,idDataModifica,tableName[y],drawingProjects);        
                 await delRecCollaudoLive(tableName[y],drawing,drawingProjects);                      
             }    
-          
+      
 
             idDataModifica = [];
     
@@ -626,7 +640,7 @@ exports.sincroDb = async (req: any, res: any, next: any) => {
     //-----------------
     try {        
         await main(idutente,drawing,codicecasuale)        
-        res.json(true); 
+        
         console.error('OPERAZIONE COMPLETATA.');         
     } catch (err) {
         res.json(false); 

@@ -27,14 +27,16 @@ const dbpasswordDecryp = bytesdbpassword.toString(CryptoJS.enc.Utf8);
 exports.dbpassword = dbpasswordDecryp;
 
 //Db Name Test
+                      
 const dbnameciphertext = 'U2FsdGVkX1//81K8b0Eb/yIyOydA4A32GUfNBsDoT+s=';
 const bytesdbname  = CryptoJS.AES.decrypt(dbnameciphertext, 'Ke8u/*fY!!66&Y/yoo£eE2W');
 const dbnameDecryp = bytesdbname.toString(CryptoJS.enc.Utf8);
 exports.db = dbnameDecryp;
 
-//Db Name reale
-/*                        
-const dbnameciphertext = 'U2FsdGVkX190DHA3etoBpd/du+1BWYnbRWzCuxndouI=';
+
+/*
+//Db Name reale                    
+const dbnameciphertext = 'U2FsdGVkX1+jdioNkaqEt63uc5hU6DDhrcvp4Gu7Cxs=';
 const bytesdbname  = CryptoJS.AES.decrypt(dbnameciphertext, 'Ke8u/*fY!!66&Y/yoo£eE2W');
 const dbnameDecryp = bytesdbname.toString(CryptoJS.enc.Utf8);
 exports.db = dbnameDecryp;
