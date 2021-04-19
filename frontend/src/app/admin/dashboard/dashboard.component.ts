@@ -2,8 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, ElementRef, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { AlertController, LoadingController, ToastController } from '@ionic/angular';
-import { forkJoin } from 'rxjs';
-import { Observable } from 'rxjs';
+import { forkJoin, Observable } from 'rxjs';
 import { delay, tap } from 'rxjs/operators';
 import { RoomService } from 'src/app/rooms/room.service';
 import { DashboardService } from 'src/app/shared/dashboard.service';
@@ -38,12 +37,12 @@ export class DashboardComponent implements OnInit {
     private toastController: ToastController,
     private alertController: AlertController,
     private http: HttpClient,
-    private projectService: ProjectService,
-    private roomService: RoomService,
     private userService: UserService,
+    private projectService: ProjectService,
     private dashService: DashboardService,
+    private roomService: RoomService,
     private loadingController: LoadingController,
-    // private uiManager: UiManagerService
+    // private uiManager: UiManagerService,
   ) { }
 
   ngOnInit() {
@@ -64,7 +63,7 @@ export class DashboardComponent implements OnInit {
     if (!this.form.valid) { return; }
 
     // this.uiManager.createSyncToast();
-    // this.dashService
+    // this.projectService
     //   .syncProject(
     //     this.form.value.collaudatoreufficio,
     //     this.form.value.pk_proj
@@ -90,24 +89,25 @@ export class DashboardComponent implements OnInit {
         }
       );
       this.dashService.sincroDbStart(
-        this.form.value.collaudatoreufficio,
-        this.form.value.pk_proj
-      ).subscribe(res => {
-        this.dashService.sincroDbCheck()
-          .subscribe(res => {
-            console.log("Fine sincro: " + res);
-            toastEl.dismiss();
-            this.logs.push(
-              {
-                pk_proj: this.form.value.pk_proj,
-                message: 'Sync ended',
-                date: new Date()
+          this.form.value.collaudatoreufficio,
+          this.form.value.pk_proj
+        ).subscribe(
+          res => {
+            this.dashService.sincroDbCheck().subscribe(
+              res => {
+                toastEl.dismiss();
+                this.logs.push(
+                  {
+                    pk_proj: this.form.value.pk_proj,
+                    message: 'Sync ended',
+                    date: new Date()
+                  }
+                );
+                this.reloadData();
               }
             );
-            // TODO: ricaricare room e progetti all fine della sincronizzazione
-            this.reloadData();
-          });
-      });
+          }
+        );
       return toastEl.onDidDismiss();
     });
   }
@@ -121,10 +121,10 @@ export class DashboardComponent implements OnInit {
           requestProjects: this.projectService.loadProjects(),
           requestRooms: this.roomService.loadRooms(),
         }).subscribe(({ requestProjects, requestRooms }) => {
-          console.log(requestProjects);
-          console.log(requestRooms);
-          loadingEl.dismiss();
-        });
+            console.log(requestProjects);
+            console.log(requestRooms);
+            loadingEl.dismiss();
+          });
       });
   }
 
@@ -174,8 +174,6 @@ export class DashboardComponent implements OnInit {
     this.dashService.searchCity(comune).subscribe(
       res => {
         console.log(res);
-
-
         window.open("https://www.nperf.com/it/map/IT/-/230.TIM/signal/?ll=" + res[0]['latitude'] + "&lg=" + res[0]['longitude'] + "&zoom=13");
       }
     );

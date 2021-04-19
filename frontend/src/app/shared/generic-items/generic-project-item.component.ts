@@ -4,7 +4,6 @@ import { AlertController, IonItemSliding, ModalController, ToastController } fro
 import { AuthService } from 'src/app/auth/auth.service';
 import { Project, ProjectService } from 'src/app/shared/project.service';
 import { EditProjectModalComponent } from '../modals/edit-project-modal/edit-project-modal.component';
-import { GisfoSyncModalComponent } from '../modals/gisfo-sync-modal/gisfo-sync-modal.component';
 import { UploadShpModalComponent } from '../modals/upload-shp-modal/upload-shp-modal.component';
 
 @Component({
@@ -28,19 +27,6 @@ export class GenericProjectItemComponent implements OnInit {
 
   doRefresh(event) {
     this.projectService.loadProjects().subscribe(res => { event.target.complete(); });
-  }
-
-  syncProject() {
-    this.modalController
-      .create({
-        component: GisfoSyncModalComponent,
-        backdropDismiss: false,
-      })
-      .then((modalEl) => {
-        modalEl.present();
-        return modalEl.onDidDismiss();
-      })
-      .then(res => console.log(res));
   }
 
   createProject() {

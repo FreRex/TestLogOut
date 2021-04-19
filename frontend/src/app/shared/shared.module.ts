@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { EditProjectModalComponent } from './modals/edit-project-modal/edit-project-modal.component';
-import { GisfoSyncModalComponent } from './modals/gisfo-sync-modal/gisfo-sync-modal.component';
 import { UploadShpModalComponent } from './modals/upload-shp-modal/upload-shp-modal.component';
 import { CreateUserModalComponent } from './modals/create-user-modal/create-user-modal.component';
 import { EditUserModalComponent } from './modals/edit-user-modal/edit-user-modal.component';
@@ -36,7 +35,6 @@ import { UsersTableItemComponent } from './generic-items/users-table-item/users-
     RoomsListItemComponent,
     ProjectsListItemComponent,
     UsersListItemComponent,
-    GisfoSyncModalComponent,
     UploadShpModalComponent,
     CreateUserModalComponent,
     EditProjectModalComponent,
@@ -62,7 +60,6 @@ import { UsersTableItemComponent } from './generic-items/users-table-item/users-
     RoomsListItemComponent,
     ProjectsListItemComponent,
     UsersListItemComponent,
-    GisfoSyncModalComponent,
     UploadShpModalComponent,
     CreateUserModalComponent,
     EditProjectModalComponent,
@@ -71,7 +68,6 @@ import { UsersTableItemComponent } from './generic-items/users-table-item/users-
     NewRoomModalComponent
   ],
   entryComponents: [
-    GisfoSyncModalComponent,
     UploadShpModalComponent,
     CreateUserModalComponent,
     EditProjectModalComponent,
