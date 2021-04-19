@@ -26,11 +26,10 @@ export class EditRoomModalComponent implements OnInit {
       this.form = new FormGroup({
         usermobile: new FormControl(this.room.usermobile, {
           updateOn: 'blur',
-          validators: [Validators.required, Validators.maxLength(12)]
+          validators: [Validators.required, Validators.maxLength(30)]
         })
       });
-    },
-    );
+    });
   }
 
   closeModal() {

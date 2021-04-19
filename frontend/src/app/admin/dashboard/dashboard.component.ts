@@ -88,26 +88,22 @@ export class DashboardComponent implements OnInit {
           date: new Date()
         }
       );
-      this.dashService.sincroDbStart(
-          this.form.value.collaudatoreufficio,
-          this.form.value.pk_proj
-        ).subscribe(
-          res => {
-            this.dashService.sincroDbCheck().subscribe(
-              res => {
-                toastEl.dismiss();
-                this.logs.push(
-                  {
-                    pk_proj: this.form.value.pk_proj,
-                    message: 'Sync ended',
-                    date: new Date()
-                  }
-                );
-                this.reloadData();
-              }
-            );
+      this.dashService.sincroDb(
+        this.form.value.collaudatoreufficio,
+        this.form.value.pk_proj
+      ).subscribe(res => {
+        console.log('sincroended: ', res);
+        toastEl.dismiss();
+        this.logs.push(
+          {
+            pk_proj: this.form.value.pk_proj,
+            message: 'Sync ended',
+            date: new Date()
           }
         );
+        this.reloadData();
+      });
+
       return toastEl.onDidDismiss();
     });
   }
@@ -121,10 +117,10 @@ export class DashboardComponent implements OnInit {
           requestProjects: this.projectService.loadProjects(),
           requestRooms: this.roomService.loadRooms(),
         }).subscribe(({ requestProjects, requestRooms }) => {
-            console.log(requestProjects);
-            console.log(requestRooms);
-            loadingEl.dismiss();
-          });
+          console.log(requestProjects);
+          console.log(requestRooms);
+          loadingEl.dismiss();
+        });
       });
   }
 

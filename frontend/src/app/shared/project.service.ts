@@ -45,7 +45,6 @@ export class ProjectService {
 
   private projSubject = new BehaviorSubject<Project[]>([]);
   projects$: Observable<Project[]> = this.projSubject.asObservable();
-  
 
   constructor(
     private http: HttpClient,
@@ -109,7 +108,6 @@ export class ProjectService {
         tap((projects: Project[]) => this.projSubject.next(projects))
       );
   }
-
 
   /** CREATE progetti */
   addProject(
@@ -246,6 +244,4 @@ export class ProjectService {
         tap(res => { this.projSubject.next(updatedProjetcs) })
       );
   }
-
-
 }
