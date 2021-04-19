@@ -36,8 +36,7 @@ export class AppComponent implements OnInit {
               requestUsers: this.userService.loadUsers(),
               requestProjects: this.projectService.loadProjects(),
               requestRooms: this.roomService.loadRooms(),
-            }
-            )
+            })
           )
         ).subscribe(({ requestUsers, requestProjects, requestRooms }) => {
           // console.log(requestUsers);

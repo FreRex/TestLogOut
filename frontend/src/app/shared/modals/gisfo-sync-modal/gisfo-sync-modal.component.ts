@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import { Observable } from 'rxjs';
+import { DashboardService } from '../../dashboard.service';
 import { ProjectService } from '../../project.service';
 import { User, UserService } from '../../user.service';
 
@@ -20,7 +21,8 @@ export class GisfoSyncModalComponent implements OnInit {
   constructor(
     private modalController: ModalController,
     private userService: UserService,
-    private projectService: ProjectService
+    private projectService: ProjectService,
+    private dashService: DashboardService
   ) { }
 
   ngOnInit() {
@@ -41,8 +43,8 @@ export class GisfoSyncModalComponent implements OnInit {
     if (!this.form.valid) { return; }
     this.modalController.dismiss({ message: 'begin sync' }, 'begin');
 
-    this.projectService
-      .syncProject(
+    this.dashService
+      .sincroDbStart(
         this.form.value.collaudatoreufficio,
         this.form.value.pk_proj
       ).subscribe(

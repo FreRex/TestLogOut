@@ -37,23 +37,6 @@ export interface Project {
   sync: string;
 }
 
-export interface IstatData {
-  Regione: String; 
-  CittaMetropolitana : String;
-  Provincia : String;
-  CodiceComuneAlfanumerico : String;
-  DenominazioneItaliano : String;
-  DenominazioneAltraLingua : String;
-  RipartizioneGeografica : String;
-  Capoluogo : String;
-  SiglaAutomobilistica : String;
-  CodiceCatastaleDelComune : String;
-  PopolazioneLegale2011 : String;
-  latitude : String;
-  longitude : String;
-  CAP : String;
-  STATUS : String;
-}
 
 @Injectable({
   providedIn: 'root',
@@ -127,19 +110,6 @@ export class ProjectService {
       );
   }
 
-  syncProject(
-    collaudatoreufficio: string,
-    pk_proj: number
-  ) {
-    const idutente = this.userService.getUserIdByName(collaudatoreufficio);
-    return this.http
-      .get(
-        `${environment.apiUrl}/sincrodb/${idutente}/${pk_proj}`,
-        // `${environment.apiUrl}/sincrodb/42/129743824`,
-        { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
-        // ).pipe(delay(20000)
-      );
-  }
 
   /** CREATE progetti */
   addProject(
@@ -277,10 +247,5 @@ export class ProjectService {
       );
   }
 
-  searchCity( nomeCity: string){
-    return this.http
-      .get<Array<IstatData>>(
-        `https://www.gerriquez.com/comuni/ws.php?dencomune=${nomeCity}`,
-      )
-  }
+
 }

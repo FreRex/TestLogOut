@@ -1,10 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, ElementRef, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { AlertController, ToastController } from '@ionic/angular';
+import { AlertController, LoadingController, ToastController } from '@ionic/angular';
+import { forkJoin } from 'rxjs';
 import { Observable } from 'rxjs';
 import { delay, tap } from 'rxjs/operators';
-import { IstatData, ProjectService } from 'src/app/shared/project.service';
+import { RoomService } from 'src/app/rooms/room.service';
+import { DashboardService } from 'src/app/shared/dashboard.service';
+import { ProjectService } from 'src/app/shared/project.service';
 import { UiManagerService } from 'src/app/shared/ui-manager.service';
 import { User, UserService } from 'src/app/shared/user.service';
 import { environment } from 'src/environments/environment';
@@ -35,9 +38,12 @@ export class DashboardComponent implements OnInit {
     private toastController: ToastController,
     private alertController: AlertController,
     private http: HttpClient,
-    private userService: UserService,
     private projectService: ProjectService,
-    private uiManager: UiManagerService
+    private roomService: RoomService,
+    private userService: UserService,
+    private dashService: DashboardService,
+    private loadingController: LoadingController,
+    // private uiManager: UiManagerService
   ) { }
 
   ngOnInit() {
@@ -58,7 +64,7 @@ export class DashboardComponent implements OnInit {
     if (!this.form.valid) { return; }
 
     // this.uiManager.createSyncToast();
-    // this.projectService
+    // this.dashService
     //   .syncProject(
     //     this.form.value.collaudatoreufficio,
     //     this.form.value.pk_proj
@@ -83,12 +89,13 @@ export class DashboardComponent implements OnInit {
           date: new Date()
         }
       );
-      this.projectService
-        .syncProject(
-          this.form.value.collaudatoreufficio,
-          this.form.value.pk_proj
-        ).subscribe(
-          res => {
+      this.dashService.sincroDbStart(
+        this.form.value.collaudatoreufficio,
+        this.form.value.pk_proj
+      ).subscribe(res => {
+        this.dashService.sincroDbCheck()
+          .subscribe(res => {
+            console.log("Fine sincro: " + res);
             toastEl.dismiss();
             this.logs.push(
               {
@@ -98,14 +105,27 @@ export class DashboardComponent implements OnInit {
               }
             );
             // TODO: ricaricare room e progetti all fine della sincronizzazione
-          }
-        );
+            this.reloadData();
+          });
+      });
       return toastEl.onDidDismiss();
-    }).then(res => {
-      console.log('onDidDismiss resolved with role', res.role);
     });
+  }
 
-
+  reloadData() {
+    this.loadingController
+      .create({ keyboardClose: true, message: 'Loading...' })
+      .then(loadingEl => {
+        loadingEl.present();
+        forkJoin({
+          requestProjects: this.projectService.loadProjects(),
+          requestRooms: this.roomService.loadRooms(),
+        }).subscribe(({ requestProjects, requestRooms }) => {
+          console.log(requestProjects);
+          console.log(requestRooms);
+          loadingEl.dismiss();
+        });
+      });
   }
 
   onChooseUser(user: User) {
@@ -149,13 +169,13 @@ export class DashboardComponent implements OnInit {
     ).then(alertEl => { alertEl.present(); });
   }
 
-  searchCoord(comune:string){
+  searchCoord(comune: string) {
 
-    this.projectService.searchCity(comune).subscribe(
+    this.dashService.searchCity(comune).subscribe(
       res => {
         console.log(res);
 
-        
+
         window.open("https://www.nperf.com/it/map/IT/-/230.TIM/signal/?ll=" + res[0]['latitude'] + "&lg=" + res[0]['longitude'] + "&zoom=13");
       }
     );
