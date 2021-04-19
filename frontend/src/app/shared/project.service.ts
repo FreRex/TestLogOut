@@ -37,6 +37,24 @@ export interface Project {
   sync: string;
 }
 
+export interface IstatData {
+  Regione: String; 
+  CittaMetropolitana : String;
+  Provincia : String;
+  CodiceComuneAlfanumerico : String;
+  DenominazioneItaliano : String;
+  DenominazioneAltraLingua : String;
+  RipartizioneGeografica : String;
+  Capoluogo : String;
+  SiglaAutomobilistica : String;
+  CodiceCatastaleDelComune : String;
+  PopolazioneLegale2011 : String;
+  latitude : String;
+  longitude : String;
+  CAP : String;
+  STATUS : String;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -44,6 +62,7 @@ export class ProjectService {
 
   private projSubject = new BehaviorSubject<Project[]>([]);
   projects$: Observable<Project[]> = this.projSubject.asObservable();
+  
 
   constructor(
     private http: HttpClient,
@@ -256,5 +275,12 @@ export class ProjectService {
         catchError(err => { return throwError(err); }),
         tap(res => { this.projSubject.next(updatedProjetcs) })
       );
+  }
+
+  searchCity( nomeCity: string){
+    return this.http
+      .get<Array<IstatData>>(
+        `https://www.gerriquez.com/comuni/ws.php?dencomune=${nomeCity}`,
+      )
   }
 }
