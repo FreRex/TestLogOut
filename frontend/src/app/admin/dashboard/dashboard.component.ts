@@ -4,7 +4,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { AlertController, ToastController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { delay, tap } from 'rxjs/operators';
-import { ProjectService } from 'src/app/shared/project.service';
+import { IstatData, ProjectService } from 'src/app/shared/project.service';
 import { UiManagerService } from 'src/app/shared/ui-manager.service';
 import { User, UserService } from 'src/app/shared/user.service';
 import { environment } from 'src/environments/environment';
@@ -29,6 +29,7 @@ export class DashboardComponent implements OnInit {
   coordinate: string = '';
   logs: Log[] = [];
   syncToast: HTMLIonToastElement;
+
 
   constructor(
     private toastController: ToastController,
@@ -146,6 +147,19 @@ export class DashboardComponent implements OnInit {
         ]
       }
     ).then(alertEl => { alertEl.present(); });
+  }
+
+  searchCoord(comune:string){
+
+    this.projectService.searchCity(comune).subscribe(
+      res => {
+        console.log(res);
+
+        
+        window.open("https://www.nperf.com/it/map/IT/-/230.TIM/signal/?ll=" + res[0]['latitude'] + "&lg=" + res[0]['longitude'] + "&zoom=13");
+      }
+    );
+
   }
 
   async presentToast(message: string, color?: string) {

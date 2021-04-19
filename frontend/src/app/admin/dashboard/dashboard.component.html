@@ -35,15 +35,22 @@
           <ion-card-content>
             <ion-item>
               <ion-label position="floating" class="ion-text-wrap">
-                Incolla le coordinate
+                Coordinate / Comune
               </ion-label>
               <ion-input type="text" #coordinate></ion-input>
             </ion-item>
-            <div class="ion-text-right ion-margin-vertical">
+            <div class="ion-text-right ion-margin-vertical btnNperf">
+
               <ion-button shape="round" fill="outline" color="primary"
                 (click)="createLink(coordinate.value.toString())">
-                <ion-icon slot="start" name="caret-forward-circle-outline"></ion-icon>Link
+                <ion-icon slot="start" name="caret-forward-circle-outline"></ion-icon>Cerca Coordinate
               </ion-button>
+
+              <ion-button shape="round" fill="outline" color="primary"
+              (click)="searchCoord(coordinate.value.toString())">
+              <ion-icon slot="start" name="caret-forward-circle-outline"></ion-icon>Cerca Comune
+            </ion-button>
+
             </div>
           </ion-card-content>
         </ion-card>
