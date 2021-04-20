@@ -3,6 +3,8 @@ import { userInfo } from "os";
 exports.postCreateUtenti = (req: any, res: any, next: any) => {  
     
     const db = require('../conf/db');
+    const alfaNumeCasuale = require('.././middleware/alfaNumeCasuale');
+
     let sql: any = '';
 
     let collaudatoreufficio: any;
@@ -12,8 +14,8 @@ exports.postCreateUtenti = (req: any, res: any, next: any) => {
     let idutcas: string;
     
     //Codice casuale
-    idutcas='qwerty'; 
-      
+    //idutcas='qwerty'; 
+    idutcas=alfaNumeCasuale.alfaNumeCasualeUtenti(10);      
 
     //Controllo parametri e creazione query   
     if(typeof(req.body.collaudatoreufficio) !== 'undefined' && req.body.collaudatoreufficio !== null && req.body.collaudatoreufficio !== ''){

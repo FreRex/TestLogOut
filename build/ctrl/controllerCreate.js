@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.postCreateUtenti = (req, res, next) => {
     const db = require('../conf/db');
+    const alfaNumeCasuale = require('.././middleware/alfaNumeCasuale');
     let sql = '';
     let collaudatoreufficio;
     let username;
@@ -9,7 +10,8 @@ exports.postCreateUtenti = (req, res, next) => {
     let autorizzazioni;
     let idutcas;
     //Codice casuale
-    idutcas = 'qwerty';
+    //idutcas='qwerty'; 
+    idutcas = alfaNumeCasuale.alfaNumeCasualeUtenti(10);
     //Controllo parametri e creazione query   
     if (typeof (req.body.collaudatoreufficio) !== 'undefined' && req.body.collaudatoreufficio !== null && req.body.collaudatoreufficio !== '') {
         collaudatoreufficio = req.body.collaudatoreufficio;
