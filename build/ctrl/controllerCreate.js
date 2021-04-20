@@ -7,6 +7,9 @@ exports.postCreateUtenti = (req, res, next) => {
     let username;
     let password;
     let autorizzazioni;
+    let idutcas;
+    //Codice casuale
+    idutcas = 'qwerty';
     //Controllo parametri e creazione query   
     if (typeof (req.body.collaudatoreufficio) !== 'undefined' && req.body.collaudatoreufficio !== null && req.body.collaudatoreufficio !== '') {
         collaudatoreufficio = req.body.collaudatoreufficio;
@@ -16,7 +19,7 @@ exports.postCreateUtenti = (req, res, next) => {
                 password = req.body.password;
                 if (typeof (req.body.autorizzazioni) !== 'undefined' && req.body.autorizzazioni !== null && req.body.autorizzazioni !== '' && typeof (req.body.autorizzazioni) === 'number') {
                     autorizzazioni = req.body.autorizzazioni;
-                    sql = "INSERT INTO utenti (collaudatoreufficio, username, password, autorizzazioni) VALUES (?,?,?,?)";
+                    sql = "INSERT INTO utenti (idutcas, collaudatoreufficio, username, password, autorizzazioni) VALUES (?,?,?,?,?)";
                     esecuzioneQuery(sql);
                 }
                 else {
@@ -39,7 +42,7 @@ exports.postCreateUtenti = (req, res, next) => {
     // Esecuzione query
     //-------------------   
     function esecuzioneQuery(sqlInsert) {
-        db.query(sqlInsert, [collaudatoreufficio, username, password, autorizzazioni], (err, rows, fields) => {
+        db.query(sqlInsert, [idutcas, collaudatoreufficio, username, password, autorizzazioni], (err, rows, fields) => {
             if (err) {
                 res.send('Query error: ' + err.sqlMessage);
             }
