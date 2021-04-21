@@ -65,21 +65,11 @@ export class RoomService {
     );
   }
 
-  // getRooms(): Observable<Room[]> {
-  //   return this.rooms$
-  //     .pipe(
-  //       switchMap(rooms => {
-  //         if (!rooms || rooms.length <= 0) { return this.loadRooms(); }
-  //         else { return of(rooms); }
-  //       })
-  //     );
-  // }
-
   /** SELECT singola room */
   selectRoom(roomId: string): Observable<Room> {
     return this.http
       .get<RoomData>(
-        `${environment.apiUrl}/s/room/${roomId}`,
+        `${environment.apiUrl}/s/room/${this.authService.userCod}/${roomId}`,
         { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
       )
       .pipe(
@@ -98,10 +88,9 @@ export class RoomService {
 
   /** SELECT rooms */
   loadRooms(): Observable<Room[]> {
-    // console.log("User:", this.authService.userId);
     return this.http
       .get<{ [key: string]: RoomData }>(
-        `${environment.apiUrl}/s/room/${this.authService.userId}/0`,
+        `${environment.apiUrl}/s/room/${this.authService.userCod}/0`,
         { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
       )
       .pipe(

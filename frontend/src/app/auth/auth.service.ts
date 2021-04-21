@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { map, tap } from 'rxjs/operators';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { catchError, map, tap } from 'rxjs/operators';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { UserService } from '../shared/user.service';
 
 @Injectable({
@@ -29,9 +29,10 @@ export class AuthService {
   fetchToken() {
     return this.http
       .post<{ [key: string]: string }>(`${environment.apiUrl}/token/`, {})
-      .pipe(tap(res => {
-        this._token = res['token'];
-      }));
+      .pipe(
+        catchError(err => { return throwError(err); }),
+        tap(res => { this._token = res['token']; })
+      );
   }
 
   /** currentRole DEVE essere un Osservabile perchè altrimenti 
@@ -44,10 +45,6 @@ export class AuthService {
   get userId() { return this._userId; };
   set userId(userId: number) { this._userId = userId; };
 
-  // _currentRole: string = '';
-  // get currentRole() { return this._currentRole; };
-  // set currentRole(currentRole: string) { this._currentRole = currentRole; };
-
   onLogin(userId: number) {
     if (this.currentRole.value == null) {
       console.log('userId: ', userId);
@@ -55,6 +52,19 @@ export class AuthService {
       if (this.userId === 0) { this.currentRole.next('admin'); }
       else { this.currentRole.next('user'); }
       console.log('this.currentRole.value', this.currentRole.value);
+    }
+  }
+
+  _userCod: string = '0';
+  get userCod() { return this._userCod; };
+  set userCod(userId: string) { this._userCod = userId; };
+
+  onLoginCod(userCod: string, userRole: string) {
+    if (this.currentRole.value == null) {
+      console.log('userCod: ', userCod);
+      console.log('userRole: ', userRole);
+      this.userCod = userCod;
+      this.currentRole.next(userRole);
     }
   }
 

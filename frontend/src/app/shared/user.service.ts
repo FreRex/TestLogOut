@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
-import { catchError, map, switchMap, take, tap } from 'rxjs/operators';
+import { catchError, find, map, switchMap, take, tap } from 'rxjs/operators';
 import { AuthService } from 'src/app/auth/auth.service';
 import { environment } from 'src/environments/environment';
 
@@ -74,15 +74,7 @@ export class UserService {
   }
 
   getUserRoleByCod(cod: string) {
-    //TODO: probabilmente c'è un modo più elegante
-    let role: string;
-    this.users$.pipe(
-      take(1),
-      map((users: User[]) => {
-        return { ...users.find(user => user.idutcas === cod) };
-      })
-    ).subscribe(user => role = user.autorizzazioni);
-    return role;
+    return this.users$.pipe(find(user => user['idutcas'] === cod));
   }
 
   /** SELECT utenti */

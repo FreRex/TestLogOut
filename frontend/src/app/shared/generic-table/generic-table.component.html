@@ -4,8 +4,9 @@
   </ion-col>
 </ion-row>
 <div *ngIf="(datas$ | async) as datas">
-  <div class="ion-text-center" *ngIf="datas.length <= 0">
-    <ion-spinner></ion-spinner>
+  <div class="ion-text-center ion-padding-vertical" *ngIf="datas.length <= 0">
+    <!-- <ion-spinner></ion-spinner> -->
+    Nessun dato disponibile.
   </div>
   <div *ngFor="let data of datas">
     <!-- <ion-row class="ion-align-items-center row-data" *ngFor="let data of datas"> -->

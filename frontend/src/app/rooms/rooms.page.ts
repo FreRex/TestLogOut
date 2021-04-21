@@ -1,14 +1,15 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { AlertController, ModalController, ToastController } from '@ionic/angular';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { AlertController, LoadingController, ModalController, ToastController } from '@ionic/angular';
+import { BehaviorSubject, forkJoin, Observable, throwError } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Room, RoomService } from './room.service';
 import { AuthService } from '../auth/auth.service';
-import { delay, distinctUntilChanged, map, startWith, switchMap } from 'rxjs/operators';
+import { delay, distinctUntilChanged, find, map, startWith, switchMap } from 'rxjs/operators';
 import { GenericRoomItemComponent } from '../shared/generic-items/generic-room-item.component';
 import { TableColumns } from '../shared/generic-table/generic-table.component';
 import { StorageDataService } from '../shared/storage-data.service';
 import { UserService } from '../shared/user.service';
+import { ProjectService } from '../shared/project.service';
 
 @Component({
   selector: 'app-room',
@@ -43,14 +44,12 @@ export class RoomsPage extends GenericRoomItemComponent implements OnInit {
 
     this.rooms$ = this.route.queryParams.pipe(
       switchMap(params => {
-        //if(x) = check if x is negative, undefined, null or empty 
-        // isNaN(x) = determina se un valore è NaN o no
-        if (params && params['user'] /*&& !isNaN(params['user'])*/ && params['user'] !== '0' && params['user'] !== '1') {
+        if (params && params['user'] /*  && params['user'] !== '0' */ && params['user'] !== 'XHfGBAzmkp') {
           console.log('params: ', params['user']);
-          this.authService.onLogin(+params['user']);
+          this.authService.onLoginCod(params['user'], 'user');
           this.dataService.loadData();
         } else {
-          this.authService.onLogin(0);
+          this.authService.onLoginCod('0', 'admin');
           this.dataService.loadData();
         }
         return this.searchStream$;
@@ -73,7 +72,6 @@ export class RoomsPage extends GenericRoomItemComponent implements OnInit {
     public modalController: ModalController,
     public toastController: ToastController,
     public dataService: StorageDataService,
-    private userService: UserService
   ) {
     super(
       router,

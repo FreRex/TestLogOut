@@ -1,7 +1,7 @@
 <div *ngIf="(inputDatas$ | async) as datas">
-  <div class="ion-text-center" *ngIf="datas.length <= 0">
+  <!-- <div class="ion-text-center" *ngIf="datas.length <= 0">
     <ion-spinner></ion-spinner>
-  </div>
+  </div> -->
   <ion-row *ngFor="let data of datas">
     <ion-col>
       <!-- <ion-item-sliding #item>
