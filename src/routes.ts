@@ -72,7 +72,7 @@ router.get('/vidapp/', controllerVidApp.VidApp);
 //------------------------------------------------------------------------
 
 //Indirizzamento ad API-db di lettura (SELECT)
-router.get('/s/:table/:collaudatoreufficio?/:id?/', [mid.checkAuth], controllerSelect.getSelect);
+router.get('/s/:table/:idutcas?/:idroom?/', [mid.checkAuth], controllerSelect.getSelect);
 
 //Indirizzamento ad API-db di modifica (UPDATE)
 router.put('/ur/', [mid.checkAuth], controllerUpdate.putUpdateRoom);

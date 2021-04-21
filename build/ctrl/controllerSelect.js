@@ -6,46 +6,46 @@ exports.getSelect = (req, res, next) => {
     let table = req.params.table;
     let sql;
     let id;
-    let collaudatoreufficio;
+    let idutcas;
     let idWh;
     //-------------------------
     //Verifica parametri
     //-------------------------
     //if (typeof(req.params.id) !== 'undefined' && Number.isInteger(id) && (req.params.id)!= 0 && (req.params.id)!='') {
-    if (typeof (req.params.id) !== 'undefined' && validator.isNumeric(req.params.id) && (req.params.id) != 0 && (req.params.id) != '') {
-        id = req.params.id;
+    if (typeof (req.params.idroom) !== 'undefined' && validator.isNumeric(req.params.idroom) && (req.params.idroom) != 0 && (req.params.idroom) != '') {
+        id = req.params.idroom;
     }
     else {
         id = '';
     }
     //if (typeof(req.params.collaudatoreufficio) !== 'undefined') {
-    if (typeof (req.params.collaudatoreufficio) !== 'undefined' && validator.isNumeric(req.params.collaudatoreufficio) && (req.params.collaudatoreufficio) != 0 && (req.params.collaudatoreufficio) != '') {
-        collaudatoreufficio = req.params.collaudatoreufficio;
+    if (typeof (req.params.idutcas) !== 'undefined' && (req.params.idutcas) != 0 && (req.params.idutcas) != '') {
+        idutcas = req.params.idutcas;
     }
     else {
-        collaudatoreufficio = '';
+        idutcas = '';
     }
     //---------------------
     //Selezione tipo query  
     //---------------------  
     switch (table) {
         case "room":
-            sql = 'SELECT multistreaming.cod AS cod, multistreaming.id AS id, multistreaming.usermobile AS usermobile, multistreaming.progettoselezionato AS progettoselezionato, utenti.collaudatoreufficio AS collaudatoreufficio, multistreaming.DataInsert AS DataInsert FROM multistreaming INNER JOIN utenti ON utenti.id = multistreaming.collaudatoreufficio ';
+            sql = "SELECT multistreaming.cod AS cod, multistreaming.id AS id, multistreaming.usermobile AS usermobile, multistreaming.progettoselezionato AS progettoselezionato, utenti.collaudatoreufficio AS collaudatoreufficio, multistreaming.DataInsert AS DataInsert FROM multistreaming INNER JOIN utenti ON utenti.id = multistreaming.collaudatoreufficio ";
             if (id == '') {
-                if (collaudatoreufficio == '') {
-                    sql = sql + 'ORDER BY id DESC';
+                if (idutcas == '') {
+                    sql = sql + "ORDER BY id DESC";
                 }
                 else {
-                    sql = sql + 'WHERE utenti.id = ' + collaudatoreufficio + ' ORDER BY id DESC';
+                    sql = sql + "WHERE utenti.idutcas = '" + idutcas + "' ORDER BY id DESC";
                 }
                 //res.send(sql)           
             }
             else {
-                if (collaudatoreufficio == '') {
-                    sql = sql + 'WHERE multistreaming.id = ' + id + ' ORDER BY id DESC';
+                if (idutcas == '') {
+                    sql = sql + "WHERE multistreaming.id = " + id + " ORDER BY id DESC";
                 }
                 else {
-                    sql = sql + 'WHERE multistreaming.id = ' + id + ' AND utenti.id = ' + collaudatoreufficio + ' ORDER BY id DESC';
+                    sql = sql + "WHERE multistreaming.id = " + id + " AND utenti.id = " + idutcas + " ORDER BY id DESC";
                 }
             }
             //res.send(sql)
