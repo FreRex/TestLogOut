@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { AlertController, IonSearchbar, ModalController, ToastController } from '@ionic/angular';
 import { CreateUserModalComponent } from '../shared/modals/create-user-modal/create-user-modal.component';
-import { UploadShpModalComponent } from '../shared/modals/upload-shp-modal/upload-shp-modal.component';
+import { CreateProjectModalComponent } from '../shared/modals/create-project-modal/create-project-modal.component';
 import { BehaviorSubject, concat, Observable, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 import { Project, ProjectService } from '../shared/project.service';

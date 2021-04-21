@@ -1,28 +1,30 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
-import { catchError, map, switchMap, take, tap } from 'rxjs/operators';
+import { catchError, find, map, switchMap, take, tap } from 'rxjs/operators';
 import { AuthService } from 'src/app/auth/auth.service';
 import { environment } from 'src/environments/environment';
 
-
 export interface UserData {
+  id: number;
+  idutcas: string;
+  DataCreazione: Date;
   collaudatoreufficio: string;
   username: string;
   password: string;
   autorizzazioni: number;
   commessa?: string;
-  DataCreazione?: Date;
-  id?: number;
 }
+
 export interface User {
+  id: number;
+  idutcas: string;
+  DataCreazione: Date;
   collaudatoreufficio: string;
   username: string;
   password: string;
   autorizzazioni: string;
-  commessa?: string;
-  DataCreazione?: Date;
-  id?: number;
+  commessa: string;
 }
 
 @Injectable({
@@ -59,7 +61,7 @@ export class UserService {
     );
   }
 
-  getUserIdByName(name: string): number {
+  getUserIdByName(name: string) {
     //TODO: probabilmente c'è un modo più elegante
     let userID: number;
     this.users$.pipe(
@@ -71,10 +73,15 @@ export class UserService {
     return userID;
   }
 
+  getUserRoleByCod(cod: string) {
+    return this.users$.pipe(find(user => user['idutcas'] === cod));
+  }
+
   /** SELECT utenti */
   loadUsers(): Observable<User[]> {
     return this.http
-      .get<User[]>('https://www.collaudolive.com:9083/s/utenti/',
+      .get<User[]>(
+        `${environment.apiUrl}/s/utenti/`,
         { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
       ).pipe(
         // <-- Rimappa i dati che arrivano dal server sull'interfaccia della Room
@@ -84,12 +91,13 @@ export class UserService {
             if (data.hasOwnProperty(key)) {
               users.push({
                 id: data[key].id,
+                idutcas: data[key].idutcas,
+                DataCreazione: data[key].DataCreazione,
                 collaudatoreufficio: data[key].collaudatoreufficio,
                 username: data[key].username,
                 password: data[key].password,
                 autorizzazioni: data[key].autorizzazioni.toString() === '1' ? 'admin' : 'user',
                 commessa: 'commessa',
-                DataCreazione: data[key].DataCreazione,
               });
             }
           }
@@ -112,11 +120,13 @@ export class UserService {
     const newUser =
     {
       id: null,
+      idutcas: null,
+      DataCreazione: new Date(),
       collaudatoreufficio: collaudatoreufficio,
       username: username,
       password: password,
-      commessa: 'commessa',
       autorizzazioni: autorizzazioni,
+      commessa: 'commessa',
     }
     return this.users$
       .pipe(
@@ -139,6 +149,8 @@ export class UserService {
         tap(res => {
           console.log('GeneratedId:', res['insertId']);
           newUser.id = res['insertId'];
+          // TODO: l'api deve restituire anche l'idutcas al momento della create
+          // newUser.idutcas = res['idutcas'];
           updatedUsers.unshift(newUser);
           this.usersSubject.next(updatedUsers);
         })
@@ -163,10 +175,13 @@ export class UserService {
           updatedUsers[userIndex] =
           {
             id: oldUser.id,
+            idutcas: oldUser.idutcas,
+            DataCreazione: oldUser.DataCreazione,
             collaudatoreufficio: collaudatoreufficio,
             username: username,
             password: password,
-            autorizzazioni: oldUser.autorizzazioni,
+            autorizzazioni: oldUser.autorizzazioni, //TODO: rendere modificabile
+            commessa: oldUser.commessa, //TODO: per ora non esiste backend, modificabile
           };
           return this.http
             .put(
@@ -175,6 +190,8 @@ export class UserService {
                 "collaudatoreufficio": collaudatoreufficio,
                 "username": username,
                 "password": password,
+                // "autorizzazioni": autorizzazioni,
+                // "commessa": commessa,
                 "id": userId,
               },
               { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }

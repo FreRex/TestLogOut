@@ -39,6 +39,7 @@ export interface Project {
   sync: string;
 }
 
+//BUG: Field 'codcasuale' doesn't have a default value
 
 @Injectable({
   providedIn: 'root',

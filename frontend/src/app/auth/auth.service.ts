@@ -1,15 +1,18 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
-import { tap } from 'rxjs/operators';
-import { BehaviorSubject } from 'rxjs';
+import { catchError, map, tap } from 'rxjs/operators';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { UserService } from '../shared/user.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient,
+  ) { }
 
   // TODO: set to false
   private _userIsAutenticated = true;
@@ -26,28 +29,42 @@ export class AuthService {
   fetchToken() {
     return this.http
       .post<{ [key: string]: string }>(`${environment.apiUrl}/token/`, {})
-      .pipe(tap(res => {
-        this._token = res['token'];
-      }));
+      .pipe(
+        catchError(err => { return throwError(err); }),
+        tap(res => { this._token = res['token']; })
+      );
   }
 
-  // currentRole: BehaviorSubject<string> = new BehaviorSubject(null);
-  // currentRole$ = this.currentRole.asObservable();
+  /** currentRole DEVE essere un Osservabile perchè altrimenti 
+   * la direttiva *userIsAdmin non funziona correttamente e 
+   * il template non viene aggiornato in tempo in base al ruolo*/
+  currentRole: BehaviorSubject<string> = new BehaviorSubject(null);
+  currentRole$ = this.currentRole.asObservable();
 
-  _userId: string = '0';
+  _userId: number = 0;
   get userId() { return this._userId; };
-  set userId(userId: string) { this._userId = userId; };
+  set userId(userId: number) { this._userId = userId; };
 
-  _currentRole: string = '';
-  get currentRole() { return this._currentRole; };
-  set currentRole(currentRole: string) { this._currentRole = currentRole; };
-
-  onLogin(userId: string) {
-    if (this.currentRole == '') {
+  onLogin(userId: number) {
+    if (this.currentRole.value == null) {
+      console.log('userId: ', userId);
       this.userId = userId;
-      // if(this.userId === 0){ this.currentRole.next('admin'); }
-      // else { this.currentRole.next('user'); }
-      this.currentRole = this.userId == '0' ? 'admin' : 'user';
+      if (this.userId === 0) { this.currentRole.next('admin'); }
+      else { this.currentRole.next('user'); }
+      console.log('this.currentRole.value', this.currentRole.value);
+    }
+  }
+
+  _userCod: string = '0';
+  get userCod() { return this._userCod; };
+  set userCod(userId: string) { this._userCod = userId; };
+
+  onLoginCod(userCod: string, userRole: string) {
+    if (this.currentRole.value == null) {
+      console.log('userCod: ', userCod);
+      console.log('userRole: ', userRole);
+      this.userCod = userCod;
+      this.currentRole.next(userRole);
     }
   }
 

@@ -5,7 +5,7 @@ import { AlertController, IonItemSliding, ModalController, ToastController } fro
 import { AuthService } from 'src/app/auth/auth.service';
 import { EditRoomModalComponent } from '../modals/edit-room-modal/edit-room-modal.component';
 import { Room, RoomService } from '../../rooms/room.service';
-import { NewRoomModalComponent } from '../modals/new-room-modal/new-room-modal.component';
+import { CreateRoomModalComponent } from '../modals/create-room-modal/create-room-modal.component';
 import { HttpEventType } from '@angular/common/http';
 
 @Component({
@@ -37,7 +37,7 @@ export class GenericRoomItemComponent implements OnInit {
   createRoom() {
     this.modalController
       .create({
-        component: NewRoomModalComponent,
+        component: CreateRoomModalComponent,
         backdropDismiss: false,
       })
       .then(modalEl => {
@@ -79,8 +79,10 @@ export class GenericRoomItemComponent implements OnInit {
     if (slidingItem) slidingItem.close();
     if (room) this.room = room;
 
-    const linkProgetto = this.baseUrl + this.room.projectID + ((this.authService.currentRole === 'admin') ? '&useringresso=admin' : '');
-    window.open(linkProgetto);
+    this.authService.currentRole$.subscribe((currentRole) => {
+      const linkProgetto = this.baseUrl + this.room.projectID + ((currentRole === 'admin') ? '&useringresso=admin' : '');
+      window.open(linkProgetto);
+    });
   }
 
   /** Copia il link della ROOM */
@@ -102,46 +104,37 @@ export class GenericRoomItemComponent implements OnInit {
     if (slidingItem) slidingItem.close();
     if (room) this.room = room;
 
-    this.toastController.create({
-      message: 'Download foto in corso...',
-      position: 'bottom',
-      cssClass: 'download-toast',
-      color: 'secondary'
-    }).then(toastEl => {
-      toastEl.present();
-      const nomeProgetto = this.room.nome_progetto.trim().replace(' ', '');
-      this.roomService.downloadFoto(nomeProgetto).subscribe(
-        (result: any) => { //when you use stricter type checking
-          if (result.type === HttpEventType.DownloadProgress) {
-            const percentDone = Math.round(100 * result.loaded / result.total);
-            console.log(percentDone);
-          }
-          if (result.type === HttpEventType.Response) {
-            const blob = new Blob([result], { type: 'application/zip' });
-            fileSaver.saveAs(blob, `${nomeProgetto}.zip`);
-            toastEl.dismiss();
-          }
-        });
-    })
+    /** window.open */
+    const nomeProgetto = this.room.nome_progetto.trim().replace(' ', '');
+    this.roomService.checkDownload(nomeProgetto).subscribe(
+      (value: boolean) => {
+        if (value) window.open(`https://www.collaudolive.com:9083/downloadzip/${nomeProgetto}`)
+        else this.presentToast(`Non ci sono foto sul progetto ${nomeProgetto}!`, 'danger')
+      }
+    )
 
-    //   let blob: any = new Blob([response], { type: 'text/json; charset=utf-8' });
-    //   const url = window.URL.createObjectURL(blob);
-    //   window.open(url);
-    //   window.location.href = response.url;
-    //   fileSaver.saveAs(blob, nomeProgetto);
-    //   console.log(blob, 'TEST ZIP')
-    //   console.log(url, 'test zip')
-    //   //}), error => console.log('Error downloading the file'),        
-    // }),
-    // (error: any) => console.log('Error downloading the file'),  //when you use stricter type checking 
-    // () => console.info('File downloaded successfully');
-
-    // this.roomService.checkDownload(nomeProgetto).subscribe(
-    //   (value: boolean) => {
-    //     if (value) window.open(`https://www.collaudolive.com:9083/downloadzip/${nomeProgetto}`)
-    //     else this.presentToast(`Non ci sono foto sul progetto ${nomeProgetto}!`, 'danger')
-    //   }
-    // )
+    /** Metodo Josuè */
+    // this.toastController.create({
+    //   message: 'Download foto in corso...',
+    //   position: 'bottom',
+    //   cssClass: 'download-toast',
+    //   color: 'secondary'
+    // }).then(toastEl => {
+    //   toastEl.present();
+    // const nomeProgetto = this.room.nome_progetto.trim().replace(' ', '');
+    // this.roomService.downloadFoto(nomeProgetto).subscribe(
+    //   (result: any) => { //when you use stricter type checking
+    //     if (result.type === HttpEventType.DownloadProgress) {
+    //       const percentDone = Math.round(100 * result.loaded / result.total);
+    //       console.log(percentDone);
+    //     }
+    //     if (result.type === HttpEventType.Response) {
+    //       const blob = new Blob([result], { type: 'application/zip' });
+    //       fileSaver.saveAs(blob, `${nomeProgetto}.zip`);
+    //       toastEl.dismiss();
+    //     }
+    //   });
+    // })
   }
 
   /** Crea un alert per la cancellazione della ROOM */

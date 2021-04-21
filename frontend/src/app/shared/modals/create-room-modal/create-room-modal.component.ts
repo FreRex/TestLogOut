@@ -7,11 +7,11 @@ import { Project, ProjectService } from 'src/app/shared/project.service';
 import { RoomService } from '../../../rooms/room.service';
 
 @Component({
-  selector: 'app-new-room-modal',
-  templateUrl: './new-room-modal.component.html',
-  styleUrls: ['./new-room-modal.component.scss'],
+  selector: 'app-create-room-modal',
+  templateUrl: './create-room-modal.component.html',
+  styleUrls: ['./create-room-modal.component.scss'],
 })
-export class NewRoomModalComponent implements OnInit {
+export class CreateRoomModalComponent implements OnInit {
 
   form: FormGroup;
   projects$: Observable<Project[]>;

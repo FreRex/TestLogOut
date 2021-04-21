@@ -27,11 +27,11 @@ export class ProjectsTabComponent extends GenericProjectItemComponent implements
   ngOnInit() {
     this.columns = [
       { title: 'ID', key: 'idprogetto', type: 'number', size: 1, orderEnabled: true },
-      { title: 'Sync', key: 'sync', type: 'string', size: 1, orderEnabled: true/* , customTemplate: this.sync */ },
       { title: 'DataSync', key: 'datasincro', type: 'date', size: 1, orderEnabled: true },
       { title: 'LastSync', key: 'DataLastSincro', type: 'date', size: 1, orderEnabled: true },
-      { title: 'PK Project', key: 'pk_proj', type: 'string', size: 1, orderEnabled: true },
-      { title: 'Nome Progetto', key: 'nome', type: 'string', size: 3, orderEnabled: true },
+      { title: 'Sync', key: 'sync', type: 'string', size: 1, orderEnabled: true/* , customTemplate: this.sync */ },
+      { title: 'PK Project', key: 'pk_proj', type: 'string', size: 2, orderEnabled: true },
+      { title: 'Nome Progetto', key: 'nome', type: 'string', size: 2, orderEnabled: true },
       { title: 'Collaudatore', key: 'collaudatoreufficio', type: 'string', size: 2, orderEnabled: true },
       { title: 'Azioni', key: '', type: 'buttons', size: 2, orderEnabled: false/* , customTemplate: this.desktopButtons */ },
     ];

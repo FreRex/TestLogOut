@@ -9,12 +9,12 @@
           <ion-icon name="copy-outline"></ion-icon>
         </ion-button>
       </span>
-      <span data-tooltip="Modifica" data-tooltip-position="top">
+      <span data-tooltip="Modifica" data-tooltip-position="top" *userIsAdmin>
         <ion-button size="small" class="ion-no-margin" expand="block" fill="clear" (click)="editRoom()">
           <ion-icon name="create-outline"></ion-icon>
         </ion-button>
       </span>
-      <span data-tooltip="Elimina" data-tooltip-position="top">
+      <span data-tooltip="Elimina" data-tooltip-position="top" *userIsAdmin>
         <ion-button size="small" class="ion-no-margin" expand="block" fill="clear" (click)="deleteRoom()">
           <ion-icon name="trash-outline"></ion-icon>
         </ion-button>

@@ -7,7 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { BackofficePageRoutingModule } from './backoffice-routing.module';
 
 import { BackofficePage } from './backoffice.page';
-import { UploadShpModalComponent } from '../shared/modals/upload-shp-modal/upload-shp-modal.component';
+import { CreateProjectModalComponent } from '../shared/modals/create-project-modal/create-project-modal.component';
 import { CreateUserModalComponent } from '../shared/modals/create-user-modal/create-user-modal.component';
 import { EditProjectModalComponent } from '../shared/modals/edit-project-modal/edit-project-modal.component';
 import { EditUserModalComponent } from '../shared/modals/edit-user-modal/edit-user-modal.component';
@@ -26,7 +26,7 @@ import { SharedModule } from '../shared/shared.module';
 
   ],
   entryComponents: [
-    UploadShpModalComponent,
+    CreateProjectModalComponent,
     CreateUserModalComponent,
     EditProjectModalComponent,
     EditUserModalComponent,
