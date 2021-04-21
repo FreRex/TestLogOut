@@ -12,6 +12,7 @@ export interface ProjectData {
   pk_proj: number;
   nome: string;
   datasincro: Date;
+  DataLastSincro: Date;
   nodi_fisici: string;
   nodi_ottici: string;
   tratte: string;
@@ -27,6 +28,7 @@ export interface Project {
   pk_proj: number;
   nome: string;
   datasincro: Date;
+  DataLastSincro: Date;
   nodi_fisici: string;
   nodi_ottici: string;
   tratte: string;
@@ -92,6 +94,7 @@ export class ProjectService {
                 pk_proj: data[key].pk_proj,
                 nome: data[key].nome,
                 datasincro: data[key].datasincro,
+                DataLastSincro: data[key].datasincro,
                 nodi_fisici: data[key].nodi_fisici,
                 nodi_ottici: data[key].nodi_ottici,
                 tratte: data[key].tratte,
@@ -129,6 +132,7 @@ export class ProjectService {
       pk_proj: pk_proj,
       nome: nome,
       datasincro: new Date(),
+      DataLastSincro: new Date(),
       nodi_fisici: nodi_fisici,
       nodi_ottici: nodi_ottici,
       tratte: tratte,
@@ -193,6 +197,7 @@ export class ProjectService {
             pk_proj: pk_proj,
             nome: nome,
             datasincro: oldProject.datasincro,
+            DataLastSincro: oldProject.DataLastSincro,
             nodi_fisici: oldProject.nodi_fisici,
             nodi_ottici: oldProject.nodi_ottici,
             tratte: oldProject.tratte,

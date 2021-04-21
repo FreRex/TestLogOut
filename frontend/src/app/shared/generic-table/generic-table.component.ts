@@ -33,7 +33,7 @@ export class GenericTableComponent implements OnInit {
   page = 0;
   totalNumberOfRecords: number;
   totalPages: number = 1;
-  recordsPerPage = 10;
+  recordsPerPage = 12;
 
   constructor() { }
 
