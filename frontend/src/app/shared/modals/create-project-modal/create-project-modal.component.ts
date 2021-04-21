@@ -6,11 +6,11 @@ import { User, UserService } from '../../user.service';
 import { ProjectService } from '../../project.service';
 
 @Component({
-  selector: 'app-upload-shp-modal',
-  templateUrl: './upload-shp-modal.component.html',
-  styleUrls: ['./upload-shp-modal.component.scss'],
+  selector: 'app-create-project-modal',
+  templateUrl: './create-project-modal.component.html',
+  styleUrls: ['./create-project-modal.component.scss'],
 })
-export class UploadShpModalComponent implements OnInit {
+export class CreateProjectModalComponent implements OnInit {
 
   form: FormGroup;
   users$: Observable<User[]>;

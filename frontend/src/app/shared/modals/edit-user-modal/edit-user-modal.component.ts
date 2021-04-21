@@ -22,6 +22,8 @@ export class EditUserModalComponent implements OnInit {
   ngOnInit() {
     this.userService.getUser(this.userId).subscribe((user) => {
       this.user = user;
+      console.log(this.user.idutcas);
+
       this.form = new FormGroup({
         collaudatoreufficio: new FormControl(this.user.collaudatoreufficio, {
           updateOn: 'blur',

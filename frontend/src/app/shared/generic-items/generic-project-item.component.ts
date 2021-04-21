@@ -4,7 +4,7 @@ import { AlertController, IonItemSliding, ModalController, ToastController } fro
 import { AuthService } from 'src/app/auth/auth.service';
 import { Project, ProjectService } from 'src/app/shared/project.service';
 import { EditProjectModalComponent } from '../modals/edit-project-modal/edit-project-modal.component';
-import { UploadShpModalComponent } from '../modals/upload-shp-modal/upload-shp-modal.component';
+import { CreateProjectModalComponent } from '../modals/create-project-modal/create-project-modal.component';
 
 @Component({
   selector: 'app-generic-project-item',
@@ -32,7 +32,7 @@ export class GenericProjectItemComponent implements OnInit {
   createProject() {
     this.modalController
       .create({
-        component: UploadShpModalComponent,
+        component: CreateProjectModalComponent,
       })
       .then((modalEl) => {
         modalEl.present();

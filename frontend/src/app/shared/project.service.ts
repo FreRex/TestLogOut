@@ -8,10 +8,10 @@ import { UserService } from './user.service';
 
 export interface ProjectData {
   idprogetto: number;
+  datasincro: Date;
   collaudatoreufficio: string;
   pk_proj: number;
   nome: string;
-  datasincro: Date;
   nodi_fisici: string;
   nodi_ottici: string;
   tratte: string;
@@ -24,9 +24,9 @@ export interface ProjectData {
 export interface Project {
   idprogetto: number;
   collaudatoreufficio: string;
+  datasincro: Date;
   pk_proj: number;
   nome: string;
-  datasincro: Date;
   nodi_fisici: string;
   nodi_ottici: string;
   tratte: string;
@@ -37,6 +37,7 @@ export interface Project {
   sync: string;
 }
 
+//BUG: Field 'codcasuale' doesn't have a default value
 
 @Injectable({
   providedIn: 'root',
@@ -88,10 +89,10 @@ export class ProjectService {
             if (data.hasOwnProperty(key)) {
               projects.push({
                 idprogetto: data[key].idprogetto,
+                datasincro: data[key].datasincro,
                 collaudatoreufficio: data[key].collaudatoreufficio,
                 pk_proj: data[key].pk_proj,
                 nome: data[key].nome,
-                datasincro: data[key].datasincro,
                 nodi_fisici: data[key].nodi_fisici,
                 nodi_ottici: data[key].nodi_ottici,
                 tratte: data[key].tratte,
@@ -125,10 +126,10 @@ export class ProjectService {
     const newProject =
     {
       idprogetto: null,
+      datasincro: new Date(),
       collaudatoreufficio: collaudatoreufficio,
       pk_proj: pk_proj,
       nome: nome,
-      datasincro: new Date(),
       nodi_fisici: nodi_fisici,
       nodi_ottici: nodi_ottici,
       tratte: tratte,
@@ -189,10 +190,10 @@ export class ProjectService {
           updatedProjetcs[projectIndex] =
           {
             idprogetto: oldProject.idprogetto,
+            datasincro: oldProject.datasincro,
             collaudatoreufficio: collaudatoreufficio,
             pk_proj: pk_proj,
             nome: nome,
-            datasincro: oldProject.datasincro,
             nodi_fisici: oldProject.nodi_fisici,
             nodi_ottici: oldProject.nodi_ottici,
             tratte: oldProject.tratte,

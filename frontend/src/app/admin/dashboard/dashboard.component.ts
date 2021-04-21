@@ -103,9 +103,9 @@ export class DashboardComponent implements OnInit {
         );
         this.reloadData();
       });
-
       return toastEl.onDidDismiss();
     });
+
   }
 
   reloadData() {

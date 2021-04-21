@@ -7,6 +7,7 @@ import { UserService } from './shared/user.service';
 import { RoomService } from './rooms/room.service';
 import { environment } from 'src/environments/environment';
 import { switchMap } from 'rxjs/operators';
+import { StorageDataService } from './shared/storage-data.service';
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
@@ -15,6 +16,7 @@ import { switchMap } from 'rxjs/operators';
 export class AppComponent implements OnInit {
 
   constructor(
+    private dataService: StorageDataService,
     private loadingController: LoadingController,
     private authService: AuthService,
     private userService: UserService,
@@ -23,27 +25,29 @@ export class AppComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    // this.dataService.loadData();
+
     //this.authService.token = sessionStorage.getItem('token');
     //this.authService.token = localStorage.getItem('token');
-    this.loadingController
-      .create({ keyboardClose: true, message: 'Loading...' })
-      .then(loadingEl => {
-        loadingEl.present();
-        this.authService.fetchToken().pipe(
-          switchMap(token =>
-            //console.log(this.authService.token);
-            forkJoin({
-              requestUsers: this.userService.loadUsers(),
-              requestProjects: this.projectService.loadProjects(),
-              requestRooms: this.roomService.loadRooms(),
-            })
-          )
-        ).subscribe(({ requestUsers, requestProjects, requestRooms }) => {
-          // console.log(requestUsers);
-          // console.log(requestProjects);
-          // console.log(requestRooms);
-          loadingEl.dismiss();
-        });
-      });
+    // this.loadingController
+    //   .create({ keyboardClose: true, message: 'Loading...' })
+    //   .then(loadingEl => {
+    //     loadingEl.present();
+    //     this.authService.fetchToken().pipe(
+    //       switchMap(token =>
+    //         //console.log(this.authService.token);
+    //         forkJoin({
+    //           requestUsers: this.userService.loadUsers(),
+    //           requestProjects: this.projectService.loadProjects(),
+    //           requestRooms: this.roomService.loadRooms(),
+    //         })
+    //       ),
+    //     ).subscribe(({ requestUsers, requestProjects, requestRooms }) => {
+    //       // console.log(requestUsers);
+    //       // console.log(requestProjects);
+    //       // console.log(requestRooms);
+    //       loadingEl.dismiss();
+    //     });
+    //   });
   }
 }
