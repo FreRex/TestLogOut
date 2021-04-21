@@ -6,7 +6,7 @@ import fs from 'fs';
 const routes = require('./routes');
  
 const app = express();
-const port = 9184;
+const port = 9083;
 
 app.use(express.json());
 
