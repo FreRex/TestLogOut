@@ -52,7 +52,8 @@ exports.putUpdateUtenti = (req: any, res: any, next: any) => {
     //Parametri modificabili
     let collaudatoreufficio: any;
     let username: any;
-    let password: any;          
+    let password: any;
+    let autorizzazioni: number;         
 
     //Controllo parametri e creazione query   
     if(typeof(req.body.id) !== 'undefined' && req.body.id !== null && typeof(req.body.id)==='number' && req.body.id !== ''){
@@ -88,6 +89,20 @@ exports.putUpdateUtenti = (req: any, res: any, next: any) => {
             else
              {
                 sql = sql + ", password = ? ";
+             }
+            
+        }
+        //autorizzazioni
+        if(typeof(req.body.autorizzazioni) !== 'undefined' && req.body.autorizzazioni !== null && req.body.autorizzazioni !== ''){
+            autorizzazioni = req.body.autorizzazioni;
+            parametri.push(autorizzazioni);
+            
+            if(sql===''){
+                sql = sql + "autorizzazioni = ? ";
+            }
+            else
+             {
+                sql = sql + ", autorizzazioni = ? ";
              }
             
         }

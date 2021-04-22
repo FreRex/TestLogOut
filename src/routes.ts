@@ -79,7 +79,7 @@ router.put('/ur/', [mid.checkAuth], controllerUpdate.putUpdateRoom);
 router.put('/uu/', [mid.checkAuth], controllerUpdate.putUpdateUtenti);
 router.put('/up/', [mid.checkAuth], controllerUpdate.putUpdateProgetti);
 
-//Indirizzamento ad API-db di modifica (DELETE)
+//Indirizzamento ad API-db di eliminazione (DELETE)
 router.post('/d/', [mid.checkAuth], controllerDelete.delete);
 
 //Indirizzamento ad API-db di creazione (POST)
