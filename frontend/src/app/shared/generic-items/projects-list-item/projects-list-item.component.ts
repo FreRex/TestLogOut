@@ -8,7 +8,6 @@ import { GenericProjectItemComponent } from 'src/app/shared/generic-items/generi
 @Component({
   selector: 'app-projects-list-item',
   templateUrl: './projects-list-item.component.html',
-  styleUrls: ['../../generic-list/generic-list.component.scss'],
 })
 export class ProjectsListItemComponent extends GenericProjectItemComponent {
 

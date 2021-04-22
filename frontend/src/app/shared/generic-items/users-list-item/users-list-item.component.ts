@@ -8,7 +8,6 @@ import { GenericUserItemComponent } from 'src/app/shared/generic-items/generic-u
 @Component({
   selector: 'app-users-list-item',
   templateUrl: './users-list-item.component.html',
-  styleUrls: ['../../generic-list/generic-list.component.scss'],
 })
 export class UsersListItemComponent extends GenericUserItemComponent {
 

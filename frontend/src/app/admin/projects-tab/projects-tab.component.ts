@@ -28,7 +28,7 @@ export class ProjectsTabComponent extends GenericProjectItemComponent implements
     this.columns = [
       { title: 'ID', key: 'idprogetto', type: 'number', size: 1, orderEnabled: true },
       { title: 'DataSync', key: 'datasincro', type: 'date', size: 1, orderEnabled: true },
-      { title: 'LastSync 000', key: 'DataLastSincro', type: 'date', size: 1, orderEnabled: true },
+      { title: 'LastSync', key: 'DataLastSincro', type: 'date', size: 1, orderEnabled: true },
       { title: 'Sync', key: 'sync', type: 'string', size: 1, orderEnabled: true/* , customTemplate: this.sync */ },
       { title: 'PK Project', key: 'pk_proj', type: 'string', size: 2, orderEnabled: true },
       { title: 'Nome Progetto', key: 'nome', type: 'string', size: 2, orderEnabled: true },
