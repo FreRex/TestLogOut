@@ -37,6 +37,10 @@ export class EditUserModalComponent implements OnInit {
           updateOn: 'blur',
           validators: [Validators.required, Validators.maxLength(30)],
         }),
+        autorizzazioni: new FormControl(this.user.autorizzazioni, {
+          updateOn: 'blur',
+          validators: [Validators.required, Validators.maxLength(30)],
+        }),
       });
     });
   }
@@ -47,7 +51,8 @@ export class EditUserModalComponent implements OnInit {
       this.form.value.collaudatoreufficio,
       this.form.value.username,
       this.form.value.password,
-      this.user.id
+      this.user.id,
+      this.form.value.autorizzazioni
     ).subscribe(
       /** Il server risponde con 200 */
       res => {

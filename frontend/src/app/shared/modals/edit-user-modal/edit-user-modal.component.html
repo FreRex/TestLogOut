@@ -22,6 +22,13 @@
       <ion-label position="floating" class="ion-margin">Password</ion-label>
       <ion-input type="text" formControlName="password"></ion-input>
     </ion-item>
+    <ion-item>
+      <ion-label position="floating" class="ion-margin">Autorizzazione</ion-label>
+      <ion-select formControlName="autorizzazioni" interface="popover">
+        <ion-select-option value="admin">Admin</ion-select-option>
+        <ion-select-option value="user">User</ion-select-option>
+      </ion-select>
+    </ion-item>
   </form>
 </ion-content>
 <div class="ion-margin-vertical ion-padding">

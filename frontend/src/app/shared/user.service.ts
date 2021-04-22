@@ -162,7 +162,8 @@ export class UserService {
     collaudatoreufficio: string,
     username: string,
     password: string,
-    userId: number
+    userId: number,
+    autorizzazioni: string,
   ) {
     let updatedUsers: User[];
     return this.users$
@@ -180,22 +181,22 @@ export class UserService {
             collaudatoreufficio: collaudatoreufficio,
             username: username,
             password: password,
-            autorizzazioni: oldUser.autorizzazioni, //TODO: rendere modificabile
+            autorizzazioni: autorizzazioni, 
             commessa: oldUser.commessa, //TODO: per ora non esiste backend, modificabile
           };
           return this.http
             .put(
               `${environment.apiUrl}/uu/`,
               {
+                "id": userId,
                 "collaudatoreufficio": collaudatoreufficio,
                 "username": username,
                 "password": password,
-                // "autorizzazioni": autorizzazioni,
+                "autorizzazioni": autorizzazioni === 'admin' ? 1 : 2,
                 // "commessa": commessa,
-                "id": userId,
               },
               { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
-            );
+              );
         }),
         catchError(err => { return throwError(err); }),
         tap(res => { this.usersSubject.next(updatedUsers) })
