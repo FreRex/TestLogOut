@@ -104,14 +104,41 @@ export class GenericRoomItemComponent implements OnInit {
     if (slidingItem) slidingItem.close();
     if (room) this.room = room;
 
-    /** window.open */
+    
     const nomeProgetto = this.room.nome_progetto.trim().replace(' ', '');
     this.roomService.checkDownload(nomeProgetto).subscribe(
       (value: boolean) => {
-        if (value) window.open(`https://www.collaudolive.com:9083/downloadzip/${nomeProgetto}`)
+        if (value){
+          const link = document.createElement('a');
+          //link.setAttribute('target', '_blank');
+          link.setAttribute('href', `https://www.collaudolive.com:9083/downloadzip/${nomeProgetto}`);
+          link.setAttribute('download', `${this.room}.zip`);
+          console.log(link.attributes);
+          document.body.appendChild(link);
+          link.click();
+          link.remove();
+        } 
+        else
+        {
+          this.presentToast(`Non ci sono foto sul progetto ${nomeProgetto}!`, 'danger')
+        }
+        
+        
+        //window.open(`https://www.collaudolive.com:9083/downloadzip/${nomeProgetto}`)           
+        
+      }
+    )
+
+    /** window.open */
+    /*
+    const nomeProgetto = this.room.nome_progetto.trim().replace(' ', '');
+    this.roomService.checkDownload(nomeProgetto).subscribe(
+      (value: boolean) => {
+        if (value) window.open(`https://www.collaudolive.com:9083/downloadzip/${nomeProgetto}`)           
         else this.presentToast(`Non ci sono foto sul progetto ${nomeProgetto}!`, 'danger')
       }
     )
+    */
 
     /** Metodo Josuè */
     // this.toastController.create({
