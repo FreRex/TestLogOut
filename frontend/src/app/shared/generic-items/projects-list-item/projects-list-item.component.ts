@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertController, ModalController, ToastController } from '@ionic/angular';
+import { AlertController, LoadingController, ModalController, ToastController } from '@ionic/angular';
 import { AuthService } from 'src/app/auth/auth.service';
 import { ProjectService } from 'src/app/shared/project.service';
 import { GenericProjectItemComponent } from 'src/app/shared/generic-items/generic-project-item.component';
+import { DashboardService } from '../../dashboard.service';
 
 @Component({
   selector: 'app-projects-list-item',
@@ -17,7 +18,9 @@ export class ProjectsListItemComponent extends GenericProjectItemComponent {
     public authService: AuthService,
     public alertController: AlertController,
     public modalController: ModalController,
-    public toastController: ToastController
+    public toastController: ToastController,
+    public dashService: DashboardService,
+    public loadingController: LoadingController,
   ) {
     super(
       router,
@@ -25,7 +28,9 @@ export class ProjectsListItemComponent extends GenericProjectItemComponent {
       authService,
       alertController,
       modalController,
-      toastController
+      toastController,
+      dashService,
+      loadingController
     );
   }
 

@@ -1,10 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertController, IonItemSliding, ModalController, ToastController } from '@ionic/angular';
+import { AlertController, IonItemSliding, LoadingController, ModalController, ToastController } from '@ionic/angular';
 import { AuthService } from 'src/app/auth/auth.service';
 import { Project, ProjectService } from 'src/app/shared/project.service';
 import { EditProjectModalComponent } from '../modals/edit-project-modal/edit-project-modal.component';
 import { CreateProjectModalComponent } from '../modals/create-project-modal/create-project-modal.component';
+import { DashboardService } from '../dashboard.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-generic-project-item',
@@ -20,13 +22,52 @@ export class GenericProjectItemComponent implements OnInit {
     public authService: AuthService,
     public alertController: AlertController,
     public modalController: ModalController,
-    public toastController: ToastController
+    public toastController: ToastController,
+    public dashService: DashboardService,
+    public loadingController: LoadingController,
+
   ) { }
 
   ngOnInit() { }
 
   doRefresh(event) {
     this.projectService.loadProjects().subscribe(res => { event.target.complete(); });
+  }
+
+  syncProjectUpdate(project?: Project, slidingItem?: IonItemSliding) {
+    if (slidingItem) { slidingItem.close(); }
+    if (project) { this.proj = project; }
+
+    this.toastController.create({
+      message: 'Sincronizzazione in corso...',
+      position: 'bottom',
+      cssClass: 'sync-toast',
+      color: 'secondary'
+    }).then(toastEl => {
+      toastEl.present();
+      this.dashService.sincroDb(
+        this.proj.collaudatoreufficio,
+        this.proj.pk_proj
+      ).subscribe(res => {
+        console.log('sincroended: ', res);
+        toastEl.dismiss();
+        this.reloadData();
+      });
+      return toastEl.onDidDismiss();
+    });
+  }
+
+  reloadData() {
+    this.loadingController
+      .create({ keyboardClose: true, message: 'Loading...' })
+      .then(loadingEl => {
+        loadingEl.present();
+        forkJoin({
+          requestProjects: this.projectService.loadProjects(),
+        }).subscribe(({ requestProjects }) => {
+          loadingEl.dismiss();
+        });
+      });
   }
 
   createProject() {

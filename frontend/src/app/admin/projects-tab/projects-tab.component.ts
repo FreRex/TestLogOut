@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertController, ModalController, ToastController } from '@ionic/angular';
+import { AlertController, LoadingController, ModalController, ToastController } from '@ionic/angular';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { distinctUntilChanged, startWith, switchMap } from 'rxjs/operators';
 import { AuthService } from 'src/app/auth/auth.service';
+import { DashboardService } from 'src/app/shared/dashboard.service';
 import { GenericProjectItemComponent } from 'src/app/shared/generic-items/generic-project-item.component';
 import { TableColumns } from 'src/app/shared/generic-table/generic-table.component';
 import { Project, ProjectService } from 'src/app/shared/project.service';
@@ -52,14 +53,18 @@ export class ProjectsTabComponent extends GenericProjectItemComponent implements
     public authService: AuthService,
     public alertController: AlertController,
     public modalController: ModalController,
-    public toastController: ToastController) {
+    public toastController: ToastController,
+    public dashService: DashboardService,
+    public loadingController: LoadingController,) {
     super(
       router,
       projectService,
       authService,
       alertController,
       modalController,
-      toastController
+      toastController,
+      dashService,
+      loadingController
     );
   }
 }

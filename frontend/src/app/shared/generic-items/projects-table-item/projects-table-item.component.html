@@ -6,6 +6,11 @@
       {{ col.type === 'date' ? (proj[col.key] | date:'dd/MM/yy') : proj[col.key] }}
     </div>
     <div *ngIf="col.type === 'buttons'" class="btns">
+      <span data-tooltip="Aggiorna" data-tooltip-position="top">
+        <ion-button size="small" class="ion-no-margin" expand="block" fill="clear" (click)="syncProjectUpdate()">
+          <ion-icon name="refresh-outline"></ion-icon>
+        </ion-button>
+      </span>
       <span data-tooltip="NPerf" data-tooltip-position="top">
         <ion-button size="small" class="ion-no-margin" expand="block" fill="clear" (click)="createLinkNPerf()">
           <ion-icon name="globe-outline"></ion-icon>
