@@ -639,8 +639,7 @@ exports.sincroDb = async (req: any, res: any, next: any) => {
 
     //-----------------
     try {        
-        await main(idutente,drawing,codicecasuale)        
-        
+        await main(idutente,drawing,codicecasuale)       
         console.error('OPERAZIONE COMPLETATA.');         
     } catch (err) {
         res.json(false); 

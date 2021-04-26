@@ -13,8 +13,8 @@ let getPayload = (token: any) => {
 
 }
 
-let setToken = (id: any, username: any)=>{
-    let payload = {id: id, username: username};
+let setToken = (username: any, password: any)=>{
+    let payload = {username: username, password: password};
     let chiaveprivata = fs.readFileSync('/etc/letsencrypt/live/www.collaudolive.com/privkey.pem');
     let token = jwt.sign(payload, chiaveprivata, option);
     return token;

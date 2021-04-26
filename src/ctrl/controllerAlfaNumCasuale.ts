@@ -6,4 +6,5 @@ exports.getAlfaNumeCasuale = (req: any, res: any, next: any) => {
    console.log('Codice casuale univoco: ' + codcas);   
        
    res.json(codcas);
+   
 }
