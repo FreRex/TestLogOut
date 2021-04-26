@@ -11,6 +11,9 @@ import { environment } from '../environments/environment';
 import { SharedModule } from './shared/shared.module';
 import { MenuComponent } from './menu/menu.component';
 
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { TokenInterceptor } from './token.interceptor';
+
 @NgModule({
   declarations: [AppComponent, MenuComponent],
   imports: [
@@ -22,7 +25,17 @@ import { MenuComponent } from './menu/menu.component';
     // IonicStorageModule.forRoot(),
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
   ],
-  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
+  providers: [
+    {
+      provide: RouteReuseStrategy,
+      useClass: IonicRouteStrategy
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptor,
+      multi: true
+    },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule { }

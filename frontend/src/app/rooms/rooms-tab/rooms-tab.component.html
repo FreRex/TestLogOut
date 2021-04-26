@@ -8,7 +8,7 @@
 </div>
 
 <!-- Desktop -->
-<ion-content class="ion-hide-md-down">
+<div class="ion-hide-md-down">
   <!-- Refresh -->
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
@@ -20,10 +20,10 @@
       <app-rooms-table-item [room]="data" [columns]="columns"></app-rooms-table-item>
     </ng-template>
   </app-generic-table>
-</ion-content>
+</div>
 
 <!-- Mobile -->
-<ion-content class="ion-hide-md-up">
+<div class="ion-hide-md-up">
   <!-- Refresh -->
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
@@ -35,4 +35,4 @@
       <app-rooms-list-item [room]="data"></app-rooms-list-item>
     </ng-template>
   </app-generic-list>
-</ion-content>
+</div>

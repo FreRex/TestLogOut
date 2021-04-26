@@ -3,7 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { AdminPage } from './admin.page';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ProjectsTabComponent } from './projects-tab/projects-tab.component';
-import { RoomsTabComponent } from './rooms-tab/rooms-tab.component';
+import { RoomsTabComponent } from '../rooms/rooms-tab/rooms-tab.component';
 import { UsersTabComponent } from './users-tab/users-tab.component';
 
 const routes: Routes = [
@@ -12,10 +12,10 @@ const routes: Routes = [
     path: 'tabs',
     component: AdminPage,
     children: [
-      {
-        path: 'rooms',
-        component: RoomsTabComponent
-      },
+      // {
+      //   path: 'rooms',
+      //   component: RoomsTabComponent
+      // },
       {
         path: 'users',
         component: UsersTabComponent

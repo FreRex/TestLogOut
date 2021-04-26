@@ -20,6 +20,7 @@ import { UsersListItemComponent } from './generic-items/users-list-item/users-li
 import { ProjectsTableItemComponent } from './generic-items/projects-table-item/projects-table-item.component';
 import { RoomsTableItemComponent } from './generic-items/rooms-table-item/rooms-table-item.component';
 import { UsersTableItemComponent } from './generic-items/users-table-item/users-table-item.component';
+import { RoomsTabComponent } from '../rooms/rooms-tab/rooms-tab.component';
 
 @NgModule({
   declarations: [
@@ -29,12 +30,14 @@ import { UsersTableItemComponent } from './generic-items/users-table-item/users-
     OrderByButtonComponent,
     GenericListComponent,
     GenericTableComponent,
+
     RoomsTableItemComponent,
     ProjectsTableItemComponent,
     UsersTableItemComponent,
     RoomsListItemComponent,
     ProjectsListItemComponent,
     UsersListItemComponent,
+
     CreateProjectModalComponent,
     CreateUserModalComponent,
     CreateRoomModalComponent,

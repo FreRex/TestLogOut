@@ -79,8 +79,8 @@ export class GenericRoomItemComponent implements OnInit {
     if (slidingItem) slidingItem.close();
     if (room) this.room = room;
 
-    this.authService.currentRole$.subscribe((currentRole) => {
-      const linkProgetto = this.baseUrl + this.room.projectID + ((currentRole === 'admin') ? '&useringresso=admin' : '');
+    this.authService.currentUser$.subscribe((currentUser) => {
+      const linkProgetto = this.baseUrl + this.room.projectID + ((currentUser.autorizzazioni === 'admin') ? '&useringresso=admin' : '');
       window.open(linkProgetto);
     });
   }
@@ -104,11 +104,11 @@ export class GenericRoomItemComponent implements OnInit {
     if (slidingItem) slidingItem.close();
     if (room) this.room = room;
 
-    
+
     const nomeProgetto = this.room.nome_progetto.trim().replace(' ', '');
     this.roomService.checkDownload(nomeProgetto).subscribe(
       (value: boolean) => {
-        if (value){
+        if (value) {
           const link = document.createElement('a');
           //link.setAttribute('target', '_blank');
           link.setAttribute('href', `https://www.collaudolive.com:9083/downloadzip/${nomeProgetto}`);
@@ -117,15 +117,14 @@ export class GenericRoomItemComponent implements OnInit {
           document.body.appendChild(link);
           link.click();
           link.remove();
-        } 
-        else
-        {
+        }
+        else {
           this.presentToast(`Non ci sono foto sul progetto ${nomeProgetto}!`, 'danger')
         }
-        
-        
+
+
         //window.open(`https://www.collaudolive.com:9083/downloadzip/${nomeProgetto}`)           
-        
+
       }
     )
 

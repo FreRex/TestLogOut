@@ -32,30 +32,30 @@ export class RoomDetailPage implements OnInit, OnDestroy {
       // mi sottoscrivo all'osservabile "getRoom()" che restituisce una singola room per ID
       this.isLoading = true;
       this.sub = this.roomsService.selectRoom(paramMap.get('roomId'))
-      .subscribe(
-        (room: Room) => { 
-          this.room = room; 
-          this.isLoading = false;
-        }, 
-        error => {
-          this.alertController.create({
-            header: 'Errore', 
-            message:'Impossibiile caricare la room', 
-            buttons : [{
-              text: 'Annulla', handler: () => {
-                this.navController.navigateBack(['/rooms']);
-                // this.router.navigate(['/rooms']);
-              }
-            }]
-          }).then(alertEl => {
-            alertEl.present();
-          })
-        }
-      );
+        .subscribe(
+          (room: Room) => {
+            this.room = room;
+            this.isLoading = false;
+          },
+          error => {
+            this.alertController.create({
+              header: 'Errore',
+              message: 'Impossibiile caricare la room',
+              buttons: [{
+                text: 'Annulla', handler: () => {
+                  this.navController.navigateBack(['/rooms']);
+                  // this.router.navigate(['/rooms']);
+                }
+              }]
+            }).then(alertEl => {
+              alertEl.present();
+            })
+          }
+        );
     });
   }
 
   ngOnDestroy() {
-    if(this.sub) { this.sub.unsubscribe; }
+    if (this.sub) { this.sub.unsubscribe; }
   }
 }

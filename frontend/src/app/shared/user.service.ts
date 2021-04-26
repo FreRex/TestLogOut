@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
-import { catchError, find, map, switchMap, take, tap } from 'rxjs/operators';
+import { catchError, find, first, map, switchMap, take, tap } from 'rxjs/operators';
 import { AuthService } from 'src/app/auth/auth.service';
 import { environment } from 'src/environments/environment';
 
@@ -36,8 +36,7 @@ export class UserService {
   users$: Observable<User[]> = this.usersSubject.asObservable();
 
   constructor(
-    private http: HttpClient,
-    private authService: AuthService
+    private http: HttpClient
   ) { }
 
   getUser(userId: number): Observable<User> {
@@ -73,16 +72,15 @@ export class UserService {
     return userID;
   }
 
-  getUserRoleByCod(cod: string) {
-    return this.users$.pipe(find(user => user['idutcas'] === cod));
+  getUserByCod(cod: string) {
+    return this.users$.pipe(first(user => user['idutcas'] === cod));
   }
 
   /** SELECT utenti */
   loadUsers(): Observable<User[]> {
     return this.http
       .get<User[]>(
-        `${environment.apiUrl}/s/utenti/`,
-        { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
+        `${environment.apiUrl}/s/utenti/`
       ).pipe(
         // <-- Rimappa i dati che arrivano dal server sull'interfaccia della Room
         map(data => {
@@ -141,8 +139,7 @@ export class UserService {
                 "username": username,
                 "password": password,
                 "autorizzazioni": autorizzazioni === 'user' ? 1 : 2,
-              },
-              { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
+              }
             );
         }),
         catchError(err => { return throwError(err); }),
@@ -181,7 +178,7 @@ export class UserService {
             collaudatoreufficio: collaudatoreufficio,
             username: username,
             password: password,
-            autorizzazioni: autorizzazioni, 
+            autorizzazioni: autorizzazioni,
             commessa: oldUser.commessa, //TODO: per ora non esiste backend, modificabile
           };
           return this.http
@@ -194,9 +191,8 @@ export class UserService {
                 "password": password,
                 "autorizzazioni": autorizzazioni === 'admin' ? 1 : 2,
                 // "commessa": commessa,
-              },
-              { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
-              );
+              }
+            );
         }),
         catchError(err => { return throwError(err); }),
         tap(res => { this.usersSubject.next(updatedUsers) })
@@ -219,8 +215,7 @@ export class UserService {
               {
                 "id": userId,
                 "tableDelete": 'utenti',
-              },
-              { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
+              }
             );
         }),
         catchError(err => { return throwError(err); }),

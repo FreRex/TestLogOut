@@ -51,7 +51,6 @@ export class ProjectService {
 
   constructor(
     private http: HttpClient,
-    private authService: AuthService,
     private userService: UserService
   ) { }
 
@@ -81,8 +80,7 @@ export class ProjectService {
   /** SELECT progetti */
   loadProjects(): Observable<Project[]> {
     return this.http
-      .get<ProjectData[]>(`${environment.apiUrl}/s/progetti/`,
-        { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
+      .get<ProjectData[]>(`${environment.apiUrl}/s/progetti/`
       ).pipe(
         // <-- Rimappa i dati che arrivano dal server sull'interfaccia della Room
         map(data => {
@@ -160,8 +158,7 @@ export class ProjectService {
                 "conn_edif_opta": conn_edif_opta,
                 "long_centro_map": long_centro_map,
                 "lat_centro_map": lat_centro_map,
-              },
-              { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
+              }
             );
         }),
         catchError(err => { return throwError(err); }),
@@ -217,8 +214,7 @@ export class ProjectService {
                 "nome": nome,
                 "long_centro_map": long_centro_map,
                 "lat_centro_map": lat_centro_map,
-              },
-              { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
+              }
             );
         }),
         catchError(err => { return throwError(err); }),
@@ -242,8 +238,7 @@ export class ProjectService {
               {
                 id: projectId,
                 tableDelete: 'rappre_prog_gisfo',
-              },
-              { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
+              }
             );
         }),
         catchError(err => { return throwError(err); }),

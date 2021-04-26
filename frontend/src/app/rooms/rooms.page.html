@@ -7,41 +7,6 @@
     </ion-toolbar>
 </ion-header>
 
-<!-- Searchbar  -->
-<div class="searchbarAdd">
-    <ion-searchbar class="search-bar" (ionInput)="searchStream$.next($event.target.value)"></ion-searchbar>
-    <!-- Create Room Button -->
-    <ion-button color="secondary" (click)="createRoom()" *userIsAdmin>
-        <ion-icon name="add" slot="icon-only"></ion-icon>
-    </ion-button>
-</div>
-
-<!-- Desktop -->
-<ion-content class="ion-hide-md-down">
-    <!-- Refresh -->
-    <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
-        <ion-refresher-content></ion-refresher-content>
-    </ion-refresher>
-    <!-- Rooms Table -->
-    <app-generic-table [inputDatas$]="rooms$" [columns]="columns" [desktopItem]="desktopItem">
-        <ng-template #desktopItem let-data='data'>
-            <!-- Rooms Table Item -->
-            <app-rooms-table-item [room]="data" [columns]="columns"></app-rooms-table-item>
-        </ng-template>
-    </app-generic-table>
-</ion-content>
-
-<!-- Mobile -->
-<ion-content class="ion-hide-md-up">
-    <!-- Refresh -->
-    <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
-        <ion-refresher-content></ion-refresher-content>
-    </ion-refresher>
-    <!-- Rooms List -->
-    <app-generic-list [inputDatas$]="rooms$" [mobileItem]="mobileItem">
-        <ng-template #mobileItem let-data='data'>
-            <!-- Rooms List Item -->
-            <app-rooms-list-item [room]="data"></app-rooms-list-item>
-        </ng-template>
-    </app-generic-list>
+<ion-content>
+    <app-rooms-tab></app-rooms-tab>
 </ion-content>

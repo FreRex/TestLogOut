@@ -17,10 +17,8 @@ export class RoomsTabComponent extends GenericRoomItemComponent implements OnIni
 
   searchStream$ = new BehaviorSubject('');
   rooms$: Observable<Room[]>;
-
   // @ViewChild('desktopButtons', { static: true }) desktopButtons: TemplateRef<any>;
   // @ViewChild('mobileOptions', { static: true }) mobileOptions: TemplateRef<any>;
-
   columns: TableColumns[] = [];
 
   ngOnInit() {

@@ -5,6 +5,7 @@ import { IonicModule } from '@ionic/angular';
 import { RoomsPageRoutingModule } from './rooms-routing.module';
 import { RoomsPage } from './rooms.page';
 import { SharedModule } from '../shared/shared.module';
+import { RoomsTabComponent } from './rooms-tab/rooms-tab.component';
 
 @NgModule({
   imports: [
@@ -14,6 +15,9 @@ import { SharedModule } from '../shared/shared.module';
     ReactiveFormsModule,
     RoomsPageRoutingModule
   ],
-  declarations: [RoomsPage]
+  declarations: [
+    RoomsPage,
+    RoomsTabComponent
+  ]
 })
 export class RoomsPageModule { }
