@@ -16,6 +16,16 @@ import { StorageDataService } from '../shared/storage-data.service';
 })
 export class RoomsPage implements OnInit {
 
+  constructor(
+    public route: ActivatedRoute,
+    public authService: AuthService,
+    public roomService: RoomService,
+    public userService: UserService,
+    public storageData: StorageDataService,
+    public projectService: ProjectService,
+    private loadingController: LoadingController,
+  ) { }
+
   ngOnInit() {
     let users: User[];
     this.loadingController
@@ -55,20 +65,9 @@ export class RoomsPage implements OnInit {
             return this.roomService.loadRooms();
           }),
         ).subscribe(rooms => {
-          this.storageData.isDataLoaded = true;
           loadingEl.dismiss();
         });
       });
   }
-
-  constructor(
-    public route: ActivatedRoute,
-    public authService: AuthService,
-    public roomService: RoomService,
-    public userService: UserService,
-    public storageData: StorageDataService,
-    public projectService: ProjectService,
-    private loadingController: LoadingController,
-  ) { }
 
 }

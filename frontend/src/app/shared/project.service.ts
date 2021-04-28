@@ -11,8 +11,8 @@ export interface ProjectData {
   collaudatoreufficio: string;
   pk_proj: number;
   nome: string;
-  datasincro: Date;
-  DataLastSincro: Date;
+  datasincro: string;
+  DataLastSincro: string;
   nodi_fisici: string;
   nodi_ottici: string;
   tratte: string;
@@ -92,8 +92,8 @@ export class ProjectService {
                 collaudatoreufficio: data[key].collaudatoreufficio,
                 pk_proj: data[key].pk_proj,
                 nome: data[key].nome,
-                datasincro: data[key].datasincro,
-                DataLastSincro: data[key].datasincro,
+                datasincro: new Date(data[key].datasincro),
+                DataLastSincro: new Date(data[key].datasincro),
                 nodi_fisici: data[key].nodi_fisici,
                 nodi_ottici: data[key].nodi_ottici,
                 tratte: data[key].tratte,
