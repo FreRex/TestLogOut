@@ -8,14 +8,13 @@ import { environment } from 'src/environments/environment';
 export interface UserData {
   id: number;
   idutcas: string;
-  DataCreazione: Date;
+  DataCreazione: string;
   collaudatoreufficio: string;
   username: string;
   password: string;
   autorizzazioni: number;
   commessa?: string;
 }
-
 export interface User {
   id: number;
   idutcas: string;
@@ -90,7 +89,7 @@ export class UserService {
               users.push({
                 id: data[key].id,
                 idutcas: data[key].idutcas,
-                DataCreazione: data[key].DataCreazione,
+                DataCreazione: new Date(data[key].DataCreazione),
                 collaudatoreufficio: data[key].collaudatoreufficio,
                 username: data[key].username,
                 password: data[key].password,

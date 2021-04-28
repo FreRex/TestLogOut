@@ -33,13 +33,15 @@ export class AuthService {
   currentUser: BehaviorSubject<User> = new BehaviorSubject(null);
   currentUser$ = this.currentUser.asObservable();
 
-  _userCod: string = '0';
+  _userCod: string = '';
   get userCod() { return this._userCod; };
   set userCod(userId: string) { this._userCod = userId; };
 
   onLogin(user: User) {
-    this.userCod = user.autorizzazioni === 'admin' ? '0' : user.idutcas;
-    this.currentUser.next(user);
+    if (this.userCod === '') {
+      this.userCod = user.autorizzazioni === 'admin' ? '0' : user.idutcas;
+      this.currentUser.next(user);
+    }
   }
 
   private _userIsAutenticated = true;

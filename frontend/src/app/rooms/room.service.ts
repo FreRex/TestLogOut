@@ -1,10 +1,20 @@
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { catchError, map, switchMap, take, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { AuthService } from '../auth/auth.service';
 import { UserService } from '../shared/user.service';
+
+/** Interfaccia che definisce la Room come mi arriva sul JSON */
+export interface RoomData {
+  id: number;
+  cod: string,
+  usermobile: string;
+  progettoselezionato: string;
+  collaudatoreufficio: string;
+  DataInsert: string;
+}
 
 /** Interfaccia che definisce la Room all'interno del progetto */
 export interface Room {
@@ -16,16 +26,6 @@ export interface Room {
   data_inserimento: Date;
   // public pk_project?: number,
   // public commessa?: string,
-}
-
-/** Interfaccia che definisce la Room come mi arriva sul JSON */
-export interface RoomData {
-  id: number;
-  cod: string,
-  usermobile: string;
-  progettoselezionato: string;
-  collaudatoreufficio: string;
-  DataInsert: string;
 }
 
 @Injectable({

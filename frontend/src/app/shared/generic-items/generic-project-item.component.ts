@@ -51,6 +51,7 @@ export class GenericProjectItemComponent implements OnInit {
       ).subscribe(res => {
         console.log('sincroended: ', res);
         toastEl.dismiss();
+        // TODO: ricaricamento dati o solo aggiornamento datasync frontend
         this.reloadData();
       });
       return toastEl.onDidDismiss();
