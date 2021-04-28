@@ -9,7 +9,7 @@ const https_1 = __importDefault(require("https"));
 const fs_1 = __importDefault(require("fs"));
 const routes = require('./routes');
 const app = express_1.default();
-const port = 9666;
+const port = 9083;
 app.use(express_1.default.json());
 //-----------------------------------------------------------------------------------------------------------
 //SEZIONE ROUTE NODEJS

@@ -27,7 +27,7 @@
   },
   "scripts": {
     "watch": "nodemon",
-    "sback": "tsc --build && npm run && node ./build/server.js",
+    "sbackend": "tsc --build && npm run && node ./build/server.js",
     "sdev": "tsc --build && cd frontend && ionic build && cd .. && npm run && node ./build/server.js",
     "sprod": "tsc --build && cd frontend && ionic build --prod && cd .. && npm run && node ./build/server.js",
     "start": "npm run && node ./build/server.js"
