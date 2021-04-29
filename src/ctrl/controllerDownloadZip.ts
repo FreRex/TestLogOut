@@ -4,7 +4,7 @@
     
     //-- Determinazione cartella da verificare
     let nameRooms: any = req.params.folderzip;    
-    const path: any = '/var/www/html/glasses_test/FrontEnd/datasave/'+nameRooms;
+    const path: any = '/var/www/html/glasses/FrontEnd/datasave/'+nameRooms;
     
     //-- Controllo se cartella: (non-esiste o vuota) => true; se esiste e non è vuota => false
     function isFull(path: any) {
@@ -26,7 +26,7 @@
     const fs = require('fs');
    
     //----------- determinazione path
-     const nameFolder = '/var/www/html/glasses_test/FrontEnd/datasave/';    
+     const nameFolder = '/var/www/html/glasses/FrontEnd/datasave/';    
      let nameRooms = req.params.folderzip;
      
     console.log(nameRooms)

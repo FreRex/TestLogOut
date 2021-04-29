@@ -46,8 +46,8 @@ exports.sincroDb = async (req, res, next) => {
         const sql = "SELECT * FROM information_schema.columns WHERE table_name = $1 order by ordinal_position asc";
         const result = await pool_collaudolive.query(sql, [tableName]);
         let colRows = result.rows;
-        campiTabellaCount = colRows.length;
         let i;
+        campiTabellaCount = colRows.length;
         for (i = 0; i < colRows.length; i++) {
             //Creazione stringa con elenco campi tabella
             if (i == 0) {
@@ -82,14 +82,14 @@ exports.sincroDb = async (req, res, next) => {
         const result = await pool_gisfo.query(sql1);
         let records = result.rows;
         //console.log(records);
-        let numrecords = records.length;
+        const numrecords = records.length;
         //numrecords=20;
         for (let idrow = 0; idrow < numrecords; idrow++) {
             for (let idcol = 0; idcol < numCol; idcol++) {
-                var elemento = records[idrow][idcol];
+                let elemento = records[idrow][idcol];
                 //console.log(elemento);
                 //ELABORAZIONE ELEMENTO
-                //Verifica elemento vuoto
+                // - Verifica elemento vuoto
                 if (typeof (elemento) != 'boolean' && elemento == '') {
                     elemento = 0;
                 }
@@ -100,23 +100,23 @@ exports.sincroDb = async (req, res, next) => {
                     valorecampiGisfo = elemento;
                 }
                 else {
-                    // Elemento NON null e NON numero
+                    // - Elemento NON null e NON numero
                     if (elemento !== null && isNaN(elemento)) {
                         //if(elemento!==null && (typeof elemento != 'number')){
                         elemento = elemento.replace(/'/g, "''");
-                        // Elemento DataModifica eseguire formattazione    
+                        // - Elemento DataModifica eseguire formattazione    
                         //if(idcol==idDataModifica){  
                         if (idDataModifica.indexOf(idcol) != -1) {
                             let formatted_date = formattaData(elemento);
                             elemento = formatted_date;
                             datamodGisfo = elemento;
                         }
-                        // Elemento NON numeric inserirlo tra gli apici "'"                    
+                        // - Elemento NON numeric inserirlo tra gli apici "'"                    
                         elemento = "'" + elemento + "'";
                         //console.log("A");                 
                     }
                     else {
-                        // Elemento DataModifica eseguire formattazione    
+                        // - Elemento DataModifica eseguire formattazione    
                         //if(idcol==idDataModifica){  
                         if ((idDataModifica.indexOf(idcol) != -1) && elemento != null) {
                             //Formattazione datamodifica
@@ -154,13 +154,13 @@ exports.sincroDb = async (req, res, next) => {
             console.log('----------------------------------------------');
             if (await checkDbCollaudoLive(tableName, pk_index, datamodGisfo, drawing) === 0) {
                 //Insert
-                let queryInsert = "INSERT INTO newfont_dati." + tableName + " (" + NomiCampiCollaudoLive + ")VALUES(" + valorecampiGisfo + ")";
+                const queryInsert = "INSERT INTO newfont_dati." + tableName + " (" + NomiCampiCollaudoLive + ")VALUES(" + valorecampiGisfo + ")";
                 console.log(queryInsert);
                 await pool_collaudolive.query(queryInsert);
                 console.log('Insert in tabletName: "' + tableName + '" the record id: "' + pk_index + '"');
             }
             else {
-                let avviso = "Elemento di " + tableName + " già presente !";
+                const avviso = "Elemento di " + tableName + " già presente !";
             }
         }
     }
@@ -178,9 +178,9 @@ exports.sincroDb = async (req, res, next) => {
         //Ciclo per controllare se esistono elementi di COLLAUDOLIVE non più presenti din GISFO => bisogna ELIMINARLI DA COLLAUDOLIVE
         for (let i = 0; i < res.rowCount; i++) {
             //Creare un array con tutti i valori della tabella in esame di GISFO
-            var verifica = Array();
+            let verifica = Array();
             for (let y = 0; y < req.rowCount; y++) {
-                var newLength = verifica.push(req1[y][0]);
+                let newLength = verifica.push(req1[y][0]);
             }
             //Se nell'array di elementi della tabella in esame di GISFO non è più presente un valore di COLLAUDOLIVE => ELIMINARE QUEL VALORE DA COLLAUDOLIVE
             if (verifica.indexOf(res1[i][0]) == -1) {
@@ -305,15 +305,12 @@ exports.sincroDb = async (req, res, next) => {
             }
             else {
                 let res_confrontaDatamodifica_gisfo = result_confrontaDatamodifica_gisfo.rows;
-                dataconfGisfo0 = formattaData(res_confrontaDatamodifica_gisfo[0][0]);
+                let dataconfGisfo0 = formattaData(res_confrontaDatamodifica_gisfo[0][0]);
             }
-            //Formattazione data       
+            //Formattazione data           
             dataconfGisfo = formattaData(dataconfGisfo0);
             dataconfGisfo1 = new Date(dataconfGisfo);
             dataconfGisfo2 = dataconfGisfo1.getTime();
-            //console.log("Data Gisfo: " +dataconfGisfo);
-            //console.log("Data Gisfo1: " +dataconfGisfo1);
-            //console.log("Data Gisfo2: " + dataconfGisfo2);
             //Verifica se datamodifica in Gisfo aggiornata
             if ((dataconfGisfo2 - dataconfCollaudoLive2 == 0)) {
                 //NON presente alcuna datamodifica aggiornata in Gisfo        

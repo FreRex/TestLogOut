@@ -27,6 +27,7 @@
   },
   "scripts": {
     "watch": "nodemon",
+    "check-env": "node -e 'console.log(process.env)' | grep npm",
     "sbackend": "tsc --build && npm run && node ./build/server.js",
     "sdev": "tsc --build && cd frontend && ionic build && cd .. && npm run && node ./build/server.js",
     "sprod": "tsc --build && cd frontend && ionic build --prod && cd .. && npm run && node ./build/server.js",

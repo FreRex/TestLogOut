@@ -9,7 +9,7 @@ const https_1 = __importDefault(require("https"));
 const fs_1 = __importDefault(require("fs"));
 const routes = require('./routes');
 const app = express_1.default();
-const port = 9083;
+const port = 9666;
 app.use(express_1.default.json());
 //-----------------------------------------------------------------------------------------------------------
 //SEZIONE ROUTE NODEJS
@@ -31,7 +31,7 @@ https_1.default.createServer({
     console.log(`-------------------- TEST ------------------------------`);
     console.log(`https://www.collaudolive.com:${port}/test`);
     console.log(`-------------------- SINCRODB ------------------------------`);
-    console.log(`https://www.collaudolive.com:${port}/sincrodb/32/1533947027/111`);
+    console.log(`https://www.collaudolive.com:${port}/sincrodb/99/122567798/1113322`);
     console.log(`-------------------- FRONTEND ------------------------------`);
     console.log(`https://www.collaudolive.com:${port}/auth`);
     console.log(`https://www.collaudolive.com:${port}/backoffice`);

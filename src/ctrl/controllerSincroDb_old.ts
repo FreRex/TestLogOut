@@ -51,15 +51,15 @@ exports.sincroDb = async (req: any, res: any, next: any) => {
     // Funzioni PRINCIPALI
     //----------------------------------------------------------
     
-    async function QueryXCampiCollaudoLive(tableName: any) {    
-
+    async function QueryXCampiCollaudoLive(tableName: string) {    
+    
         console.log('Verifica tabella: '+tableName)
     
         const sql = "SELECT * FROM information_schema.columns WHERE table_name = $1 order by ordinal_position asc";    
         const result = await pool_collaudolive.query(sql,[tableName])     
         let colRows = result.rows;
-        campiTabellaCount=colRows.length;  
-        let i: number;  
+        let i: number;
+        campiTabellaCount=colRows.length;    
         for (i = 0; i < colRows.length; i++) {        
            
            //Creazione stringa con elenco campi tabella
@@ -90,7 +90,7 @@ exports.sincroDb = async (req: any, res: any, next: any) => {
          
     }
     
-    async function QuerySelectGisfo(numCol: any, NomiCampiCollaudoLive: any, drawing: any, idDataModifica: any, tableName: any, drawingProjects: any) { 
+    async function QuerySelectGisfo(numCol: number,NomiCampiCollaudoLive: string,drawing: string,idDataModifica: any[],tableName: string,drawingProjects: string) { 
             
         console.log('Verifica drawing(pk_project): '+drawing) 
         console.log('--------------------------------------------') 
@@ -106,17 +106,17 @@ exports.sincroDb = async (req: any, res: any, next: any) => {
         const result = await pool_gisfo.query(sql1);
         let records = result.rows;    
         //console.log(records);
-        let numrecords: number=records.length;
+        const numrecords=records.length;
         //numrecords=20;
         for (let idrow = 0; idrow < numrecords; idrow++) {        
             for (let idcol = 0; idcol < numCol; idcol++) {
                
-                var elemento=records[idrow][idcol];
+                let elemento=records[idrow][idcol];
     
                 //console.log(elemento);
                 
                 //ELABORAZIONE ELEMENTO
-                //Verifica elemento vuoto
+                // - Verifica elemento vuoto
                 if(typeof(elemento)!='boolean' && elemento==''){
                     elemento=0;
                 }
@@ -131,27 +131,27 @@ exports.sincroDb = async (req: any, res: any, next: any) => {
                 else
                 {
                    
-                    // Elemento NON null e NON numero
+                    // - Elemento NON null e NON numero
                     if(elemento!==null && isNaN(elemento)){               
                     //if(elemento!==null && (typeof elemento != 'number')){
                         
                         elemento = elemento.replace(/'/g, "''");  
                                       
-                        // Elemento DataModifica eseguire formattazione    
+                        // - Elemento DataModifica eseguire formattazione    
                         //if(idcol==idDataModifica){  
                         if(idDataModifica.indexOf(idcol)!=-1){                  
                             let formatted_date = formattaData(elemento);
                             elemento=formatted_date;
                             datamodGisfo=elemento;
                         }
-                        // Elemento NON numeric inserirlo tra gli apici "'"                    
+                        // - Elemento NON numeric inserirlo tra gli apici "'"                    
                         elemento="'"+elemento+"'";  
                         //console.log("A");                 
                     }
                     else
                     {
                        
-                        // Elemento DataModifica eseguire formattazione    
+                        // - Elemento DataModifica eseguire formattazione    
                         //if(idcol==idDataModifica){  
                         if( (idDataModifica.indexOf(idcol)!=-1) && elemento!=null){                                                
                             //Formattazione datamodifica
@@ -198,7 +198,7 @@ exports.sincroDb = async (req: any, res: any, next: any) => {
             console.log('----------------------------------------------')
             if(await checkDbCollaudoLive(tableName,pk_index,datamodGisfo,drawing)===0){
                 //Insert
-                let queryInsert: string="INSERT INTO newfont_dati."+tableName+" ("+NomiCampiCollaudoLive+")VALUES("+ valorecampiGisfo +")";
+                const queryInsert="INSERT INTO newfont_dati."+tableName+" ("+NomiCampiCollaudoLive+")VALUES("+ valorecampiGisfo +")";
                
                 console.log(queryInsert);
                 await pool_collaudolive.query(queryInsert);
@@ -206,14 +206,14 @@ exports.sincroDb = async (req: any, res: any, next: any) => {
             }
             else
             {
-                let avviso: string="Elemento di "+tableName+" già presente !";            
+                const avviso="Elemento di "+tableName+" già presente !";            
             }
             
         }    
         
     }
     
-    async function delRecCollaudoLive(tableName: any,drawing: any ,drawingProjects: any ){    
+    async function delRecCollaudoLive(tableName: string,drawing: any,drawingProjects: string){    
         
         console.log('Verifica records da eliminare ')
         console.log('----------------------------------------------')
@@ -232,9 +232,9 @@ exports.sincroDb = async (req: any, res: any, next: any) => {
         for (let i = 0; i < res.rowCount; i++){
             
             //Creare un array con tutti i valori della tabella in esame di GISFO
-            var verifica=Array();
+            let verifica=Array();
             for (let y = 0; y < req.rowCount; y++) {            
-                var newLength = verifica.push(req1[y][0]);                       
+                let newLength = verifica.push(req1[y][0]);                       
             } 
             
             //Se nell'array di elementi della tabella in esame di GISFO non è più presente un valore di COLLAUDOLIVE => ELIMINARE QUEL VALORE DA COLLAUDOLIVE
@@ -255,8 +255,8 @@ exports.sincroDb = async (req: any, res: any, next: any) => {
     //------------------------------------------------------------------------------------------------
     
     // Verifica presenza record Gisfo in db CollaudoLive
-    async function checkDbCollaudoLive(tableName: any, pk_index: any, datamodGisfo: any, drawing :any){
-
+    async function checkDbCollaudoLive(tableName: string,pk_index: string,datamodGisfo: any,drawing: string){
+    
         console.log('Verifica se elemento di Gisfo è presente in CollaudoLive')
         console.log('---------------------------------------------------------------------')
         let checkDbCollaudoLive=0;                
@@ -296,7 +296,7 @@ exports.sincroDb = async (req: any, res: any, next: any) => {
     
     }
     //Verifica aggiornamento per ogni singolo record
-    async function verificaAggiornamento(tableName: any, pk_index: any, datamodGisfo: any){
+    async function verificaAggiornamento(tableName: string,pk_index: string,datamodGisfo: string | number | Date){
         
         console.log('Verifica aggiornamento per ogni singolo record')
         console.log('---------------------------------------------------------------------')
@@ -306,13 +306,13 @@ exports.sincroDb = async (req: any, res: any, next: any) => {
         let res_verifica = result_verifica_collaudolive.rows;  
         
         //Formattazione data
-        let datamodCollaudoLive: any;
+        let datamodCollaudoLive;
         datamodCollaudoLive = formattaData(res_verifica[0][0]);
-        let datamodCollaudoLive1: any = new Date(datamodCollaudoLive);
-        let datamodCollaudoLive2: any = datamodCollaudoLive1.getTime();
+        let datamodCollaudoLive1 = new Date(datamodCollaudoLive);
+        let datamodCollaudoLive2 = datamodCollaudoLive1.getTime();
         
-        let datamodGisfo1: any = new Date(datamodGisfo);
-        let datamodGisfo2: any = datamodGisfo1.getTime();
+        let datamodGisfo1 = new Date(datamodGisfo);
+        let datamodGisfo2 = datamodGisfo1.getTime();
         
         let DeltaDataModifica = datamodGisfo2 - datamodCollaudoLive2;   
     
@@ -338,7 +338,7 @@ exports.sincroDb = async (req: any, res: any, next: any) => {
        return verAgg; 
     }
     
-    async function checkvuota(tableName: any ,drawing: any){
+    async function checkvuota(tableName: string,drawing: string){
     
         const sql = {text: 'select * from newfont_dati.'+tableName+' where drawing = '+drawing, rowMode: 'array'};  
         const res = await pool_collaudolive.query(sql);
@@ -358,7 +358,7 @@ exports.sincroDb = async (req: any, res: any, next: any) => {
     }
     
     
-    async function confrontaDatamodifica(tableName: any, drawing: any, drawingProjects: any){
+    async function confrontaDatamodifica(tableName: string,drawing: any,drawingProjects: string){
         let confrontaDatamodifica1=0;
         let nCollaudoLive;
         //Prendere DataModifica più recente nella tabella in CollaudoLive    
@@ -373,8 +373,8 @@ exports.sincroDb = async (req: any, res: any, next: any) => {
              
             //Formattazione data
             let dataconfCollaudoLive='';
-            let dataconfCollaudoLive1;
-            let dataconfCollaudoLive2;
+            let dataconfCollaudoLive1: Date;
+            let dataconfCollaudoLive2: any ;
             dataconfCollaudoLive = formattaData(res_confrontaDatamodifica_collaudolive[0][0]);
             dataconfCollaudoLive1 = new Date(dataconfCollaudoLive);
             dataconfCollaudoLive2 = dataconfCollaudoLive1.getTime();
@@ -384,10 +384,10 @@ exports.sincroDb = async (req: any, res: any, next: any) => {
             //console.log("Data CollaudoLive2: " + dataconfCollaudoLive2);
     
             //Prendere DataModifica più recente della tabella in Gisfo
-            let dataconfGisfo0;
+            let dataconfGisfo0: any;
             let dataconfGisfo='';
-            let dataconfGisfo1;
-            let dataconfGisfo2;
+            let dataconfGisfo1: any;
+            let dataconfGisfo2: any;
             
             const sql_confrontaDatamodifica_gisfo = {text: 'select datamodifica from newfont_dati.'+tableName+' where ('+drawingProjects+' AND datamodifica is not null) order by datamodifica desc', rowMode: 'array'};  
             const result_confrontaDatamodifica_gisfo = await pool_gisfo.query(sql_confrontaDatamodifica_gisfo);
@@ -397,18 +397,13 @@ exports.sincroDb = async (req: any, res: any, next: any) => {
             else
             {
                 let res_confrontaDatamodifica_gisfo = result_confrontaDatamodifica_gisfo.rows;            
-                dataconfGisfo0= formattaData(res_confrontaDatamodifica_gisfo[0][0]);            
+                let dataconfGisfo0= formattaData(res_confrontaDatamodifica_gisfo[0][0]);            
             }
             
-            //Formattazione data       
-            
+            //Formattazione data           
             dataconfGisfo = formattaData(dataconfGisfo0);        
             dataconfGisfo1 = new Date(dataconfGisfo);
-            dataconfGisfo2 = dataconfGisfo1.getTime();
-         
-            //console.log("Data Gisfo: " +dataconfGisfo);
-            //console.log("Data Gisfo1: " +dataconfGisfo1);
-            //console.log("Data Gisfo2: " + dataconfGisfo2);
+            dataconfGisfo2 = dataconfGisfo1.getTime();          
     
             //Verifica se datamodifica in Gisfo aggiornata
             if((dataconfGisfo2-dataconfCollaudoLive2==0)){
@@ -430,7 +425,7 @@ exports.sincroDb = async (req: any, res: any, next: any) => {
         return confrontaDatamodifica1;
     }
     
-    function formattaData(elemento: any){
+    function formattaData(elemento: string | number | Date){
     
         let current_datetime = new Date(elemento)
         let formatted_date = current_datetime.getFullYear() + "-" + (current_datetime.getMonth() + 1) + "-" + current_datetime.getDate() + " " + current_datetime.getHours() + ":" + current_datetime.getMinutes() + ":" + current_datetime.getSeconds()    
@@ -439,7 +434,7 @@ exports.sincroDb = async (req: any, res: any, next: any) => {
     }
     
     
-    async function verDimTabel(tableName: any, drawing: any, drawingProjects: any){   
+    async function verDimTabel(tableName: string,drawing: any,drawingProjects: string){   
         
         //db CollaudoLive ---------------------------------
         const sql_coll = {text: 'select pk_'+tableName+' from newfont_dati.'+tableName+' where '+drawingProjects+' order by pk_'+tableName+' desc', rowMode: 'array'};  

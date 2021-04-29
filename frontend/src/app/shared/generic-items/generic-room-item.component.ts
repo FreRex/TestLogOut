@@ -7,6 +7,7 @@ import { EditRoomModalComponent } from '../modals/edit-room-modal/edit-room-moda
 import { Room, RoomService } from '../../rooms/room.service';
 import { CreateRoomModalComponent } from '../modals/create-room-modal/create-room-modal.component';
 import { HttpEventType } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-generic-room-item',
@@ -16,7 +17,7 @@ export class GenericRoomItemComponent implements OnInit {
 
   @Input() room: Room;
   isFavourite: boolean;
-  baseUrl = 'https://www.collaudolive.com:9777/glasses_test/FrontEnd/src/index.php?q=';
+  baseUrl = 'https://www.collaudolive.com:9777/glasses/FrontEnd/src/index.php?q=';
   linkProgetto: string;
 
   constructor(
@@ -119,7 +120,8 @@ export class GenericRoomItemComponent implements OnInit {
         if (value) {
           const link = document.createElement('a');
           //link.setAttribute('target', '_blank');
-          link.setAttribute('href', `https://www.collaudolive.com:9083/downloadzip/${nomeProgetto}`);
+          //link.setAttribute('href', `https://www.collaudolive.com:9083/downloadzip/${nomeProgetto}`);
+          link.setAttribute('href', `${environment.apiUrl}/downloadzip/${nomeProgetto}`);          
           link.setAttribute('download', `${this.room}.zip`);
           console.log(link.attributes);
           document.body.appendChild(link);
