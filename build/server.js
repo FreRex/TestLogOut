@@ -9,7 +9,11 @@ const https_1 = __importDefault(require("https"));
 const fs_1 = __importDefault(require("fs"));
 const routes = require('./routes');
 const app = express_1.default();
-const port = 9666;
+let port = 9083;
+if (process.env.NODE_ENV == 'production') {
+    require('dotenv').config();
+    port = process.env.PORT_PROD;
+}
 app.use(express_1.default.json());
 //-----------------------------------------------------------------------------------------------------------
 //SEZIONE ROUTE NODEJS

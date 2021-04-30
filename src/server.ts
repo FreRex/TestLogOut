@@ -4,12 +4,16 @@ import https from 'https';
 import fs from 'fs';
 
 const routes = require('./routes');
- 
+
 const app = express();
-const port = 9666;
+
+let port: any = 9083;
+if (process.env.NODE_ENV == 'production') {
+  require('dotenv').config();
+  port = process.env.PORT_PROD;
+}
 
 app.use(express.json());
-
 
 //-----------------------------------------------------------------------------------------------------------
 //SEZIONE ROUTE NODEJS
