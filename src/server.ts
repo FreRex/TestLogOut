@@ -7,10 +7,14 @@ const routes = require('./routes');
 
 const app = express();
 
-let port: any = 9083;
+let port: any;
 if (process.env.NODE_ENV == 'production') {
   require('dotenv').config();
-  port = process.env.PORT_PROD;
+  port = process.env.PORT_PROD || 9666;
+}
+else
+{
+  port = 9083;
 }
 
 app.use(express.json());
@@ -47,7 +51,7 @@ https.createServer({
     console.log(`-------------------- FRONTEND ------------------------------`);
     console.log(`https://www.collaudolive.com:${port}/auth`); 
     console.log(`https://www.collaudolive.com:${port}/backoffice`);
-    console.log(`https://www.collaudolive.com:${port}/rooms`); 
+    console.log(`https://www.collaudolive.com:${port}/rooms?user=XHfGBAzmkp`); 
     
     console.log(`-------------------- FRONTEND ------------------------------`);
     console.log(`https://www.collaudolive.com:${port}/vidapp`); 

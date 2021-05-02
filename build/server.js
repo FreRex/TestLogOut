@@ -9,10 +9,13 @@ const https_1 = __importDefault(require("https"));
 const fs_1 = __importDefault(require("fs"));
 const routes = require('./routes');
 const app = express_1.default();
-let port = 9083;
+let port;
 if (process.env.NODE_ENV == 'production') {
     require('dotenv').config();
-    port = process.env.PORT_PROD;
+    port = process.env.PORT_PROD || 9666;
+}
+else {
+    port = 9083;
 }
 app.use(express_1.default.json());
 //-----------------------------------------------------------------------------------------------------------
@@ -39,7 +42,7 @@ https_1.default.createServer({
     console.log(`-------------------- FRONTEND ------------------------------`);
     console.log(`https://www.collaudolive.com:${port}/auth`);
     console.log(`https://www.collaudolive.com:${port}/backoffice`);
-    console.log(`https://www.collaudolive.com:${port}/rooms`);
+    console.log(`https://www.collaudolive.com:${port}/rooms?user=XHfGBAzmkp`);
     console.log(`-------------------- FRONTEND ------------------------------`);
     console.log(`https://www.collaudolive.com:${port}/vidapp`);
     console.log(`-------------------- API SELECT-----------------------------------`);
