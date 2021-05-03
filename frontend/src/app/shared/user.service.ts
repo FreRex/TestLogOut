@@ -13,7 +13,8 @@ export interface UserData {
   username: string;
   password: string;
   autorizzazioni: number;
-  commessa?: string;
+  idcommessa: number;
+  denominazione: string;
 }
 export interface User {
   id: number;
@@ -23,6 +24,7 @@ export interface User {
   username: string;
   password: string;
   autorizzazioni: string;
+  idcommessa: number;
   commessa: string;
 }
 
@@ -53,6 +55,8 @@ export class UserService {
       map((users) =>
         users.filter((user) =>
           user.collaudatoreufficio.toLowerCase().includes(query.toLowerCase()) ||
+          user.commessa.toString().toLowerCase().includes(query.toLowerCase()) ||
+          user.username.toString().toLowerCase().includes(query.toLowerCase()) ||
           user.id.toString().toLowerCase().includes(query.toLowerCase())
         )
       )
@@ -78,7 +82,7 @@ export class UserService {
   /** SELECT utenti */
   loadUsers(): Observable<User[]> {
     return this.http
-      .get<User[]>(
+      .get<UserData[]>(
         `${environment.apiUrl}/s/utenti/`
       ).pipe(
         // <-- Rimappa i dati che arrivano dal server sull'interfaccia della Room
@@ -94,7 +98,8 @@ export class UserService {
                 username: data[key].username,
                 password: data[key].password,
                 autorizzazioni: data[key].autorizzazioni.toString() === '1' ? 'admin' : 'user',
-                commessa: 'commessa',
+                idcommessa: data[key].idcommessa,
+                commessa: data[key].denominazione,
               });
             }
           }
@@ -111,6 +116,7 @@ export class UserService {
     collaudatoreufficio: string,
     username: string,
     password: string,
+    commessa: string,
     autorizzazioni: string,
   ) {
     let updatedUsers: User[];
@@ -123,7 +129,8 @@ export class UserService {
       username: username,
       password: password,
       autorizzazioni: autorizzazioni,
-      commessa: 'commessa',
+      idcommessa: null,
+      commessa: commessa,
     }
     return this.users$
       .pipe(
@@ -138,6 +145,7 @@ export class UserService {
                 "username": username,
                 "password": password,
                 "autorizzazioni": autorizzazioni === 'user' ? 1 : 2,
+                // "commessa": commessa,
               }
             );
         }),
@@ -146,6 +154,7 @@ export class UserService {
           console.log('GeneratedId:', res['insertId']);
           newUser.id = res['insertId'];
           // TODO: l'api deve restituire anche l'idutcas al momento della create
+          newUser.idutcas = 'gg';
           // newUser.idutcas = res['idutcas'];
           updatedUsers.unshift(newUser);
           this.usersSubject.next(updatedUsers);
@@ -178,6 +187,7 @@ export class UserService {
             username: username,
             password: password,
             autorizzazioni: autorizzazioni,
+            idcommessa: oldUser.idcommessa,
             commessa: oldUser.commessa, //TODO: per ora non esiste backend, modificabile
           };
           return this.http

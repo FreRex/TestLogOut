@@ -31,6 +31,10 @@ export class CreateUserModalComponent implements OnInit {
         updateOn: 'blur',
         validators: [Validators.required, Validators.maxLength(30)]
       }),
+      commessa: new FormControl(null, {
+        updateOn: 'blur',
+        validators: [Validators.required, Validators.maxLength(30)]
+      }),
       autorizzazioni: new FormControl(null, {
         updateOn: 'blur',
         validators: [Validators.required, Validators.maxLength(10)]
@@ -45,6 +49,7 @@ export class CreateUserModalComponent implements OnInit {
         this.form.value.collaudatoreufficio,
         this.form.value.username,
         this.form.value.password,
+        this.form.value.commessa,
         this.form.value.autorizzazioni)
       .subscribe(
         /** Il server risponde con 200 */
