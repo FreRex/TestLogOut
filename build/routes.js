@@ -44,15 +44,15 @@ router.get('/checkdownloadzip/:folderzip/', controllerDownloadZip.CheckDownloadZ
 router.get('/downloadzip/:folderzip/', controllerDownloadZip.DownloadZip);
 //Login
 //router.get('/lgn/:usr/:pwd/:pkproject?', controllerLogin.checkLogin);
-router.post('/lgn/', controllerLogin.checkLogin);
+router.post('/lgn/', [mid.checkAuth], controllerLogin.checkLogin);
 //SincroDb
-router.get('/alfanumcasuale/', controllerAlfaNumCasuale.getAlfaNumeCasuale);
-router.get('/sincrodb/:idutente?/:drawing?/:codicecasuale', controllerSincroDb.sincroDb);
-router.get('/checksincrodb/:codicecasuale', controllerSincroDb.sincroDbCheck);
+router.get('/alfanumcasuale/', [mid.checkAuth], controllerAlfaNumCasuale.getAlfaNumeCasuale);
+router.get('/sincrodb/:idutente?/:drawing?/:codicecasuale', [mid.checkAuth], controllerSincroDb.sincroDb);
+router.get('/checksincrodb/:codicecasuale', [mid.checkAuth], controllerSincroDb.sincroDbCheck);
 //Token
 router.post('/token/', controllerToken.getToken);
 //VidApp (riavvio Node Media Server)
-router.get('/vidapp/', controllerVidApp.VidApp);
+router.get('/vidapp/', [mid.checkAuth], controllerVidApp.VidApp);
 //------------------------------------------------------------------------
 //----------- API-db -----------------------------------------------------
 //------------------------------------------------------------------------
@@ -65,8 +65,8 @@ router.put('/up/', [mid.checkAuth], controllerUpdate.putUpdateProgetti);
 //Indirizzamento ad API-db di eliminazione (DELETE)
 router.post('/d/', [mid.checkAuth], controllerDelete.delete);
 //Indirizzamento ad API-db di creazione (POST)
-router.post('/cu/', controllerCreate.postCreateUtenti);
-router.post('/cp/', controllerCreate.postCreateProgetti);
+router.post('/cu/', [mid.checkAuth], controllerCreate.postCreateUtenti);
+router.post('/cp/', [mid.checkAuth], controllerCreate.postCreateProgetti);
 router.post('/cr/', [mid.checkAuth], controllerCreate.postCreateRoom);
 //------------------------------------------------------------------------
 module.exports = router;
