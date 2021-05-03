@@ -49,6 +49,7 @@ exports.putUpdateUtenti = (req, res, next) => {
     let username;
     let password;
     let autorizzazioni;
+    let idcommessa;
     //Controllo parametri e creazione query   
     if (typeof (req.body.id) !== 'undefined' && req.body.id !== null && typeof (req.body.id) === 'number' && req.body.id !== '') {
         id = req.body.id;
@@ -89,6 +90,17 @@ exports.putUpdateUtenti = (req, res, next) => {
             }
             else {
                 sql = sql + ", autorizzazioni = ? ";
+            }
+        }
+        //idcommessa
+        if (typeof (req.body.idcommessa) !== 'undefined' && req.body.idcommessa !== null && req.body.idcommessa !== '') {
+            idcommessa = req.body.idcommessa;
+            parametri.push(idcommessa);
+            if (sql === '') {
+                sql = sql + "idcommessa = ? ";
+            }
+            else {
+                sql = sql + ", idcommessa = ? ";
             }
         }
         parametri.push(id);

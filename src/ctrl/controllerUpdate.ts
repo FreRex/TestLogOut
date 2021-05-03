@@ -53,7 +53,8 @@ exports.putUpdateUtenti = (req: any, res: any, next: any) => {
     let collaudatoreufficio: any;
     let username: any;
     let password: any;
-    let autorizzazioni: number;         
+    let autorizzazioni: number;  
+    let idcommessa: number;       
 
     //Controllo parametri e creazione query   
     if(typeof(req.body.id) !== 'undefined' && req.body.id !== null && typeof(req.body.id)==='number' && req.body.id !== ''){
@@ -103,6 +104,20 @@ exports.putUpdateUtenti = (req: any, res: any, next: any) => {
             else
              {
                 sql = sql + ", autorizzazioni = ? ";
+             }
+            
+        }
+        //idcommessa
+        if(typeof(req.body.idcommessa) !== 'undefined' && req.body.idcommessa !== null && req.body.idcommessa !== ''){
+            idcommessa = req.body.idcommessa;
+            parametri.push(idcommessa);
+            
+            if(sql===''){
+                sql = sql + "idcommessa = ? ";
+            }
+            else
+             {
+                sql = sql + ", idcommessa = ? ";
              }
             
         }
