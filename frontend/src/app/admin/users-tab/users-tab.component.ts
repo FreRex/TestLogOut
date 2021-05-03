@@ -30,9 +30,10 @@ export class UsersTabComponent extends GenericUserItemComponent implements OnIni
       { title: 'Data', key: 'DataCreazione', type: 'date', size: 1, orderEnabled: true },
       { title: 'Ruolo', key: 'autorizzazioni', type: 'string', size: 1, orderEnabled: true/* , customTemplate: this.role */ },
       { title: 'Collaudatore', key: 'collaudatoreufficio', type: 'string', size: 2, orderEnabled: true },
-      { title: 'User', key: 'username', type: 'string', size: 3, orderEnabled: true },
+      { title: 'User', key: 'username', type: 'string', size: 2, orderEnabled: true },
       { title: 'Password', key: 'password', type: 'string', size: 2, orderEnabled: true },
-      { title: 'Azioni', key: '', type: 'buttons', size: 2, orderEnabled: false/* , customTemplate: this.desktopButtons */ }
+      { title: 'Commessa', key: 'commessa', type: 'string', size: 2, orderEnabled: true },
+      { title: 'Azioni', key: '', type: 'buttons', size: 1, orderEnabled: false/* , customTemplate: this.desktopButtons */ }
     ];
 
     this.users$ = this.searchStream$.pipe(

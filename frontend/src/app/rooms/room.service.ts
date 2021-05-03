@@ -241,9 +241,9 @@ export class RoomService {
     return this.http.get(
       `${environment.apiUrl}/downloadzip/${nomeProgetto}`,
       {
-        responseType: 'arraybuffer',
-        reportProgress: true,
-        observe: 'events',
+        // responseType: 'arraybuffer',
+        // reportProgress: true,
+        // observe: 'events',
         headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`)
       }
     );

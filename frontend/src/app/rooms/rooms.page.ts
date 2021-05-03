@@ -59,14 +59,18 @@ export class RoomsPage implements OnInit {
                 username: null,
                 password: null,
                 autorizzazioni: 'user',
+                idcommessa: null,
                 commessa: 'commessa',
               });
             }
             return this.roomService.loadRooms();
           }),
-        ).subscribe(rooms => {
-          loadingEl.dismiss();
-        });
+        ).subscribe(
+          rooms => {
+            loadingEl.dismiss();
+          }, error => {
+            console.log(error);
+          });
       });
   }
 

@@ -20,6 +20,8 @@ export interface ProjectData {
   long_centro_map: string;
   lat_centro_map: string;
   idutente: number;
+  idcommessa: number;
+  denominazione: string;
 }
 
 export interface Project {
@@ -37,6 +39,8 @@ export interface Project {
   lat_centro_map: string;
   // idutente: number;
   sync: string;
+  idcommessa: number;
+  commessa: string;
 }
 
 //BUG: Field 'codcasuale' doesn't have a default value
@@ -102,6 +106,8 @@ export class ProjectService {
                 lat_centro_map: data[key].lat_centro_map.replace(' ', '').trim(),
                 // idutente: data[key].idprogetto,
                 sync: (data[key].conn_edif_opta === 'CollaudoLiveGisfo:view_connessione_edificio_pta' ? 'auto' : 'manual'),
+                idcommessa: data[key].idcommessa,
+                commessa: data[key].denominazione,
               });
             }
           }
@@ -139,6 +145,8 @@ export class ProjectService {
       long_centro_map: long_centro_map,
       lat_centro_map: lat_centro_map,
       sync: 'manual',
+      idcommessa: null,
+      commessa: null,
     }
     return this.projects$
       .pipe(
@@ -158,6 +166,7 @@ export class ProjectService {
                 "conn_edif_opta": conn_edif_opta,
                 "long_centro_map": long_centro_map,
                 "lat_centro_map": lat_centro_map,
+                // "commessa": commessa,
               }
             );
         }),
@@ -178,7 +187,7 @@ export class ProjectService {
     pk_proj: number,
     nome: string,
     long_centro_map: string,
-    lat_centro_map: string
+    lat_centro_map: string,
   ) {
     let updatedProjetcs: Project[];
     return this.projects$
@@ -203,6 +212,8 @@ export class ProjectService {
             long_centro_map: long_centro_map,
             lat_centro_map: lat_centro_map,
             sync: oldProject.sync,
+            idcommessa: oldProject.idcommessa,
+            commessa: oldProject.commessa,
           };
           return this.http
             .put(
@@ -214,6 +225,7 @@ export class ProjectService {
                 "nome": nome,
                 "long_centro_map": long_centro_map,
                 "lat_centro_map": lat_centro_map,
+                // "commessa": commessa,
               }
             );
         }),
