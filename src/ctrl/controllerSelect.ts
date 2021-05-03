@@ -66,7 +66,8 @@ exports.getSelect = (req: any, res: any, next: any) => {
         break;  
 
         case "utenti":          
-          sql='SELECT * FROM utenti ORDER BY id DESC';          
+          //sql='SELECT * FROM utenti ORDER BY id DESC';   
+          sql='SELECT utenti.id, utenti.idutcas, utenti.DataCreazione, utenti.collaudatoreufficio, utenti.username, utenti.password, utenti.autorizzazioni, utenti.idcommessa, commesse.denominazione AS Commessa, commesse.id FROM utenti INNER JOIN commesse ON commesse.id = utenti.idcommessa ORDER BY utenti.id DESC';       
         break;
 
         case "progetti":

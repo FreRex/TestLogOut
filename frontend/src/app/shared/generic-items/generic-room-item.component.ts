@@ -122,8 +122,7 @@ export class GenericRoomItemComponent implements OnInit {
           //link.setAttribute('target', '_blank');
           //link.setAttribute('href', `https://www.collaudolive.com:9083/downloadzip/${nomeProgetto}`);
           link.setAttribute('href', `${environment.apiUrl}/downloadzip/${nomeProgetto}`);          
-          link.setAttribute('download', `${this.room}.zip`);
-          console.log(link.attributes);
+          link.setAttribute('download', `${this.room.nome_progetto}.zip`);              
           document.body.appendChild(link);
           link.click();
           link.remove();
