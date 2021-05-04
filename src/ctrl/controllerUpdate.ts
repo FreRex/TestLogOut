@@ -243,3 +243,46 @@ exports.putUpdateProgetti = (req: any, res: any, next: any) => {
     }
    
 };
+
+// Metodo per modifica COMMESSA
+exports.putUpdateCommesse = (req: any, res: any, next: any) => {   
+    const db = require('../conf/db');
+
+    let sql: any = ''; 
+
+    let id: Number; 
+
+    //Parametri modificabili
+    let commessa;     
+
+    //Controllo parametri    
+    if(typeof(req.body.id) !== 'undefined' && req.body.id !== null && typeof(req.body.id)==='number' && req.body.id !== ''){
+        id = req.body.id;       
+        if(typeof(req.body.commessa) !== 'undefined' && req.body.commessa !== null && req.body.commessa !== ''){
+            commessa = req.body.commessa;
+            //Richiamo funzione per esecuzione query
+            esecuzioneQuery(commessa,id);
+        }
+        else
+        { res.send('Errore: parametro usermobile vuoto, non numero , "undefined" o "null"'); }
+    }
+    else
+    { res.send('Errore parametro id: vuoto, "undefined" o "null"');}
+    //-----------------------    
+    
+    //-------------------
+    // Esecuzione query
+    //-------------------   
+    function esecuzioneQuery(commessa: any, id: Number){
+        let sql;
+        sql="UPDATE commesse SET denominazione = ? WHERE id= ?";
+        db.query(sql, [commessa, id], (err: any, rows: any, fields: any) => {
+            if(err){
+                res.send('Query error: ' + err.sqlMessage);
+            }else{           
+                res.send(rows);
+            }
+        });
+    }
+   
+};

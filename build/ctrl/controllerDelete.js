@@ -1,5 +1,4 @@
 "use strict";
-// Metodo per modifica PROGETTI
 exports.delete = (req, res, next) => {
     const db = require('../conf/db');
     let sql = '';

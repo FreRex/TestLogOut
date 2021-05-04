@@ -44,13 +44,22 @@ exports.getSelect = (req: any, res: any, next: any) => {
             sql = sql + ' FROM multistreaming INNER JOIN utenti ON utenti.id = multistreaming.collaudatoreufficio ';
             sql = sql + ' INNER JOIN commesse ON commesse.id = utenti.idcommessa ';
 
+            //"id" sarebbe "idroom"
             if(id==''){ 
                 if (idutcas == '') {
                     sql= sql + "ORDER BY id DESC";               
                 }
                 else
+                //idutcas != '' ==> utente specifico
                 {
-                    sql= sql + "WHERE utenti.idutcas = '" + idutcas + "' ORDER BY id DESC"; 
+                    //sql= sql + "WHERE utenti.idutcas = '" + idutcas + "' ORDER BY id DESC";
+                    
+                    sql= sql + " WHERE IF((SELECT autorizzazioni FROM `utenti` WHERE `idutcas` = '" + idutcas + "') = 3,";
+                    sql= sql + " idcommessa = (SELECT idcommessa FROM `utenti` WHERE `idutcas` = '" + idutcas + "'),";
+                    sql= sql + " IF((SELECT autorizzazioni FROM `utenti` WHERE `idutcas` = '" + idutcas + "') = 1,";
+                    sql= sql + " utenti.idutcas !='',";
+                    sql= sql + " utenti.idutcas = (SELECT idutcas FROM `utenti` WHERE `idutcas` = '" + idutcas + "')))";
+                    sql= sql + " ORDER BY id DESC";
                 }     
                //res.send(sql)           
             }

@@ -83,6 +83,7 @@ router.get('/s/:table/:idutcas?/:idroom?/', [mid.checkAuth], controllerSelect.ge
 router.put('/ur/', [mid.checkAuth], controllerUpdate.putUpdateRoom);
 router.put('/uu/', [mid.checkAuth], controllerUpdate.putUpdateUtenti);
 router.put('/up/', [mid.checkAuth], controllerUpdate.putUpdateProgetti);
+router.put('/uc/', [mid.checkAuth], controllerUpdate.putUpdateCommesse);
 
 //Indirizzamento ad API-db di eliminazione (DELETE)
 router.post('/d/', [mid.checkAuth], controllerDelete.delete);

@@ -1,4 +1,3 @@
-// Metodo per modifica PROGETTI
 exports.delete = (req: any, res: any, next: any) => {   
     const db = require('../conf/db');
     
