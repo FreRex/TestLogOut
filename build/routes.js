@@ -68,5 +68,6 @@ router.post('/d/', [mid.checkAuth], controllerDelete.delete);
 router.post('/cu/', [mid.checkAuth], controllerCreate.postCreateUtenti);
 router.post('/cp/', [mid.checkAuth], controllerCreate.postCreateProgetti);
 router.post('/cr/', [mid.checkAuth], controllerCreate.postCreateRoom);
+router.post('/cc/', [mid.checkAuth], controllerCreate.postCreateCommessa);
 //------------------------------------------------------------------------
 module.exports = router;

@@ -169,3 +169,36 @@ exports.postCreateRoom = (req: any, res: any, next: any) => {
     //-----------------------------
 
 }
+
+exports.postCreateCommessa = (req: any, res: any, next: any) => {  
+
+    const db = require('../conf/db');
+    
+    let queryInsert:any = []; 
+    let messageErrore: any = '';
+        
+    if(typeof(req.body.commessa) !== 'undefined' && req.body.commessa !== null && req.body.commessa !== ''){                
+        queryInsert.push(req.body.commessa);
+        let sql: any = "INSERT INTO commesse (denominazione) VALUES (?)"; 
+        esecuzioneQuery(sql);               
+    }
+    else
+    { 
+        messageErrore = ('Errore parametro COMMESSA: vuoto, "undefined" o "null"'); 
+        res.send(messageErrore);
+    }    
+
+    //-----------------------------   
+    function esecuzioneQuery(sqlInsert: any){        
+        
+        db.query(sqlInsert, queryInsert, (err: any, rows: any, fields: any) => {
+            if(err){
+                res.send('Query error: ' + err.sqlMessage);
+            }else{           
+                res.send(rows);
+            }
+        });
+    }
+    //-----------------------------
+
+}
