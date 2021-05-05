@@ -4,7 +4,7 @@ import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { catchError, map, switchMap, take, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { AuthService } from '../auth/auth.service';
-import { UserService } from '../shared/user.service';
+import { UserService } from '../admin/users-tab/user.service';
 
 /** Interfaccia che definisce la Room come mi arriva sul JSON */
 export interface RoomData {
@@ -14,6 +14,8 @@ export interface RoomData {
   progettoselezionato: string;
   collaudatoreufficio: string;
   DataInsert: string;
+  idcommessa: number;
+  commessa: string;
 }
 
 /** Interfaccia che definisce la Room all'interno del progetto */
@@ -24,8 +26,8 @@ export interface Room {
   nome_progetto: string;
   nome_collaudatore: string;
   data_inserimento: Date;
-  // public pk_project?: number,
-  // public commessa?: string,
+  idcommessa: number;
+  commessa: string;
 }
 
 @Injectable({
@@ -81,6 +83,8 @@ export class RoomService {
             nome_progetto: roomData[0].progettoselezionato,
             nome_collaudatore: roomData[0].collaudatoreufficio,
             data_inserimento: new Date(roomData[0].DataInsert),
+            idcommessa: roomData[0].idcommessa,
+            commessa: roomData[0].commessa,
           }
         })
       );
@@ -108,6 +112,8 @@ export class RoomService {
                 nome_progetto: roomData[key].progettoselezionato,
                 nome_collaudatore: roomData[key].collaudatoreufficio,
                 data_inserimento: new Date(roomData[key].DataInsert),
+                idcommessa: roomData[0].idcommessa,
+                commessa: roomData[0].commessa,
               });
             }
           }
@@ -133,7 +139,9 @@ export class RoomService {
       usermobile: usermobile,
       nome_progetto: nome_progetto,
       nome_collaudatore: nome_collaudatore,
-      data_inserimento: new Date()
+      data_inserimento: new Date(),
+      idcommessa: null,
+      commessa: null
     };
     // this.rooms è un OSSERVABILE
     // take(1) = dopo la prima emissione dell'Osservabile togli la sottoscrizione
@@ -190,6 +198,8 @@ export class RoomService {
             nome_progetto: oldRoom.nome_progetto,
             nome_collaudatore: oldRoom.nome_collaudatore,
             data_inserimento: oldRoom.data_inserimento,
+            idcommessa: oldRoom.idcommessa,
+            commessa: oldRoom.commessa
           };
           return this.http
             .put(

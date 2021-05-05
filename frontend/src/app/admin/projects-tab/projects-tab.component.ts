@@ -4,10 +4,10 @@ import { AlertController, LoadingController, ModalController, ToastController } 
 import { BehaviorSubject, Observable } from 'rxjs';
 import { distinctUntilChanged, startWith, switchMap } from 'rxjs/operators';
 import { AuthService } from 'src/app/auth/auth.service';
-import { DashboardService } from 'src/app/shared/dashboard.service';
-import { GenericProjectItemComponent } from 'src/app/shared/generic-items/generic-project-item.component';
+import { DashboardService } from 'src/app/admin/dashboard/dashboard.service';
+import { GenericProjectItemComponent } from 'src/app/admin/projects-tab/generic-project-item.component';
 import { TableColumns } from 'src/app/shared/generic-table/generic-table.component';
-import { Project, ProjectService } from 'src/app/shared/project.service';
+import { Project, ProjectService } from 'src/app/admin/projects-tab/project.service';
 
 @Component({
   selector: 'app-projects-tab',

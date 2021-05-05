@@ -1,12 +1,12 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { AlertController, IonSearchbar, ModalController, ToastController } from '@ionic/angular';
-import { CreateUserModalComponent } from '../shared/modals/create-user-modal/create-user-modal.component';
-import { CreateProjectModalComponent } from '../shared/modals/create-project-modal/create-project-modal.component';
+import { CreateUserModalComponent } from '../admin/users-tab/create-user-modal/create-user-modal.component';
+import { CreateProjectModalComponent } from '../admin/projects-tab/create-project-modal/create-project-modal.component';
 import { BehaviorSubject, concat, Observable, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
-import { Project, ProjectService } from '../shared/project.service';
-import { User, UserService } from '../shared/user.service';
-import { EditUserModalComponent } from '../shared/modals/edit-user-modal/edit-user-modal.component';
+import { Project, ProjectService } from '../admin/projects-tab/project.service';
+import { User, UserService } from '../admin/users-tab/user.service';
+import { EditUserModalComponent } from '../admin/users-tab/edit-user-modal/edit-user-modal.component';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 

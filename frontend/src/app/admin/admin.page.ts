@@ -3,9 +3,10 @@ import { LoadingController } from '@ionic/angular';
 import { forkJoin } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { AuthService } from '../auth/auth.service';
-import { ProjectService } from '../shared/project.service';
+import { ProjectService } from './projects-tab/project.service';
 import { StorageDataService } from '../shared/storage-data.service';
-import { UserService } from '../shared/user.service';
+import { UserService } from './users-tab/user.service';
+import { CommissionService } from './commission-tab/commission.service';
 
 @Component({
   selector: 'app-admin',
@@ -19,6 +20,7 @@ export class AdminPage implements OnInit {
     private loadingController: LoadingController,
     private authService: AuthService,
     private userService: UserService,
+    public commissionService: CommissionService,
     private projectService: ProjectService,
   ) { }
 
@@ -33,12 +35,13 @@ export class AdminPage implements OnInit {
           switchMap(token =>
             //console.log(this.authService.token);
             forkJoin({
-              requestUsers: this.userService.loadUsers(),
-              requestProjects: this.projectService.loadProjects(),
+              reqUsers: this.userService.loadUsers(),
+              reqCommissions: this.commissionService.loadCommissions(),
+              reqProjects: this.projectService.loadProjects(),
               // requestRooms: this.roomService.loadRooms(),
             })
           )
-        ).subscribe(({ requestUsers, requestProjects }) => {
+        ).subscribe(({ reqUsers, reqCommissions, reqProjects }) => {
           // console.log(requestUsers);
           // console.log(requestProjects);
           loadingEl.dismiss();
