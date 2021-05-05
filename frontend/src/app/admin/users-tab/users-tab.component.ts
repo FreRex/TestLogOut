@@ -4,9 +4,9 @@ import { AlertController, ModalController, ToastController } from '@ionic/angula
 import { BehaviorSubject, Observable } from 'rxjs';
 import { distinctUntilChanged, startWith, switchMap } from 'rxjs/operators';
 import { AuthService } from 'src/app/auth/auth.service';
-import { GenericUserItemComponent } from 'src/app/shared/generic-items/generic-user-item.component';
+import { GenericUserItemComponent } from 'src/app/admin/users-tab/generic-user-item.component';
 import { TableColumns } from 'src/app/shared/generic-table/generic-table.component';
-import { User, UserService } from 'src/app/shared/user.service';
+import { User, UserService } from 'src/app/admin/users-tab/user.service';
 
 @Component({
   selector: 'app-users-tab',

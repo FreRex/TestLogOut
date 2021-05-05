@@ -7,10 +7,10 @@ import { IonicModule } from '@ionic/angular';
 import { BackofficePageRoutingModule } from './backoffice-routing.module';
 
 import { BackofficePage } from './backoffice.page';
-import { CreateProjectModalComponent } from '../shared/modals/create-project-modal/create-project-modal.component';
-import { CreateUserModalComponent } from '../shared/modals/create-user-modal/create-user-modal.component';
-import { EditProjectModalComponent } from '../shared/modals/edit-project-modal/edit-project-modal.component';
-import { EditUserModalComponent } from '../shared/modals/edit-user-modal/edit-user-modal.component';
+import { CreateProjectModalComponent } from '../admin/projects-tab/create-project-modal/create-project-modal.component';
+import { CreateUserModalComponent } from '../admin/users-tab/create-user-modal/create-user-modal.component';
+import { EditProjectModalComponent } from '../admin/projects-tab/edit-project-modal/edit-project-modal.component';
+import { EditUserModalComponent } from '../admin/users-tab/edit-user-modal/edit-user-modal.component';
 import { SharedModule } from '../shared/shared.module';
 
 @NgModule({

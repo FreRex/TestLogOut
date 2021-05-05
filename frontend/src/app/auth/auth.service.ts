@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { catchError, map, tap } from 'rxjs/operators';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
-import { User, UserService } from '../shared/user.service';
+import { User, UserService } from '../admin/users-tab/user.service';
 
 @Injectable({
   providedIn: 'root'

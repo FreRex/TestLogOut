@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Project, ProjectService } from './project.service';
-import { User, UserService } from './user.service';
+import { Project, ProjectService } from '../admin/projects-tab/project.service';
+import { User, UserService } from '../admin/users-tab/user.service';
 import { Room, RoomService } from '../rooms/room.service';
 import { LoadingController } from '@ionic/angular';
 import { forkJoin, Observable, of } from 'rxjs';

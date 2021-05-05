@@ -5,10 +5,10 @@ import { AlertController, LoadingController, ToastController } from '@ionic/angu
 import { forkJoin, Observable } from 'rxjs';
 import { delay, tap } from 'rxjs/operators';
 import { RoomService } from 'src/app/rooms/room.service';
-import { DashboardService } from 'src/app/shared/dashboard.service';
-import { ProjectService } from 'src/app/shared/project.service';
+import { DashboardService } from 'src/app/admin/dashboard/dashboard.service';
+import { ProjectService } from 'src/app/admin/projects-tab/project.service';
 import { UiManagerService } from 'src/app/shared/ui-manager.service';
-import { User, UserService } from 'src/app/shared/user.service';
+import { User, UserService } from 'src/app/admin/users-tab/user.service';
 import { environment } from 'src/environments/environment';
 
 export interface Log {
