@@ -112,8 +112,8 @@ export class RoomService {
                 nome_progetto: roomData[key].progettoselezionato,
                 nome_collaudatore: roomData[key].collaudatoreufficio,
                 data_inserimento: new Date(roomData[key].DataInsert),
-                idcommessa: roomData[0].idcommessa,
-                commessa: roomData[0].commessa,
+                idcommessa: roomData[key].idcommessa,
+                commessa: roomData[key].commessa,
               });
             }
           }

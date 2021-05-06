@@ -5,7 +5,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { distinctUntilChanged, startWith, switchMap } from 'rxjs/operators';
 import { AuthService } from 'src/app/auth/auth.service';
 import { Room, RoomService } from 'src/app/rooms/room.service';
-import { GenericRoomItemComponent } from 'src/app/rooms/rooms-tab/generic-room-item';
+import { GenericRoomItemComponent } from 'src/app/rooms/rooms-tab/generic-room-item.component';
 import { TableColumns } from 'src/app/shared/generic-table/generic-table.component';
 
 @Component({

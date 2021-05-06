@@ -47,25 +47,19 @@ export class RoomsPage implements OnInit {
             return this.route.queryParams
           }),
           switchMap(params => {
-            let codiceUtente = '0';
+            let codiceUtente;
             if (params && params['user']) {
+              // se arrivi dal login hai un codice
+              // quindi entra con il tuo codice (user - admin)
               codiceUtente = params['user'];
-              console.log('codiceUtente: ', codiceUtente);
-              const user = users.find(user => user.idutcas === codiceUtente);
-              this.authService.onLogin(user);
             } else {
-              this.authService.onLogin({
-                id: 0,
-                idutcas: '0',
-                DataCreazione: null,
-                collaudatoreufficio: null,
-                username: null,
-                password: null,
-                autorizzazioni: 'user',
-                idcommessa: null,
-                commessa: 'commessa',
-              });
+              // se non sei passato dal login e non c'è il codice 
+              // entra come utente 2 - Ospiti (user) 
+              codiceUtente = 'tCBK24ur9O';
             }
+            console.log('codiceUtente: ', codiceUtente);
+            const user = users.find(user => user.idutcas === codiceUtente);
+            this.authService.onLogin(user);
             return this.roomService.loadRooms();
           }),
         ).subscribe(

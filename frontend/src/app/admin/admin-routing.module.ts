@@ -13,10 +13,6 @@ const routes: Routes = [
     path: 'tabs',
     component: AdminPage,
     children: [
-      // {
-      //   path: 'rooms',
-      //   component: RoomsTabComponent
-      // },
       {
         path: 'dashboard',
         component: DashboardComponent
