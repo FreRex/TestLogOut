@@ -12,6 +12,7 @@ exports.postCreateUtenti = (req: any, res: any, next: any) => {
     let password: any;
     let autorizzazioni: Number; 
     let idutcas: string;
+    let idcommessa: number;
     
     //Codice casuale
     //idutcas='qwerty'; 
@@ -26,8 +27,13 @@ exports.postCreateUtenti = (req: any, res: any, next: any) => {
                 password = req.body.password;
                 if(typeof(req.body.autorizzazioni) !== 'undefined' && req.body.autorizzazioni !== null && req.body.autorizzazioni !== '' && typeof(req.body.autorizzazioni) === 'number'){
                     autorizzazioni = req.body.autorizzazioni;
-                    sql = "INSERT INTO utenti (idutcas, collaudatoreufficio, username, password, autorizzazioni) VALUES (?,?,?,?,?)";
-                    esecuzioneQuery(sql);
+                    if(typeof(req.body.idcommessa) !== 'undefined' && req.body.idcommessa !== null && req.body.idcommessa !== '' && typeof(req.body.idcommessa) === 'number'){
+                        idcommessa = req.body.idcommessa;
+                        sql = "INSERT INTO utenti (idutcas, collaudatoreufficio, username, password, autorizzazioni, idcommessa) VALUES (?,?,?,?,?,?)";
+                        esecuzioneQuery(sql);
+                    }
+                    else
+                    { res.send('Errore parametro autorizzazioni: vuoto, non numero , "undefined" o "null"');}                   
                 }
                 else
                 { res.send('Errore parametro autorizzazioni: vuoto, non numero , "undefined" o "null"');}            
