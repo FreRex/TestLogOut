@@ -14,7 +14,12 @@ import { User, UserService } from '../user.service';
 export class EditUserModalComponent implements OnInit {
 
   form: FormGroup;
-  dropdownValue: string;
+
+  // ---> placeholder AUTORIZZAZIONI 
+  placeholderValue: string;
+
+  // ---> valore selezionato sul DROPDOWN 
+  selectedCommission: Commission;
 
   @Input() userId: number;
   user: User;
@@ -22,40 +27,23 @@ export class EditUserModalComponent implements OnInit {
   constructor(
     private modalController: ModalController,
     private userService: UserService,
-    private commissionService: CommissionService
+    public commissionService: CommissionService
   ) { }
 
-  //-------------------------- DROPDOWN --------------------------//
-  commissions$: Observable<Commission[]>;
-  selectedCommission: Commission;
-  isListOpen: boolean = false;
-
-  onChooseCommission(commission: Commission) {
-    this.isListOpen = false;
-    this.selectedCommission = commission;
-    this.form.patchValue({
-      commessa: this.selectedCommission.commessa,
-    });
-  }
-  //-------------------------- DROPDOWN --------------------------//
-
   ngOnInit() {
-    this.commissions$ = this.commissionService.commissions$;
 
     this.userService.getUser(this.userId).subscribe((user) => {
       this.user = user;
       console.log(this.user.idutcas);
-      this.dropdownValue = this.user.autorizzazione;
+      this.placeholderValue = this.user.autorizzazione;
 
       this.form = new FormGroup({
         collaudatoreufficio: new FormControl(this.user.collaudatoreufficio, {
           updateOn: 'blur',
           validators: [Validators.required, Validators.maxLength(30)],
         }),
-        commessa: new FormControl(this.user.commessa, {
-          updateOn: 'blur',
-          validators: [Validators.required, Validators.maxLength(30)]
-        }),
+        commessa: new FormControl(null),
+        // ---> La validazione viene fatta all'interno del dropdown 
         username: new FormControl(this.user.username, {
           updateOn: 'blur',
           validators: [Validators.required, Validators.maxLength(50)],
@@ -73,6 +61,13 @@ export class EditUserModalComponent implements OnInit {
   }
 
   updateUser() {
+    console.log(this.form.value.collaudatoreufficio);
+    console.log(this.form.value.username);
+    console.log(this.form.value.password);
+    console.log(this.form.value.autorizzazione);
+    console.log(this.selectedCommission ? this.selectedCommission.id : this.user.idcommessa);
+    console.log(this.selectedCommission ? this.selectedCommission.commessa : this.user.commessa);
+
     if (!this.form.valid) { return }
     this.userService.updateUser(
       this.user.id,
@@ -80,8 +75,8 @@ export class EditUserModalComponent implements OnInit {
       this.form.value.username,
       this.form.value.password,
       this.form.value.autorizzazione,
-      this.user.idcommessa,
-      this.form.value.commessa
+      this.selectedCommission ? this.selectedCommission.id : this.user.idcommessa,
+      this.selectedCommission ? this.selectedCommission.commessa : this.user.commessa,
     ).subscribe(
       /** Il server risponde con 200 */
       res => {

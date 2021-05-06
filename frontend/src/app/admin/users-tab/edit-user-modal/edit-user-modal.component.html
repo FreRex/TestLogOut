@@ -16,7 +16,7 @@
       <ion-input type="text" formControlName="collaudatoreufficio"></ion-input>
     </ion-item>
 
-    <ion-item>
+    <!-- <ion-item>
       <ion-label position="floating">Commessa</ion-label>
       <ion-input formControlName="commessa" type="search" (click)="isListOpen = true" #searchInput>
       </ion-input>
@@ -26,6 +26,11 @@
     </ion-item>
     <app-dropdown [isListOpen]="isListOpen" [obs$]="commissions$" [input]="searchInput" [searchValue]="'commessa'"
       (event)="onChooseCommission($event)">
+    </app-dropdown> -->
+
+    <app-dropdown formControlName="commessa" [key]="'commessa'" [title]="'Commessa'"
+      [inputObs$]="this.commissionService.commissions$" [selectedItem]="user"
+      (event)="this.selectedCommission = $event">
     </app-dropdown>
 
     <ion-item>
@@ -40,7 +45,8 @@
 
     <ion-item>
       <ion-label position="floating" class="ion-margin">Autorizzazione</ion-label>
-      <ion-select formControlName="autorizzazione" interface="popover" [placeholder]="dropdownValue">
+      <ion-select class="dark-placeholder" formControlName="autorizzazione" interface="popover"
+        [placeholder]="placeholderValue">
         <ion-select-option value="1">Admin</ion-select-option>
         <ion-select-option value="2">User</ion-select-option>
         <ion-select-option value="3">Supervisor</ion-select-option>

@@ -14,38 +14,23 @@ export class CreateUserModalComponent implements OnInit {
 
   form: FormGroup;
 
+  // ---> valore selezionato sul DROPDOWN 
+  selectedCommission: Commission;
+
   constructor(
     private modalController: ModalController,
     private userService: UserService,
-    private commissionService: CommissionService
+    public commissionService: CommissionService
   ) { }
 
-  //-------------------------- DROPDOWN --------------------------//
-  commissions$: Observable<Commission[]>;
-  selectedCommission: Commission;
-  isListOpen: boolean = false;
-
-  onChooseCommission(commission: Commission) {
-    this.isListOpen = false;
-    this.selectedCommission = commission;
-    this.form.patchValue({
-      commessa: this.selectedCommission.commessa,
-    });
-  }
-  //-------------------------- DROPDOWN --------------------------//
-
   ngOnInit() {
-    this.commissions$ = this.commissionService.commissions$;
-
     this.form = new FormGroup({
       collaudatoreufficio: new FormControl(null, {
         updateOn: 'blur',
         validators: [Validators.required, Validators.maxLength(30)]
       }),
-      commessa: new FormControl(null, {
-        updateOn: 'blur',
-        validators: [Validators.required, Validators.maxLength(30)]
-      }),
+      commessa: new FormControl(null),
+      // ---> La validazione viene fatta all'interno del dropdown 
       username: new FormControl(null, {
         updateOn: 'blur',
         validators: [Validators.required, Validators.maxLength(50)]
@@ -70,7 +55,7 @@ export class CreateUserModalComponent implements OnInit {
         this.form.value.password,
         this.form.value.autorizzazione,
         this.selectedCommission.id,
-        this.form.value.commessa,
+        this.selectedCommission.commessa,
       )
       .subscribe(
         /** Il server risponde con 200 */
