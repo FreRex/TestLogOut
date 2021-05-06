@@ -60,6 +60,7 @@ export class RoomService {
       map(rooms =>
         rooms.filter(room =>
           room.usermobile.toLowerCase().includes(query.toLowerCase()) ||
+          room.commessa.toLowerCase().includes(query.toLowerCase()) ||
           room.nome_progetto.toString().toLowerCase().includes(query.toLowerCase()) ||
           room.nome_collaudatore.toString().toLowerCase().includes(query.toLowerCase())
         )

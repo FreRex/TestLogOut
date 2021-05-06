@@ -80,7 +80,7 @@ export class GenericRoomItemComponent implements OnInit {
     if (room) this.room = room;
 
     this.authService.currentUser$.subscribe((currentUser) => {
-      this.linkProgetto = this.baseUrl + this.room.projectID + ((currentUser.autorizzazioni === 'admin') ? '&useringresso=admin' : '');
+      this.linkProgetto = this.baseUrl + this.room.projectID + ((currentUser.autorizzazione === 'admin') ? '&useringresso=admin' : '');
     });
 
     // window.open(this.linkProgetto);

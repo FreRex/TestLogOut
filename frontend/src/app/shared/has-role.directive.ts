@@ -14,7 +14,7 @@ export class HasRoleDirective implements OnInit {
 
   ngOnInit() {
     this.authService.currentUser$.subscribe((currentUser) => {
-      if (currentUser && currentUser.autorizzazioni == 'admin') {
+      if (currentUser && currentUser.autorizzazione == 'admin') {
         this.viewContainer.createEmbeddedView(this.templateRef);
       } else {
         this.viewContainer.clear();
