@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import { CommissionService } from '../commission.service';
 
@@ -10,21 +10,11 @@ import { CommissionService } from '../commission.service';
 })
 export class CreateCommissionModalComponent implements OnInit {
 
-  form: FormGroup;
+  form: FormGroup = this.fb.group({
+    commessa: [null, [Validators.required]],
+  });
 
-  constructor(
-    private modalController: ModalController,
-    private commissionService: CommissionService
-  ) { }
-
-  ngOnInit() {
-    this.form = new FormGroup({
-      commessa: new FormControl(null, {
-        updateOn: 'blur',
-        validators: [Validators.required, Validators.maxLength(30)]
-      }),
-    });
-  }
+  ngOnInit() { }
 
   createCommission() {
     if (!this.form.valid) { return; }
@@ -55,4 +45,10 @@ export class CreateCommissionModalComponent implements OnInit {
   closeModal() {
     this.modalController.dismiss(null, 'cancel');
   }
+
+  constructor(
+    private modalController: ModalController,
+    private fb: FormBuilder,
+    private commissionService: CommissionService
+  ) { }
 }

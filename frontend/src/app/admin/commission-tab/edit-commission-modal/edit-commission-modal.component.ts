@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ModalController, ToastController } from '@ionic/angular';
 import { Commission, CommissionService } from '../commission.service';
 
@@ -10,25 +10,22 @@ import { Commission, CommissionService } from '../commission.service';
 })
 export class EditCommissionModalComponent implements OnInit {
 
-  form: FormGroup;
+  form: FormGroup = this.fb.group({
+    commessa: [null, [Validators.required]],
+  });
+
   @Input() commissionId: number;
   commission: Commission;
 
-  constructor(
-    private modalController: ModalController,
-    private commissionService: CommissionService,
-  ) { }
-
   ngOnInit() {
-    this.commissionService.getCommission(this.commissionId).subscribe((commission) => {
-      this.commission = commission;
-      this.form = new FormGroup({
-        commessa: new FormControl(this.commission.commessa, {
-          updateOn: 'blur',
-          validators: [Validators.required, Validators.maxLength(50)],
-        }),
+    if (this.commissionId) {
+      this.commissionService.getCommission(this.commissionId).subscribe((commission) => {
+        this.commission = commission;
+        this.form.patchValue({
+          commessa: this.commission.commessa
+        })
       });
-    });
+    }
   }
 
   updateCommission() {
@@ -61,4 +58,10 @@ export class EditCommissionModalComponent implements OnInit {
   closeModal() {
     this.modalController.dismiss(null, 'cancel');
   }
+
+  constructor(
+    private modalController: ModalController,
+    private fb: FormBuilder,
+    private commissionService: CommissionService,
+  ) { }
 }

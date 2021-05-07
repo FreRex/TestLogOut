@@ -31,20 +31,6 @@ export class EditProjectModalComponent implements OnInit {
           nome: this.project.nome,
           coordinate: `${this.project.lat_centro_map}, ${this.project.long_centro_map}`,
         });
-        //  = new FormGroup({
-        //   collaudatoreufficio: new FormControl(this.project.collaudatoreufficio, {
-        //     updateOn: 'blur',
-        //     validators: [Validators.required, Validators.maxLength(50)],
-        //   }),
-        //   nome: new FormControl(this.project.nome, {
-        //     updateOn: 'blur',
-        //     validators: [Validators.required, Validators.maxLength(50)],
-        //   }),
-        //   coordinate: new FormControl(`${this.project.lat_centro_map}, ${this.project.long_centro_map}`, {
-        //     updateOn: 'blur',
-        //     validators: [Validators.required, Validators.maxLength(100)],
-        //   }),
-        // });
       });
     }
   }
