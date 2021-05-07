@@ -10,29 +10,43 @@
 </ion-header>
 <ion-content>
   <form [formGroup]="form" class="ion-padding">
+
     <ion-item>
       <ion-label position="floating" class="ion-margin">Nome e Cognome</ion-label>
       <ion-input type="text" formControlName="collaudatoreufficio"></ion-input>
     </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Commessa</ion-label>
+      <ion-input formControlName="commessa" type="search" (click)="isListOpen = true" #searchInput>
+      </ion-input>
+      <ion-button fill="clear" slot="end" class="ion-align-self-center" (click)="isListOpen = !isListOpen">
+        <ion-icon [name]="isListOpen ? 'close' : 'chevron-down-outline'" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-item>
+    <app-dropdown [isListOpen]="isListOpen" [obs$]="commissions$" [input]="searchInput" [searchValue]="'commessa'"
+      (event)="onChooseCommission($event)">
+    </app-dropdown>
+
     <ion-item>
       <ion-label position="floating" class="ion-margin">Username (email)</ion-label>
       <ion-input type="text" formControlName="username"></ion-input>
     </ion-item>
+
     <ion-item>
       <ion-label position="floating" class="ion-margin">Password</ion-label>
       <ion-input type="text" formControlName="password"></ion-input>
     </ion-item>
-    <ion-item>
-      <ion-label position="floating" class="ion-margin">Commessa</ion-label>
-      <ion-input type="text" formControlName="commessa"></ion-input>
-    </ion-item>
+
     <ion-item>
       <ion-label position="floating" class="ion-margin">Autorizzazione</ion-label>
-      <ion-select formControlName="autorizzazioni" interface="popover">
-        <ion-select-option value="admin">Admin</ion-select-option>
-        <ion-select-option value="user">User</ion-select-option>
+      <ion-select formControlName="autorizzazione" interface="popover">
+        <ion-select-option value="1">Admin</ion-select-option>
+        <ion-select-option value="2">User</ion-select-option>
+        <ion-select-option value="3">Supervisor</ion-select-option>
       </ion-select>
     </ion-item>
+
   </form>
 </ion-content>
 <div class="ion-margin-vertical ion-padding">

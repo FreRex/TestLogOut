@@ -23,7 +23,8 @@ export interface User {
   collaudatoreufficio: string;
   username: string;
   password: string;
-  autorizzazioni: string;
+  idautorizzazione: number;
+  autorizzazione: string;
   idcommessa: number;
   commessa: string;
 }
@@ -97,7 +98,8 @@ export class UserService {
                 collaudatoreufficio: data[key].collaudatoreufficio,
                 username: data[key].username,
                 password: data[key].password,
-                autorizzazioni: data[key].autorizzazioni.toString() === '1' ? 'admin' : 'user',
+                idautorizzazione: data[key].autorizzazioni,
+                autorizzazione: this.getAutorizzazioneById(+data[key].autorizzazioni),
                 idcommessa: data[key].idcommessa,
                 commessa: data[key].commessa,
               });
@@ -111,13 +113,27 @@ export class UserService {
       );
   }
 
+  getAutorizzazioneById(idautorizzazione: number) {
+    switch (idautorizzazione) {
+      case 1:
+        return 'admin'
+      case 2:
+        return 'user'
+      case 3:
+        return 'supervisor'
+      default:
+        return 'user'
+    }
+  }
+
   /** CREATE utenti */
   addUser(
     collaudatoreufficio: string,
     username: string,
     password: string,
+    idautorizzazione: number,
+    idcommessa: number,
     commessa: string,
-    autorizzazioni: string,
   ) {
     let updatedUsers: User[];
     const newUser =
@@ -128,8 +144,9 @@ export class UserService {
       collaudatoreufficio: collaudatoreufficio,
       username: username,
       password: password,
-      autorizzazioni: autorizzazioni,
-      idcommessa: null,
+      idautorizzazione: idautorizzazione,
+      autorizzazione: this.getAutorizzazioneById(+idautorizzazione),
+      idcommessa: idcommessa,
       commessa: commessa,
     }
     return this.users$
@@ -144,8 +161,8 @@ export class UserService {
                 "collaudatoreufficio": collaudatoreufficio,
                 "username": username,
                 "password": password,
-                "autorizzazioni": autorizzazioni === 'user' ? 1 : 2,
-                // "commessa": commessa,
+                "autorizzazioni": +idautorizzazione,
+                "idcommessa": +idcommessa,
               }
             );
         }),
@@ -164,18 +181,23 @@ export class UserService {
 
   /** UPDATE utenti */
   updateUser(
+    idutente: number,
     collaudatoreufficio: string,
     username: string,
     password: string,
-    userId: number,
-    autorizzazioni: string,
+    idautorizzazione: number,
+    idcommessa: number,
+    commessa: string,
   ) {
     let updatedUsers: User[];
+    console.log(idautorizzazione);
+    console.log(this.getAutorizzazioneById(+idautorizzazione));
+
     return this.users$
       .pipe(
         take(1),
         switchMap(users => {
-          const userIndex = users.findIndex(user => user.id === userId);
+          const userIndex = users.findIndex(user => user.id === idutente);
           updatedUsers = [...users];
           const oldUser = updatedUsers[userIndex];
           updatedUsers[userIndex] =
@@ -186,20 +208,21 @@ export class UserService {
             collaudatoreufficio: collaudatoreufficio,
             username: username,
             password: password,
-            autorizzazioni: autorizzazioni,
-            idcommessa: oldUser.idcommessa,
-            commessa: oldUser.commessa, //TODO: per ora non esiste backend, modificabile
+            idautorizzazione: idautorizzazione,
+            autorizzazione: this.getAutorizzazioneById(+idautorizzazione),
+            idcommessa: idcommessa,
+            commessa: commessa,
           };
           return this.http
             .put(
               `${environment.apiUrl}/uu/`,
               {
-                "id": userId,
+                "id": idutente,
                 "collaudatoreufficio": collaudatoreufficio,
                 "username": username,
                 "password": password,
-                "autorizzazioni": autorizzazioni === 'admin' ? 1 : 2,
-                // "commessa": commessa,
+                "autorizzazioni": +idautorizzazione,
+                "idcommessa": +idcommessa,
               }
             );
         }),

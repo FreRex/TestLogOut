@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
+import { Observable } from 'rxjs';
+import { Commission, CommissionService } from '../../commission-tab/commission.service';
 import { UserService } from '../user.service';
 
 @Component({
@@ -14,12 +16,33 @@ export class CreateUserModalComponent implements OnInit {
 
   constructor(
     private modalController: ModalController,
-    private userService: UserService
+    private userService: UserService,
+    private commissionService: CommissionService
   ) { }
 
+  //-------------------------- DROPDOWN --------------------------//
+  commissions$: Observable<Commission[]>;
+  selectedCommission: Commission;
+  isListOpen: boolean = false;
+
+  onChooseCommission(commission: Commission) {
+    this.isListOpen = false;
+    this.selectedCommission = commission;
+    this.form.patchValue({
+      commessa: this.selectedCommission.commessa,
+    });
+  }
+  //-------------------------- DROPDOWN --------------------------//
+
   ngOnInit() {
+    this.commissions$ = this.commissionService.commissions$;
+
     this.form = new FormGroup({
       collaudatoreufficio: new FormControl(null, {
+        updateOn: 'blur',
+        validators: [Validators.required, Validators.maxLength(30)]
+      }),
+      commessa: new FormControl(null, {
         updateOn: 'blur',
         validators: [Validators.required, Validators.maxLength(30)]
       }),
@@ -31,11 +54,7 @@ export class CreateUserModalComponent implements OnInit {
         updateOn: 'blur',
         validators: [Validators.required, Validators.maxLength(30)]
       }),
-      commessa: new FormControl(null, {
-        updateOn: 'blur',
-        validators: [Validators.required, Validators.maxLength(30)]
-      }),
-      autorizzazioni: new FormControl(null, {
+      autorizzazione: new FormControl(null, {
         updateOn: 'blur',
         validators: [Validators.required, Validators.maxLength(10)]
       }),
@@ -49,8 +68,10 @@ export class CreateUserModalComponent implements OnInit {
         this.form.value.collaudatoreufficio,
         this.form.value.username,
         this.form.value.password,
+        this.form.value.autorizzazione,
+        this.selectedCommission.id,
         this.form.value.commessa,
-        this.form.value.autorizzazioni)
+      )
       .subscribe(
         /** Il server risponde con 200 */
         res => {
