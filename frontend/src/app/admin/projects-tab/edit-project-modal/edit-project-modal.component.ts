@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ModalController, ToastController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { User, UserService } from '../../users-tab/user.service';
@@ -12,61 +12,59 @@ import { Project, ProjectService } from '../project.service';
 })
 export class EditProjectModalComponent implements OnInit {
 
-  form: FormGroup;
+  selectedUser: User;
+  form: FormGroup = this.fb.group({
+    collaudatoreufficio: [null], // ---> La validazione viene fatta all'interno del dropdown
+    nome: [null, [Validators.required]],
+    coordinate: [null, [Validators.required]],
+  });
+
   @Input() projectId: number;
   project: Project;
 
-  users$: Observable<User[]>;
-  selectedUser: User;
-  isListOpen: boolean = false;
-
-  constructor(
-    private userService: UserService,
-    private modalController: ModalController,
-    private projectService: ProjectService,
-    public toastController: ToastController
-  ) { }
-
   ngOnInit() {
-    this.users$ = this.userService.users$;
-    this.projectService.getProject(this.projectId).subscribe(project => {
-      this.project = project;
-      this.form = new FormGroup({
-        collaudatoreufficio: new FormControl(this.project.collaudatoreufficio, {
-          updateOn: 'blur',
-          validators: [Validators.required, Validators.maxLength(50)],
-        }),
-        nome: new FormControl(this.project.nome, {
-          updateOn: 'blur',
-          validators: [Validators.required, Validators.maxLength(50)],
-        }),
-        coordinate: new FormControl(`${this.project.lat_centro_map}, ${this.project.long_centro_map}`, {
-          updateOn: 'blur',
-          validators: [Validators.required, Validators.maxLength(100)],
-        }),
+    if (this.projectId) {
+      this.projectService.getProject(this.projectId).subscribe(project => {
+        this.project = project;
+        this.form.patchValue({
+          // collaudatoreufficio: this.project.collaudatoreufficio, // ---> il valore viene assegnato allínterno del dropdown
+          nome: this.project.nome,
+          coordinate: `${this.project.lat_centro_map}, ${this.project.long_centro_map}`,
+        });
+        //  = new FormGroup({
+        //   collaudatoreufficio: new FormControl(this.project.collaudatoreufficio, {
+        //     updateOn: 'blur',
+        //     validators: [Validators.required, Validators.maxLength(50)],
+        //   }),
+        //   nome: new FormControl(this.project.nome, {
+        //     updateOn: 'blur',
+        //     validators: [Validators.required, Validators.maxLength(50)],
+        //   }),
+        //   coordinate: new FormControl(`${this.project.lat_centro_map}, ${this.project.long_centro_map}`, {
+        //     updateOn: 'blur',
+        //     validators: [Validators.required, Validators.maxLength(100)],
+        //   }),
+        // });
       });
-    });
-  }
-
-  onChooseUser(user: User) {
-    this.isListOpen = false;
-    this.selectedUser = user;
-    this.form.patchValue({
-      collaudatoreufficio: this.selectedUser.collaudatoreufficio,
-    });
+    }
   }
 
   updateProject() {
+    console.log(this.form.valid);
+
     if (!this.form.valid) { return; }
     const coords = this.form.value.coordinate.replace(' ', '').split(",");
     this.projectService
       .updateProject(
         this.project.idprogetto,
-        this.form.value.collaudatoreufficio,
         this.project.pk_proj,
         this.form.value.nome,
         coords[1].slice(0, 14),
         coords[0].slice(0, 14),
+        this.selectedUser ? this.selectedUser.id : this.project.idutente,
+        this.selectedUser ? this.selectedUser.collaudatoreufficio : this.project.collaudatoreufficio,
+        this.selectedUser ? this.selectedUser.idcommessa : this.project.idcommessa,
+        this.selectedUser ? this.selectedUser.commessa : this.project.commessa,
       ).subscribe(
         /** Il server risponde con 200 */
         res => {
@@ -92,4 +90,11 @@ export class EditProjectModalComponent implements OnInit {
   closeModal() {
     this.modalController.dismiss(null, 'cancel');
   }
+
+  constructor(
+    private modalController: ModalController,
+    private fb: FormBuilder,
+    public userService: UserService,
+    private projectService: ProjectService
+  ) { }
 }

@@ -13,6 +13,7 @@ import { UserService } from '../user.service';
 export class CreateUserModalComponent implements OnInit {
 
   @ViewChild('autorizzazione', { static: true }) autorizzazione: IonSelect;
+  selectedCommission: Commission; // valore DROPDOWN 
 
   form: FormGroup = this.fb.group({
     collaudatoreufficio: [null, [Validators.required]],
@@ -21,30 +22,7 @@ export class CreateUserModalComponent implements OnInit {
     password: [null, [Validators.required]],
   });
 
-  selectedCommission: Commission; // valore DROPDOWN 
-
-  ngOnInit() {
-    // this.form = new FormGroup({
-    //   collaudatoreufficio: new FormControl(null, {
-    //     updateOn: 'blur',
-    //     validators: [Validators.required, Validators.maxLength(30)]
-    //   }),
-    //   commessa: new FormControl(null),
-    //   // ---> La validazione viene fatta all'interno del dropdown 
-    //   username: new FormControl(null, {
-    //     updateOn: 'blur',
-    //     validators: [Validators.required, Validators.maxLength(50)]
-    //   }),
-    //   password: new FormControl(null, {
-    //     updateOn: 'blur',
-    //     validators: [Validators.required, Validators.maxLength(30)]
-    //   }),
-    //   autorizzazione: new FormControl(null, {
-    //     updateOn: 'blur',
-    //     validators: [Validators.required, Validators.maxLength(10)]
-    //   }),
-    // });
-  }
+  ngOnInit() { }
 
   createUser() {
     if (!this.form.valid) { return; }

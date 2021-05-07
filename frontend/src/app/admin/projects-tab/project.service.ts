@@ -26,7 +26,6 @@ export interface ProjectData {
 
 export interface Project {
   idprogetto: number;
-  collaudatoreufficio: string;
   pk_proj: number;
   nome: string;
   datasincro: Date;
@@ -37,8 +36,9 @@ export interface Project {
   conn_edif_opta: string;
   long_centro_map: string;
   lat_centro_map: string;
-  // idutente: number;
   sync: string;
+  idutente: number;
+  collaudatoreufficio: string;
   idcommessa: number;
   commessa: string;
 }
@@ -94,7 +94,6 @@ export class ProjectService {
             if (data.hasOwnProperty(key)) {
               projects.push({
                 idprogetto: data[key].idprogetto,
-                collaudatoreufficio: data[key].collaudatoreufficio,
                 pk_proj: data[key].pk_proj,
                 nome: data[key].nome,
                 datasincro: new Date(data[key].datasincro),
@@ -105,8 +104,9 @@ export class ProjectService {
                 conn_edif_opta: data[key].conn_edif_opta,
                 long_centro_map: data[key].long_centro_map.replace(' ', '').trim(),
                 lat_centro_map: data[key].lat_centro_map.replace(' ', '').trim(),
-                // idutente: data[key].idprogetto,
                 sync: (data[key].conn_edif_opta === 'CollaudoLiveGisfo:view_connessione_edificio_pta' ? 'auto' : 'manual'),
+                idutente: data[key].idutente,
+                collaudatoreufficio: data[key].collaudatoreufficio,
                 idcommessa: data[key].idcommessa,
                 commessa: data[key].commessa,
               });
@@ -120,7 +120,6 @@ export class ProjectService {
 
   /** CREATE progetti */
   addProject(
-    collaudatoreufficio: string,
     pk_proj: number,
     nome: string,
     nodi_fisici: string,
@@ -129,12 +128,15 @@ export class ProjectService {
     conn_edif_opta: string,
     long_centro_map: string,
     lat_centro_map: string,
+    idutente: number,
+    collaudatoreufficio: string,
+    idcommessa: number,
+    commessa: string
   ) {
     let updatedProjetcs: Project[];
     const newProject =
     {
       idprogetto: null,
-      collaudatoreufficio: collaudatoreufficio,
       pk_proj: pk_proj,
       nome: nome,
       datasincro: new Date(),
@@ -146,8 +148,10 @@ export class ProjectService {
       long_centro_map: long_centro_map,
       lat_centro_map: lat_centro_map,
       sync: 'manual',
-      idcommessa: null,
-      commessa: null,
+      idutente: idutente,
+      collaudatoreufficio: collaudatoreufficio,
+      idcommessa: idcommessa,
+      commessa: commessa,
     }
     return this.projects$
       .pipe(
@@ -184,11 +188,14 @@ export class ProjectService {
   /** UPDATE progetti */
   updateProject(
     idprogetto: number,
-    collaudatoreufficio: string,
     pk_proj: number,
     nome: string,
     long_centro_map: string,
     lat_centro_map: string,
+    idutente: number,
+    collaudatoreufficio: string,
+    idcommessa: number,
+    commessa: string
   ) {
     let updatedProjetcs: Project[];
     return this.projects$
@@ -201,7 +208,6 @@ export class ProjectService {
           updatedProjetcs[projectIndex] =
           {
             idprogetto: oldProject.idprogetto,
-            collaudatoreufficio: collaudatoreufficio,
             pk_proj: pk_proj,
             nome: nome,
             datasincro: oldProject.datasincro,
@@ -213,8 +219,10 @@ export class ProjectService {
             long_centro_map: long_centro_map,
             lat_centro_map: lat_centro_map,
             sync: oldProject.sync,
-            idcommessa: oldProject.idcommessa,
-            commessa: oldProject.commessa,
+            idutente: idutente,
+            collaudatoreufficio: collaudatoreufficio,
+            idcommessa: idcommessa,
+            commessa: commessa,
           };
           return this.http
             .put(
