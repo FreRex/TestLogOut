@@ -21,10 +21,10 @@ export interface RoomData {
 /** Interfaccia che definisce la Room all'interno del progetto */
 export interface Room {
   id: number;
-  projectID: string;
+  pk_project: string;
   usermobile: string;
-  nome_progetto: string;
-  nome_collaudatore: string;
+  progetto: string;
+  collaudatore: string;
   data_inserimento: Date;
   idcommessa: number;
   commessa: string;
@@ -38,7 +38,6 @@ export class RoomService {
   constructor(
     private http: HttpClient,
     private authService: AuthService,
-    private userService: UserService
   ) { }
 
   private roomsSubject = new BehaviorSubject<Room[]>([]);  // <-- "roomsSubject" può emettere eventi perchè è un BehaviourSubject
@@ -61,8 +60,8 @@ export class RoomService {
         rooms.filter(room =>
           room.usermobile.toLowerCase().includes(query.toLowerCase()) ||
           room.commessa.toLowerCase().includes(query.toLowerCase()) ||
-          room.nome_progetto.toString().toLowerCase().includes(query.toLowerCase()) ||
-          room.nome_collaudatore.toString().toLowerCase().includes(query.toLowerCase())
+          room.progetto.toString().toLowerCase().includes(query.toLowerCase()) ||
+          room.collaudatore.toString().toLowerCase().includes(query.toLowerCase())
         )
       )
     );
@@ -79,10 +78,10 @@ export class RoomService {
         map(roomData => {
           return {
             id: roomData[0].id,
-            projectID: roomData[0].cod,
+            pk_project: roomData[0].cod,
             usermobile: roomData[0].usermobile,
-            nome_progetto: roomData[0].progettoselezionato,
-            nome_collaudatore: roomData[0].collaudatoreufficio,
+            progetto: roomData[0].progettoselezionato,
+            collaudatore: roomData[0].collaudatoreufficio,
             data_inserimento: new Date(roomData[0].DataInsert),
             idcommessa: roomData[0].idcommessa,
             commessa: roomData[0].commessa,
@@ -108,10 +107,10 @@ export class RoomService {
             if (roomData.hasOwnProperty(key)) {
               rooms.push({
                 id: roomData[key].id,
-                projectID: roomData[key].cod,
+                pk_project: roomData[key].cod,
                 usermobile: roomData[key].usermobile,
-                nome_progetto: roomData[key].progettoselezionato,
-                nome_collaudatore: roomData[key].collaudatoreufficio,
+                progetto: roomData[key].progettoselezionato,
+                collaudatore: roomData[key].collaudatoreufficio,
                 data_inserimento: new Date(roomData[key].DataInsert),
                 idcommessa: roomData[key].idcommessa,
                 commessa: roomData[key].commessa,
@@ -127,22 +126,25 @@ export class RoomService {
 
   /** CREATE room e aggiungila alla lista */
   addRoom(
-    projectID: string,
+    pk_project: string,
     usermobile: string,
-    nome_progetto: string,
-    nome_collaudatore: string
+    progetto: string,
+    idutente: number,
+    collaudatore: string,
+    idcommessa: number,
+    commessa: string,
   ) {
     let updatedRooms: Room[];
     const newRoom =
     {
       id: null,
-      projectID: projectID,
+      pk_project: pk_project,
       usermobile: usermobile,
-      nome_progetto: nome_progetto,
-      nome_collaudatore: nome_collaudatore,
+      progetto: progetto,
+      collaudatore: collaudatore,
       data_inserimento: new Date(),
-      idcommessa: null,
-      commessa: null
+      idcommessa: idcommessa,
+      commessa: commessa
     };
     // this.rooms è un OSSERVABILE
     // take(1) = dopo la prima emissione dell'Osservabile togli la sottoscrizione
@@ -157,9 +159,9 @@ export class RoomService {
               `${environment.apiUrl}/cr/`,
               {
                 "usermobile": usermobile,
-                "progettoselezionato": nome_progetto,
-                "cod": projectID,
-                "collaudatoreufficio": this.userService.getUserIdByName(nome_collaudatore),
+                "progettoselezionato": progetto,
+                "cod": pk_project,
+                "collaudatoreufficio": idutente,
               },
               { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
             );
@@ -194,10 +196,10 @@ export class RoomService {
           updatedRooms[roomIndex] =
           {
             id: oldRoom.id,
-            projectID: oldRoom.projectID,
+            pk_project: oldRoom.pk_project,
             usermobile: newUsermobile,
-            nome_progetto: oldRoom.nome_progetto,
-            nome_collaudatore: oldRoom.nome_collaudatore,
+            progetto: oldRoom.progetto,
+            collaudatore: oldRoom.collaudatore,
             data_inserimento: oldRoom.data_inserimento,
             idcommessa: oldRoom.idcommessa,
             commessa: oldRoom.commessa

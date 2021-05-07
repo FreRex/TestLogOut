@@ -26,9 +26,9 @@ export class RoomsTabComponent extends GenericRoomItemComponent implements OnIni
       { title: 'ID', key: 'id', type: 'number', size: 1, orderEnabled: true },
       { title: 'Data', key: 'data_inserimento', type: 'date', size: 1, orderEnabled: true },
       { title: 'Commessa', key: 'commessa', type: 'string', size: 1.5, orderEnabled: true },
-      { title: 'Collaudatore', key: 'nome_collaudatore', type: 'string', size: 2, orderEnabled: true },
+      { title: 'Collaudatore', key: 'collaudatore', type: 'string', size: 2, orderEnabled: true },
       { title: 'Usermobile', key: 'usermobile', type: 'string', size: 2, orderEnabled: true },
-      { title: 'Progetto', key: 'nome_progetto', type: 'string', size: 2, orderEnabled: true },
+      { title: 'Progetto', key: 'progetto', type: 'string', size: 2, orderEnabled: true },
       { title: 'Azioni', key: '', type: 'buttons', size: 2.5, orderEnabled: false/* , customTemplate: this.desktopButtons */ },
     ];
 

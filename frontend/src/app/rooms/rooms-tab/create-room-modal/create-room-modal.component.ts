@@ -1,8 +1,7 @@
-import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { AlertController, ModalController, ToastController } from '@ionic/angular';
-import { Observable } from 'rxjs';
+import { FormBuilder } from '@angular/forms';
+import { FormGroup, Validators } from '@angular/forms';
+import { ModalController } from '@ionic/angular';
 import { Project, ProjectService } from 'src/app/admin/projects-tab/project.service';
 import { RoomService } from '../../room.service';
 
@@ -13,52 +12,29 @@ import { RoomService } from '../../room.service';
 })
 export class CreateRoomModalComponent implements OnInit {
 
-  form: FormGroup;
-  projects$: Observable<Project[]>;
-  isListOpen: boolean = false;
-  selectedProject: Project;
+  form: FormGroup = this.fb.group({
+    usermobile: [null, [Validators.required]],
+    progetto: [null], // ---> La validazione viene fatta all'interno del dropdown
+  });
 
-  constructor(
-    private modalController: ModalController,
-    private roomsService: RoomService,
-    private projectService: ProjectService
-  ) { }
+  selectedProject: Project; // valore DROPDOWN 
 
-  ngOnInit() {
-    this.projects$ = this.projectService.projects$;
-    this.form = new FormGroup({
-      usermobile: new FormControl(null, {
-        updateOn: 'blur',
-        validators: [Validators.required, Validators.maxLength(30)]
-      }),
-      nome_progetto: new FormControl(null, {
-        updateOn: 'blur',
-        validators: [Validators.required, Validators.maxLength(50)]
-      }),
-      nome_collaudatore: new FormControl(null, {
-        updateOn: 'blur',
-        validators: [Validators.required, Validators.maxLength(50)]
-      }),
-    });
-  }
-
-  onChooseProject(project: Project) {
-    this.isListOpen = false;
-    this.selectedProject = project;
-    this.form.patchValue({
-      nome_collaudatore: this.selectedProject.collaudatoreufficio,
-      nome_progetto: this.selectedProject.nome,
-    });
-  }
+  ngOnInit() { }
 
   createRoom() {
+    console.log(this.form.valid);
+
     if (!this.form.valid) { return; }
     this.roomsService
       .addRoom(
         this.selectedProject.pk_proj.toString(),
         this.form.value.usermobile,
-        this.form.value.nome_progetto,
-        this.form.value.nome_collaudatore)
+        this.selectedProject.nome,
+        this.selectedProject.idutente,
+        this.selectedProject.collaudatoreufficio,
+        this.selectedProject.idcommessa,
+        this.selectedProject.commessa,
+      )
       .subscribe(
         /** Il server risponde con 200 */
         res => {
@@ -85,4 +61,10 @@ export class CreateRoomModalComponent implements OnInit {
     this.modalController.dismiss(null, 'cancel');
   }
 
+  constructor(
+    private modalController: ModalController,
+    private fb: FormBuilder,
+    private roomsService: RoomService,
+    public projectService: ProjectService
+  ) { }
 }

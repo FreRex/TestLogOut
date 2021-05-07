@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ToastController } from '@ionic/angular';
 import { AlertController, ModalController } from '@ionic/angular';
 import { Room, RoomService } from '../../room.service';
@@ -11,25 +11,22 @@ import { Room, RoomService } from '../../room.service';
 })
 export class EditRoomModalComponent implements OnInit {
 
+  form: FormGroup = this.fb.group({
+    usermobile: [null, [Validators.required]],
+  });
+
   @Input() roomId: number;
-  form: FormGroup;
   room: Room;
 
-  constructor(
-    private roomsService: RoomService,
-    private modalController: ModalController,
-  ) { }
-
   ngOnInit() {
-    this.roomsService.getRoom(this.roomId).subscribe(room => {
-      this.room = room;
-      this.form = new FormGroup({
-        usermobile: new FormControl(this.room.usermobile, {
-          updateOn: 'blur',
-          validators: [Validators.required, Validators.maxLength(30)]
-        })
+    if (this.roomId) {
+      this.roomsService.getRoom(this.roomId).subscribe(room => {
+        this.room = room;
+        this.form.patchValue({
+          usermobile: this.room.usermobile
+        });
       });
-    });
+    }
   }
 
   closeModal() {
@@ -65,4 +62,10 @@ export class EditRoomModalComponent implements OnInit {
     // this.presentToast('Room Aggiornata', 'secondary');
   }
 
+
+  constructor(
+    private roomsService: RoomService,
+    private fb: FormBuilder,
+    private modalController: ModalController,
+  ) { }
 }

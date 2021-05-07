@@ -80,7 +80,7 @@ export class GenericRoomItemComponent implements OnInit {
     if (room) this.room = room;
 
     this.authService.currentUser$.subscribe((currentUser) => {
-      this.linkProgetto = this.baseUrl + this.room.projectID + ((currentUser.autorizzazione === 'admin') ? '&useringresso=admin' : '');
+      this.linkProgetto = this.baseUrl + this.room.pk_project + ((currentUser.autorizzazione === 'admin') ? '&useringresso=admin' : '');
     });
 
     // window.open(this.linkProgetto);
@@ -99,7 +99,7 @@ export class GenericRoomItemComponent implements OnInit {
     if (room) this.room = room;
 
     document.addEventListener('copy', (e: ClipboardEvent) => {
-      e.clipboardData.setData('text/plain', (this.baseUrl + this.room.projectID));
+      e.clipboardData.setData('text/plain', (this.baseUrl + this.room.pk_project));
       e.preventDefault();
       document.removeEventListener('copy', null);
     });
@@ -112,7 +112,7 @@ export class GenericRoomItemComponent implements OnInit {
     if (slidingItem) slidingItem.close();
     if (room) this.room = room;
 
-    const nomeProgetto = this.room.nome_progetto.trim().replace(' ', '');
+    const nomeProgetto = this.room.progetto.trim().replace(' ', '');
     this.roomService.checkDownload(nomeProgetto).subscribe(
       (value: boolean) => {
         if (value) {
@@ -133,7 +133,7 @@ export class GenericRoomItemComponent implements OnInit {
     )
 
     /** window.open */
-    // const nomeProgetto = this.room.nome_progetto.trim().replace(' ', '');
+    // const nomeProgetto = this.room.progetto.trim().replace(' ', '');
     // this.roomService.checkDownload(nomeProgetto).subscribe(
     //   (value: boolean) => {
     //     if (value) window.open(`https://www.collaudolive.com:9083/downloadzip/${nomeProgetto}`)           
@@ -149,7 +149,7 @@ export class GenericRoomItemComponent implements OnInit {
     //   color: 'secondary'
     // }).then(toastEl => {
     //   toastEl.present();
-    // const nomeProgetto = this.room.nome_progetto.trim().replace(' ', '');
+    // const nomeProgetto = this.room.progetto.trim().replace(' ', '');
     // this.roomService.downloadFoto(nomeProgetto).subscribe(
     //   (result: any) => { //when you use stricter type checking
     //     if (result.type === HttpEventType.DownloadProgress) {

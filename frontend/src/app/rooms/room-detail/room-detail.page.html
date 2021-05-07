@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/rooms"></ion-back-button>
     </ion-buttons>
-    <ion-title>Room: {{ isLoading ? 'Loading...' : room.nome_progetto }}</ion-title>
+    <ion-title>Room: {{ isLoading ? 'Loading...' : room.progetto }}</ion-title>
     <ion-buttons slot="primary">
     </ion-buttons>
   </ion-toolbar>
@@ -17,11 +17,11 @@
     <ion-row>
       <ion-col>
         <div>
-          <h2>{{ room.nome_progetto }} ({{ room.usermobile }})</h2>
-          <p> ID: {{room.id}} 
-              - USERMOBILE: {{ room.usermobile }}
-              - COLLUDATORE: {{ room.nome_collaudatore}} 
-              - DATA: {{ room.data_inserimento | date:'MM/dd/yy, hh:mm:ss'}}
+          <h2>{{ room.progetto }} ({{ room.usermobile }})</h2>
+          <p> ID: {{room.id}}
+            - USERMOBILE: {{ room.usermobile }}
+            - COLLUDATORE: {{ room.collaudatore}}
+            - DATA: {{ room.data_inserimento | date:'MM/dd/yy, hh:mm:ss'}}
           </p>
         </div>
       </ion-col>
