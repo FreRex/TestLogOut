@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ModalController } from '@ionic/angular';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { IonSelect, ModalController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { Commission, CommissionService } from '../../commission-tab/commission.service';
 import { UserService } from '../user.service';
@@ -12,38 +12,38 @@ import { UserService } from '../user.service';
 })
 export class CreateUserModalComponent implements OnInit {
 
-  form: FormGroup;
+  @ViewChild('autorizzazione', { static: true }) autorizzazione: IonSelect;
 
-  // ---> valore selezionato sul DROPDOWN 
-  selectedCommission: Commission;
+  form: FormGroup = this.fb.group({
+    collaudatoreufficio: [null, [Validators.required]],
+    commessa: [null], // ---> La validazione viene fatta all'interno del dropdown
+    username: [null, [Validators.required]],
+    password: [null, [Validators.required]],
+  });
 
-  constructor(
-    private modalController: ModalController,
-    private userService: UserService,
-    public commissionService: CommissionService
-  ) { }
+  selectedCommission: Commission; // valore DROPDOWN 
 
   ngOnInit() {
-    this.form = new FormGroup({
-      collaudatoreufficio: new FormControl(null, {
-        updateOn: 'blur',
-        validators: [Validators.required, Validators.maxLength(30)]
-      }),
-      commessa: new FormControl(null),
-      // ---> La validazione viene fatta all'interno del dropdown 
-      username: new FormControl(null, {
-        updateOn: 'blur',
-        validators: [Validators.required, Validators.maxLength(50)]
-      }),
-      password: new FormControl(null, {
-        updateOn: 'blur',
-        validators: [Validators.required, Validators.maxLength(30)]
-      }),
-      autorizzazione: new FormControl(null, {
-        updateOn: 'blur',
-        validators: [Validators.required, Validators.maxLength(10)]
-      }),
-    });
+    // this.form = new FormGroup({
+    //   collaudatoreufficio: new FormControl(null, {
+    //     updateOn: 'blur',
+    //     validators: [Validators.required, Validators.maxLength(30)]
+    //   }),
+    //   commessa: new FormControl(null),
+    //   // ---> La validazione viene fatta all'interno del dropdown 
+    //   username: new FormControl(null, {
+    //     updateOn: 'blur',
+    //     validators: [Validators.required, Validators.maxLength(50)]
+    //   }),
+    //   password: new FormControl(null, {
+    //     updateOn: 'blur',
+    //     validators: [Validators.required, Validators.maxLength(30)]
+    //   }),
+    //   autorizzazione: new FormControl(null, {
+    //     updateOn: 'blur',
+    //     validators: [Validators.required, Validators.maxLength(10)]
+    //   }),
+    // });
   }
 
   createUser() {
@@ -53,7 +53,7 @@ export class CreateUserModalComponent implements OnInit {
         this.form.value.collaudatoreufficio,
         this.form.value.username,
         this.form.value.password,
-        this.form.value.autorizzazione,
+        this.autorizzazione.value,
         this.selectedCommission.id,
         this.selectedCommission.commessa,
       )
@@ -81,4 +81,12 @@ export class CreateUserModalComponent implements OnInit {
   closeModal() {
     this.modalController.dismiss(null, 'cancel');
   }
+
+  constructor(
+    private modalController: ModalController,
+    private fb: FormBuilder,
+    private userService: UserService,
+    public commissionService: CommissionService
+  ) { }
+
 }
