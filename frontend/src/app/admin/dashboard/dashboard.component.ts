@@ -1,13 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, ElementRef, OnInit } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
 import { AlertController, LoadingController, ToastController } from '@ionic/angular';
-import { forkJoin, Observable } from 'rxjs';
-import { delay, tap } from 'rxjs/operators';
+import { forkJoin } from 'rxjs';
 import { RoomService } from 'src/app/rooms/room.service';
 import { DashboardService } from 'src/app/admin/dashboard/dashboard.service';
 import { ProjectService } from 'src/app/admin/projects-tab/project.service';
-import { UiManagerService } from 'src/app/shared/ui-manager.service';
 import { User, UserService } from 'src/app/admin/users-tab/user.service';
 import { environment } from 'src/environments/environment';
 
@@ -24,40 +22,17 @@ export interface Log {
 })
 export class DashboardComponent implements OnInit {
 
-  form: FormGroup;
-  users$: Observable<User[]>;
   selectedUser: User;
-  isListOpen: boolean = false;
+  form: FormGroup = this.fb.group({
+    collaudatoreufficio: [null], // ---> La validazione viene fatta all'interno del dropdown
+    pk_proj: [null, [Validators.required]],
+  });
+
   coordinate: string = '';
   logs: Log[] = [];
   syncToast: HTMLIonToastElement;
 
-
-  constructor(
-    private toastController: ToastController,
-    private alertController: AlertController,
-    private http: HttpClient,
-    private userService: UserService,
-    private projectService: ProjectService,
-    private dashService: DashboardService,
-    private roomService: RoomService,
-    private loadingController: LoadingController,
-    // private uiManager: UiManagerService,
-  ) { }
-
-  ngOnInit() {
-    this.users$ = this.userService.users$;
-    this.form = new FormGroup({
-      collaudatoreufficio: new FormControl(null, {
-        updateOn: 'blur',
-        validators: [Validators.required, Validators.maxLength(50)]
-      }),
-      pk_proj: new FormControl(null, {
-        updateOn: 'blur',
-        validators: [Validators.required, Validators.maxLength(30)]
-      }),
-    });
-  }
+  ngOnInit() { }
 
   syncProject() {
     if (!this.form.valid) { return; }
@@ -124,14 +99,6 @@ export class DashboardComponent implements OnInit {
       });
   }
 
-  onChooseUser(user: User) {
-    this.isListOpen = false;
-    this.selectedUser = user;
-    this.form.patchValue({
-      collaudatoreufficio: this.selectedUser.collaudatoreufficio,
-    });
-  }
-
   createLink(coordinate: string) {
     let coords = coordinate.replace(' ', '').split(',');
     window.open("https://www.nperf.com/it/map/IT/-/230.TIM/signal/?ll=" + coords[0] + "&lg=" + coords[1] + "&zoom=13");
@@ -186,4 +153,15 @@ export class DashboardComponent implements OnInit {
     toast.present();
   }
 
+  constructor(
+    private toastController: ToastController,
+    private alertController: AlertController,
+    private http: HttpClient,
+    public userService: UserService,
+    private projectService: ProjectService,
+    private dashService: DashboardService,
+    private roomService: RoomService,
+    private loadingController: LoadingController,
+    private fb: FormBuilder,
+  ) { }
 }

@@ -18,9 +18,9 @@
       <ion-icon name="pencil-outline" slot="end" class="ion-align-self-center"></ion-icon>
     </ion-item>
 
-    <app-dropdown formControlName="progetto" [key]="'nome'" [title]="'Nome Progetto'"
+    <dropdown-item formControlName="progetto" [key]="'nome'" [title]="'Nome Progetto'"
       [inputObs$]="this.projectService.projects$" (event)="this.selectedProject = $event">
-    </app-dropdown>
+    </dropdown-item>
 
     <ion-item>
       <ion-label color="primary" position="stacked">Collaudatore</ion-label>
