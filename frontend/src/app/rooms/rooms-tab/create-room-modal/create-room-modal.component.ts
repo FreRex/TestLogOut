@@ -27,9 +27,10 @@ export class CreateRoomModalComponent implements OnInit {
     if (!this.form.valid) { return; }
     this.roomsService
       .addRoom(
-        this.selectedProject.pk_proj.toString(),
         this.form.value.usermobile,
+        this.selectedProject.pk_proj.toString(),
         this.selectedProject.nome,
+        this.selectedProject.datasincro.toString(),
         this.selectedProject.idutente,
         this.selectedProject.collaudatoreufficio,
         this.selectedProject.idcommessa,

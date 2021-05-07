@@ -24,12 +24,13 @@ export class RoomsTabComponent extends GenericRoomItemComponent implements OnIni
   ngOnInit() {
     this.columns = [
       { title: 'ID', key: 'id', type: 'number', size: 1, orderEnabled: true },
-      { title: 'Data', key: 'data_inserimento', type: 'date', size: 1, orderEnabled: true },
-      { title: 'Commessa', key: 'commessa', type: 'string', size: 1.5, orderEnabled: true },
+      { title: 'Creata', key: 'data_inserimento', type: 'date', size: 1, orderEnabled: true },
+      { title: 'Sync', key: 'data_sincronizzazione', type: 'date', size: 1, orderEnabled: true },
+      { title: 'Commessa', key: 'commessa', type: 'string', size: 1, orderEnabled: true },
       { title: 'Collaudatore', key: 'collaudatore', type: 'string', size: 2, orderEnabled: true },
       { title: 'Usermobile', key: 'usermobile', type: 'string', size: 2, orderEnabled: true },
       { title: 'Progetto', key: 'progetto', type: 'string', size: 2, orderEnabled: true },
-      { title: 'Azioni', key: '', type: 'buttons', size: 2.5, orderEnabled: false/* , customTemplate: this.desktopButtons */ },
+      { title: 'Azioni', key: '', type: 'buttons', size: 2, orderEnabled: false/* , customTemplate: this.desktopButtons */ },
     ];
 
     this.rooms$ = this.searchStream$.pipe(

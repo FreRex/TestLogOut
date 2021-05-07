@@ -9,11 +9,13 @@ import { UserService } from '../admin/users-tab/user.service';
 /** Interfaccia che definisce la Room come mi arriva sul JSON */
 export interface RoomData {
   id: number;
-  cod: string,
   usermobile: string;
-  progettoselezionato: string;
-  collaudatoreufficio: string;
   DataInsert: string;
+  cod: string,
+  progettoselezionato: string;
+  dataLastsincro: string;
+  idutente: number;
+  collaudatoreufficio: string;
   idcommessa: number;
   commessa: string;
 }
@@ -21,11 +23,13 @@ export interface RoomData {
 /** Interfaccia che definisce la Room all'interno del progetto */
 export interface Room {
   id: number;
-  pk_project: string;
   usermobile: string;
-  progetto: string;
-  collaudatore: string;
   data_inserimento: Date;
+  pk_project: string;
+  progetto: string;
+  data_sincronizzazione: Date;
+  idutente: number;
+  collaudatore: string;
   idcommessa: number;
   commessa: string;
 }
@@ -78,11 +82,13 @@ export class RoomService {
         map(roomData => {
           return {
             id: roomData[0].id,
-            pk_project: roomData[0].cod,
             usermobile: roomData[0].usermobile,
-            progetto: roomData[0].progettoselezionato,
-            collaudatore: roomData[0].collaudatoreufficio,
             data_inserimento: new Date(roomData[0].DataInsert),
+            pk_project: roomData[0].cod,
+            progetto: roomData[0].progettoselezionato,
+            data_sincronizzazione: roomData[0].dataLastsincro,
+            idutente: roomData[0].idutente,
+            collaudatore: roomData[0].collaudatoreufficio,
             idcommessa: roomData[0].idcommessa,
             commessa: roomData[0].commessa,
           }
@@ -107,11 +113,13 @@ export class RoomService {
             if (roomData.hasOwnProperty(key)) {
               rooms.push({
                 id: roomData[key].id,
-                pk_project: roomData[key].cod,
                 usermobile: roomData[key].usermobile,
-                progetto: roomData[key].progettoselezionato,
-                collaudatore: roomData[key].collaudatoreufficio,
                 data_inserimento: new Date(roomData[key].DataInsert),
+                pk_project: roomData[key].cod,
+                progetto: roomData[key].progettoselezionato,
+                data_sincronizzazione: new Date(roomData[key].dataLastsincro),
+                idutente: roomData[key].idutente,
+                collaudatore: roomData[key].collaudatoreufficio,
                 idcommessa: roomData[key].idcommessa,
                 commessa: roomData[key].commessa,
               });
@@ -126,9 +134,10 @@ export class RoomService {
 
   /** CREATE room e aggiungila alla lista */
   addRoom(
-    pk_project: string,
     usermobile: string,
+    pk_project: string,
     progetto: string,
+    data_sincronizzazione: string,
     idutente: number,
     collaudatore: string,
     idcommessa: number,
@@ -138,11 +147,13 @@ export class RoomService {
     const newRoom =
     {
       id: null,
-      pk_project: pk_project,
       usermobile: usermobile,
-      progetto: progetto,
-      collaudatore: collaudatore,
       data_inserimento: new Date(),
+      pk_project: pk_project,
+      progetto: progetto,
+      data_sincronizzazione: new Date(data_sincronizzazione),
+      idutente: idutente,
+      collaudatore: collaudatore,
       idcommessa: idcommessa,
       commessa: commessa
     };
@@ -196,11 +207,13 @@ export class RoomService {
           updatedRooms[roomIndex] =
           {
             id: oldRoom.id,
-            pk_project: oldRoom.pk_project,
             usermobile: newUsermobile,
-            progetto: oldRoom.progetto,
-            collaudatore: oldRoom.collaudatore,
             data_inserimento: oldRoom.data_inserimento,
+            pk_project: oldRoom.pk_project,
+            progetto: oldRoom.progetto,
+            data_sincronizzazione: oldRoom.data_inserimento,
+            idutente: oldRoom.idutente,
+            collaudatore: oldRoom.collaudatore,
             idcommessa: oldRoom.idcommessa,
             commessa: oldRoom.commessa
           };
