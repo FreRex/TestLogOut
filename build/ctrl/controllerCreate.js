@@ -51,7 +51,7 @@ exports.postCreateUtenti = (req, res, next) => {
     // Esecuzione query
     //-------------------   
     function esecuzioneQuery(sqlInsert) {
-        db.query(sqlInsert, [idutcas, collaudatoreufficio, username, password, autorizzazioni], (err, rows, fields) => {
+        db.query(sqlInsert, [idutcas, collaudatoreufficio, username, password, autorizzazioni, idcommessa], (err, rows, fields) => {
             if (err) {
                 res.send('Query error: ' + err.sqlMessage);
             }
