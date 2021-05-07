@@ -12,7 +12,7 @@ exports.postCreateUtenti = (req: any, res: any, next: any) => {
     let password: any;
     let autorizzazioni: Number; 
     let idutcas: string;
-    let idcommessa: number;
+    let idcommessa: any;
     
     //Codice casuale
     //idutcas='qwerty'; 
@@ -33,7 +33,7 @@ exports.postCreateUtenti = (req: any, res: any, next: any) => {
                         esecuzioneQuery(sql);
                     }
                     else
-                    { res.send('Errore parametro autorizzazioni: vuoto, non numero , "undefined" o "null"');}                   
+                    { res.send('Errore parametro autorizzazioni: vuoto, non numero , "undefined" o "null"');}
                 }
                 else
                 { res.send('Errore parametro autorizzazioni: vuoto, non numero , "undefined" o "null"');}            
@@ -52,7 +52,7 @@ exports.postCreateUtenti = (req: any, res: any, next: any) => {
     //-------------------   
     function esecuzioneQuery(sqlInsert: any){        
         
-        db.query(sqlInsert, [idutcas,collaudatoreufficio,username,password,autorizzazioni], (err: any, rows: any, fields: any) => {
+        db.query(sqlInsert, [idutcas,collaudatoreufficio,username,password,autorizzazioni,idcommessa], (err: any, rows: any, fields: any) => {
             if(err){
                 res.send('Query error: ' + err.sqlMessage);
             }else{           
