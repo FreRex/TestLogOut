@@ -31,9 +31,10 @@ exports.getSelect = (req, res, next) => {
     switch (table) {
         case "room":
             //sql="SELECT multistreaming.cod AS cod, multistreaming.id AS id, multistreaming.usermobile AS usermobile, multistreaming.progettoselezionato AS progettoselezionato, utenti.collaudatoreufficio AS collaudatoreufficio, multistreaming.DataInsert AS DataInsert FROM multistreaming INNER JOIN utenti ON utenti.id = multistreaming.collaudatoreufficio ";
-            sql = 'SELECT multistreaming.cod AS cod, multistreaming.id AS id, multistreaming.usermobile AS usermobile, multistreaming.progettoselezionato AS progettoselezionato, utenti.collaudatoreufficio AS collaudatoreufficio, multistreaming.DataInsert AS DataInsert, commesse.id AS idcommessa, commesse.denominazione AS commessa ';
+            sql = 'SELECT multistreaming.cod AS cod, multistreaming.id AS id, multistreaming.usermobile AS usermobile, multistreaming.progettoselezionato AS progettoselezionato, rappre_prog_gisfo.DataLastSincro AS dataLastsincro, utenti.collaudatoreufficio AS collaudatoreufficio, utenti.id AS idutente, multistreaming.DataInsert AS DataInsert, commesse.id AS idcommessa, commesse.denominazione AS commessa ';
             sql = sql + ' FROM multistreaming INNER JOIN utenti ON utenti.id = multistreaming.collaudatoreufficio ';
             sql = sql + ' INNER JOIN commesse ON commesse.id = utenti.idcommessa ';
+            sql = sql + ' INNER JOIN rappre_prog_gisfo ON rappre_prog_gisfo.nome = multistreaming.progettoselezionato ';
             //"id" sarebbe "idroom"
             if (id == '') {
                 if (idutcas == '') {
