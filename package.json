@@ -16,6 +16,7 @@
     "https": "^1.0.0",
     "jsonwebtoken": "^8.5.1",
     "mysql": "^2.18.1",
+    "os": "^0.1.1",
     "pg": "^8.5.1",
     "util": "^0.12.3",
     "validator": "^13.5.2"
@@ -28,8 +29,8 @@
     "ts-node-dev": "^1.1.3"
   },
   "scripts": {
-    "dbackend": "tsc --build && NODE_ENV=development node ./build/server.js",
-    "pbackend": "tsc --build && NODE_ENV=production node -r dotenv/config ./build/server.js",
+    "dback": "tsc --build && NODE_ENV=development node ./build/server.js",
+    "pback": "tsc --build && NODE_ENV=production node -r dotenv/config ./build/server.js",
     "dev": "tsc --build && cd frontend && ionic build && cd .. && NODE_ENV=development node ./build/server.js",
     "prod": "tsc --build && cd frontend && ionic build --prod && cd .. && NODE_ENV=production node -r dotenv/config ./build/server.js"
   },
