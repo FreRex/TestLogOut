@@ -23,9 +23,7 @@ exports.checkLogin = (req: any, res: any, next: any) => {
     else
     {
       pkproject = req.body.pkproject;
-    }
-
-    
+    }    
 
     let usr = req.body.usr;
     let pwd = req.body.pwd;
@@ -99,5 +97,39 @@ exports.decodeToken = (req: any, res: any, next: any) => {
           payload: payload
       }
   );
+
+}
+
+
+exports.checkUserMobile = (req: any, res: any, next: any) => { 
+  
+  const db = require('../conf/db'); 
+
+  if (typeof(req.body.usermobile) !== 'undefined' && (req.body.usermobile)!= 0 && (req.body.usermobile)!='') {
+    let usermobile = req.body.usermobile;
+    let sql: string = "SELECT usermobile FROM multistreaming WHERE usermobile = ?";
+    let datiDb: any = [usermobile];
+    esecuzioneQuery(sql,datiDb);  
+  }
+  else
+  {
+    //Parametro usermobile errato
+    res.json(false);
+  } 
+
+  //-------------------
+  // Esecuzione query
+  //-------------------   
+  function esecuzioneQuery(sql: any, datiDb: any){    
+    db.query(sql, [datiDb], (err: any, rows: any, fields: any) => {
+        if(err || rows.length == 0){
+            //Parametro usermobile non presente 
+            res.json(false);
+        }else{                       
+            res.json(true);
+        }
+    });
+  }
+  
 
 }

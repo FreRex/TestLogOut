@@ -71,3 +71,63 @@ exports.decodeToken = (req, res, next) => {
         payload: payload
     });
 };
+exports.checkUserMobile = (req, res, next) => {
+    const db = require('../conf/db');
+    if (typeof (req.body.usermobile) !== 'undefined' && (req.body.usermobile) != 0 && (req.body.usermobile) != '') {
+        let usermobile = req.body.usermobile;
+        let sql = "SELECT usermobile FROM multistreaming WHERE usermobile = ?";
+        let datiDb = [usermobile];
+        esecuzioneQuery(sql, datiDb);
+    }
+    else {
+        //Parametro usermobile errato
+        res.json(false);
+    }
+    //-------------------
+    // Esecuzione query
+    //-------------------   
+    function esecuzioneQuery(sql, datiDb) {
+        db.query(sql, [datiDb], (err, rows, fields) => {
+            if (err || rows.length == 0) {
+                //Parametro usermobile non presente 
+                res.json(false);
+            }
+            else {
+                res.json(true);
+            }
+        });
+    }
+    /* db.query(select, datiDb, function (err: any, result: any, fields: any) {
+        if(result.length >= 1){
+          console.log('Credenziali presenti.');
+          
+          const jwt = require('.././middleware/jwt');
+          let token: any = jwt.setToken(usr,pwd);
+          let payload = jwt.getPayload(token);
+          
+          if(pkproject==0){
+            res.json(
+              {
+                token: token
+              }
+            );
+          }
+          else
+          {
+            res.json(
+              {
+                token: token,
+                pkproject: pkproject
+              }
+            );
+          }
+  
+        }
+        else
+        {
+          console.log('Credenziali NON presenti o NON corrette.');
+          res.json(false);
+        }
+        
+    });     */
+};
