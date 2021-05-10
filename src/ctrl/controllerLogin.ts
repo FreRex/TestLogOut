@@ -84,3 +84,20 @@ exports.checkLogin = (req: any, res: any, next: any) => {
     });    
 
 }
+
+exports.decodeToken = (req: any, res: any, next: any) => { 
+
+  const jwt = require('.././middleware/jwt'); 
+  
+  let token = req.body.token;
+  
+  let payload = jwt.getPayload(token);
+  
+  res.json(
+      {
+          token: token,
+          payload: payload
+      }
+  );
+
+}

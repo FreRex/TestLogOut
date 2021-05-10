@@ -45,6 +45,7 @@ router.get('/downloadzip/:folderzip/', controllerDownloadZip.DownloadZip);
 //Login
 //router.get('/lgn/:usr/:pwd/:pkproject?', controllerLogin.checkLogin);
 router.post('/lgn/', [mid.checkAuth], controllerLogin.checkLogin);
+router.post('/pltklgn/', [mid.checkAuth], controllerLogin.decodeToken);
 //SincroDb
 router.get('/alfanumcasuale/', [mid.checkAuth], controllerAlfaNumCasuale.getAlfaNumeCasuale);
 router.get('/sincrodb/:idutente?/:drawing?/:codicecasuale', [mid.checkAuth], controllerSincroDb.sincroDb);

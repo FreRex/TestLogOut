@@ -17,17 +17,6 @@ else
   port = 9083;
 }
 
-//----------------------------------
-var os = require("os");
-var hostname = os.hostname();
-var homedir = os.homedir();
-var networkInterfaces = os.networkInterfaces();
-console.log(hostname);
-/* console.log(homedir);
-console.log(networkInterfaces); */
-
-//------------------------------
-
 app.use(express.json());
 
 //-----------------------------------------------------------------------------------------------------------
