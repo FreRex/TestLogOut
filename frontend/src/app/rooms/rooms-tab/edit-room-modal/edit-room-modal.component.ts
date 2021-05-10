@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ToastController } from '@ionic/angular';
 import { AlertController, ModalController } from '@ionic/angular';
+import { RoomValidator } from 'src/app/shared/room.validator.service';
 import { Room, RoomService } from '../../room.service';
 
 @Component({
@@ -12,7 +13,11 @@ import { Room, RoomService } from '../../room.service';
 export class EditRoomModalComponent implements OnInit {
 
   form: FormGroup = this.fb.group({
-    usermobile: [null, [Validators.required]],
+    usermobile: [null, {
+      validators: [Validators.required],
+      // asyncValidators: null, //--> Lo aggiungo dinamicamente quando ho recuperato la room
+      updateOn: 'blur'
+    }],
   });
 
   @Input() roomId: number;
@@ -25,6 +30,10 @@ export class EditRoomModalComponent implements OnInit {
         this.form.patchValue({
           usermobile: this.room.usermobile
         });
+        this.form.controls['usermobile'].setAsyncValidators(
+          this.roomValidator.usermobileValidator(this.room.usermobile)
+        );
+        // this.form.controls['usermobile'].updateValueAndValidity();
       });
     }
   }
@@ -66,6 +75,7 @@ export class EditRoomModalComponent implements OnInit {
   constructor(
     private roomsService: RoomService,
     private fb: FormBuilder,
+    private roomValidator: RoomValidator,
     private modalController: ModalController,
   ) { }
 }

@@ -16,7 +16,6 @@ export class CreateRoomModalComponent implements OnInit {
   form: FormGroup = this.fb.group({
     usermobile: [null, {
       validators: [Validators.required],
-      // asyncValidators: [usermobileValidator(this.roomsService)],
       asyncValidators: this.roomValidator.usermobileValidator(),
       updateOn: 'blur'
     }],
