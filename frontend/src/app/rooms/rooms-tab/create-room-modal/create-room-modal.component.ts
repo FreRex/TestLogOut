@@ -3,6 +3,7 @@ import { FormBuilder } from '@angular/forms';
 import { FormGroup, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import { Project, ProjectService } from 'src/app/admin/projects-tab/project.service';
+import { RoomValidator as RoomValidator } from 'src/app/shared/room.validator.service';
 import { RoomService } from '../../room.service';
 
 @Component({
@@ -13,7 +14,12 @@ import { RoomService } from '../../room.service';
 export class CreateRoomModalComponent implements OnInit {
 
   form: FormGroup = this.fb.group({
-    usermobile: [null, [Validators.required]],
+    usermobile: [null, {
+      validators: [Validators.required],
+      // asyncValidators: [usermobileValidator(this.roomsService)],
+      asyncValidators: this.roomValidator.usermobileValidator(),
+      updateOn: 'blur'
+    }],
     progetto: [null], // ---> La validazione viene fatta all'interno del dropdown
   });
 
@@ -25,7 +31,7 @@ export class CreateRoomModalComponent implements OnInit {
     console.log(this.form.valid);
 
     if (!this.form.valid) { return; }
-    this.roomsService
+    this.roomService
       .addRoom(
         this.form.value.usermobile,
         this.selectedProject.pk_proj.toString(),
@@ -65,7 +71,8 @@ export class CreateRoomModalComponent implements OnInit {
   constructor(
     private modalController: ModalController,
     private fb: FormBuilder,
-    private roomsService: RoomService,
+    private roomValidator: RoomValidator,
+    private roomService: RoomService,
     public projectService: ProjectService
   ) { }
 }
