@@ -42,10 +42,11 @@ router.get('/test/', controllerTest.test);
 //Downloadzip (download foto compresse)
 router.get('/checkdownloadzip/:folderzip/', controllerDownloadZip.CheckDownloadZip);
 router.get('/downloadzip/:folderzip/', controllerDownloadZip.DownloadZip);
-//Login
+//Login/usermobile
 //router.get('/lgn/:usr/:pwd/:pkproject?', controllerLogin.checkLogin);
 router.post('/lgn/', [mid.checkAuth], controllerLogin.checkLogin);
 router.post('/pltklgn/', [mid.checkAuth], controllerLogin.decodeToken);
+router.post('/checkum/', [mid.checkAuth], controllerLogin.checkUserMobile);
 //SincroDb
 router.get('/alfanumcasuale/', [mid.checkAuth], controllerAlfaNumCasuale.getAlfaNumeCasuale);
 router.get('/sincrodb/:idutente?/:drawing?/:codicecasuale', [mid.checkAuth], controllerSincroDb.sincroDb);
