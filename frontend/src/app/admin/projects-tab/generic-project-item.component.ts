@@ -46,7 +46,7 @@ export class GenericProjectItemComponent implements OnInit {
     }).then(toastEl => {
       toastEl.present();
       this.dashService.sincroDb(
-        this.proj.collaudatoreufficio,
+        this.proj.idutente,
         this.proj.pk_proj
       ).subscribe(res => {
         console.log('sincroended: ', res);

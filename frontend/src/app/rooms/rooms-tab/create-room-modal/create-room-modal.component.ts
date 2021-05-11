@@ -3,7 +3,7 @@ import { FormBuilder } from '@angular/forms';
 import { FormGroup, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import { Project, ProjectService } from 'src/app/admin/projects-tab/project.service';
-import { RoomValidator as RoomValidator } from 'src/app/shared/room.validator.service';
+import { RoomValidator } from 'src/app/rooms/room.validator.service';
 import { RoomService } from '../../room.service';
 
 @Component({
@@ -27,8 +27,6 @@ export class CreateRoomModalComponent implements OnInit {
   ngOnInit() { }
 
   createRoom() {
-    console.log(this.form.valid);
-
     if (!this.form.valid) { return; }
     this.roomService
       .addRoom(

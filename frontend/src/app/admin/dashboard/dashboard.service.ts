@@ -26,16 +26,15 @@ export class DashboardService {
       )
   }
 
-  sincroDb(collaudatoreufficio: string, pk_proj: number) {
+  sincroDb(idutente: number, pk_proj: number) {
     return this.http
       .get(
         `${environment.apiUrl}/alfanumcasuale`,
-        { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
       ).pipe(
         switchMap(codicecasuale => {
           this.codicealfa = codicecasuale;
           console.log('codicecasucale: ', this.codicealfa);
-          return this.sincroDbStart(collaudatoreufficio, pk_proj);
+          return this.sincroDbStart(idutente, pk_proj);
         }),
         switchMap(sincroStarted => {
           console.log('sincroStarted: ', sincroStarted);
@@ -48,12 +47,10 @@ export class DashboardService {
       );
   }
 
-  sincroDbStart(collaudatoreufficio: string, pk_proj: number) {
-    const idutente = this.userService.getUserIdByName(collaudatoreufficio);
+  sincroDbStart(idutente: number, pk_proj: number) {
     return this.http
       .get(
         `${environment.apiUrl}/sincrodb/${idutente}/${pk_proj}/${this.codicealfa}`,
-        { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
       );
   }
 
@@ -61,7 +58,6 @@ export class DashboardService {
     return this.http
       .get(
         `${environment.apiUrl}/checksincrodb/${this.codicealfa}`,
-        { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
       ).pipe(
         map(result => {
           console.log('check result: ', result);

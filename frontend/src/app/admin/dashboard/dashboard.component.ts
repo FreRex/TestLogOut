@@ -35,6 +35,9 @@ export class DashboardComponent implements OnInit {
   ngOnInit() { }
 
   syncProject() {
+    console.log('ID Collaudatore: ', this.selectedUser.id);
+    console.log('PK Project: ', this.form.value.pk_proj);
+
     if (!this.form.valid) { return; }
 
     // this.uiManager.createSyncToast();
@@ -64,7 +67,7 @@ export class DashboardComponent implements OnInit {
         }
       );
       this.dashService.sincroDb(
-        this.form.value.collaudatoreufficio,
+        this.selectedUser.id,
         this.form.value.pk_proj
       ).subscribe(res => {
         console.log('sincroended: ', res);

@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ToastController } from '@ionic/angular';
 import { AlertController, ModalController } from '@ionic/angular';
-import { RoomValidator } from 'src/app/shared/room.validator.service';
+import { RoomValidator } from 'src/app/rooms/room.validator.service';
 import { Room, RoomService } from '../../room.service';
 
 @Component({
