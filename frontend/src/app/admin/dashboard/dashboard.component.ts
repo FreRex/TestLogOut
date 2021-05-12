@@ -8,6 +8,8 @@ import { DashboardService } from 'src/app/admin/dashboard/dashboard.service';
 import { ProjectService } from 'src/app/admin/projects-tab/project.service';
 import { User, UserService } from 'src/app/admin/users-tab/user.service';
 import { environment } from 'src/environments/environment';
+import { SyncToastComponent } from 'src/app/shared/sync-toast/sync-toast.component';
+import { SyncService } from 'src/app/shared/sync-toast/sync.service';
 
 export interface Log {
   pk_proj: string;
@@ -40,49 +42,47 @@ export class DashboardComponent implements OnInit {
 
     if (!this.form.valid) { return; }
 
-    // this.uiManager.createSyncToast();
-    // this.projectService
-    //   .syncProject(
-    //     this.form.value.collaudatoreufficio,
-    //     this.form.value.pk_proj
-    //   ).subscribe(
-    //     res => {
-    //       this.uiManager.didsmissSyncToast();
-    //       // TODO: ricaricare room e progetti alla fine della sincronizzazione
+    this.syncService.requestSync(
+      this.selectedUser.id.toString(),
+      this.form.value.pk_proj
+    ).subscribe(res => {
+      console.log('res: ', res);
+    }, err => {
+      console.log('err: ', err);
+
+    });
+
+    // this.toastController.create({
+    //   message: 'Sincronizzazione in corso...',
+    //   position: 'bottom',
+    //   cssClass: 'sync-toast',
+    //   color: 'secondary'
+    // }).then(toastEl => {
+    //   toastEl.present();
+    //   this.logs.push(
+    //     {
+    //       pk_proj: this.form.value.pk_proj,
+    //       message: 'Sync started',
+    //       date: new Date()
     //     }
     //   );
-
-    this.toastController.create({
-      message: 'Sincronizzazione in corso...',
-      position: 'bottom',
-      cssClass: 'sync-toast',
-      color: 'secondary'
-    }).then(toastEl => {
-      toastEl.present();
-      this.logs.push(
-        {
-          pk_proj: this.form.value.pk_proj,
-          message: 'Sync started',
-          date: new Date()
-        }
-      );
-      this.dashService.sincroDb(
-        this.selectedUser.id,
-        this.form.value.pk_proj
-      ).subscribe(res => {
-        console.log('sincroended: ', res);
-        toastEl.dismiss();
-        this.logs.push(
-          {
-            pk_proj: this.form.value.pk_proj,
-            message: 'Sync ended',
-            date: new Date()
-          }
-        );
-        this.reloadData();
-      });
-      return toastEl.onDidDismiss();
-    });
+    //   this.dashService.sincroDb(
+    //     this.selectedUser.id,
+    //     this.form.value.pk_proj
+    //   ).subscribe(res => {
+    //     console.log('sincroended: ', res);
+    //     toastEl.dismiss();
+    //     this.logs.push(
+    //       {
+    //         pk_proj: this.form.value.pk_proj,
+    //         message: 'Sync ended',
+    //         date: new Date()
+    //       }
+    //     );
+    //     this.reloadData();
+    //   });
+    //   return toastEl.onDidDismiss();
+    // });
 
   }
 
@@ -163,6 +163,7 @@ export class DashboardComponent implements OnInit {
     public userService: UserService,
     private projectService: ProjectService,
     private dashService: DashboardService,
+    private syncService: SyncService,
     private roomService: RoomService,
     private loadingController: LoadingController,
     private fb: FormBuilder,

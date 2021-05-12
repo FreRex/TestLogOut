@@ -23,6 +23,7 @@ import { UsersListItemComponent } from '../admin/users-tab/users-list-item/users
 import { ProjectsTableItemComponent } from '../admin/projects-tab/projects-table-item/projects-table-item.component';
 import { RoomsTableItemComponent } from '../rooms/rooms-tab/rooms-table-item/rooms-table-item.component';
 import { UsersTableItemComponent } from '../admin/users-tab/users-table-item/users-table-item.component';
+import { SyncToastComponent } from './sync-toast/sync-toast.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,7 @@ import { UsersTableItemComponent } from '../admin/users-tab/users-table-item/use
     OrderByButtonComponent,
     GenericListComponent,
     GenericTableComponent,
-
+    SyncToastComponent
     // RoomsTableItemComponent,
     // RoomsListItemComponent,
     // ProjectsTableItemComponent,
@@ -59,7 +60,7 @@ import { UsersTableItemComponent } from '../admin/users-tab/users-table-item/use
     OrderByButtonComponent,
     GenericTableComponent,
     GenericListComponent,
-
+    SyncToastComponent
     // RoomsTableItemComponent,
     // RoomsListItemComponent,
     // ProjectsTableItemComponent,

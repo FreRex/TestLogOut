@@ -38,24 +38,24 @@ export class GenericProjectItemComponent implements OnInit {
     if (slidingItem) { slidingItem.close(); }
     if (project) { this.proj = project; }
 
-    this.toastController.create({
-      message: 'Sincronizzazione in corso...',
-      position: 'bottom',
-      cssClass: 'sync-toast',
-      color: 'secondary'
-    }).then(toastEl => {
-      toastEl.present();
-      this.dashService.sincroDb(
-        this.proj.idutente,
-        this.proj.pk_proj
-      ).subscribe(res => {
-        console.log('sincroended: ', res);
-        toastEl.dismiss();
-        // TODO: ricaricamento dati o solo aggiornamento datasync frontend
-        this.reloadData();
-      });
-      return toastEl.onDidDismiss();
-    });
+    // this.toastController.create({
+    //   message: 'Sincronizzazione in corso...',
+    //   position: 'bottom',
+    //   cssClass: 'sync-toast',
+    //   color: 'secondary'
+    // }).then(toastEl => {
+    //   toastEl.present();
+    //   this.dashService.sincroDb(
+    //     this.proj.idutente,
+    //     this.proj.pk_proj
+    //   ).subscribe(res => {
+    //     console.log('sincroended: ', res);
+    //     toastEl.dismiss();
+    //     // TODO: ricaricamento dati o solo aggiornamento datasync frontend
+    //     this.reloadData();
+    //   });
+    //   return toastEl.onDidDismiss();
+    // });
   }
 
   reloadData() {

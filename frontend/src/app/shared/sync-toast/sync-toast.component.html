@@ -1,0 +1,16 @@
+<div id="snackbar" [ngClass]="sync ?  'fadein' : ''">
+    <!-- <div>
+        <ion-spinner></ion-spinner>
+    </div> -->
+    <div>Sincronizzazione: {{sync?.status}}</div>
+    <div *ngIf="sync?.status == 'in corso...'">Check:{{sync?.check}}/{{this.syncService.TOTAL_CHECKS}}</div>
+    <div *ngIf="sync?.status == 'completata'">Ricarica i dati per completare l'aggiornamento</div>
+
+    <div #bar id="time-bar" class="time-bar" data-style="smooth"
+        style="--duration: {{this.syncService.CHECK_INTERVAL/1000}};">
+        <div></div>
+    </div>
+    <div *ngIf="sync?.status == 'completata'">
+        <ion-button>Reload</ion-button>
+    </div>
+</div>
