@@ -59,12 +59,13 @@ router.get('/vidapp/', [mid.checkAuth], controllerVidApp.VidApp);
 //----------- API-db -----------------------------------------------------
 //------------------------------------------------------------------------
 //Indirizzamento ad API-db di lettura (SELECT)
-router.get('/s/:table/:idutcas?/:idroom?/', [mid.checkAuth], controllerSelect.getSelect);
+router.get('/s/:table/:idutcas?/:idroom?/:pagGall?', [mid.checkAuth], controllerSelect.getSelect);
 //Indirizzamento ad API-db di modifica (UPDATE)
 router.put('/ur/', [mid.checkAuth], controllerUpdate.putUpdateRoom);
 router.put('/uu/', [mid.checkAuth], controllerUpdate.putUpdateUtenti);
 router.put('/up/', [mid.checkAuth], controllerUpdate.putUpdateProgetti);
 router.put('/uc/', [mid.checkAuth], controllerUpdate.putUpdateCommesse);
+router.put('/ug/', [mid.checkAuth], controllerUpdate.putUpdateGalleria);
 //Indirizzamento ad API-db di eliminazione (DELETE)
 router.post('/d/', [mid.checkAuth], controllerDelete.delete);
 //Indirizzamento ad API-db di creazione (POST)

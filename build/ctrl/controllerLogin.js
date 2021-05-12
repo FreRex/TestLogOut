@@ -97,37 +97,4 @@ exports.checkUserMobile = (req, res, next) => {
             }
         });
     }
-    /* db.query(select, datiDb, function (err: any, result: any, fields: any) {
-        if(result.length >= 1){
-          console.log('Credenziali presenti.');
-          
-          const jwt = require('.././middleware/jwt');
-          let token: any = jwt.setToken(usr,pwd);
-          let payload = jwt.getPayload(token);
-          
-          if(pkproject==0){
-            res.json(
-              {
-                token: token
-              }
-            );
-          }
-          else
-          {
-            res.json(
-              {
-                token: token,
-                pkproject: pkproject
-              }
-            );
-          }
-  
-        }
-        else
-        {
-          console.log('Credenziali NON presenti o NON corrette.');
-          res.json(false);
-        }
-        
-    });     */
 };

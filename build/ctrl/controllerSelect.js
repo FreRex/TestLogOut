@@ -8,6 +8,7 @@ exports.getSelect = (req, res, next) => {
     let id;
     let idutcas;
     let idWh;
+    let pagGall;
     //-------------------------
     //Verifica parametri
     //-------------------------
@@ -24,6 +25,12 @@ exports.getSelect = (req, res, next) => {
     }
     else {
         idutcas = '';
+    }
+    if (typeof (req.params.pagGall) !== 'undefined' && validator.isNumeric(req.params.pagGall) && (req.params.pagGall) != 0 && (req.params.pagGall) != '') {
+        pagGall = req.params.pagGall;
+    }
+    else {
+        pagGall = '';
     }
     //---------------------
     //Selezione tipo query  
@@ -75,6 +82,17 @@ exports.getSelect = (req, res, next) => {
             break;
         case "commessa":
             sql = 'SELECT id AS idcommessa, denominazione AS commessa FROM commesse ORDER BY id ASC';
+            break;
+        case "galleria":
+            const numberFotoPage = 6;
+            let paginit;
+            if (pagGall == 1) {
+                paginit = 0;
+            }
+            else {
+                paginit = pagGall * numberFotoPage;
+            }
+            sql = 'SELECT id, progettoselezionato, collaudatoreufficio, dataimg, nameimg, latitu, longitu, nomelemento, noteimg, onlynota FROM collaudolive ORDER BY id DESC limit ' + paginit + ',' + numberFotoPage;
             break;
     }
     //----------------------------------

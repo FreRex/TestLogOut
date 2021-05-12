@@ -251,3 +251,54 @@ exports.putUpdateCommesse = (req, res, next) => {
         });
     }
 };
+// Metodo per modifica GALLERIA
+exports.putUpdateGalleria = (req, res, next) => {
+    const db = require('../conf/db');
+    let sql = '';
+    let id;
+    let parametri = [];
+    //Parametri modificabili 
+    let nomelemento;
+    let noteimg;
+    //Controllo parametri e creazione query   
+    if (typeof (req.body.id) !== 'undefined' && req.body.id !== null && typeof (req.body.id) === 'number' && req.body.id !== '') {
+        id = req.body.id;
+        // nomelemento      
+        if (typeof (req.body.nomelemento) !== 'undefined' && req.body.nomelemento !== null && req.body.nomelemento !== '') {
+            nomelemento = req.body.nomelemento;
+            sql = sql + "nomelemento = ? ";
+            parametri.push(nomelemento);
+        }
+        // noteimg
+        if (typeof (req.body.noteimg) !== 'undefined' && req.body.noteimg !== null && req.body.noteimg !== '') {
+            noteimg = req.body.noteimg;
+            parametri.push(noteimg);
+            if (sql === '') {
+                sql = sql + "noteimg = ? ";
+            }
+            else {
+                sql = sql + ", noteimg = ? ";
+            }
+        }
+        parametri.push(id);
+        sql = "UPDATE collaudolive SET " + sql + " WHERE id = ? ";
+        esecuzioneQuery(sql);
+    }
+    else {
+        res.send('Errore parametro id: vuoto, non numero , "undefined" o "null"');
+    }
+    //-----------------------    
+    //-------------------
+    // Esecuzione query
+    //-------------------   
+    function esecuzioneQuery(sqlUpdate) {
+        db.query(sqlUpdate, parametri, (err, rows, fields) => {
+            if (err) {
+                res.send('Query error: ' + err.sqlMessage);
+            }
+            else {
+                res.send(rows);
+            }
+        });
+    }
+};
