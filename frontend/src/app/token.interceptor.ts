@@ -8,8 +8,8 @@ import {
   HttpResponse
 } from '@angular/common/http';
 import { AuthService } from './auth/auth.service';
-import { Observable, throwError } from 'rxjs';
-import { delay, map, retryWhen, take, tap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
@@ -29,7 +29,7 @@ export class TokenInterceptor implements HttpInterceptor {
     return next.handle(request).pipe(
       map((res: HttpEvent<any>) => {
         if (res instanceof HttpResponse) {
-          console.log(res);
+          // console.log(res);
           // do stuff with response if you want
           return res;
         }

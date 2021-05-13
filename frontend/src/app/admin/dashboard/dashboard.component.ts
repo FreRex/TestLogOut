@@ -1,19 +1,16 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, ElementRef, OnInit } from '@angular/core';
-import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
-import { AlertController, LoadingController, ToastController } from '@ionic/angular';
-import { forkJoin } from 'rxjs';
-import { RoomService } from 'src/app/rooms/room.service';
-import { DashboardService } from 'src/app/admin/dashboard/dashboard.service';
-import { ProjectService } from 'src/app/admin/projects-tab/project.service';
+import { Component, OnInit } from '@angular/core';
+import { FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { AlertController, ToastController } from '@ionic/angular';
 import { User, UserService } from 'src/app/admin/users-tab/user.service';
 import { environment } from 'src/environments/environment';
+import { SyncService } from 'src/app/shared/sync-toast/sync.service';
 
-export interface Log {
-  pk_proj: string;
-  message: string;
-  date: Date;
-}
+// export interface Log {
+//   pk_proj: string;
+//   message: string;
+//   date: Date;
+// }
 
 @Component({
   selector: 'app-dashboard',
@@ -28,9 +25,7 @@ export class DashboardComponent implements OnInit {
     pk_proj: [null, [Validators.required]],
   });
 
-  coordinate: string = '';
-  logs: Log[] = [];
-  syncToast: HTMLIonToastElement;
+  // logs: Log[] = [];
 
   ngOnInit() { }
 
@@ -39,72 +34,56 @@ export class DashboardComponent implements OnInit {
     console.log('PK Project: ', this.form.value.pk_proj);
 
     if (!this.form.valid) { return; }
+    if (this.syncService.sync) {
+      this.presentToast('Altra sincronizzazione in corso!', 'secondary');
+    } else {
+      this.syncService.requestSync(
+        this.selectedUser.id.toString(),
+        this.form.value.pk_proj.toString()
+      ).subscribe(res => {
+        console.log('this.syncService.requestSync => res: ', res);
+        // STATUS_ERRORE_RICHIESTA --> res = false
+        // STATUS_COMPLETATA --> res = true
+      }, err => {
+        console.log('this.syncService.requestSync => err: ', err);
+      }, () => {
+        // STATUS_ERRORE_RICHIESTA --> complete
+        // STATUS_ERRORE_TIMEOUT --> complete
+        // STATUS_COMPLETATA --> complete
+        console.log('this.syncService.requestSync => complete');
+      });
+    }
+  }
 
-    // this.uiManager.createSyncToast();
-    // this.projectService
-    //   .syncProject(
-    //     this.form.value.collaudatoreufficio,
-    //     this.form.value.pk_proj
-    //   ).subscribe(
-    //     res => {
-    //       this.uiManager.didsmissSyncToast();
-    //       // TODO: ricaricare room e progetti alla fine della sincronizzazione
-    //     }
-    //   );
+  searching: boolean = false;
+  errorMessage: string;
 
-    this.toastController.create({
-      message: 'Sincronizzazione in corso...',
-      position: 'bottom',
-      cssClass: 'sync-toast',
-      color: 'secondary'
-    }).then(toastEl => {
-      toastEl.present();
-      this.logs.push(
-        {
-          pk_proj: this.form.value.pk_proj,
-          message: 'Sync started',
-          date: new Date()
+  ricercaComune(comune: string) {
+    this.searching = true;
+    this.errorMessage = '';
+    this.http
+      .get(`https://www.gerriquez.com/comuni/ws.php?dencomune=${comune}`)
+      .subscribe(
+        res => {
+          this.searching = false;
+          console.log('this.searchCoord => res', res[0]);
+          if (res[0]) {
+            window.open("https://www.nperf.com/it/map/IT/-/230.TIM/signal/?ll=" + res[0]['latitude'] + "&lg=" + res[0]['longitude'] + "&zoom=13");
+          } else {
+            this.errorMessage = 'Comune non trovato';
+          }
         }
       );
-      this.dashService.sincroDb(
-        this.selectedUser.id,
-        this.form.value.pk_proj
-      ).subscribe(res => {
-        console.log('sincroended: ', res);
-        toastEl.dismiss();
-        this.logs.push(
-          {
-            pk_proj: this.form.value.pk_proj,
-            message: 'Sync ended',
-            date: new Date()
-          }
-        );
-        this.reloadData();
-      });
-      return toastEl.onDidDismiss();
-    });
-
   }
 
-  reloadData() {
-    this.loadingController
-      .create({ keyboardClose: true, message: 'Loading...' })
-      .then(loadingEl => {
-        loadingEl.present();
-        forkJoin({
-          requestProjects: this.projectService.loadProjects(),
-          requestRooms: this.roomService.loadRooms(),
-        }).subscribe(({ requestProjects, requestRooms }) => {
-          console.log(requestProjects);
-          console.log(requestRooms);
-          loadingEl.dismiss();
-        });
-      });
-  }
-
-  createLink(coordinate: string) {
-    let coords = coordinate.replace(' ', '').split(',');
-    window.open("https://www.nperf.com/it/map/IT/-/230.TIM/signal/?ll=" + coords[0] + "&lg=" + coords[1] + "&zoom=13");
+  ricercaCoordinate(coordinate: string) {
+    this.errorMessage = '';
+    if (coordinate) {
+      let coords = coordinate.replace(' ', '').split(',');
+      window.open("https://www.nperf.com/it/map/IT/-/230.TIM/signal/?ll=" + coords[0] + "&lg=" + coords[1] + "&zoom=13");
+    } else {
+      this.errorMessage = 'Mancano le coordinate';
+    }
   }
 
   onRiavviaStreaming() {
@@ -135,17 +114,6 @@ export class DashboardComponent implements OnInit {
     ).then(alertEl => { alertEl.present(); });
   }
 
-  searchCoord(comune: string) {
-
-    this.dashService.searchCity(comune).subscribe(
-      res => {
-        console.log(res);
-        window.open("https://www.nperf.com/it/map/IT/-/230.TIM/signal/?ll=" + res[0]['latitude'] + "&lg=" + res[0]['longitude'] + "&zoom=13");
-      }
-    );
-
-  }
-
   async presentToast(message: string, color?: string) {
     const toast = await this.toastController.create({
       message: message,
@@ -161,10 +129,7 @@ export class DashboardComponent implements OnInit {
     private alertController: AlertController,
     private http: HttpClient,
     public userService: UserService,
-    private projectService: ProjectService,
-    private dashService: DashboardService,
-    private roomService: RoomService,
-    private loadingController: LoadingController,
+    public syncService: SyncService,
     private fb: FormBuilder,
   ) { }
 }
