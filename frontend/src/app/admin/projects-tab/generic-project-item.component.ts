@@ -5,8 +5,8 @@ import { AuthService } from 'src/app/auth/auth.service';
 import { Project, ProjectService } from 'src/app/admin/projects-tab/project.service';
 import { EditProjectModalComponent } from './edit-project-modal/edit-project-modal.component';
 import { CreateProjectModalComponent } from './create-project-modal/create-project-modal.component';
-import { DashboardService } from '../dashboard/dashboard.service';
 import { forkJoin } from 'rxjs';
+import { SyncService } from 'src/app/shared/sync-toast/sync.service';
 
 @Component({
   selector: 'app-generic-project-item',
@@ -23,9 +23,8 @@ export class GenericProjectItemComponent implements OnInit {
     public alertController: AlertController,
     public modalController: ModalController,
     public toastController: ToastController,
-    public dashService: DashboardService,
     public loadingController: LoadingController,
-
+    public syncService: SyncService,
   ) { }
 
   ngOnInit() { }
@@ -34,41 +33,34 @@ export class GenericProjectItemComponent implements OnInit {
     this.projectService.loadProjects().subscribe(res => { event.target.complete(); });
   }
 
+  syncInProgress: boolean = false;
+
   syncProjectUpdate(project?: Project, slidingItem?: IonItemSliding) {
     if (slidingItem) { slidingItem.close(); }
     if (project) { this.proj = project; }
 
-    // this.toastController.create({
-    //   message: 'Sincronizzazione in corso...',
-    //   position: 'bottom',
-    //   cssClass: 'sync-toast',
-    //   color: 'secondary'
-    // }).then(toastEl => {
-    //   toastEl.present();
-    //   this.dashService.sincroDb(
-    //     this.proj.idutente,
-    //     this.proj.pk_proj
-    //   ).subscribe(res => {
-    //     console.log('sincroended: ', res);
-    //     toastEl.dismiss();
-    //     // TODO: ricaricamento dati o solo aggiornamento datasync frontend
-    //     this.reloadData();
-    //   });
-    //   return toastEl.onDidDismiss();
-    // });
-  }
+    console.log('ID Collaudatore: ', this.proj.idutente);
+    console.log('PK Project: ', this.proj.pk_proj);
 
-  reloadData() {
-    this.loadingController
-      .create({ keyboardClose: true, message: 'Loading...' })
-      .then(loadingEl => {
-        loadingEl.present();
-        forkJoin({
-          requestProjects: this.projectService.loadProjects(),
-        }).subscribe(({ requestProjects }) => {
-          loadingEl.dismiss();
-        });
+    if (this.syncService.sync) {
+      this.presentToast('Altra sincronizzazione in corso!', 'secondary');
+    } else {
+      this.syncService.requestSync(
+        this.proj.idutente.toString(),
+        this.proj.pk_proj.toString()
+      ).subscribe(res => {
+        console.log('this.syncService.requestSync => res: ', res);
+        // STATUS_ERRORE_RICHIESTA --> res = false
+        // STATUS_COMPLETATA --> res = true
+      }, err => {
+        console.log('this.syncService.requestSync => err: ', err);
+      }, () => {
+        // STATUS_ERRORE_TIMEOUT --> complete
+        // STATUS_ERRORE_RICHIESTA --> complete
+        // STATUS_COMPLETATA --> complete
+        console.log('this.syncService.requestSync => complete');
       });
+    }
   }
 
   createProject() {

@@ -4,7 +4,7 @@ import { AlertController, LoadingController, ModalController, ToastController } 
 import { AuthService } from 'src/app/auth/auth.service';
 import { ProjectService } from 'src/app/admin/projects-tab/project.service';
 import { GenericProjectItemComponent } from 'src/app/admin/projects-tab/generic-project-item.component';
-import { DashboardService } from '../../dashboard/dashboard.service';
+import { SyncService } from 'src/app/shared/sync-toast/sync.service';
 
 @Component({
   selector: 'app-projects-list-item',
@@ -19,8 +19,8 @@ export class ProjectsListItemComponent extends GenericProjectItemComponent {
     public alertController: AlertController,
     public modalController: ModalController,
     public toastController: ToastController,
-    public dashService: DashboardService,
     public loadingController: LoadingController,
+    public syncService: SyncService,
   ) {
     super(
       router,
@@ -29,8 +29,8 @@ export class ProjectsListItemComponent extends GenericProjectItemComponent {
       alertController,
       modalController,
       toastController,
-      dashService,
-      loadingController
+      loadingController,
+      syncService
     );
   }
 

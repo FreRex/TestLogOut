@@ -141,7 +141,6 @@ export class BackofficePage implements OnInit {
       color: 'secondary',
       duration: 2000
     })
-    // FIX: si può fare in entrambi i modi, qual'è il più giusto?
     // .then(toastEl => toastEl.present());
     toast.present();
   }

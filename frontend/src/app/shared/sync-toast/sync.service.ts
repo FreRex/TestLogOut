@@ -9,8 +9,9 @@ export interface SyncInfo {
   pk: string;
   idutente: string;
   status: string;
+  startDate: Date;
   check: number;
-  date: Date;
+  lastCheckDate: Date;
 }
 
 @Injectable({
@@ -19,91 +20,96 @@ export interface SyncInfo {
 export class SyncService {
 
   sync: SyncInfo;
-  CHECK_INTERVAL: number = 5000;
-  TOTAL_CHECKS: number = 5;
+  TOTAL_CHECKS: number = 20; //DEV: 5 - PROD: 20
+  CHECK_INTERVAL: number = 60000; //DEV: 5000 - PROD: 60000
+  STATUS_RICHIESTA: string = 'Richiesta';
+  STATUS_IN_CORSO: string = 'In corso...';
+  STATUS_COMPLETATA: string = 'Completata';
+  STATUS_ERRORE_TIMEOUT: string = 'Errore Timeout';
+  STATUS_ERRORE_RICHIESTA: string = 'Errore Richiesta';
 
   constructor(
     private http: HttpClient,
   ) { }
 
   // Observable string sources
-  private syncInfoSource = new Subject<SyncInfo>();
-  private syncCheckSource = new Subject<SyncInfo>();
-
+  private syncStatusSource = new Subject<SyncInfo>();
   // Observable string streams
-  syncInfo$ = this.syncInfoSource.asObservable();
-  syncCheck$ = this.syncCheckSource.asObservable();
+  syncStatus$ = this.syncStatusSource.asObservable();
 
   // Service message commands
   requestSync(idutente: string, pk: string) {
+    this.sync = {
+      cod: null,
+      pk: pk,
+      idutente: idutente,
+      status: null,
+      startDate: new Date(),
+      check: 0,
+      lastCheckDate: new Date(),
+    }
     return this.http.get(
       `${environment.apiUrl}/alfanumcasuale`
     ).pipe(
       switchMap((cod: string) => {
         console.log('codicecasucale: ', cod);
-        this.sync = {
-          cod: cod,
-          pk: pk,
-          idutente: idutente,
-          status: 'richiesta',
-          check: 0,
-          date: new Date()
-        }
-        // this.syncInfoSource.next(this.sync);
+        this.sync.cod = cod;
         return this.http.get(`${environment.apiUrl}/sincrodb/${idutente}/${pk}/${this.sync.cod}`);
       }),
       switchMap(sincroStarted => {
         console.log('sincroStarted: ', sincroStarted);
+        /* DEV x simulare Errore Richiesta
+        let newVar = true; 
+        */
         if (sincroStarted) {
-          this.sync.status = 'in corso...';
-          // this.sync.date = new Date();
-          this.syncInfoSource.next(this.sync);
-          return this.sincroDbCheck();
+          this.sync.status = this.STATUS_IN_CORSO;
+          this.syncStatusSource.next(this.sync);
+          return this.startCheck();
         } else {
-          this.sync.status = 'fallita';
-          // this.sync.date = new Date();
-          this.syncInfoSource.next(this.sync);
+          this.sync.status = this.STATUS_ERRORE_RICHIESTA;
+          this.syncStatusSource.next(this.sync);
           return of(false);
         }
       })
     );
   }
 
-  sincroDbStart(idutente: string, pk_proj: string) {
-    return this.http
-      .get(
-        `${environment.apiUrl}/sincrodb/${idutente}/${pk_proj}/${this.sync.cod}`,
-      );
-  }
-
-  sincroDbCheck(): Observable<boolean | Object> {
+  startCheck(): Observable<boolean | Object> {
     return this.http
       .get(
         `${environment.apiUrl}/checksincrodb/${this.sync.cod}`,
       ).pipe(
         map(result => {
           console.log('check result: ', result);
-          let newResult = (Math.random() * 5) > 4; // returns a random integer from 0 to 10
-          if (!newResult) {
+          /* DEV: x simulare Completato e Errore Timeout
+          let newResult = (Math.random() * 5) > 3; // returns a random integer from 0 to 10
+          let newResult = false; // returns a random integer from 0 to 10
+          */
+          if (!result) {
             this.sync.check++;
-            this.syncInfoSource.next(this.sync);
-            throw newResult;
+            this.sync.lastCheckDate = new Date();
+            throw result; //error will be picked up by retryWhen
+          } else {
+            this.sync.status = this.STATUS_COMPLETATA;
           }
-          //error will be picked up by retryWhen
-          this.sync.status = 'completata';
-          return newResult;
+          return result;
         }),
         retryWhen(errors =>
           errors.pipe(
-            tap(val => console.log(`Sincronizzazione non ancora completata!`)),
-            delay(this.CHECK_INTERVAL), //prod: 600000
-            take(this.TOTAL_CHECKS), //prod: 20
-            // TODO: devo rilanciare un errore se scade il tempo!
-            // Throw an exception to signal that the error needs to be propagated
-            // concat(Observable.throw(new Error('Retry limit exceeded!')))
-            finalize(() => console.log('Retry limit exceeded!'))
+            tap(val => {
+              this.syncStatusSource.next(this.sync);
+              console.log(`Tap!`, this.sync);
+            }),
+            delay(this.CHECK_INTERVAL),
+            take(this.TOTAL_CHECKS),
           ),
         ),
+        finalize(() => {
+          if (this.sync.status !== this.STATUS_COMPLETATA) { this.sync.status = this.STATUS_ERRORE_TIMEOUT; }
+          this.syncStatusSource.next(this.sync);
+          this.sync = null;
+          console.log('Finalize!', this.sync);
+        })
       );
   }
 

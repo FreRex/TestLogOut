@@ -4,10 +4,10 @@ import { AlertController, LoadingController, ModalController, ToastController } 
 import { BehaviorSubject, Observable } from 'rxjs';
 import { distinctUntilChanged, startWith, switchMap } from 'rxjs/operators';
 import { AuthService } from 'src/app/auth/auth.service';
-import { DashboardService } from 'src/app/admin/dashboard/dashboard.service';
 import { GenericProjectItemComponent } from 'src/app/admin/projects-tab/generic-project-item.component';
 import { TableColumns } from 'src/app/shared/generic-table/generic-table.component';
 import { Project, ProjectService } from 'src/app/admin/projects-tab/project.service';
+import { SyncService } from 'src/app/shared/sync-toast/sync.service';
 
 @Component({
   selector: 'app-projects-tab',
@@ -55,8 +55,8 @@ export class ProjectsTabComponent extends GenericProjectItemComponent implements
     public alertController: AlertController,
     public modalController: ModalController,
     public toastController: ToastController,
-    public dashService: DashboardService,
-    public loadingController: LoadingController,) {
+    public loadingController: LoadingController,
+    public syncService: SyncService,) {
     super(
       router,
       projectService,
@@ -64,8 +64,8 @@ export class ProjectsTabComponent extends GenericProjectItemComponent implements
       alertController,
       modalController,
       toastController,
-      dashService,
-      loadingController
+      loadingController,
+      syncService
     );
   }
 }
