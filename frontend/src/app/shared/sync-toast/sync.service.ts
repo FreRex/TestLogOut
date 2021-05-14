@@ -58,9 +58,8 @@ export class SyncService {
       }),
       switchMap(sincroStarted => {
         console.log('sincroStarted: ', sincroStarted);
-        /* DEV x simulare Errore Richiesta
-        let newVar = true; 
-        */
+        // DEV x simulare Errore Richiesta
+        // let newVar = false;
         if (sincroStarted) {
           this.sync.status = this.STATUS_IN_CORSO;
           this.syncStatusSource.next(this.sync);
@@ -68,6 +67,7 @@ export class SyncService {
         } else {
           this.sync.status = this.STATUS_ERRORE_RICHIESTA;
           this.syncStatusSource.next(this.sync);
+          this.sync = null;
           return of(false);
         }
       })
@@ -81,10 +81,9 @@ export class SyncService {
       ).pipe(
         map(result => {
           console.log('check result: ', result);
-          /* DEV: x simulare Completato e Errore Timeout
-          let newResult = (Math.random() * 5) > 3; // returns a random integer from 0 to 10
-          let newResult = false; // returns a random integer from 0 to 10
-          */
+          // DEV: x simulare Completato e Errore Timeout
+          // let newResult = (Math.random() * 5) > 3; // returns a random integer from 0 to 10
+          // let newResult = false; // returns a random integer from 0 to 10
           if (!result) {
             this.sync.check++;
             this.sync.lastCheckDate = new Date();
@@ -107,8 +106,8 @@ export class SyncService {
         finalize(() => {
           if (this.sync.status !== this.STATUS_COMPLETATA) { this.sync.status = this.STATUS_ERRORE_TIMEOUT; }
           this.syncStatusSource.next(this.sync);
-          this.sync = null;
           console.log('Finalize!', this.sync);
+          this.sync = null;
         })
       );
   }

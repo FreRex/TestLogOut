@@ -43,7 +43,7 @@ export class GenericProjectItemComponent implements OnInit {
     console.log('PK Project: ', this.proj.pk_proj);
 
     if (this.syncService.sync) {
-      this.presentToast('Altra sincronizzazione in corso!', 'secondary');
+      this.presentToast('Altra sincronizzazione in corso!', 'danger');
     } else {
       this.syncService.requestSync(
         this.proj.idutente.toString(),

@@ -35,7 +35,7 @@ export class DashboardComponent implements OnInit {
 
     if (!this.form.valid) { return; }
     if (this.syncService.sync) {
-      this.presentToast('Altra sincronizzazione in corso!', 'secondary');
+      this.presentToast('Altra sincronizzazione in corso!', 'danger');
     } else {
       this.syncService.requestSync(
         this.selectedUser.id.toString(),
@@ -114,12 +114,12 @@ export class DashboardComponent implements OnInit {
     ).then(alertEl => { alertEl.present(); });
   }
 
-  async presentToast(message: string, color?: string) {
+  async presentToast(message: string, color?: string, duration?: number) {
     const toast = await this.toastController.create({
       message: message,
       color: color ? color : 'secondary',
+      duration: duration ? duration : 2000,
       cssClass: 'custom-toast',
-      duration: 2000
     });
     toast.present();
   }
