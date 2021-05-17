@@ -44,10 +44,10 @@ export class AuthService {
     }
   }
 
-  private _userIsAutenticated = true;
+  private _userIsAutenticated = false;
   get userIsAthenticated() { return this._userIsAutenticated; }
 
-  _userId: number;
+  _userId: number = null;
   get userId() { return this._userId; }
   set userId(user: number) { this._userId = user; }
 
@@ -60,5 +60,9 @@ export class AuthService {
     this._userIsAutenticated = false;
     this.userId = null;
     console.log("is logged out: " + this._userIsAutenticated);
+  }
+
+  signup(email: string, password: string) {
+    // return this.http.post('API-REGISTRAZIONE', {email: email, password: password, returnSecureToken: true})
   }
 }

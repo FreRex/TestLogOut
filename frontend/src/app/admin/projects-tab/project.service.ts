@@ -95,7 +95,7 @@ export class ProjectService {
                 pk_proj: data[key].pk_proj,
                 nome: data[key].nome,
                 datasincro: new Date(data[key].datasincro),
-                DataLastSincro: new Date(data[key].datasincro),
+                DataLastSincro: new Date(data[key].DataLastSincro),
                 nodi_fisici: data[key].nodi_fisici,
                 nodi_ottici: data[key].nodi_ottici,
                 tratte: data[key].tratte,
