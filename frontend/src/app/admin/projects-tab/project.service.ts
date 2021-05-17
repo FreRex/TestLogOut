@@ -160,8 +160,8 @@ export class ProjectService {
             .post(
               `${environment.apiUrl}/cp/`,
               {
-                "idutente": this.userService.getUserIdByName(collaudatoreufficio),
-                "pk_proj": pk_proj,
+                "idutente": +idutente,
+                "pk_proj": +pk_proj,
                 "nome": nome,
                 "nodi_fisici": nodi_fisici,
                 "nodi_ottici": nodi_ottici,

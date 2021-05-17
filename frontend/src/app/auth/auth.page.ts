@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
-import { LoadingController } from '@ionic/angular';
+import { AlertController, LoadingController } from '@ionic/angular';
+import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
 
 @Component({
@@ -11,46 +13,62 @@ import { AuthService } from './auth.service';
 })
 export class AuthPage implements OnInit {
 
-  username: string;
-  password: string;
   isLogin: boolean = true;
   isLoading: boolean;
+
+  form: FormGroup = this.fb.group({
+    username: [null, [Validators.required]],
+    password: [null, [Validators.required]],
+  })
 
   constructor(
     private authService: AuthService,
     private router: Router,
-    private loadingCtrl: LoadingController
+    private fb: FormBuilder,
+    private loadingCtrl: LoadingController,
+    private alertController: AlertController
   ) { }
 
   ngOnInit() {
+    this.authService.userName.subscribe(console.log);
+    this.authService.userIsAuthenticated.subscribe(console.log);
   }
 
-  onLogin() {
+  authenticate() {
+    if (!this.form.valid) { return; }
+
     this.isLoading = true;
-    this.authService.login();
     this.loadingCtrl
       .create({ keyboardClose: true, message: 'Logging in..' })
       .then(loadingEl => {
         loadingEl.present();
-        setTimeout(() => {
-          this.isLoading = false;
-          loadingEl.dismiss();
-          this.router.navigateByUrl('/rooms');
-        }, 1500);
+        let authObs: Observable<any>;
+        if (this.isLogin) {
+          authObs = this.authService.login(this.form.value.username, this.form.value.password);
+        } else {
+          authObs = this.authService.signup(this.form.value.username, this.form.value.password);
+        }
+        authObs.subscribe(
+          res => {
+            this.isLoading = false;
+            loadingEl.dismiss();
+            this.showAlert('gg');
+            // this.router.navigateByUrl('/rooms');
+          }, err => {
+            this.isLoading = false;
+            loadingEl.dismiss();
+            this.showAlert('errore');
+          });
       });
   }
 
-  onSubmit(form: NgForm) {
-    if (!form.valid) { return; }
-
-    const email = form.value.username;
-    const password = form.value.password;
-
-    if (this.isLogin) {
-      this.onLogin();
-      form.reset();
-    } else {
-      //TODO: logica sign up
-    }
+  private showAlert(message: string) {
+    this.alertController.create({
+      header: 'Authentication failed',
+      message: message,
+      buttons: ['Okay']
+    }).then(alertEl =>
+      alertEl.present()
+    );
   }
 }

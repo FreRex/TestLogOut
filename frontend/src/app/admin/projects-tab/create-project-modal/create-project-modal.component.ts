@@ -31,7 +31,7 @@ export class CreateProjectModalComponent implements OnInit {
     const coords = this.form.value.coordinate.replace(' ', '').split(",");
     this.projectService
       .addProject(
-        +this.form.value.pk_proj,
+        this.form.value.pk_proj,
         this.form.value.nome,
         this.form.value.nodi_fisici,
         this.form.value.nodi_ottici,

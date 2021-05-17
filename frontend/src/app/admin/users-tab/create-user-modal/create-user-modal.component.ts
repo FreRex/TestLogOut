@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { IonSelect, ModalController } from '@ionic/angular';
-import { Observable } from 'rxjs';
 import { Commission, CommissionService } from '../../commission-tab/commission.service';
 import { UserService } from '../user.service';
 

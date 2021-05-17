@@ -16,23 +16,23 @@ export class MenuComponent implements OnInit {
   isLoggedIn: boolean;
 
   constructor(
-    private authService: AuthService, 
+    private authService: AuthService,
     private alertController: AlertController,
     private toastController: ToastController,
-    private router: Router, 
+    private router: Router,
     private http: HttpClient) { }
 
   ngOnInit() {
-    this.isLoggedIn = this.authService.userIsAthenticated;
+    // this.isLoggedIn = this.authService.userIsAuthenticated;
   }
 
-  onLogout(){
+  onLogout() {
     this.authService.logout();
     this.router.navigateByUrl('/auth');
-    this.isLoggedIn = this.authService.userIsAthenticated;
+    // this.isLoggedIn = this.authService.userIsAuthenticated;
   }
 
-  onLogin(){
+  onLogin() {
     this.router.navigateByUrl('/auth');
   }
 
@@ -52,7 +52,7 @@ export class MenuComponent implements OnInit {
               this.http.get(`${environment.apiUrl}/vidapp/`).subscribe(
                 res => {
                   const restarted: boolean = res['restartNMS'];
-                  if(restarted) {
+                  if (restarted) {
                     this.presentToast('Server Streaming Riavviato');
                   }
                 }
@@ -69,7 +69,7 @@ export class MenuComponent implements OnInit {
       message: message,
       color: 'secondary',
       duration: 2000,
-      buttons: [ { icon: 'close', role: 'cancel'}]
+      buttons: [{ icon: 'close', role: 'cancel' }]
     })
     // FIX: si può fare in entrambi i modi, qual'è il più giusto?
     // .then(toastEl => toastEl.present());
