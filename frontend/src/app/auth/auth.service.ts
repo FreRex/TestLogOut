@@ -44,10 +44,10 @@ export class AuthService {
     }
   }
 
-  private _userIsAutenticated = false;
+  private _userIsAutenticated = true;
   get userIsAthenticated() { return this._userIsAutenticated; }
 
-  _userId: number = null;
+  _userId: number;
   get userId() { return this._userId; }
   set userId(user: number) { this._userId = user; }
 

@@ -29,29 +29,27 @@ export class AuthPage implements OnInit {
     this.isLoading = true;
     this.authService.login();
     this.loadingCtrl
-    .create({ keyboardClose : true, message: 'Logging in..'})
-    .then(loadingEl => {
-      loadingEl.present();
-      setTimeout(() => {
-        this.isLoading = false;
-        loadingEl.dismiss();
-        this.router.navigateByUrl('/rooms');
-      }, 1500);
-    });
+      .create({ keyboardClose: true, message: 'Logging in..' })
+      .then(loadingEl => {
+        loadingEl.present();
+        setTimeout(() => {
+          this.isLoading = false;
+          loadingEl.dismiss();
+          this.router.navigateByUrl('/rooms');
+        }, 1500);
+      });
   }
 
   onSubmit(form: NgForm) {
-    if (!form.valid) {
-      return;
-    }
+    if (!form.valid) { return; }
+
     const email = form.value.username;
     const password = form.value.password;
 
     if (this.isLogin) {
       this.onLogin();
       form.reset();
-    }
-    else {
+    } else {
       //TODO: logica sign up
     }
   }
