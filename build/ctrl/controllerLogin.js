@@ -1,20 +1,5 @@
 "use strict";
 exports.checkLogin = (req, res, next) => {
-    /*
-    let pkproject: number;
-    if(!req.params.pkproject){
-      pkproject=0;
-    }
-    else
-    {
-      pkproject = req.params.pkproject;
-    }
-
-    console.log(pkproject)
-
-    let usr = req.params.usr;
-    let pwd = req.params.pwd;
-    */
     let pkproject;
     if (!req.body.pkproject) {
         pkproject = 0;
@@ -31,18 +16,18 @@ exports.checkLogin = (req, res, next) => {
     let datiDb;
     const db = require('../conf/db');
     if (pkproject == 0) {
-        select = "SELECT id FROM utenti WHERE username = ? AND password = ?";
+        select = "SELECT id AS idutente, idcommessa AS commessa, autorizzazioni AS autorizzazione FROM utenti WHERE username = ? AND password = ?";
         datiDb = [usr, pwd];
     }
     else {
-        select = "SELECT utenti.id, utenti.username, utenti.password, multistreaming.collaudatoreufficio, multistreaming.cod FROM utenti INNER JOIN multistreaming ON multistreaming.collaudatoreufficio = utenti.id WHERE utenti.username = ? AND utenti.password = ? AND multistreaming.cod = ?";
+        select = "SELECT utenti.id AS idutente, utenti.idcommessa AS commessa, utenti.autorizzazioni AS autorizzazione, utenti.username, utenti.password, multistreaming.collaudatoreufficio, multistreaming.cod FROM utenti INNER JOIN multistreaming ON multistreaming.collaudatoreufficio = utenti.id WHERE utenti.username = ? AND utenti.password = ? AND multistreaming.cod = ?";
         datiDb = [usr, pwd, pkproject];
     }
     db.query(select, datiDb, function (err, result, fields) {
         if (result.length >= 1) {
             console.log('Credenziali presenti.');
             const jwt = require('.././middleware/jwt');
-            let token = jwt.setToken(usr, pwd);
+            let token = jwt.setToken(usr, pwd, result[0]['idutente'], result[0]['commessa'], result[0]['autorizzazione']);
             let payload = jwt.getPayload(token);
             if (pkproject == 0) {
                 res.json({
