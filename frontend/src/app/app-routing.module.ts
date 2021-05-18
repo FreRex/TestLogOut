@@ -20,9 +20,12 @@ const routes: Routes = [
   },
   {
     path: 'admin',
-    loadChildren: () => import('./admin/admin.module').then(m => m.AdminPageModule),
-    canLoad: [AuthGuard]
+    loadChildren: () => import('./admin/admin.module').then(m => m.AdminPageModule)
+  },  {
+    path: 'gallery',
+    loadChildren: () => import('./gallery/gallery.module').then( m => m.GalleryPageModule)
   },
+
 ];
 
 @NgModule({
