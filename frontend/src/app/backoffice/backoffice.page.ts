@@ -30,7 +30,7 @@ export class BackofficePage implements OnInit {
     private toastController: ToastController,
     private alertController: AlertController,
     private http: HttpClient
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.initFilterUsers();
@@ -46,10 +46,9 @@ export class BackofficePage implements OnInit {
       switchMap((query) =>
         concat(
           of({ type: 'start', value: null }),
-          this.projectService.getProjectsByFilter(query)
-            .pipe(map(projects => ({ type: 'finish', value: projects })))
+          this.projectService.getProjectsByFilter(query).pipe(map((projects) => ({ type: 'finish', value: projects })))
         )
-      ),
+      )
     );
   }
 
@@ -62,10 +61,9 @@ export class BackofficePage implements OnInit {
       switchMap((query) =>
         concat(
           of({ type: 'start', value: null }),
-          this.userService.getUsersByFilter(query)
-            .pipe(map(users => ({ type: 'finish', value: users })))
+          this.userService.getUsersByFilter(query).pipe(map((users) => ({ type: 'finish', value: users })))
         )
-      ),
+      )
     );
   }
 
@@ -139,8 +137,8 @@ export class BackofficePage implements OnInit {
     const toast = await this.toastController.create({
       message: message,
       color: 'secondary',
-      duration: 2000
-    })
+      duration: 2000,
+    });
     // .then(toastEl => toastEl.present());
     toast.present();
   }
@@ -192,30 +190,30 @@ export class BackofficePage implements OnInit {
     } */
 
   onRiavviaStreaming() {
-    this.alertController.create(
-      {
+    this.alertController
+      .create({
         header: 'Riavvio Server Streaming',
         message: 'Vuoi davvero riavviare server streaming?',
         buttons: [
           {
             text: 'Annulla',
-            role: 'cancel'
+            role: 'cancel',
           },
           {
             text: 'Riavvia',
             handler: () => {
-              this.http.get(`${environment.apiUrl}/vidapp/`).subscribe(
-                res => {
-                  const restarted: boolean = res['restartNMS'];
-                  if (restarted) {
-                    this.presentToast('Server Streaming Riavviato');
-                  }
+              this.http.get(`${environment.apiUrl}/vidapp/`).subscribe((res) => {
+                const restarted: boolean = res['restartNMS'];
+                if (restarted) {
+                  this.presentToast('Server Streaming Riavviato');
                 }
-              );
-            }
-          }
-        ]
-      }
-    ).then(alertEl => { alertEl.present(); });
+              });
+            },
+          },
+        ],
+      })
+      .then((alertEl) => {
+        alertEl.present();
+      });
   }
 }

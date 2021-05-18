@@ -11,14 +11,18 @@
 
 <ion-content>
   <form [formGroup]="form" class="ion-padding">
-
-    <dropdown-item formControlName="progetto" [key]="'nome'" [title]="'Progetto'"
-      [inputObs$]="this.projectService.projects$" (event)="this.selectedProject = $event">
+    <dropdown-item
+      formControlName="progetto"
+      [key]="'nome'"
+      [title]="'Progetto'"
+      [inputObs$]="this.projectService.projects$"
+      (event)="this.selectedProject = $event"
+    >
     </dropdown-item>
 
     <ion-item>
       <ion-label color="primary" position="stacked">Collaudatore</ion-label>
-      <ion-input color="medium" disabled="true" type="text">{{selectedProject?.collaudatoreufficio}}</ion-input>
+      <ion-input color="medium" disabled="true" type="text">{{ selectedProject?.collaudatoreufficio }}</ion-input>
       <ion-icon name="lock-closed-outline" slot="end" class="ion-align-self-center"></ion-icon>
     </ion-item>
 
@@ -27,7 +31,6 @@
       <ion-input formControlName="usermobile" type="text"></ion-input>
       <ion-icon name="pencil-outline" slot="end" class="ion-align-self-center"></ion-icon>
     </ion-item>
-
   </form>
 </ion-content>
 <div class="ion-margin-vertical ion-padding">

@@ -10,15 +10,20 @@
 </ion-header>
 <ion-content>
   <form [formGroup]="form" class="ion-padding">
-
     <ion-item>
       <ion-label position="floating">Nome e Cognome</ion-label>
       <ion-input type="text" formControlName="collaudatoreufficio"></ion-input>
     </ion-item>
 
-    <dropdown-item formControlName="commessa" [key]="'commessa'" [title]="'Commessa'"
-      [inputObs$]="this.commissionService.commissions$" [selectedItem]="user" (event)="this.selectedCommission = $event"
-      #dropdown>
+    <dropdown-item
+      formControlName="commessa"
+      [key]="'commessa'"
+      [title]="'Commessa'"
+      [inputObs$]="this.commissionService.commissions$"
+      [selectedItem]="user"
+      (event)="this.selectedCommission = $event"
+      #dropdown
+    >
     </dropdown-item>
 
     <ion-item>
@@ -33,16 +38,14 @@
 
     <ion-item>
       <ion-label position="floating">Autorizzazione</ion-label>
-      <ion-select #autorizzazione interface="popover" value="{{user?.idautorizzazione}}">
+      <ion-select #autorizzazione interface="popover" value="{{ user?.idautorizzazione }}">
         <ion-select-option value="1">Admin</ion-select-option>
         <ion-select-option value="2">User</ion-select-option>
         <ion-select-option value="3">Supervisor</ion-select-option>
       </ion-select>
     </ion-item>
-
   </form>
 </ion-content>
 <div class="ion-margin-vertical ion-padding">
-  <ion-button color="primary" expand="block" shape="round" (click)="updateUser()">Aggiorna Utente
-  </ion-button>
+  <ion-button color="primary" expand="block" shape="round" (click)="updateUser()">Aggiorna Utente </ion-button>
 </div>

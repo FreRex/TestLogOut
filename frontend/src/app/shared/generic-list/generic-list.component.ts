@@ -7,7 +7,7 @@ export interface ListFields {
   key: string;
   type: string;
   size?: number;
-  orderEnabled?: boolean
+  orderEnabled?: boolean;
   customTemplate?: TemplateRef<any>;
 }
 
@@ -17,12 +17,11 @@ export interface ListFields {
   styleUrls: ['./generic-list.component.scss'],
 })
 export class GenericListComponent implements OnInit {
-
   @Input() inputDatas$: Observable<any[]>;
   @Input() fields: ListFields[] = [];
   @Input() mobileItem: TemplateRef<any>;
 
-  constructor() { }
+  constructor() {}
 
   ngOnInit() {
     // this.loadList();

@@ -7,7 +7,7 @@ export interface TableColumns {
   key: string;
   type: string;
   size: number;
-  orderEnabled?: boolean
+  orderEnabled?: boolean;
   customTemplate?: TemplateRef<any>;
 }
 
@@ -17,7 +17,6 @@ export interface TableColumns {
   styleUrls: ['./generic-table.component.scss'],
 })
 export class GenericTableComponent implements OnInit {
-
   /* TABELLA */
   // bulkEdit = true;
   // edit = {};
@@ -35,7 +34,7 @@ export class GenericTableComponent implements OnInit {
   totalPages: number = 1;
   recordsPerPage = 12;
 
-  constructor() { }
+  constructor() {}
 
   ngOnInit() {
     this.page = 0;
@@ -44,26 +43,30 @@ export class GenericTableComponent implements OnInit {
 
   loadPage() {
     this.datas$ = this.inputDatas$.pipe(
-      tap(res => {
+      tap((res) => {
         // console.log(res);
         this.totalNumberOfRecords = res.length;
         this.totalPages = Math.ceil(this.totalNumberOfRecords / this.recordsPerPage);
         if (this.page > this.totalPages) this.page = 0;
       }),
-      map(res => res.sort((r1: any, r2: any) => {
-        if (this.selectedData) {
-          if (this.selectedData.type === 'number' || this.selectedData.type === 'date') {
-            return this.isCrescent ? r1[this.selectedData.key] - r2[this.selectedData.key] : r2[this.selectedData.key] - r1[this.selectedData.key];
-          } else if (this.selectedData.type === 'string') {
-            return this.isCrescent ?
-              r1[this.selectedData.key].toString().localeCompare(r2[this.selectedData.key].toString()) :
-              r2[this.selectedData.key].toString().localeCompare(r1[this.selectedData.key].toString());
+      map((res) =>
+        res.sort((r1: any, r2: any) => {
+          if (this.selectedData) {
+            if (this.selectedData.type === 'number' || this.selectedData.type === 'date') {
+              return this.isCrescent
+                ? r1[this.selectedData.key] - r2[this.selectedData.key]
+                : r2[this.selectedData.key] - r1[this.selectedData.key];
+            } else if (this.selectedData.type === 'string') {
+              return this.isCrescent
+                ? r1[this.selectedData.key].toString().localeCompare(r2[this.selectedData.key].toString())
+                : r2[this.selectedData.key].toString().localeCompare(r1[this.selectedData.key].toString());
+            }
+          } else {
+            return of(res);
           }
-        } else {
-          return of(res);
-        }
-      })),
-      map(res => res.slice(this.page * this.recordsPerPage, this.page * this.recordsPerPage + this.recordsPerPage))
+        })
+      ),
+      map((res) => res.slice(this.page * this.recordsPerPage, this.page * this.recordsPerPage + this.recordsPerPage))
     );
   }
 

@@ -13,7 +13,6 @@ import { SyncService } from 'src/app/shared/sync-toast/sync.service';
   template: ``,
 })
 export class GenericProjectItemComponent implements OnInit {
-
   @Input() proj: Project;
 
   constructor(
@@ -24,20 +23,26 @@ export class GenericProjectItemComponent implements OnInit {
     public modalController: ModalController,
     public toastController: ToastController,
     public loadingController: LoadingController,
-    public syncService: SyncService,
-  ) { }
+    public syncService: SyncService
+  ) {}
 
-  ngOnInit() { }
+  ngOnInit() {}
 
   doRefresh(event) {
-    this.projectService.loadProjects().subscribe(res => { event.target.complete(); });
+    this.projectService.loadProjects().subscribe((res) => {
+      event.target.complete();
+    });
   }
 
   syncInProgress: boolean = false;
 
   syncProjectUpdate(project?: Project, slidingItem?: IonItemSliding) {
-    if (slidingItem) { slidingItem.close(); }
-    if (project) { this.proj = project; }
+    if (slidingItem) {
+      slidingItem.close();
+    }
+    if (project) {
+      this.proj = project;
+    }
 
     console.log('ID Collaudatore: ', this.proj.idutente);
     console.log('PK Project: ', this.proj.pk_proj);
@@ -45,21 +50,22 @@ export class GenericProjectItemComponent implements OnInit {
     if (this.syncService.sync) {
       this.presentToast('Altra sincronizzazione in corso!', 'danger');
     } else {
-      this.syncService.requestSync(
-        this.proj.idutente.toString(),
-        this.proj.pk_proj.toString()
-      ).subscribe(res => {
-        console.log('this.syncService.requestSync => res: ', res);
-        // STATUS_ERRORE_RICHIESTA --> res = false
-        // STATUS_COMPLETATA --> res = true
-      }, err => {
-        console.log('this.syncService.requestSync => err: ', err);
-      }, () => {
-        // STATUS_ERRORE_TIMEOUT --> complete
-        // STATUS_ERRORE_RICHIESTA --> complete
-        // STATUS_COMPLETATA --> complete
-        console.log('this.syncService.requestSync => complete');
-      });
+      this.syncService.requestSync(this.proj.idutente.toString(), this.proj.pk_proj.toString()).subscribe(
+        (res) => {
+          console.log('this.syncService.requestSync => res: ', res);
+          // STATUS_ERRORE_RICHIESTA --> res = false
+          // STATUS_COMPLETATA --> res = true
+        },
+        (err) => {
+          console.log('this.syncService.requestSync => err: ', err);
+        },
+        () => {
+          // STATUS_ERRORE_TIMEOUT --> complete
+          // STATUS_ERRORE_RICHIESTA --> complete
+          // STATUS_COMPLETATA --> complete
+          console.log('this.syncService.requestSync => complete');
+        }
+      );
     }
   }
 
@@ -71,7 +77,8 @@ export class GenericProjectItemComponent implements OnInit {
       .then((modalEl) => {
         modalEl.present();
         return modalEl.onDidDismiss();
-      }).then(res => {
+      })
+      .then((res) => {
         if (res.role === 'ok') {
           this.presentToast(res.data['message'], 'secondary');
         } else if (res.role === 'error') {
@@ -81,26 +88,40 @@ export class GenericProjectItemComponent implements OnInit {
   }
 
   createLinkNPerf(project?: Project, slidingItem?: IonItemSliding) {
-    if (slidingItem) { slidingItem.close(); }
-    if (project) { this.proj = project; }
+    if (slidingItem) {
+      slidingItem.close();
+    }
+    if (project) {
+      this.proj = project;
+    }
 
-    window.open("https://www.nperf.com/it/map/IT/-/230.TIM/signal/?ll="
-      + this.proj.lat_centro_map + "&lg="
-      + this.proj.long_centro_map + "&zoom=13");
+    window.open(
+      'https://www.nperf.com/it/map/IT/-/230.TIM/signal/?ll=' +
+        this.proj.lat_centro_map +
+        '&lg=' +
+        this.proj.long_centro_map +
+        '&zoom=13'
+    );
   }
 
   editProject(project?: Project, slidingItem?: IonItemSliding) {
-    if (slidingItem) { slidingItem.close(); }
-    if (project) { this.proj = project; }
+    if (slidingItem) {
+      slidingItem.close();
+    }
+    if (project) {
+      this.proj = project;
+    }
 
     this.modalController
       .create({
         component: EditProjectModalComponent,
-        componentProps: { projectId: this.proj.idprogetto }
-      }).then((modalEl) => {
+        componentProps: { projectId: this.proj.idprogetto },
+      })
+      .then((modalEl) => {
         modalEl.present();
         return modalEl.onDidDismiss();
-      }).then(res => {
+      })
+      .then((res) => {
         if (res.role === 'ok') {
           this.presentToast(res.data['message'], 'secondary');
         } else if (res.role === 'error') {
@@ -110,24 +131,31 @@ export class GenericProjectItemComponent implements OnInit {
   }
 
   deleteProject(project?: Project, slidingItem?: IonItemSliding) {
-    if (slidingItem) { slidingItem.close(); }
-    if (project) { this.proj = project; }
+    if (slidingItem) {
+      slidingItem.close();
+    }
+    if (project) {
+      this.proj = project;
+    }
 
-    this.alertController.create(
-      {
+    this.alertController
+      .create({
         header: 'Sei sicuro?',
-        message: "Vuoi davvero cancellare il progetto?",
+        message: 'Vuoi davvero cancellare il progetto?',
         buttons: [
           { text: 'Annulla', role: 'cancel' },
           {
             text: 'Elimina',
             handler: () =>
-              this.projectService.deleteProject(this.proj.idprogetto)
-                .subscribe(res => this.presentToast('Progetto Eliminato', 'secondary'))
-          }
-        ]
-      }
-    ).then(alertEl => { alertEl.present(); });
+              this.projectService
+                .deleteProject(this.proj.idprogetto)
+                .subscribe((res) => this.presentToast('Progetto Eliminato', 'secondary')),
+          },
+        ],
+      })
+      .then((alertEl) => {
+        alertEl.present();
+      });
   }
 
   async presentToast(message: string, color?: string, duration?: number) {
@@ -136,7 +164,7 @@ export class GenericProjectItemComponent implements OnInit {
       color: color ? color : 'secondary',
       duration: duration ? duration : 2000,
       cssClass: 'custom-toast',
-    })
+    });
     // FIX: si può fare in entrambi i modi, qual'è il più giusto?
     // .then(toastEl => toastEl.present());
     toast.present();

@@ -14,7 +14,6 @@ import { GenericCommissionItemComponent } from './generic-commission-item.compon
   styleUrls: ['./commission-tab.component.scss'],
 })
 export class CommissionTabComponent extends GenericCommissionItemComponent implements OnInit {
-
   searchStream$ = new BehaviorSubject('');
   commissions$: Observable<Commission[]>;
 
@@ -24,15 +23,15 @@ export class CommissionTabComponent extends GenericCommissionItemComponent imple
     this.columns = [
       { title: 'ID', key: 'id', type: 'number', size: 4, orderEnabled: true },
       { title: 'Commessa', key: 'commessa', type: 'string', size: 4, orderEnabled: true },
-      { title: 'Azioni', key: '', type: 'buttons', size: 4, orderEnabled: false }
+      { title: 'Azioni', key: '', type: 'buttons', size: 4, orderEnabled: false },
     ];
 
     this.commissions$ = this.searchStream$.pipe(
       // debounceTime(200), //FIX
       distinctUntilChanged(),
-      startWith(""),
+      startWith(''),
       switchMap((query) => {
-        return this.commissionService.getCommissionsByFilter(query)
+        return this.commissionService.getCommissionsByFilter(query);
       })
     );
   }
@@ -43,15 +42,8 @@ export class CommissionTabComponent extends GenericCommissionItemComponent imple
     public authService: AuthService,
     public alertController: AlertController,
     public modalController: ModalController,
-    public toastController: ToastController) {
-    super(
-      router,
-      commissionService,
-      authService,
-      alertController,
-      modalController,
-      toastController
-    );
+    public toastController: ToastController
+  ) {
+    super(router, commissionService, authService, alertController, modalController, toastController);
   }
-
 }

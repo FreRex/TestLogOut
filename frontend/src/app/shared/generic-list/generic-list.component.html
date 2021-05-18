@@ -1,4 +1,4 @@
-<div *ngIf="(inputDatas$ | async) as datas">
+<div *ngIf="inputDatas$ | async as datas">
   <!-- <div class="ion-text-center" *ngIf="datas.length <= 0">
     <ion-spinner></ion-spinner>
   </div> -->
@@ -25,8 +25,7 @@
               </ion-button>
           </div> -->
       <!-- </ion-item> -->
-      <ng-container *ngTemplateOutlet="mobileItem ? mobileItem : null; context: {data: data}">
-      </ng-container>
+      <ng-container *ngTemplateOutlet="mobileItem ? mobileItem : null; context: { data: data }"> </ng-container>
       <!-- </ion-item-sliding> -->
     </ion-col>
   </ion-row>

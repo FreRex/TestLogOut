@@ -8,52 +8,59 @@ import { switchMap } from 'rxjs/operators';
 import { AuthService } from '../auth/auth.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class StorageDataService {
-
   constructor(
     private loadingController: LoadingController,
     private authService: AuthService,
     private userService: UserService,
     private projectService: ProjectService,
-    private roomService: RoomService,
-  ) { }
+    private roomService: RoomService
+  ) {}
 
   isDataLoaded: boolean = false;
 
   getRooms(): Observable<Room[]> {
-    return this.roomService.rooms$
-      .pipe(
-        switchMap(rooms => {
-          if (!rooms || rooms.length <= 0) { return this.roomService.loadRooms(); }
-          else { return of(rooms); }
-        })
-      );
+    return this.roomService.rooms$.pipe(
+      switchMap((rooms) => {
+        if (!rooms || rooms.length <= 0) {
+          return this.roomService.loadRooms();
+        } else {
+          return of(rooms);
+        }
+      })
+    );
   }
 
   getUsers(): Observable<User[]> {
-    return this.userService.users$
-      .pipe(
-        switchMap(users => {
-          if (!users || users.length <= 0) { return this.userService.loadUsers(); }
-          else { return of(users); }
-        })
-      );
+    return this.userService.users$.pipe(
+      switchMap((users) => {
+        if (!users || users.length <= 0) {
+          return this.userService.loadUsers();
+        } else {
+          return of(users);
+        }
+      })
+    );
   }
 
   getProjects(): Observable<Project[]> {
-    return this.projectService.projects$
-      .pipe(
-        switchMap(projects => {
-          if (!projects || projects.length <= 0) { return this.projectService.loadProjects(); }
-          else { return of(projects); }
-        })
-      );
+    return this.projectService.projects$.pipe(
+      switchMap((projects) => {
+        if (!projects || projects.length <= 0) {
+          return this.projectService.loadProjects();
+        } else {
+          return of(projects);
+        }
+      })
+    );
   }
 
   loadData() {
-    if (this.isDataLoaded) { return; }
+    if (this.isDataLoaded) {
+      return;
+    }
     console.log('loading data');
 
     //this.authService.token = sessionStorage.getItem('token');
@@ -79,7 +86,5 @@ export class StorageDataService {
     //       loadingEl.dismiss();
     //     });
     //   });
-
   }
-
 }

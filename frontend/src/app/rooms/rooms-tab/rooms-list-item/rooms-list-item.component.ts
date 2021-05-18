@@ -10,7 +10,6 @@ import { GenericRoomItemComponent } from 'src/app/rooms/rooms-tab/generic-room-i
   templateUrl: './rooms-list-item.component.html',
 })
 export class RoomsListItemComponent extends GenericRoomItemComponent {
-
   constructor(
     public router: Router,
     public roomsService: RoomService,
@@ -19,14 +18,6 @@ export class RoomsListItemComponent extends GenericRoomItemComponent {
     public modalController: ModalController,
     public toastController: ToastController
   ) {
-    super(
-      router,
-      roomsService,
-      authService,
-      alertController,
-      modalController,
-      toastController
-    );
+    super(router, roomsService, authService, alertController, modalController, toastController);
   }
-
 }

@@ -28,14 +28,14 @@ import { TokenInterceptor } from './token.interceptor';
   providers: [
     {
       provide: RouteReuseStrategy,
-      useClass: IonicRouteStrategy
+      useClass: IonicRouteStrategy,
     },
     {
       provide: HTTP_INTERCEPTORS,
       useClass: TokenInterceptor,
-      multi: true
+      multi: true,
     },
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

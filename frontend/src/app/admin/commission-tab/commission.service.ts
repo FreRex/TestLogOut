@@ -15,150 +15,125 @@ export interface Commission {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CommissionService {
-
   private commissionSubject = new BehaviorSubject<Commission[]>([]);
   commissions$: Observable<Commission[]> = this.commissionSubject.asObservable();
 
-  constructor(
-    private http: HttpClient
-  ) { }
+  constructor(private http: HttpClient) {}
 
   getCommission(commissionId: number): Observable<Commission> {
-    return this.commissions$
-      .pipe(
-        take(1),
-        map((commissions: Commission[]) => {
-          return { ...commissions.find((commission) => commission.id === commissionId) };
-        })
-      );
+    return this.commissions$.pipe(
+      take(1),
+      map((commissions: Commission[]) => {
+        return { ...commissions.find((commission) => commission.id === commissionId) };
+      })
+    );
   }
 
   getCommissionsByFilter(query: string): Observable<Commission[]> {
     return this.commissions$.pipe(
       map((commissions) =>
-        commissions.filter((commission) =>
-          commission.commessa.toLowerCase().includes(query.toLowerCase())
-        )
+        commissions.filter((commission) => commission.commessa.toLowerCase().includes(query.toLowerCase()))
       )
     );
   }
 
   /** SELECT commesse */
   loadCommissions(): Observable<Commission[]> {
-    return this.http
-      .get<CommissionData[]>(
-        `${environment.apiUrl}/s/commessa/`
-      ).pipe(
-        // <-- Rimappa i dati che arrivano dal server sull'interfaccia della Room
-        map(data => {
-          const commissions: Commission[] = [];
-          for (const key in data) {
-            if (data.hasOwnProperty(key)) {
-              commissions.push({
-                id: data[key].idcommessa,
-                commessa: data[key].commessa,
-              });
-            }
+    return this.http.get<CommissionData[]>(`${environment.apiUrl}/s/commessa/`).pipe(
+      // <-- Rimappa i dati che arrivano dal server sull'interfaccia della Room
+      map((data) => {
+        const commissions: Commission[] = [];
+        for (const key in data) {
+          if (data.hasOwnProperty(key)) {
+            commissions.push({
+              id: data[key].idcommessa,
+              commessa: data[key].commessa,
+            });
           }
-          return commissions;
-        }),
-        tap((commissions: Commission[]) => {
-          this.commissionSubject.next(commissions);
-        })
-      );
+        }
+        return commissions;
+      }),
+      tap((commissions: Commission[]) => {
+        this.commissionSubject.next(commissions);
+      })
+    );
   }
 
   /** CREATE commessa */
-  addCommission(
-    commessa: string,
-  ) {
+  addCommission(commessa: string) {
     let updatedCommissions: Commission[];
-    const newCommission =
-    {
+    const newCommission = {
       id: null,
       commessa: commessa,
-    }
-    return this.commissions$
-      .pipe(
-        take(1),
-        switchMap(commissions => {
-          updatedCommissions = [...commissions];
-          return this.http
-            .post(
-              `${environment.apiUrl}/cc/`,
-              {
-                "commessa": commessa,
-              }
-            );
-        }),
-        catchError(err => { return throwError(err); }),
-        tap(res => {
-          console.log('GeneratedId:', res['insertId']);
-          newCommission.id = res['insertId'];
-          updatedCommissions.unshift(newCommission);
-          this.commissionSubject.next(updatedCommissions);
-        })
-      );
+    };
+    return this.commissions$.pipe(
+      take(1),
+      switchMap((commissions) => {
+        updatedCommissions = [...commissions];
+        return this.http.post(`${environment.apiUrl}/cc/`, {
+          commessa: commessa,
+        });
+      }),
+      catchError((err) => {
+        return throwError(err);
+      }),
+      tap((res) => {
+        console.log('GeneratedId:', res['insertId']);
+        newCommission.id = res['insertId'];
+        updatedCommissions.unshift(newCommission);
+        this.commissionSubject.next(updatedCommissions);
+      })
+    );
   }
 
-
   /** UPDATE commessa */
-  updateCommission(
-    commissionId: number,
-    commessa: string,
-  ) {
+  updateCommission(commissionId: number, commessa: string) {
     let updatedCommissions: Commission[];
-    return this.commissions$
-      .pipe(
-        take(1),
-        switchMap(commissions => {
-          const commissionIndex = commissions.findIndex(commission => commission.id === commissionId);
-          updatedCommissions = [...commissions];
-          const oldCommission = updatedCommissions[commissionIndex];
-          updatedCommissions[commissionIndex] =
-          {
-            id: oldCommission.id,
-            commessa: commessa,
-          };
-          return this.http
-            .put(
-              `${environment.apiUrl}/uc/`,
-              {
-                "id": commissionId,
-                "commessa": commessa,
-              }
-            );
-        }),
-        catchError(err => { return throwError(err); }),
-        tap(res => { this.commissionSubject.next(updatedCommissions) })
-      );
+    return this.commissions$.pipe(
+      take(1),
+      switchMap((commissions) => {
+        const commissionIndex = commissions.findIndex((commission) => commission.id === commissionId);
+        updatedCommissions = [...commissions];
+        const oldCommission = updatedCommissions[commissionIndex];
+        updatedCommissions[commissionIndex] = {
+          id: oldCommission.id,
+          commessa: commessa,
+        };
+        return this.http.put(`${environment.apiUrl}/uc/`, {
+          id: commissionId,
+          commessa: commessa,
+        });
+      }),
+      catchError((err) => {
+        return throwError(err);
+      }),
+      tap((res) => {
+        this.commissionSubject.next(updatedCommissions);
+      })
+    );
   }
 
   /** DELETE commessa */
-  deleteCommission(
-    commissionId: number
-  ) {
+  deleteCommission(commissionId: number) {
     let updatedCommissions: Commission[];
-    return this.commissions$
-      .pipe(
-        take(1),
-        switchMap(commissions => {
-          updatedCommissions = commissions.filter(commission => commission.id !== commissionId);
-          return this.http
-            .post(
-              `${environment.apiUrl}/d/`,
-              {
-                "id": commissionId,
-                "tableDelete": 'commesse',
-              }
-            );
-        }),
-        catchError(err => { return throwError(err); }),
-        tap(res => { this.commissionSubject.next(updatedCommissions) })
-      );
+    return this.commissions$.pipe(
+      take(1),
+      switchMap((commissions) => {
+        updatedCommissions = commissions.filter((commission) => commission.id !== commissionId);
+        return this.http.post(`${environment.apiUrl}/d/`, {
+          id: commissionId,
+          tableDelete: 'commesse',
+        });
+      }),
+      catchError((err) => {
+        return throwError(err);
+      }),
+      tap((res) => {
+        this.commissionSubject.next(updatedCommissions);
+      })
+    );
   }
-
 }

@@ -11,7 +11,6 @@ import { GenericRoomItemComponent } from 'src/app/rooms/rooms-tab/generic-room-i
   styleUrls: ['../../../shared/generic-table/generic-table.component.scss'],
 })
 export class RoomsTableItemComponent extends GenericRoomItemComponent {
-
   @Input() columns;
 
   constructor(
@@ -22,13 +21,6 @@ export class RoomsTableItemComponent extends GenericRoomItemComponent {
     public modalController: ModalController,
     public toastController: ToastController
   ) {
-    super(
-      router,
-      roomsService,
-      authService,
-      alertController,
-      modalController,
-      toastController
-    );
+    super(router, roomsService, authService, alertController, modalController, toastController);
   }
 }

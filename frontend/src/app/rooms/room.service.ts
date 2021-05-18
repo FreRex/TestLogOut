@@ -11,7 +11,7 @@ export interface RoomData {
   id: number;
   usermobile: string;
   DataInsert: string;
-  cod: string,
+  cod: string;
   progettoselezionato: string;
   dataLastsincro: string;
   idutente: number;
@@ -35,37 +35,34 @@ export interface Room {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class RoomService {
+  constructor(private http: HttpClient, private authService: AuthService) {}
 
-  constructor(
-    private http: HttpClient,
-    private authService: AuthService,
-  ) { }
-
-  private roomsSubject = new BehaviorSubject<Room[]>([]);  // <-- "roomsSubject" può emettere eventi perchè è un BehaviourSubject
+  private roomsSubject = new BehaviorSubject<Room[]>([]); // <-- "roomsSubject" può emettere eventi perchè è un BehaviourSubject
   rooms$: Observable<Room[]> = this.roomsSubject.asObservable(); // <-- "rooms$" NON può emettere eventi, ma può essere sottoscritto, perchè è un Observable
 
   getRoom(roomId: number): Observable<Room> {
-    return this.rooms$
-      .pipe(
-        take(1),
-        // <-- applico una funzione di filtro all'array di room che ho preso con take(1)
-        map((rooms: Room[]) => {
-          // <-- ritorna vero quando trova il progeto giusto
-          return { ...rooms.find(room => room.id === roomId) };
-        }));
+    return this.rooms$.pipe(
+      take(1),
+      // <-- applico una funzione di filtro all'array di room che ho preso con take(1)
+      map((rooms: Room[]) => {
+        // <-- ritorna vero quando trova il progeto giusto
+        return { ...rooms.find((room) => room.id === roomId) };
+      })
+    );
   }
 
   getRoomsByFilter(query: string): Observable<Room[]> {
     return this.rooms$.pipe(
-      map(rooms =>
-        rooms.filter(room =>
-          room.usermobile.toLowerCase().includes(query.toLowerCase()) ||
-          room.commessa.toLowerCase().includes(query.toLowerCase()) ||
-          room.progetto.toString().toLowerCase().includes(query.toLowerCase()) ||
-          room.collaudatore.toString().toLowerCase().includes(query.toLowerCase())
+      map((rooms) =>
+        rooms.filter(
+          (room) =>
+            room.usermobile.toLowerCase().includes(query.toLowerCase()) ||
+            room.commessa.toLowerCase().includes(query.toLowerCase()) ||
+            room.progetto.toString().toLowerCase().includes(query.toLowerCase()) ||
+            room.collaudatore.toString().toLowerCase().includes(query.toLowerCase())
         )
       )
     );
@@ -74,12 +71,11 @@ export class RoomService {
   /** SELECT singola room */
   selectRoom(roomId: string): Observable<Room> {
     return this.http
-      .get<RoomData>(
-        `${environment.apiUrl}/s/room/${this.authService.userCod}/${roomId}`,
-        { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
-      )
+      .get<RoomData>(`${environment.apiUrl}/s/room/${this.authService.userCod}/${roomId}`, {
+        headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`),
+      })
       .pipe(
-        map(roomData => {
+        map((roomData) => {
           return {
             id: roomData[0].id,
             usermobile: roomData[0].usermobile,
@@ -91,7 +87,7 @@ export class RoomService {
             collaudatore: roomData[0].collaudatoreufficio,
             idcommessa: roomData[0].idcommessa,
             commessa: roomData[0].commessa,
-          }
+          };
         })
       );
   }
@@ -99,10 +95,9 @@ export class RoomService {
   /** SELECT rooms */
   loadRooms(): Observable<Room[]> {
     return this.http
-      .get<{ [key: string]: RoomData }>(
-        `${environment.apiUrl}/s/room/${this.authService.userCod}/0`,
-        { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
-      )
+      .get<{ [key: string]: RoomData }>(`${environment.apiUrl}/s/room/${this.authService.userCod}/0`, {
+        headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`),
+      })
       .pipe(
         // <-- Rimappa i dati che arrivano dal server sull'interfaccia della Room
         map((roomData: { [key: string]: RoomData }) => {
@@ -141,11 +136,10 @@ export class RoomService {
     idutente: number,
     collaudatore: string,
     idcommessa: number,
-    commessa: string,
+    commessa: string
   ) {
     let updatedRooms: Room[];
-    const newRoom =
-    {
+    const newRoom = {
       id: null,
       usermobile: usermobile,
       data_inserimento: new Date(),
@@ -155,124 +149,120 @@ export class RoomService {
       idutente: idutente,
       collaudatore: collaudatore,
       idcommessa: idcommessa,
-      commessa: commessa
+      commessa: commessa,
     };
     // this.rooms è un OSSERVABILE
     // take(1) = dopo la prima emissione dell'Osservabile togli la sottoscrizione
     // tap() = applico una funzione all'array emesso dall'osservabile (solo 1 perchè uso take(1)) senza sottoscrivermi
-    return this.rooms$
-      .pipe(
-        take(1),
-        switchMap(rooms => {
-          updatedRooms = [...rooms];
-          return this.http
-            .post(
-              `${environment.apiUrl}/cr/`,
-              {
-                "usermobile": usermobile,
-                "progettoselezionato": progetto,
-                "cod": pk_project,
-                "collaudatoreufficio": idutente,
-              },
-              { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
-            );
-        }),
-        catchError(err => { return throwError(err); }),
-        tap(res => {
-          console.log('GeneratedId:', res['insertId']);
-          newRoom.id = res['insertId'];
-          updatedRooms.unshift(newRoom);
-          // this._rooms è un BEHAVIOUR SUBJECT
-          // next() = emetto il nuovo array concatencato come prossimo elemento del BehaviourSubject 
-          // concat(newRoom) = prendo il vecchio array emesso dall'osservabile e concateno il nuovo elemento
-          this.roomsSubject.next(updatedRooms);
-        })
-      );
+    return this.rooms$.pipe(
+      take(1),
+      switchMap((rooms) => {
+        updatedRooms = [...rooms];
+        return this.http.post(
+          `${environment.apiUrl}/cr/`,
+          {
+            usermobile: usermobile,
+            progettoselezionato: progetto,
+            cod: pk_project,
+            collaudatoreufficio: idutente,
+          },
+          { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
+        );
+      }),
+      catchError((err) => {
+        return throwError(err);
+      }),
+      tap((res) => {
+        console.log('GeneratedId:', res['insertId']);
+        newRoom.id = res['insertId'];
+        updatedRooms.unshift(newRoom);
+        // this._rooms è un BEHAVIOUR SUBJECT
+        // next() = emetto il nuovo array concatencato come prossimo elemento del BehaviourSubject
+        // concat(newRoom) = prendo il vecchio array emesso dall'osservabile e concateno il nuovo elemento
+        this.roomsSubject.next(updatedRooms);
+      })
+    );
   }
 
   /** UPDATE room */
-  updateRoom(
-    roomId: number,
-    newUsermobile: string
-  ) {
+  updateRoom(roomId: number, newUsermobile: string) {
     let updatedRooms: Room[];
-    return this.rooms$
-      .pipe(
-        take(1),
-        switchMap(rooms => {
-          // findIndex() = trova l'indice di un elemento di un array in base a una regola ("se è vero")
-          const roomIndex = rooms.findIndex(room => room.id === roomId);
-          updatedRooms = [...rooms];
-          const oldRoom = updatedRooms[roomIndex];
-          updatedRooms[roomIndex] =
+    return this.rooms$.pipe(
+      take(1),
+      switchMap((rooms) => {
+        // findIndex() = trova l'indice di un elemento di un array in base a una regola ("se è vero")
+        const roomIndex = rooms.findIndex((room) => room.id === roomId);
+        updatedRooms = [...rooms];
+        const oldRoom = updatedRooms[roomIndex];
+        updatedRooms[roomIndex] = {
+          id: oldRoom.id,
+          usermobile: newUsermobile,
+          data_inserimento: oldRoom.data_inserimento,
+          pk_project: oldRoom.pk_project,
+          progetto: oldRoom.progetto,
+          data_sincronizzazione: oldRoom.data_inserimento,
+          idutente: oldRoom.idutente,
+          collaudatore: oldRoom.collaudatore,
+          idcommessa: oldRoom.idcommessa,
+          commessa: oldRoom.commessa,
+        };
+        return this.http.put(
+          `${environment.apiUrl}/ur`,
           {
-            id: oldRoom.id,
+            id: roomId,
             usermobile: newUsermobile,
-            data_inserimento: oldRoom.data_inserimento,
-            pk_project: oldRoom.pk_project,
-            progetto: oldRoom.progetto,
-            data_sincronizzazione: oldRoom.data_inserimento,
-            idutente: oldRoom.idutente,
-            collaudatore: oldRoom.collaudatore,
-            idcommessa: oldRoom.idcommessa,
-            commessa: oldRoom.commessa
-          };
-          return this.http
-            .put(
-              `${environment.apiUrl}/ur`,
-              {
-                "id": roomId,
-                "usermobile": newUsermobile
-              },
-              { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
-            );
-        }),
-        catchError(err => { return throwError(err); }),
-        tap(res => { this.roomsSubject.next(updatedRooms); })
-      );
+          },
+          { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
+        );
+      }),
+      catchError((err) => {
+        return throwError(err);
+      }),
+      tap((res) => {
+        this.roomsSubject.next(updatedRooms);
+      })
+    );
   }
 
   /** DELETE room */
   deleteRoom(roomId: number) {
     let updatedRooms: Room[];
-    return this.rooms$
-      .pipe(
-        take(1),
-        switchMap(rooms => {
-          // filter() = filtra un array in base a una regola ("se è vero")
-          // ritrorna vero per tutte le room tranne quella che voglio scartare
-          updatedRooms = rooms.filter(room => room.id !== roomId);
-          return this.http
-            .post(
-              `${environment.apiUrl}/d/`,
-              {
-                "id": roomId,
-                "tableDelete": "multistreaming"
-              },
-              { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
-            )
-        }),
-        catchError(err => { return throwError(err); }),
-        tap(res => { this.roomsSubject.next(updatedRooms); })
-      );
-  }
-
-  checkDownload(nomeProgetto: string) {
-    return this.http.get(
-      `${environment.apiUrl}/checkdownloadzip/${nomeProgetto}`,
-      { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) });
-  }
-
-  downloadFoto(nomeProgetto: string) {
-    return this.http.get(
-      `${environment.apiUrl}/downloadzip/${nomeProgetto}`,
-      {
-        // responseType: 'arraybuffer',
-        // reportProgress: true,
-        // observe: 'events',
-        headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`)
-      }
+    return this.rooms$.pipe(
+      take(1),
+      switchMap((rooms) => {
+        // filter() = filtra un array in base a una regola ("se è vero")
+        // ritrorna vero per tutte le room tranne quella che voglio scartare
+        updatedRooms = rooms.filter((room) => room.id !== roomId);
+        return this.http.post(
+          `${environment.apiUrl}/d/`,
+          {
+            id: roomId,
+            tableDelete: 'multistreaming',
+          },
+          { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
+        );
+      }),
+      catchError((err) => {
+        return throwError(err);
+      }),
+      tap((res) => {
+        this.roomsSubject.next(updatedRooms);
+      })
     );
   }
 
+  checkDownload(nomeProgetto: string) {
+    return this.http.get(`${environment.apiUrl}/checkdownloadzip/${nomeProgetto}`, {
+      headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`),
+    });
+  }
+
+  downloadFoto(nomeProgetto: string) {
+    return this.http.get(`${environment.apiUrl}/downloadzip/${nomeProgetto}`, {
+      // responseType: 'arraybuffer',
+      // reportProgress: true,
+      // observe: 'events',
+      headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`),
+    });
+  }
 }

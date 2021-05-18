@@ -11,7 +11,6 @@ import { User, UserService } from '../user.service';
   styleUrls: ['./edit-user-modal.component.scss'],
 })
 export class EditUserModalComponent implements OnInit {
-
   @ViewChild('autorizzazione', { static: true }) autorizzazione: IonSelect;
 
   form: FormGroup = this.fb.group({
@@ -23,7 +22,7 @@ export class EditUserModalComponent implements OnInit {
 
   user: User;
   @Input() userId: number; // componentProp del MODALE
-  selectedCommission: Commission; // valore DROPDOWN 
+  selectedCommission: Commission; // valore DROPDOWN
 
   ngOnInit() {
     if (this.userId) {
@@ -41,39 +40,45 @@ export class EditUserModalComponent implements OnInit {
   }
 
   updateUser() {
-    if (!this.form.valid) { return }
-    this.userService.updateUser(
-      this.user.id,
-      this.form.value.collaudatoreufficio,
-      this.form.value.username,
-      this.form.value.password,
-      this.autorizzazione.value,
-      this.selectedCommission ? this.selectedCommission.id : this.user.idcommessa,
-      this.selectedCommission ? this.selectedCommission.commessa : this.user.commessa,
-    ).subscribe(
-      /** Il server risponde con 200 */
-      res => {
-        // non ci sono errori
-        if (res['affectedRows'] === 1) {
+    if (!this.form.valid) {
+      return;
+    }
+    this.userService
+      .updateUser(
+        this.user.id,
+        this.form.value.collaudatoreufficio,
+        this.form.value.username,
+        this.form.value.password,
+        this.autorizzazione.value,
+        this.selectedCommission ? this.selectedCommission.id : this.user.idcommessa,
+        this.selectedCommission ? this.selectedCommission.commessa : this.user.commessa
+      )
+      .subscribe(
+        /** Il server risponde con 200 */
+        (res) => {
+          // non ci sono errori
+          if (res['affectedRows'] === 1) {
+            this.form.reset();
+            this.modalController.dismiss({ message: 'Utente Aggiornato' }, 'ok');
+          }
+          // possibili errori
+          else {
+            this.form.reset();
+            this.modalController.dismiss({ message: res['message'] }, 'error');
+          }
+        },
+        /** Il server risponde con un errore */
+        (err) => {
           this.form.reset();
-          this.modalController.dismiss({ message: 'Utente Aggiornato' }, 'ok');
+          this.modalController.dismiss({ message: err.error['text'] }, 'error');
         }
-        // possibili errori
-        else {
-          this.form.reset();
-          this.modalController.dismiss({ message: res['message'] }, 'error');
-        }
-      },
-      /** Il server risponde con un errore */
-      err => {
-        this.form.reset();
-        this.modalController.dismiss({ message: err.error['text'] }, 'error');
-      }
-    );
+      );
   }
 
   createUser() {
-    if (!this.form.valid) { return; }
+    if (!this.form.valid) {
+      return;
+    }
     this.userService
       .addUser(
         this.form.value.collaudatoreufficio,
@@ -81,11 +86,11 @@ export class EditUserModalComponent implements OnInit {
         this.form.value.password,
         this.autorizzazione.value,
         this.selectedCommission.id,
-        this.selectedCommission.commessa,
+        this.selectedCommission.commessa
       )
       .subscribe(
         /** Il server risponde con 200 */
-        res => {
+        (res) => {
           // non ci sono errori
           if (res['affectedRows'] === 1) {
             this.form.reset();
@@ -98,7 +103,7 @@ export class EditUserModalComponent implements OnInit {
           }
         },
         /** Il server risponde con un errore */
-        err => {
+        (err) => {
           this.form.reset();
           this.modalController.dismiss({ message: err.error['text'] }, 'error');
         }
@@ -114,5 +119,5 @@ export class EditUserModalComponent implements OnInit {
     private fb: FormBuilder,
     private userService: UserService,
     public commissionService: CommissionService
-  ) { }
+  ) {}
 }

@@ -33,7 +33,7 @@ import { SyncToastComponent } from './sync-toast/sync-toast.component';
     OrderByButtonComponent,
     GenericListComponent,
     GenericTableComponent,
-    SyncToastComponent
+    SyncToastComponent,
     // RoomsTableItemComponent,
     // RoomsListItemComponent,
     // ProjectsTableItemComponent,
@@ -48,11 +48,7 @@ import { SyncToastComponent } from './sync-toast/sync-toast.component';
     // CreateRoomModalComponent,
     // EditRoomModalComponent,
   ],
-  imports: [
-    IonicModule,
-    CommonModule,
-    ReactiveFormsModule
-  ],
+  imports: [IonicModule, CommonModule, ReactiveFormsModule],
   exports: [
     HasRoleDirective,
     ObsWithStatusPipe,
@@ -60,7 +56,7 @@ import { SyncToastComponent } from './sync-toast/sync-toast.component';
     OrderByButtonComponent,
     GenericTableComponent,
     GenericListComponent,
-    SyncToastComponent
+    SyncToastComponent,
     // RoomsTableItemComponent,
     // RoomsListItemComponent,
     // ProjectsTableItemComponent,
@@ -84,4 +80,4 @@ import { SyncToastComponent } from './sync-toast/sync-toast.component';
     // EditRoomModalComponent,
   ],
 })
-export class SharedModule { }
+export class SharedModule {}

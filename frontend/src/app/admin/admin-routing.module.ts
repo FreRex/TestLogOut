@@ -15,21 +15,21 @@ const routes: Routes = [
     children: [
       {
         path: 'dashboard',
-        component: DashboardComponent
+        component: DashboardComponent,
       },
       {
         path: 'projects',
-        component: ProjectsTabComponent
+        component: ProjectsTabComponent,
       },
       {
         path: 'users',
-        component: UsersTabComponent
+        component: UsersTabComponent,
       },
       {
         path: 'commission',
-        component: CommissionTabComponent
+        component: CommissionTabComponent,
       },
-    ]
+    ],
   },
 ];
 
@@ -37,4 +37,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class AdminPageRoutingModule { }
+export class AdminPageRoutingModule {}

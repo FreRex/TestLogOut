@@ -15,7 +15,7 @@
   </ion-refresher>
   <!-- Rooms Table -->
   <app-generic-table [inputDatas$]="rooms$" [columns]="columns" [desktopItem]="desktopItem">
-    <ng-template #desktopItem let-data='data'>
+    <ng-template #desktopItem let-data="data">
       <!-- Rooms Table Item -->
       <app-rooms-table-item [room]="data" [columns]="columns"></app-rooms-table-item>
     </ng-template>
@@ -30,7 +30,7 @@
   </ion-refresher>
   <!-- Rooms List -->
   <app-generic-list [inputDatas$]="rooms$" [mobileItem]="mobileItem">
-    <ng-template #mobileItem let-data='data'>
+    <ng-template #mobileItem let-data="data">
       <!-- Rooms List Item -->
       <app-rooms-list-item [room]="data"></app-rooms-list-item>
     </ng-template>

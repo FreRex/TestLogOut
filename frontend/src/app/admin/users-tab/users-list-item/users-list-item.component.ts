@@ -10,7 +10,6 @@ import { GenericUserItemComponent } from 'src/app/admin/users-tab/generic-user-i
   templateUrl: './users-list-item.component.html',
 })
 export class UsersListItemComponent extends GenericUserItemComponent {
-
   constructor(
     public router: Router,
     public usersService: UserService,
@@ -19,14 +18,6 @@ export class UsersListItemComponent extends GenericUserItemComponent {
     public modalController: ModalController,
     public toastController: ToastController
   ) {
-    super(
-      router,
-      usersService,
-      authService,
-      alertController,
-      modalController,
-      toastController
-    );
+    super(router, usersService, authService, alertController, modalController, toastController);
   }
-
 }

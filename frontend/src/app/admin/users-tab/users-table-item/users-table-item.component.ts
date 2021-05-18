@@ -11,7 +11,6 @@ import { UserService } from 'src/app/admin/users-tab/user.service';
   styleUrls: ['../../../shared/generic-table/generic-table.component.scss'],
 })
 export class UsersTableItemComponent extends GenericUserItemComponent {
-
   @Input() columns;
 
   constructor(
@@ -22,13 +21,6 @@ export class UsersTableItemComponent extends GenericUserItemComponent {
     public modalController: ModalController,
     public toastController: ToastController
   ) {
-    super(
-      router,
-      usersService,
-      authService,
-      alertController,
-      modalController,
-      toastController
-    );
+    super(router, usersService, authService, alertController, modalController, toastController);
   }
 }

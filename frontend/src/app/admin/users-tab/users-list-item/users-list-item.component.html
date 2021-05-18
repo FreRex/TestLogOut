@@ -2,14 +2,15 @@
   <ion-item detail>
     <ion-label class="ion-margin-end">
       <ion-text color="dark">
-        <h2><b>{{ user['collaudatoreufficio'] }}</b></h2>
+        <h2>
+          <b>{{ user['collaudatoreufficio'] }}</b>
+        </h2>
       </ion-text>
       <ion-text color="medium">
         <p>
-          <ion-icon name="person-circle-outline" [color]="user ['autorizzazioni'] === 'admin' ? 'danger' : 'secondary'">
+          <ion-icon name="person-circle-outline" [color]="user['autorizzazioni'] === 'admin' ? 'danger' : 'secondary'">
           </ion-icon>
-          - {{ user['commessa'] }}
-          - {{ user['username'] }}
+          - {{ user['commessa'] }} - {{ user['username'] }}
         </p>
       </ion-text>
     </ion-label>

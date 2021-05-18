@@ -34,8 +34,13 @@
           </ion-card-header>
           <ion-card-content>
             <form [formGroup]="form">
-              <dropdown-item formControlName="collaudatoreufficio" [key]="'collaudatoreufficio'"
-                [title]="'Collaudatore'" [inputObs$]="this.userService.users$" (event)="selectedUser = $event">
+              <dropdown-item
+                formControlName="collaudatoreufficio"
+                [key]="'collaudatoreufficio'"
+                [title]="'Collaudatore'"
+                [inputObs$]="this.userService.users$"
+                (event)="selectedUser = $event"
+              >
               </dropdown-item>
               <ion-item>
                 <ion-label position="floating">Inserisci il PK Projects</ion-label>
@@ -43,15 +48,19 @@
               </ion-item>
             </form>
             <div class="ion-text-right ion-margin-vertical">
-              <ion-button [disabled]="this.syncService.sync" color="primary" fill="outline" shape="round"
-                (click)="syncProject()">
+              <ion-button
+                [disabled]="this.syncService.sync"
+                color="primary"
+                fill="outline"
+                shape="round"
+                (click)="syncProject()"
+              >
                 <ion-icon slot="start" name="sync-circle-outline"></ion-icon>Sync
               </ion-button>
             </div>
           </ion-card-content>
         </ion-card>
-        <div class="ion-margin" *ngIf="this.syncService.sync">Attendere il completamento della
-          sincronizzazione</div>
+        <div class="ion-margin" *ngIf="this.syncService.sync">Attendere il completamento della sincronizzazione</div>
       </ion-col>
       <ion-col size-md="4">
         <ion-card class="nperf-card">
@@ -60,9 +69,7 @@
           </ion-card-header>
           <ion-card-content>
             <ion-item>
-              <ion-label position="floating" class="ion-text-wrap">
-                Coordinate / Comune
-              </ion-label>
+              <ion-label position="floating" class="ion-text-wrap"> Coordinate / Comune </ion-label>
               <ion-input type="text" #coordinate></ion-input>
             </ion-item>
             <div class="ion-text-right ion-margin-vertical btnNperf">
@@ -75,14 +82,22 @@
                 <ion-spinner></ion-spinner>
               </div>
               <div *ngIf="!searching" class="ion-padding-horizontal">
-                {{errorMessage}}
+                {{ errorMessage }}
               </div>
-              <ion-button shape="round" fill="outline" color="primary"
-                (click)="ricercaComune(coordinate.value.toString())">
+              <ion-button
+                shape="round"
+                fill="outline"
+                color="primary"
+                (click)="ricercaComune(coordinate.value.toString())"
+              >
                 <ion-icon slot="start" name="caret-forward-circle-outline"></ion-icon>Cerca Comune
               </ion-button>
-              <ion-button shape="round" fill="outline" color="primary"
-                (click)="ricercaCoordinate(coordinate.value.toString())">
+              <ion-button
+                shape="round"
+                fill="outline"
+                color="primary"
+                (click)="ricercaCoordinate(coordinate.value.toString())"
+              >
                 <ion-icon slot="start" name="caret-forward-circle-outline"></ion-icon>Cerca Coordinate
               </ion-button>
             </div>

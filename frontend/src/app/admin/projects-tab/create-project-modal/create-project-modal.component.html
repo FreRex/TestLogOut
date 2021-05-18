@@ -10,14 +10,18 @@
 </ion-header>
 <ion-content>
   <form [formGroup]="form" class="ion-padding">
-
-    <dropdown-item formControlName="collaudatoreufficio" [key]="'collaudatoreufficio'" [title]="'Collaudatore'"
-      [inputObs$]="this.userService.users$" (event)="selectedUser = $event">
+    <dropdown-item
+      formControlName="collaudatoreufficio"
+      [key]="'collaudatoreufficio'"
+      [title]="'Collaudatore'"
+      [inputObs$]="this.userService.users$"
+      (event)="selectedUser = $event"
+    >
     </dropdown-item>
 
     <ion-item>
       <ion-label position="stacked" class="ion-margin">Commessa</ion-label>
-      <ion-input color="medium" disabled="true" type="text">{{selectedUser?.commessa}}</ion-input>
+      <ion-input color="medium" disabled="true" type="text">{{ selectedUser?.commessa }}</ion-input>
       <ion-icon size="small" name="lock-closed-outline" slot="end" class="ion-align-self-center"></ion-icon>
     </ion-item>
 
@@ -55,7 +59,6 @@
       <ion-label position="floating">PK Project</ion-label>
       <ion-input type="text" formControlName="pk_proj"></ion-input>
     </ion-item>
-
   </form>
 </ion-content>
 <div class="ion-margin-vertical ion-padding">

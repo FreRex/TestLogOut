@@ -9,7 +9,6 @@ import { Commission, CommissionService } from '../commission.service';
   styleUrls: ['./edit-commission-modal.component.scss'],
 })
 export class EditCommissionModalComponent implements OnInit {
-
   form: FormGroup = this.fb.group({
     commessa: [null, [Validators.required]],
   });
@@ -22,20 +21,19 @@ export class EditCommissionModalComponent implements OnInit {
       this.commissionService.getCommission(this.commissionId).subscribe((commission) => {
         this.commission = commission;
         this.form.patchValue({
-          commessa: this.commission.commessa
-        })
+          commessa: this.commission.commessa,
+        });
       });
     }
   }
 
   updateCommission() {
-    if (!this.form.valid) { return }
-    this.commissionService.updateCommission(
-      this.commission.id,
-      this.form.value.commessa
-    ).subscribe(
+    if (!this.form.valid) {
+      return;
+    }
+    this.commissionService.updateCommission(this.commission.id, this.form.value.commessa).subscribe(
       /** Il server risponde con 200 */
-      res => {
+      (res) => {
         // non ci sono errori
         if (res['affectedRows'] === 1) {
           this.form.reset();
@@ -48,7 +46,7 @@ export class EditCommissionModalComponent implements OnInit {
         }
       },
       /** Il server risponde con un errore */
-      err => {
+      (err) => {
         this.form.reset();
         this.modalController.dismiss({ message: err.error['text'] }, 'error');
       }
@@ -62,6 +60,6 @@ export class EditCommissionModalComponent implements OnInit {
   constructor(
     private modalController: ModalController,
     private fb: FormBuilder,
-    private commissionService: CommissionService,
-  ) { }
+    private commissionService: CommissionService
+  ) {}
 }

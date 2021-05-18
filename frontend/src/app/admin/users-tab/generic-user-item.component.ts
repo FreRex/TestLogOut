@@ -11,7 +11,6 @@ import { EditUserModalComponent } from './edit-user-modal/edit-user-modal.compon
   template: ``,
 })
 export class GenericUserItemComponent implements OnInit {
-
   @Input() user: User;
 
   constructor(
@@ -21,12 +20,14 @@ export class GenericUserItemComponent implements OnInit {
     public alertController: AlertController,
     public modalController: ModalController,
     public toastController: ToastController
-  ) { }
+  ) {}
 
-  ngOnInit() { }
+  ngOnInit() {}
 
   doRefresh(event) {
-    this.userService.loadUsers().subscribe(res => { event.target.complete(); });
+    this.userService.loadUsers().subscribe((res) => {
+      event.target.complete();
+    });
   }
 
   createUser() {
@@ -37,7 +38,8 @@ export class GenericUserItemComponent implements OnInit {
       .then((modalEl) => {
         modalEl.present();
         return modalEl.onDidDismiss();
-      }).then(res => {
+      })
+      .then((res) => {
         if (res.role === 'ok') {
           this.presentToast(res.data['message'], 'secondary');
         } else if (res.role === 'error') {
@@ -47,17 +49,23 @@ export class GenericUserItemComponent implements OnInit {
   }
 
   editUser(user?: User, slidingItem?: IonItemSliding) {
-    if (slidingItem) { slidingItem.close(); }
-    if (user) { this.user = user; }
+    if (slidingItem) {
+      slidingItem.close();
+    }
+    if (user) {
+      this.user = user;
+    }
 
     this.modalController
       .create({
         component: EditUserModalComponent,
-        componentProps: { userId: this.user.id }
-      }).then((modalEl) => {
+        componentProps: { userId: this.user.id },
+      })
+      .then((modalEl) => {
         modalEl.present();
         return modalEl.onDidDismiss();
-      }).then(res => {
+      })
+      .then((res) => {
         if (res.role === 'ok') {
           this.presentToast(res.data['message'], 'secondary');
         } else if (res.role === 'error') {
@@ -67,23 +75,31 @@ export class GenericUserItemComponent implements OnInit {
   }
 
   deleteUser(user?: User, slidingItem?: IonItemSliding) {
-    if (slidingItem) { slidingItem.close(); }
-    if (user) { this.user = user; }
+    if (slidingItem) {
+      slidingItem.close();
+    }
+    if (user) {
+      this.user = user;
+    }
 
-    this.alertController.create(
-      {
+    this.alertController
+      .create({
         header: 'Sei sicuro?',
         message: "Vuoi davvero cancellare l'Utente?",
         buttons: [
           { text: 'Annulla', role: 'cancel' },
           {
             text: 'Elimina',
-            handler: () => this.userService.deleteUser(this.user.id)
-              .subscribe(res => this.presentToast('Utente Eliminato', 'secondary'))
-          }
-        ]
-      }
-    ).then(alertEl => { alertEl.present(); });
+            handler: () =>
+              this.userService
+                .deleteUser(this.user.id)
+                .subscribe((res) => this.presentToast('Utente Eliminato', 'secondary')),
+          },
+        ],
+      })
+      .then((alertEl) => {
+        alertEl.present();
+      });
   }
 
   async presentToast(message: string, color?: string, duration?: number) {
@@ -92,7 +108,7 @@ export class GenericUserItemComponent implements OnInit {
       color: color ? color : 'secondary',
       duration: duration ? duration : 2000,
       cssClass: 'custom-toast',
-    })
+    });
     // .then(toastEl => toastEl.present());
     toast.present();
   }

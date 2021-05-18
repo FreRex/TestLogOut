@@ -14,17 +14,8 @@ import { EditUserModalComponent } from '../admin/users-tab/edit-user-modal/edit-
 import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
-  imports: [
-    SharedModule,
-    CommonModule,
-    ReactiveFormsModule,
-    IonicModule,
-    BackofficePageRoutingModule,
-  ],
-  declarations: [
-    BackofficePage,
-
-  ],
+  imports: [SharedModule, CommonModule, ReactiveFormsModule, IonicModule, BackofficePageRoutingModule],
+  declarations: [BackofficePage],
   entryComponents: [
     CreateProjectModalComponent,
     CreateUserModalComponent,
@@ -32,4 +23,4 @@ import { SharedModule } from '../shared/shared.module';
     EditUserModalComponent,
   ],
 })
-export class BackofficePageModule { }
+export class BackofficePageModule {}

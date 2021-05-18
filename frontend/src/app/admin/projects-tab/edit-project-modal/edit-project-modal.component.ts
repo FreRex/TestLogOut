@@ -11,7 +11,6 @@ import { Project, ProjectService } from '../project.service';
   styleUrls: ['./edit-project-modal.component.scss'],
 })
 export class EditProjectModalComponent implements OnInit {
-
   selectedUser: User;
   form: FormGroup = this.fb.group({
     collaudatoreufficio: [null], // ---> La validazione viene fatta all'interno del dropdown
@@ -24,7 +23,7 @@ export class EditProjectModalComponent implements OnInit {
 
   ngOnInit() {
     if (this.projectId) {
-      this.projectService.getProject(this.projectId).subscribe(project => {
+      this.projectService.getProject(this.projectId).subscribe((project) => {
         this.project = project;
         this.form.patchValue({
           // collaudatoreufficio: this.project.collaudatoreufficio, // ---> il valore viene assegnato allínterno del dropdown
@@ -38,8 +37,10 @@ export class EditProjectModalComponent implements OnInit {
   updateProject() {
     console.log(this.form.valid);
 
-    if (!this.form.valid) { return; }
-    const coords = this.form.value.coordinate.replace(' ', '').split(",");
+    if (!this.form.valid) {
+      return;
+    }
+    const coords = this.form.value.coordinate.replace(' ', '').split(',');
     this.projectService
       .updateProject(
         this.project.idprogetto,
@@ -50,10 +51,11 @@ export class EditProjectModalComponent implements OnInit {
         this.selectedUser ? this.selectedUser.id : this.project.idutente,
         this.selectedUser ? this.selectedUser.collaudatoreufficio : this.project.collaudatoreufficio,
         this.selectedUser ? this.selectedUser.idcommessa : this.project.idcommessa,
-        this.selectedUser ? this.selectedUser.commessa : this.project.commessa,
-      ).subscribe(
+        this.selectedUser ? this.selectedUser.commessa : this.project.commessa
+      )
+      .subscribe(
         /** Il server risponde con 200 */
-        res => {
+        (res) => {
           // non ci sono errori
           if (res['affectedRows'] === 1) {
             this.form.reset();
@@ -66,7 +68,7 @@ export class EditProjectModalComponent implements OnInit {
           }
         },
         /** Il server risponde con un errore */
-        err => {
+        (err) => {
           this.form.reset();
           this.modalController.dismiss({ message: err.error['text'] }, 'error');
         }
@@ -82,5 +84,5 @@ export class EditProjectModalComponent implements OnInit {
     private fb: FormBuilder,
     public userService: UserService,
     private projectService: ProjectService
-  ) { }
+  ) {}
 }

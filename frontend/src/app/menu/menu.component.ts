@@ -11,7 +11,6 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./menu.component.scss'],
 })
 export class MenuComponent implements OnInit {
-
   // TODO: non si aggiorna quando faccio login, rendere this.authService.userIsAthenticated un osservabile
   isLoggedIn: boolean;
 
@@ -20,7 +19,8 @@ export class MenuComponent implements OnInit {
     private alertController: AlertController,
     private toastController: ToastController,
     private router: Router,
-    private http: HttpClient) { }
+    private http: HttpClient
+  ) {}
 
   ngOnInit() {
     // this.isLoggedIn = this.authService.userIsAuthenticated;
@@ -37,31 +37,31 @@ export class MenuComponent implements OnInit {
   }
 
   onRiavviaStreaming() {
-    this.alertController.create(
-      {
+    this.alertController
+      .create({
         header: 'Riavvio Server Streaming',
         message: 'Vuoi davvero riavviare server streaming?',
         buttons: [
           {
             text: 'Annulla',
-            role: 'cancel'
+            role: 'cancel',
           },
           {
             text: 'Riavvia',
             handler: () => {
-              this.http.get(`${environment.apiUrl}/vidapp/`).subscribe(
-                res => {
-                  const restarted: boolean = res['restartNMS'];
-                  if (restarted) {
-                    this.presentToast('Server Streaming Riavviato');
-                  }
+              this.http.get(`${environment.apiUrl}/vidapp/`).subscribe((res) => {
+                const restarted: boolean = res['restartNMS'];
+                if (restarted) {
+                  this.presentToast('Server Streaming Riavviato');
                 }
-              );
-            }
-          }
-        ]
-      }
-    ).then(alertEl => { alertEl.present(); });
+              });
+            },
+          },
+        ],
+      })
+      .then((alertEl) => {
+        alertEl.present();
+      });
   }
 
   async presentToast(message: string) {
@@ -69,8 +69,8 @@ export class MenuComponent implements OnInit {
       message: message,
       color: 'secondary',
       duration: 2000,
-      buttons: [{ icon: 'close', role: 'cancel' }]
-    })
+      buttons: [{ icon: 'close', role: 'cancel' }],
+    });
     // FIX: si può fare in entrambi i modi, qual'è il più giusto?
     // .then(toastEl => toastEl.present());
     toast.present();

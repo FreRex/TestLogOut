@@ -14,15 +14,14 @@ import { StorageDataService } from './shared/storage-data.service';
   styleUrls: ['app.component.scss'],
 })
 export class AppComponent implements OnInit {
-
   constructor(
     private dataService: StorageDataService,
     private loadingController: LoadingController,
     private authService: AuthService,
     private userService: UserService,
     private projectService: ProjectService,
-    private roomService: RoomService,
-  ) { }
+    private roomService: RoomService
+  ) {}
 
   ngOnInit() {
     // this.dataService.loadData();
@@ -30,22 +29,23 @@ export class AppComponent implements OnInit {
     // this.authService.token = sessionStorage.getItem('token');
     // this.authService.token = localStorage.getItem('token');
 
-    this.loadingController
-      .create({ keyboardClose: true, message: 'Loading...' })
-      .then(loadingEl => {
-        loadingEl.present();
-        this.authService.fetchToken().pipe(
-          switchMap(token =>
+    this.loadingController.create({ keyboardClose: true, message: 'Loading...' }).then((loadingEl) => {
+      loadingEl.present();
+      this.authService
+        .fetchToken()
+        .pipe(
+          switchMap((token) =>
             //console.log(this.authService.token);
             forkJoin({
               requestUsers: this.userService.loadUsers(),
               requestProjects: this.projectService.loadProjects(),
               // requestRooms: this.roomService.loadRooms(),
             })
-          ),
-        ).subscribe(({ requestUsers, requestProjects/* , requestRooms  */ }) => {
+          )
+        )
+        .subscribe(({ requestUsers, requestProjects /* , requestRooms  */ }) => {
           loadingEl.dismiss();
         });
-      });
+    });
   }
 }

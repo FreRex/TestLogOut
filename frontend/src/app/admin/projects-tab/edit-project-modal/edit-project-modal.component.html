@@ -11,14 +11,20 @@
 
 <ion-content>
   <form [formGroup]="form" class="ion-padding">
-
-    <dropdown-item formControlName="collaudatoreufficio" [key]="'collaudatoreufficio'" [title]="'Collaudatore'"
-      [inputObs$]="this.userService.users$" [selectedItem]="project" (event)="selectedUser = $event">
+    <dropdown-item
+      formControlName="collaudatoreufficio"
+      [key]="'collaudatoreufficio'"
+      [title]="'Collaudatore'"
+      [inputObs$]="this.userService.users$"
+      [selectedItem]="project"
+      (event)="selectedUser = $event"
+    >
     </dropdown-item>
 
     <ion-item>
       <ion-label position="stacked" class="ion-margin">Commessa</ion-label>
-      <ion-input color="medium" disabled="true" type="text">{{selectedUser ? selectedUser.commessa : project.commessa}}
+      <ion-input color="medium" disabled="true" type="text"
+        >{{ selectedUser ? selectedUser.commessa : project.commessa }}
       </ion-input>
       <ion-icon size="small" name="lock-closed-outline" slot="end" class="ion-align-self-center"></ion-icon>
     </ion-item>
@@ -35,34 +41,33 @@
 
     <ion-item>
       <ion-label position="stacked" class="ion-margin">PK Project</ion-label>
-      <ion-input color="medium" disabled="true" type="text">{{project.pk_proj}}</ion-input>
+      <ion-input color="medium" disabled="true" type="text">{{ project.pk_proj }}</ion-input>
       <ion-icon size="small" name="lock-closed-outline" slot="end" class="ion-align-self-center"></ion-icon>
     </ion-item>
 
     <ion-item>
       <ion-label position="stacked" class="ion-margin">Connessione OPTA-Civici</ion-label>
-      <ion-input color="medium" disabled="true" type="text">{{project.conn_edif_opta}}</ion-input>
+      <ion-input color="medium" disabled="true" type="text">{{ project.conn_edif_opta }}</ion-input>
       <ion-icon size="small" name="lock-closed-outline" slot="end" class="ion-align-self-center"></ion-icon>
     </ion-item>
 
     <ion-item>
       <ion-label position="stacked" class="ion-margin">Nodi Fisici</ion-label>
-      <ion-input color="medium" disabled="true" type="text">{{project.nodi_fisici}}</ion-input>
+      <ion-input color="medium" disabled="true" type="text">{{ project.nodi_fisici }}</ion-input>
       <ion-icon size="small" name="lock-closed-outline" slot="end" class="ion-align-self-center"></ion-icon>
     </ion-item>
 
     <ion-item>
       <ion-label position="stacked" class="ion-margin">Nodi Ottici</ion-label>
-      <ion-input color="medium" disabled="true" type="text">{{project.nodi_ottici}}</ion-input>
+      <ion-input color="medium" disabled="true" type="text">{{ project.nodi_ottici }}</ion-input>
       <ion-icon size="small" name="lock-closed-outline" slot="end" class="ion-align-self-center"></ion-icon>
     </ion-item>
 
     <ion-item>
       <ion-label position="stacked" class="ion-margin">Tratte</ion-label>
-      <ion-input color="medium" disabled="true" type="text">{{project.tratte}}</ion-input>
+      <ion-input color="medium" disabled="true" type="text">{{ project.tratte }}</ion-input>
       <ion-icon size="small" name="lock-closed-outline" slot="end" class="ion-align-self-center"></ion-icon>
     </ion-item>
-
   </form>
 </ion-content>
 <div class="ion-margin-vertical ion-padding">

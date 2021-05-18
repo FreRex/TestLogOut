@@ -11,7 +11,6 @@ import { Commission, CommissionService } from './commission.service';
   template: ``,
 })
 export class GenericCommissionItemComponent implements OnInit {
-
   @Input() commission: Commission;
 
   constructor(
@@ -21,12 +20,14 @@ export class GenericCommissionItemComponent implements OnInit {
     public alertController: AlertController,
     public modalController: ModalController,
     public toastController: ToastController
-  ) { }
+  ) {}
 
-  ngOnInit() { }
+  ngOnInit() {}
 
   doRefresh(event) {
-    this.commissionService.loadCommissions().subscribe(res => { event.target.complete(); });
+    this.commissionService.loadCommissions().subscribe((res) => {
+      event.target.complete();
+    });
   }
 
   createCommission() {
@@ -37,7 +38,8 @@ export class GenericCommissionItemComponent implements OnInit {
       .then((modalEl) => {
         modalEl.present();
         return modalEl.onDidDismiss();
-      }).then(res => {
+      })
+      .then((res) => {
         if (res.role === 'ok') {
           this.presentToast(res.data['message'], 'secondary');
         } else if (res.role === 'error') {
@@ -47,17 +49,23 @@ export class GenericCommissionItemComponent implements OnInit {
   }
 
   editCommission(commission?: Commission, slidingItem?: IonItemSliding) {
-    if (slidingItem) { slidingItem.close(); }
-    if (commission) { this.commission = commission; }
+    if (slidingItem) {
+      slidingItem.close();
+    }
+    if (commission) {
+      this.commission = commission;
+    }
 
     this.modalController
       .create({
         component: EditCommissionModalComponent,
-        componentProps: { commissionId: this.commission.id }
-      }).then((modalEl) => {
+        componentProps: { commissionId: this.commission.id },
+      })
+      .then((modalEl) => {
         modalEl.present();
         return modalEl.onDidDismiss();
-      }).then(res => {
+      })
+      .then((res) => {
         if (res.role === 'ok') {
           this.presentToast(res.data['message'], 'secondary');
         } else if (res.role === 'error') {
@@ -67,23 +75,31 @@ export class GenericCommissionItemComponent implements OnInit {
   }
 
   deleteCommission(commission?: Commission, slidingItem?: IonItemSliding) {
-    if (slidingItem) { slidingItem.close(); }
-    if (commission) { this.commission = commission; }
+    if (slidingItem) {
+      slidingItem.close();
+    }
+    if (commission) {
+      this.commission = commission;
+    }
 
-    this.alertController.create(
-      {
+    this.alertController
+      .create({
         header: 'Sei sicuro?',
-        message: "Vuoi davvero cancellare la commessa?",
+        message: 'Vuoi davvero cancellare la commessa?',
         buttons: [
           { text: 'Annulla', role: 'cancel' },
           {
             text: 'Elimina',
-            handler: () => this.commissionService.deleteCommission(this.commission.id)
-              .subscribe(res => this.presentToast('Commessa Eliminata', 'secondary'))
-          }
-        ]
-      }
-    ).then(alertEl => { alertEl.present(); });
+            handler: () =>
+              this.commissionService
+                .deleteCommission(this.commission.id)
+                .subscribe((res) => this.presentToast('Commessa Eliminata', 'secondary')),
+          },
+        ],
+      })
+      .then((alertEl) => {
+        alertEl.present();
+      });
   }
 
   async presentToast(message: string, color?: string, duration?: number) {
@@ -92,7 +108,7 @@ export class GenericCommissionItemComponent implements OnInit {
       color: color ? color : 'secondary',
       duration: duration ? duration : 2000,
       cssClass: 'custom-toast',
-    })
+    });
     // .then(toastEl => toastEl.present());
     toast.present();
   }

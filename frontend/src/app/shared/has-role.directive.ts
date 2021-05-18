@@ -2,15 +2,14 @@ import { Directive, Input, OnInit, TemplateRef, ViewContainerRef } from '@angula
 import { AuthService } from '../auth/auth.service';
 
 @Directive({
-  selector: '[userIsAdmin]'
+  selector: '[userIsAdmin]',
 })
 export class HasRoleDirective implements OnInit {
-
   constructor(
     private authService: AuthService,
     private templateRef: TemplateRef<any>,
     private viewContainer: ViewContainerRef
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.authService.currentUser$.subscribe((currentUser) => {
