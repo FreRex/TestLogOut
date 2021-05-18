@@ -5,7 +5,11 @@
 </ion-header> -->
 
 <ion-content class="ion-padding">
-  <img class="logo" src="../../assets/chat-operativa-round.png" alt="Logo provvisorio" />
+  <img
+    class="logo"
+    src="../../assets/chat-operativa-round.png"
+    alt="Logo provvisorio"
+  />
   <form [formGroup]="form">
     <ion-grid>
       <ion-row>
@@ -19,7 +23,8 @@
               <ion-list>
                 <ion-item>
                   <ion-label position="floating">Username</ion-label>
-                  <ion-input type="text" formControlName="username"> </ion-input>
+                  <ion-input type="text" formControlName="username">
+                  </ion-input>
                 </ion-item>
                 <!-- <ion-item *ngIf="!userCtrl.valid && userCtrl.touched" lines="none">
                   <ion-label>Inserisci un username!</ion-label>
@@ -27,7 +32,8 @@
 
                 <ion-item>
                   <ion-label position="floating">Password</ion-label>
-                  <ion-input type="text" formControlName="password"> </ion-input>
+                  <ion-input type="text" formControlName="password">
+                  </ion-input>
                 </ion-item>
                 <!-- <ion-item *ngIf="!pswCtrl.valid && pswCtrl.touched" lines="none">
                   <ion-label>Inserisci una password!</ion-label>
@@ -35,7 +41,10 @@
               </ion-list>
 
               <div class="ion-padding-top">
-                <ion-button type="submit" expand="block" (click)="authenticate()"
+                <ion-button
+                  type="submit"
+                  expand="block"
+                  (click)="authenticate()"
                   >{{isLogin ? "Login" : "Sign Up"}}
                 </ion-button>
                 <!-- <ion-button type="button" expand="block" fill="clear" (click)="isLogin = !isLogin">Switch to {{isLogin ?

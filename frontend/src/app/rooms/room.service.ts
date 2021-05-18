@@ -61,8 +61,14 @@ export class RoomService {
           (room) =>
             room.usermobile.toLowerCase().includes(query.toLowerCase()) ||
             room.commessa.toLowerCase().includes(query.toLowerCase()) ||
-            room.progetto.toString().toLowerCase().includes(query.toLowerCase()) ||
-            room.collaudatore.toString().toLowerCase().includes(query.toLowerCase())
+            room.progetto
+              .toString()
+              .toLowerCase()
+              .includes(query.toLowerCase()) ||
+            room.collaudatore
+              .toString()
+              .toLowerCase()
+              .includes(query.toLowerCase())
         )
       )
     );
@@ -71,9 +77,15 @@ export class RoomService {
   /** SELECT singola room */
   selectRoom(roomId: string): Observable<Room> {
     return this.http
-      .get<RoomData>(`${environment.apiUrl}/s/room/${this.authService.userCod}/${roomId}`, {
-        headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`),
-      })
+      .get<RoomData>(
+        `${environment.apiUrl}/s/room/${this.authService.userCod}/${roomId}`,
+        {
+          headers: new HttpHeaders().set(
+            'Authorization',
+            `Bearer ${this.authService.token}`
+          ),
+        }
+      )
       .pipe(
         map((roomData) => {
           return {
@@ -95,9 +107,15 @@ export class RoomService {
   /** SELECT rooms */
   loadRooms(): Observable<Room[]> {
     return this.http
-      .get<{ [key: string]: RoomData }>(`${environment.apiUrl}/s/room/${this.authService.userCod}/0`, {
-        headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`),
-      })
+      .get<{ [key: string]: RoomData }>(
+        `${environment.apiUrl}/s/room/${this.authService.userCod}/0`,
+        {
+          headers: new HttpHeaders().set(
+            'Authorization',
+            `Bearer ${this.authService.token}`
+          ),
+        }
+      )
       .pipe(
         // <-- Rimappa i dati che arrivano dal server sull'interfaccia della Room
         map((roomData: { [key: string]: RoomData }) => {
@@ -166,7 +184,12 @@ export class RoomService {
             cod: pk_project,
             collaudatoreufficio: idutente,
           },
-          { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
+          {
+            headers: new HttpHeaders().set(
+              'Authorization',
+              `Bearer ${this.authService.token}`
+            ),
+          }
         );
       }),
       catchError((err) => {
@@ -212,7 +235,12 @@ export class RoomService {
             id: roomId,
             usermobile: newUsermobile,
           },
-          { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
+          {
+            headers: new HttpHeaders().set(
+              'Authorization',
+              `Bearer ${this.authService.token}`
+            ),
+          }
         );
       }),
       catchError((err) => {
@@ -239,7 +267,12 @@ export class RoomService {
             id: roomId,
             tableDelete: 'multistreaming',
           },
-          { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) }
+          {
+            headers: new HttpHeaders().set(
+              'Authorization',
+              `Bearer ${this.authService.token}`
+            ),
+          }
         );
       }),
       catchError((err) => {
@@ -252,9 +285,15 @@ export class RoomService {
   }
 
   checkDownload(nomeProgetto: string) {
-    return this.http.get(`${environment.apiUrl}/checkdownloadzip/${nomeProgetto}`, {
-      headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`),
-    });
+    return this.http.get(
+      `${environment.apiUrl}/checkdownloadzip/${nomeProgetto}`,
+      {
+        headers: new HttpHeaders().set(
+          'Authorization',
+          `Bearer ${this.authService.token}`
+        ),
+      }
+    );
   }
 
   downloadFoto(nomeProgetto: string) {
@@ -262,7 +301,10 @@ export class RoomService {
       // responseType: 'arraybuffer',
       // reportProgress: true,
       // observe: 'events',
-      headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`),
+      headers: new HttpHeaders().set(
+        'Authorization',
+        `Bearer ${this.authService.token}`
+      ),
     });
   }
 }

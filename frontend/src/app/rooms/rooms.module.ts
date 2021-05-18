@@ -12,7 +12,13 @@ import { CreateRoomModalComponent } from './rooms-tab/create-room-modal/create-r
 import { EditRoomModalComponent } from './rooms-tab/edit-room-modal/edit-room-modal.component';
 
 @NgModule({
-  imports: [SharedModule, CommonModule, IonicModule, ReactiveFormsModule, RoomsPageRoutingModule],
+  imports: [
+    SharedModule,
+    CommonModule,
+    IonicModule,
+    ReactiveFormsModule,
+    RoomsPageRoutingModule,
+  ],
   declarations: [
     RoomsPage,
     RoomsTabComponent,

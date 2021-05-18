@@ -1,7 +1,9 @@
 export class AuthUser {
   constructor(
-    // public id: string,
+    public id: string,
     public username: string,
+    public commessa: string,
+    public autorizzazione: string,
     private _token: string,
     private _tokenExpirationDate: Date
   ) {}

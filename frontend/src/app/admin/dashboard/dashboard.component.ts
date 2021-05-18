@@ -38,22 +38,27 @@ export class DashboardComponent implements OnInit {
     if (this.syncService.sync) {
       this.presentToast('Altra sincronizzazione in corso!', 'danger');
     } else {
-      this.syncService.requestSync(this.selectedUser.id.toString(), this.form.value.pk_proj.toString()).subscribe(
-        (res) => {
-          console.log('this.syncService.requestSync => res: ', res);
-          // STATUS_ERRORE_RICHIESTA --> res = false
-          // STATUS_COMPLETATA --> res = true
-        },
-        (err) => {
-          console.log('this.syncService.requestSync => err: ', err);
-        },
-        () => {
-          // STATUS_ERRORE_RICHIESTA --> complete
-          // STATUS_ERRORE_TIMEOUT --> complete
-          // STATUS_COMPLETATA --> complete
-          console.log('this.syncService.requestSync => complete');
-        }
-      );
+      this.syncService
+        .requestSync(
+          this.selectedUser.id.toString(),
+          this.form.value.pk_proj.toString()
+        )
+        .subscribe(
+          (res) => {
+            console.log('this.syncService.requestSync => res: ', res);
+            // STATUS_ERRORE_RICHIESTA --> res = false
+            // STATUS_COMPLETATA --> res = true
+          },
+          (err) => {
+            console.log('this.syncService.requestSync => err: ', err);
+          },
+          () => {
+            // STATUS_ERRORE_RICHIESTA --> complete
+            // STATUS_ERRORE_TIMEOUT --> complete
+            // STATUS_COMPLETATA --> complete
+            console.log('this.syncService.requestSync => complete');
+          }
+        );
     }
   }
 
@@ -63,21 +68,23 @@ export class DashboardComponent implements OnInit {
   ricercaComune(comune: string) {
     this.searching = true;
     this.errorMessage = '';
-    this.http.get(`https://www.gerriquez.com/comuni/ws.php?dencomune=${comune}`).subscribe((res) => {
-      this.searching = false;
-      console.log('this.searchCoord => res', res[0]);
-      if (res[0]) {
-        window.open(
-          'https://www.nperf.com/it/map/IT/-/230.TIM/signal/?ll=' +
-            res[0]['latitude'] +
-            '&lg=' +
-            res[0]['longitude'] +
-            '&zoom=13'
-        );
-      } else {
-        this.errorMessage = 'Comune non trovato';
-      }
-    });
+    this.http
+      .get(`https://www.gerriquez.com/comuni/ws.php?dencomune=${comune}`)
+      .subscribe((res) => {
+        this.searching = false;
+        console.log('this.searchCoord => res', res[0]);
+        if (res[0]) {
+          window.open(
+            'https://www.nperf.com/it/map/IT/-/230.TIM/signal/?ll=' +
+              res[0]['latitude'] +
+              '&lg=' +
+              res[0]['longitude'] +
+              '&zoom=13'
+          );
+        } else {
+          this.errorMessage = 'Comune non trovato';
+        }
+      });
   }
 
   ricercaCoordinate(coordinate: string) {
@@ -85,7 +92,11 @@ export class DashboardComponent implements OnInit {
     if (coordinate) {
       let coords = coordinate.replace(' ', '').split(',');
       window.open(
-        'https://www.nperf.com/it/map/IT/-/230.TIM/signal/?ll=' + coords[0] + '&lg=' + coords[1] + '&zoom=13'
+        'https://www.nperf.com/it/map/IT/-/230.TIM/signal/?ll=' +
+          coords[0] +
+          '&lg=' +
+          coords[1] +
+          '&zoom=13'
       );
     } else {
       this.errorMessage = 'Mancano le coordinate';
@@ -105,12 +116,14 @@ export class DashboardComponent implements OnInit {
           {
             text: 'Riavvia',
             handler: () => {
-              this.http.get(`${environment.apiUrl}/vidapp/`).subscribe((res) => {
-                const restarted: boolean = res['restartNMS'];
-                if (restarted) {
-                  this.presentToast('Server Streaming Riavviato');
-                }
-              });
+              this.http
+                .get(`${environment.apiUrl}/vidapp/`)
+                .subscribe((res) => {
+                  const restarted: boolean = res['restartNMS'];
+                  if (restarted) {
+                    this.presentToast('Server Streaming Riavviato');
+                  }
+                });
             },
           },
         ],

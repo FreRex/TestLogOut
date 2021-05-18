@@ -1,6 +1,11 @@
 import { Component, Injectable, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertController, IonItemSliding, ModalController, ToastController } from '@ionic/angular';
+import {
+  AlertController,
+  IonItemSliding,
+  ModalController,
+  ToastController,
+} from '@ionic/angular';
 import { AuthService } from 'src/app/auth/auth.service';
 import { EditRoomModalComponent } from './edit-room-modal/edit-room-modal.component';
 import { Room, RoomService } from '../room.service';
@@ -14,7 +19,8 @@ import { environment } from 'src/environments/environment';
 export class GenericRoomItemComponent implements OnInit {
   @Input() room: Room;
   isFavourite: boolean;
-  baseUrl = 'https://www.collaudolive.com:9777/glasses/FrontEnd/src/index.php?q=';
+  baseUrl =
+    'https://www.collaudolive.com:9777/glasses/FrontEnd/src/index.php?q=';
   linkProgetto: string;
 
   constructor(
@@ -49,7 +55,11 @@ export class GenericRoomItemComponent implements OnInit {
         if (res.role === 'ok') {
           this.presentToast(res.data['message'], 'secondary');
         } else if (res.role === 'error') {
-          this.presentToast(`Aggiornamento fallito.\n ${res.data['message']}`, 'danger', 5000);
+          this.presentToast(
+            `Aggiornamento fallito.\n ${res.data['message']}`,
+            'danger',
+            5000
+          );
         }
       });
   }
@@ -73,7 +83,11 @@ export class GenericRoomItemComponent implements OnInit {
         if (res.role === 'ok') {
           this.presentToast(res.data['message'], 'secondary');
         } else if (res.role === 'error') {
-          this.presentToast(`Aggiornamento fallito.\n${res.data['message']}`, 'danger', 5000);
+          this.presentToast(
+            `Aggiornamento fallito.\n${res.data['message']}`,
+            'danger',
+            5000
+          );
         }
       });
   }
@@ -85,7 +99,9 @@ export class GenericRoomItemComponent implements OnInit {
 
     this.authService.currentUser$.subscribe((currentUser) => {
       this.linkProgetto =
-        this.baseUrl + this.room.pk_project + (currentUser.autorizzazione === 'admin' ? '&useringresso=admin' : '');
+        this.baseUrl +
+        this.room.pk_project +
+        (currentUser.autorizzazione === 'admin' ? '&useringresso=admin' : '');
     });
 
     // window.open(this.linkProgetto);
@@ -104,7 +120,10 @@ export class GenericRoomItemComponent implements OnInit {
     if (room) this.room = room;
 
     document.addEventListener('copy', (e: ClipboardEvent) => {
-      e.clipboardData.setData('text/plain', this.baseUrl + this.room.pk_project);
+      e.clipboardData.setData(
+        'text/plain',
+        this.baseUrl + this.room.pk_project
+      );
       e.preventDefault();
       document.removeEventListener('copy', null);
     });
@@ -123,13 +142,19 @@ export class GenericRoomItemComponent implements OnInit {
         const link = document.createElement('a');
         //link.setAttribute('target', '_blank');
         //link.setAttribute('href', `https://www.collaudolive.com:9083/downloadzip/${nomeProgetto}`);
-        link.setAttribute('href', `${environment.apiUrl}/downloadzip/${nomeProgetto}`);
+        link.setAttribute(
+          'href',
+          `${environment.apiUrl}/downloadzip/${nomeProgetto}`
+        );
         link.setAttribute('download', `${nomeProgetto}.zip`);
         document.body.appendChild(link);
         link.click();
         link.remove();
       } else {
-        this.presentToast(`Non ci sono foto sul progetto ${nomeProgetto}!`, 'danger');
+        this.presentToast(
+          `Non ci sono foto sul progetto ${nomeProgetto}!`,
+          'danger'
+        );
       }
       //window.open(`https://www.collaudolive.com:9083/downloadzip/${nomeProgetto}`)
     });
@@ -183,7 +208,9 @@ export class GenericRoomItemComponent implements OnInit {
             handler: () =>
               this.roomService
                 .deleteRoom(this.room.id)
-                .subscribe((res) => this.presentToast('Room Eliminata', 'secondary')),
+                .subscribe((res) =>
+                  this.presentToast('Room Eliminata', 'secondary')
+                ),
           },
         ],
       })

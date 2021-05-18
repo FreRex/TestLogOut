@@ -26,26 +26,28 @@ export class AdminPage implements OnInit {
   ngOnInit() {
     // this.dataService.loadData();
 
-    this.loadingController.create({ keyboardClose: true, message: 'Loading...' }).then((loadingEl) => {
-      loadingEl.present();
-      this.authService
-        .fetchToken()
-        .pipe(
-          switchMap((token) =>
-            //console.log(this.authService.token);
-            forkJoin({
-              reqUsers: this.userService.loadUsers(),
-              reqCommissions: this.commissionService.loadCommissions(),
-              reqProjects: this.projectService.loadProjects(),
-              // requestRooms: this.roomService.loadRooms(),
-            })
+    this.loadingController
+      .create({ keyboardClose: true, message: 'Loading...' })
+      .then((loadingEl) => {
+        loadingEl.present();
+        this.authService
+          .fetchToken()
+          .pipe(
+            switchMap((token) =>
+              //console.log(this.authService.token);
+              forkJoin({
+                reqUsers: this.userService.loadUsers(),
+                reqCommissions: this.commissionService.loadCommissions(),
+                reqProjects: this.projectService.loadProjects(),
+                // requestRooms: this.roomService.loadRooms(),
+              })
+            )
           )
-        )
-        .subscribe(({ reqUsers, reqCommissions, reqProjects }) => {
-          // console.log(requestUsers);
-          // console.log(requestProjects);
-          loadingEl.dismiss();
-        });
-    });
+          .subscribe(({ reqUsers, reqCommissions, reqProjects }) => {
+            // console.log(requestUsers);
+            // console.log(requestProjects);
+            loadingEl.dismiss();
+          });
+      });
   }
 }

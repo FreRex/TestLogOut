@@ -29,23 +29,27 @@ export class AppComponent implements OnInit {
     // this.authService.token = sessionStorage.getItem('token');
     // this.authService.token = localStorage.getItem('token');
 
-    this.loadingController.create({ keyboardClose: true, message: 'Loading...' }).then((loadingEl) => {
-      loadingEl.present();
-      this.authService
-        .fetchToken()
-        .pipe(
-          switchMap((token) =>
-            //console.log(this.authService.token);
-            forkJoin({
-              requestUsers: this.userService.loadUsers(),
-              requestProjects: this.projectService.loadProjects(),
-              // requestRooms: this.roomService.loadRooms(),
-            })
+    this.loadingController
+      .create({ keyboardClose: true, message: 'Loading...' })
+      .then((loadingEl) => {
+        loadingEl.present();
+        this.authService
+          .fetchToken()
+          .pipe(
+            switchMap((token) =>
+              //console.log(this.authService.token);
+              forkJoin({
+                requestUsers: this.userService.loadUsers(),
+                requestProjects: this.projectService.loadProjects(),
+                // requestRooms: this.roomService.loadRooms(),
+              })
+            )
           )
-        )
-        .subscribe(({ requestUsers, requestProjects /* , requestRooms  */ }) => {
-          loadingEl.dismiss();
-        });
-    });
+          .subscribe(
+            ({ requestUsers, requestProjects /* , requestRooms  */ }) => {
+              loadingEl.dismiss();
+            }
+          );
+      });
   }
 }

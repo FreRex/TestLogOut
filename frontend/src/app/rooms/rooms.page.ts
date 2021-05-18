@@ -29,47 +29,49 @@ export class RoomsPage implements OnInit {
 
   ngOnInit() {
     let users: User[];
-    this.loadingController.create({ keyboardClose: true, message: 'Loading...' }).then((loadingEl) => {
-      loadingEl.present();
-      this.authService
-        .fetchToken()
-        .pipe(
-          switchMap((token) =>
-            forkJoin({
-              reqUsers: this.userService.loadUsers(),
-              reqCommissions: this.commissionService.loadCommissions(),
-              reqProjects: this.projectService.loadProjects(),
+    this.loadingController
+      .create({ keyboardClose: true, message: 'Loading...' })
+      .then((loadingEl) => {
+        loadingEl.present();
+        this.authService
+          .fetchToken()
+          .pipe(
+            switchMap((token) =>
+              forkJoin({
+                reqUsers: this.userService.loadUsers(),
+                reqCommissions: this.commissionService.loadCommissions(),
+                reqProjects: this.projectService.loadProjects(),
+              })
+            ),
+            switchMap(({ reqUsers, reqCommissions, reqProjects }) => {
+              users = reqUsers;
+              return this.route.queryParams;
+            }),
+            switchMap((params) => {
+              let codiceUtente;
+              if (params && params['user']) {
+                // se arrivi dal login hai un codice
+                // quindi entra con il tuo codice (user - admin)
+                codiceUtente = params['user'];
+              } else {
+                // se non sei passato dal login e non c'è il codice
+                // entra come utente 2 - Ospiti (user)
+                codiceUtente = 'tCBK24ur9O';
+              }
+              console.log('codiceUtente: ', codiceUtente);
+              const user = users.find((user) => user.idutcas === codiceUtente);
+              this.authService.onLogin(user);
+              return this.roomService.loadRooms();
             })
-          ),
-          switchMap(({ reqUsers, reqCommissions, reqProjects }) => {
-            users = reqUsers;
-            return this.route.queryParams;
-          }),
-          switchMap((params) => {
-            let codiceUtente;
-            if (params && params['user']) {
-              // se arrivi dal login hai un codice
-              // quindi entra con il tuo codice (user - admin)
-              codiceUtente = params['user'];
-            } else {
-              // se non sei passato dal login e non c'è il codice
-              // entra come utente 2 - Ospiti (user)
-              codiceUtente = 'tCBK24ur9O';
+          )
+          .subscribe(
+            (rooms) => {
+              loadingEl.dismiss();
+            },
+            (error) => {
+              console.log(error);
             }
-            console.log('codiceUtente: ', codiceUtente);
-            const user = users.find((user) => user.idutcas === codiceUtente);
-            this.authService.onLogin(user);
-            return this.roomService.loadRooms();
-          })
-        )
-        .subscribe(
-          (rooms) => {
-            loadingEl.dismiss();
-          },
-          (error) => {
-            console.log(error);
-          }
-        );
-    });
+          );
+      });
   }
 }

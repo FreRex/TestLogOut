@@ -8,20 +8,30 @@
       </ion-text>
       <ion-text color="medium">
         <p>
-          <ion-icon name="ellipse-sharp" [color]="proj['sync'] === 'auto' ? 'success' : 'warning'"></ion-icon>
-          - {{ proj['datasincro'] | date: 'dd/MM/yy' }} - {{ proj['collaudatoreufficio'] }}
+          <ion-icon
+            name="ellipse-sharp"
+            [color]="proj['sync'] === 'auto' ? 'success' : 'warning'"
+          ></ion-icon>
+          - {{ proj['datasincro'] | date: 'dd/MM/yy' }} -
+          {{ proj['collaudatoreufficio'] }}
         </p>
       </ion-text>
     </ion-label>
   </ion-item>
   <ion-item-options side="start">
-    <ion-item-option color="primary" (click)="syncProjectUpdate(proj, slidingItem)">
+    <ion-item-option
+      color="primary"
+      (click)="syncProjectUpdate(proj, slidingItem)"
+    >
       <ion-icon name="refresh-outline" slot="icon-only"></ion-icon>
     </ion-item-option>
     <ion-item-option color="primary" (click)="editProject(proj, slidingItem)">
       <ion-icon name="create-outline" slot="icon-only"></ion-icon>
     </ion-item-option>
-    <ion-item-option color="secondary" (click)="createLinkNPerf(proj, slidingItem)">
+    <ion-item-option
+      color="secondary"
+      (click)="createLinkNPerf(proj, slidingItem)"
+    >
       <ion-icon name="globe-outline" slot="icon-only"></ion-icon>
     </ion-item-option>
     <ion-item-option color="danger" (click)="deleteProject(proj, slidingItem)">

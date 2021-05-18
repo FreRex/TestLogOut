@@ -19,20 +19,25 @@ export class RoomValidator {
         switchMap(() => {
           // Check if username is available
           // return this.http.get<any>(`${URL}/users?username=${text}`)
-          return this.http.post(`${environment.apiUrl}/checkum/`, { usermobile: value.toLowerCase() });
+          return this.http.post(`${environment.apiUrl}/checkum/`, {
+            usermobile: value.toLowerCase(),
+          });
         })
       );
   }
 
   usermobileValidator(oldValue?: string): AsyncValidatorFn {
-    return (control: AbstractControl): Observable<{ [key: string]: any } | null> => {
+    return (
+      control: AbstractControl
+    ): Observable<{ [key: string]: any } | null> => {
       return this.searchUsermobile(control.value).pipe(
         map((res) => {
           // res = true --> taken
           // res = false --> not taken
           if (oldValue) {
             // return a custom error if username is taken and is different from the previous value
-            return res == true && control.value.toLowerCase() !== oldValue.toLowerCase()
+            return res == true &&
+              control.value.toLowerCase() !== oldValue.toLowerCase()
               ? { usermobileExist: true }
               : null;
           } else {

@@ -49,12 +49,14 @@ export class MenuComponent implements OnInit {
           {
             text: 'Riavvia',
             handler: () => {
-              this.http.get(`${environment.apiUrl}/vidapp/`).subscribe((res) => {
-                const restarted: boolean = res['restartNMS'];
-                if (restarted) {
-                  this.presentToast('Server Streaming Riavviato');
-                }
-              });
+              this.http
+                .get(`${environment.apiUrl}/vidapp/`)
+                .subscribe((res) => {
+                  const restarted: boolean = res['restartNMS'];
+                  if (restarted) {
+                    this.presentToast('Server Streaming Riavviato');
+                  }
+                });
             },
           },
         ],

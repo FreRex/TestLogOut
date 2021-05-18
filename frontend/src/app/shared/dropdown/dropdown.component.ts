@@ -1,4 +1,12 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import {
   AbstractControl,
   ControlValueAccessor,
@@ -11,7 +19,13 @@ import {
 } from '@angular/forms';
 import { IonInput } from '@ionic/angular';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
-import { debounceTime, distinctUntilChanged, map, startWith, switchMap } from 'rxjs/operators';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  map,
+  startWith,
+  switchMap,
+} from 'rxjs/operators';
 
 @Component({
   selector: 'dropdown-item',
@@ -30,7 +44,9 @@ import { debounceTime, distinctUntilChanged, map, startWith, switchMap } from 'r
     },
   ],
 })
-export class DropdownComponent implements OnInit, ControlValueAccessor, OnDestroy, Validator {
+export class DropdownComponent
+  implements OnInit, ControlValueAccessor, OnDestroy, Validator
+{
   isListOpen: boolean;
   @Input() title: string;
   @Input() key: string;
@@ -62,7 +78,11 @@ export class DropdownComponent implements OnInit, ControlValueAccessor, OnDestro
       startWith(''),
       switchMap((search) =>
         this.inputObs$.pipe(
-          map((obs) => obs.filter((item) => item[this.key].toLowerCase().includes(search.toLowerCase())))
+          map((obs) =>
+            obs.filter((item) =>
+              item[this.key].toLowerCase().includes(search.toLowerCase())
+            )
+          )
         )
       )
     );

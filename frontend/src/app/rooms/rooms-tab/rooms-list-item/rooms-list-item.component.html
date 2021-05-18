@@ -7,7 +7,10 @@
         </h2>
       </ion-text>
       <ion-text color="medium">
-        <p>{{ room['data_inserimento'] | date: 'dd/MM/yy' }} - {{ room['collaudatore'] }} - {{ room['usermobile'] }}</p>
+        <p>
+          {{ room['data_inserimento'] | date: 'dd/MM/yy' }} -
+          {{ room['collaudatore'] }} - {{ room['usermobile'] }}
+        </p>
       </ion-text>
     </ion-label>
   </ion-item>

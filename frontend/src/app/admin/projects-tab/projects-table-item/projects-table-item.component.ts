@@ -1,6 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertController, LoadingController, ModalController, ToastController } from '@ionic/angular';
+import {
+  AlertController,
+  LoadingController,
+  ModalController,
+  ToastController,
+} from '@ionic/angular';
 import { AuthService } from 'src/app/auth/auth.service';
 import { ProjectService } from 'src/app/admin/projects-tab/project.service';
 import { GenericProjectItemComponent } from 'src/app/admin/projects-tab/generic-project-item.component';

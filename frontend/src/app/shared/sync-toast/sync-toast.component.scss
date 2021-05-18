@@ -73,7 +73,8 @@
 .time-bar div {
   height: 5px;
   background: linear-gradient(to bottom, red, #900);
-  animation: roundtime calc(var(--duration) * 1s) steps(var(--duration)) forwards;
+  animation: roundtime calc(var(--duration) * 1s) steps(var(--duration))
+    forwards;
   transform-origin: left center;
 }
 

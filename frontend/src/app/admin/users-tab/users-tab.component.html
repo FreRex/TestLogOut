@@ -1,6 +1,9 @@
 <!-- Searchbar -->
 <div class="searchbarAdd">
-  <ion-searchbar class="search-bar" (ionInput)="searchStream$.next($event.target.value)"></ion-searchbar>
+  <ion-searchbar
+    class="search-bar"
+    (ionInput)="searchStream$.next($event.target.value)"
+  ></ion-searchbar>
   <!-- Create User Button -->
   <ion-button color="secondary" (click)="createUser()">
     <ion-icon name="add" slot="icon-only"></ion-icon>
@@ -14,10 +17,17 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
   <!-- Users Table -->
-  <app-generic-table [inputDatas$]="users$" [columns]="columns" [desktopItem]="desktopItem">
+  <app-generic-table
+    [inputDatas$]="users$"
+    [columns]="columns"
+    [desktopItem]="desktopItem"
+  >
     <ng-template #desktopItem let-data="data">
       <!-- Users Table Item -->
-      <app-users-table-item [user]="data" [columns]="columns"></app-users-table-item>
+      <app-users-table-item
+        [user]="data"
+        [columns]="columns"
+      ></app-users-table-item>
     </ng-template>
   </app-generic-table>
 </ion-content>

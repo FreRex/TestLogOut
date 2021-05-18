@@ -2,7 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { FormGroup, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
-import { Project, ProjectService } from 'src/app/admin/projects-tab/project.service';
+import {
+  Project,
+  ProjectService,
+} from 'src/app/admin/projects-tab/project.service';
 import { RoomValidator } from 'src/app/rooms/room.validator.service';
 import { RoomService } from '../../room.service';
 

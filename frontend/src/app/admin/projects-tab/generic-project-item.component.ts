@@ -1,8 +1,17 @@
 import { Component, Injectable, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertController, IonItemSliding, LoadingController, ModalController, ToastController } from '@ionic/angular';
+import {
+  AlertController,
+  IonItemSliding,
+  LoadingController,
+  ModalController,
+  ToastController,
+} from '@ionic/angular';
 import { AuthService } from 'src/app/auth/auth.service';
-import { Project, ProjectService } from 'src/app/admin/projects-tab/project.service';
+import {
+  Project,
+  ProjectService,
+} from 'src/app/admin/projects-tab/project.service';
 import { EditProjectModalComponent } from './edit-project-modal/edit-project-modal.component';
 import { CreateProjectModalComponent } from './create-project-modal/create-project-modal.component';
 import { forkJoin } from 'rxjs';
@@ -50,22 +59,27 @@ export class GenericProjectItemComponent implements OnInit {
     if (this.syncService.sync) {
       this.presentToast('Altra sincronizzazione in corso!', 'danger');
     } else {
-      this.syncService.requestSync(this.proj.idutente.toString(), this.proj.pk_proj.toString()).subscribe(
-        (res) => {
-          console.log('this.syncService.requestSync => res: ', res);
-          // STATUS_ERRORE_RICHIESTA --> res = false
-          // STATUS_COMPLETATA --> res = true
-        },
-        (err) => {
-          console.log('this.syncService.requestSync => err: ', err);
-        },
-        () => {
-          // STATUS_ERRORE_TIMEOUT --> complete
-          // STATUS_ERRORE_RICHIESTA --> complete
-          // STATUS_COMPLETATA --> complete
-          console.log('this.syncService.requestSync => complete');
-        }
-      );
+      this.syncService
+        .requestSync(
+          this.proj.idutente.toString(),
+          this.proj.pk_proj.toString()
+        )
+        .subscribe(
+          (res) => {
+            console.log('this.syncService.requestSync => res: ', res);
+            // STATUS_ERRORE_RICHIESTA --> res = false
+            // STATUS_COMPLETATA --> res = true
+          },
+          (err) => {
+            console.log('this.syncService.requestSync => err: ', err);
+          },
+          () => {
+            // STATUS_ERRORE_TIMEOUT --> complete
+            // STATUS_ERRORE_RICHIESTA --> complete
+            // STATUS_COMPLETATA --> complete
+            console.log('this.syncService.requestSync => complete');
+          }
+        );
     }
   }
 
@@ -82,7 +96,11 @@ export class GenericProjectItemComponent implements OnInit {
         if (res.role === 'ok') {
           this.presentToast(res.data['message'], 'secondary');
         } else if (res.role === 'error') {
-          this.presentToast(`Aggiornamento fallito.\n ${res.data['message']}`, 'danger', 5000);
+          this.presentToast(
+            `Aggiornamento fallito.\n ${res.data['message']}`,
+            'danger',
+            5000
+          );
         }
       });
   }
@@ -125,7 +143,11 @@ export class GenericProjectItemComponent implements OnInit {
         if (res.role === 'ok') {
           this.presentToast(res.data['message'], 'secondary');
         } else if (res.role === 'error') {
-          this.presentToast(`Aggiornamento fallito.\n ${res.data['message']}`, 'danger', 5000);
+          this.presentToast(
+            `Aggiornamento fallito.\n ${res.data['message']}`,
+            'danger',
+            5000
+          );
         }
       });
   }
@@ -149,7 +171,9 @@ export class GenericProjectItemComponent implements OnInit {
             handler: () =>
               this.projectService
                 .deleteProject(this.proj.idprogetto)
-                .subscribe((res) => this.presentToast('Progetto Eliminato', 'secondary')),
+                .subscribe((res) =>
+                  this.presentToast('Progetto Eliminato', 'secondary')
+                ),
           },
         ],
       })

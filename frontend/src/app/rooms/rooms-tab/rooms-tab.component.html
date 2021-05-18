@@ -1,6 +1,9 @@
 <!-- Searchbar  -->
 <div class="searchbarAdd">
-  <ion-searchbar class="search-bar" (ionInput)="searchStream$.next($event.target.value)"></ion-searchbar>
+  <ion-searchbar
+    class="search-bar"
+    (ionInput)="searchStream$.next($event.target.value)"
+  ></ion-searchbar>
   <!-- Create Room Button -->
   <ion-button *userIsAdmin color="secondary" (click)="createRoom()">
     <ion-icon name="add" slot="icon-only"></ion-icon>
@@ -14,10 +17,17 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
   <!-- Rooms Table -->
-  <app-generic-table [inputDatas$]="rooms$" [columns]="columns" [desktopItem]="desktopItem">
+  <app-generic-table
+    [inputDatas$]="rooms$"
+    [columns]="columns"
+    [desktopItem]="desktopItem"
+  >
     <ng-template #desktopItem let-data="data">
       <!-- Rooms Table Item -->
-      <app-rooms-table-item [room]="data" [columns]="columns"></app-rooms-table-item>
+      <app-rooms-table-item
+        [room]="data"
+        [columns]="columns"
+      ></app-rooms-table-item>
     </ng-template>
   </app-generic-table>
 </div>

@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertController, ModalController, ToastController } from '@ionic/angular';
+import {
+  AlertController,
+  ModalController,
+  ToastController,
+} from '@ionic/angular';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { distinctUntilChanged, startWith, switchMap } from 'rxjs/operators';
 import { AuthService } from 'src/app/auth/auth.service';
@@ -13,7 +17,10 @@ import { User, UserService } from 'src/app/admin/users-tab/user.service';
   templateUrl: './users-tab.component.html',
   styleUrls: ['./users-tab.component.scss'],
 })
-export class UsersTabComponent extends GenericUserItemComponent implements OnInit {
+export class UsersTabComponent
+  extends GenericUserItemComponent
+  implements OnInit
+{
   searchStream$ = new BehaviorSubject('');
   users$: Observable<User[]>;
 
@@ -26,7 +33,13 @@ export class UsersTabComponent extends GenericUserItemComponent implements OnIni
   ngOnInit() {
     this.columns = [
       { title: 'ID', key: 'id', type: 'number', size: 1, orderEnabled: true },
-      { title: 'Data', key: 'DataCreazione', type: 'date', size: 1, orderEnabled: true },
+      {
+        title: 'Data',
+        key: 'DataCreazione',
+        type: 'date',
+        size: 1,
+        orderEnabled: true,
+      },
       {
         title: 'Ruolo',
         key: 'autorizzazione',
@@ -34,10 +47,34 @@ export class UsersTabComponent extends GenericUserItemComponent implements OnIni
         size: 1,
         orderEnabled: true /* , customTemplate: this.role */,
       },
-      { title: 'Collaudatore', key: 'collaudatoreufficio', type: 'string', size: 2, orderEnabled: true },
-      { title: 'User', key: 'username', type: 'string', size: 2, orderEnabled: true },
-      { title: 'Password', key: 'password', type: 'string', size: 2, orderEnabled: true },
-      { title: 'Commessa', key: 'commessa', type: 'string', size: 2, orderEnabled: true },
+      {
+        title: 'Collaudatore',
+        key: 'collaudatoreufficio',
+        type: 'string',
+        size: 2,
+        orderEnabled: true,
+      },
+      {
+        title: 'User',
+        key: 'username',
+        type: 'string',
+        size: 2,
+        orderEnabled: true,
+      },
+      {
+        title: 'Password',
+        key: 'password',
+        type: 'string',
+        size: 2,
+        orderEnabled: true,
+      },
+      {
+        title: 'Commessa',
+        key: 'commessa',
+        type: 'string',
+        size: 2,
+        orderEnabled: true,
+      },
       {
         title: 'Azioni',
         key: '',
@@ -65,6 +102,13 @@ export class UsersTabComponent extends GenericUserItemComponent implements OnIni
     public modalController: ModalController,
     public toastController: ToastController
   ) {
-    super(router, userService, authService, alertController, modalController, toastController);
+    super(
+      router,
+      userService,
+      authService,
+      alertController,
+      modalController,
+      toastController
+    );
   }
 }

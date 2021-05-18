@@ -1,5 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { ModalController, ToastController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { User, UserService } from '../../users-tab/user.service';
@@ -49,8 +54,12 @@ export class EditProjectModalComponent implements OnInit {
         coords[1].slice(0, 14),
         coords[0].slice(0, 14),
         this.selectedUser ? this.selectedUser.id : this.project.idutente,
-        this.selectedUser ? this.selectedUser.collaudatoreufficio : this.project.collaudatoreufficio,
-        this.selectedUser ? this.selectedUser.idcommessa : this.project.idcommessa,
+        this.selectedUser
+          ? this.selectedUser.collaudatoreufficio
+          : this.project.collaudatoreufficio,
+        this.selectedUser
+          ? this.selectedUser.idcommessa
+          : this.project.idcommessa,
         this.selectedUser ? this.selectedUser.commessa : this.project.commessa
       )
       .subscribe(
@@ -59,7 +68,10 @@ export class EditProjectModalComponent implements OnInit {
           // non ci sono errori
           if (res['affectedRows'] === 1) {
             this.form.reset();
-            this.modalController.dismiss({ message: 'Progetto Aggiornato' }, 'ok');
+            this.modalController.dismiss(
+              { message: 'Progetto Aggiornato' },
+              'ok'
+            );
           }
           // possibili errori
           else {

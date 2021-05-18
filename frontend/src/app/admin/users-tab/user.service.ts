@@ -52,9 +52,17 @@ export class UserService {
       map((users) =>
         users.filter(
           (user) =>
-            user.collaudatoreufficio.toLowerCase().includes(query.toLowerCase()) ||
-            user.commessa.toString().toLowerCase().includes(query.toLowerCase()) ||
-            user.username.toString().toLowerCase().includes(query.toLowerCase()) ||
+            user.collaudatoreufficio
+              .toLowerCase()
+              .includes(query.toLowerCase()) ||
+            user.commessa
+              .toString()
+              .toLowerCase()
+              .includes(query.toLowerCase()) ||
+            user.username
+              .toString()
+              .toLowerCase()
+              .includes(query.toLowerCase()) ||
             user.id.toString().toLowerCase().includes(query.toLowerCase())
         )
       )
@@ -95,7 +103,9 @@ export class UserService {
               username: data[key].username,
               password: data[key].password,
               idautorizzazione: data[key].autorizzazioni,
-              autorizzazione: this.getAutorizzazioneById(+data[key].autorizzazioni),
+              autorizzazione: this.getAutorizzazioneById(
+                +data[key].autorizzazioni
+              ),
               idcommessa: data[key].idcommessa,
               commessa: data[key].commessa,
             });

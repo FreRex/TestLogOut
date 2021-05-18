@@ -1,6 +1,10 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertController, ModalController, ToastController } from '@ionic/angular';
+import {
+  AlertController,
+  ModalController,
+  ToastController,
+} from '@ionic/angular';
 import { AuthService } from 'src/app/auth/auth.service';
 import { CommissionService } from '../commission.service';
 import { GenericCommissionItemComponent } from '../generic-commission-item.component';
@@ -18,6 +22,13 @@ export class CommissionListItemComponent extends GenericCommissionItemComponent 
     public modalController: ModalController,
     public toastController: ToastController
   ) {
-    super(router, commissionService, authService, alertController, modalController, toastController);
+    super(
+      router,
+      commissionService,
+      authService,
+      alertController,
+      modalController,
+      toastController
+    );
   }
 }

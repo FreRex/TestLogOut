@@ -1,13 +1,15 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { environment } from 'src/environments/environment';
-import { catchError, map, shareReplay, tap } from 'rxjs/operators';
-import { BehaviorSubject, Observable, throwError } from 'rxjs';
-import { User, UserService } from '../admin/users-tab/user.service';
-import { AuthUser } from './auth-user.model';
 import { JwtHelperService } from '@auth0/angular-jwt';
+import { Plugins } from '@capacitor/core';
+import { BehaviorSubject, from, throwError } from 'rxjs';
+import { catchError, map, shareReplay, take, tap } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
 
-interface TokenData {
+import { User } from '../admin/users-tab/user.service';
+import { AuthUser } from './auth-user.model';
+
+interface TokenPayload {
   exp: number;
   iat: number;
   password: string;
@@ -33,14 +35,16 @@ export class AuthService {
   }
 
   fetchToken() {
-    return this.http.post<{ [key: string]: string }>(`${environment.apiUrl}/token/`, {}).pipe(
-      catchError((err) => {
-        return throwError(err);
-      }),
-      tap((res) => {
-        this._token = res['token'];
-      })
-    );
+    return this.http
+      .post<{ [key: string]: string }>(`${environment.apiUrl}/token/`, {})
+      .pipe(
+        catchError((err) => {
+          return throwError(err);
+        }),
+        tap((res) => {
+          this._token = res['token'];
+        })
+      );
   }
 
   /** currentUser DEVE essere un Osservabile perché altrimenti
@@ -64,15 +68,14 @@ export class AuthService {
     }
   }
 
-  private _user: BehaviorSubject<AuthUser> = new BehaviorSubject<AuthUser>(null);
+  private _user = new BehaviorSubject<AuthUser>(null);
 
   get userIsAuthenticated() {
     return this._user.asObservable().pipe(
       map((user) => {
         if (user) {
-          // !! forza una conversione a Boolean del token
           // ritorna vero se esiste, falso se non esiste
-          return !!user.token;
+          return !!user.token; // --> !! forza una conversione a Boolean del token
         } else {
           return false;
         }
@@ -80,11 +83,12 @@ export class AuthService {
     );
   }
 
-  get userName() {
+  get authUser() {
     return this._user.asObservable().pipe(
+      take(1),
       map((user) => {
         if (user) {
-          return user.username;
+          return user;
         } else {
           return null;
         }
@@ -104,6 +108,42 @@ export class AuthService {
   //   );
   // }
 
+  autoLogin() {
+    return from(Plugins.Storage.get({ key: 'authData' })).pipe(
+      map((storedData) => {
+        if (!storedData || !storedData.value) {
+          return null;
+        }
+        const parsedData = JSON.parse(storedData.value) as {
+          username: string;
+          token: string;
+          tokenExpirationDate: string;
+        };
+        const expirationTime = new Date(parsedData.tokenExpirationDate);
+        if (expirationTime <= new Date()) {
+          return null;
+        }
+        const user = new AuthUser(
+          '1',
+          parsedData.username,
+          'commessa',
+          '2',
+          parsedData.token,
+          expirationTime
+        );
+        return user;
+      }),
+      tap((user) => {
+        if (user) {
+          this._user.next(user);
+        }
+      }),
+      map((user) => {
+        return !!user;
+      })
+    );
+  }
+
   login(username: string, password: string) {
     return this.http
       .post(`${environment.apiUrl}/lgn/`, {
@@ -118,23 +158,7 @@ export class AuthService {
           if (!token) {
             throw new Error('Credenziali errate');
           }
-          console.log(token);
-          const decodedToken = this.helper.decodeToken(token['token']);
-          const expirationDate = this.helper.getTokenExpirationDate(token['token']);
-          // const expirationTime = new Date(new Date().getTime() + (+decodedToken.exp / 1000));
-
-          console.log('decodedToken', decodedToken);
-          console.log('expirationDate', expirationDate);
-          // console.log('expirationTime', expirationTime);
-
-          this._user.next(
-            new AuthUser(
-              // userData.id,
-              decodedToken.username,
-              token,
-              expirationDate
-            )
-          );
+          this.setUserData(token);
         }),
         // https://accademia.dev/takeuntil-attenzione-a-sharereplay/
         shareReplay({ refCount: true, bufferSize: 1 })
@@ -154,20 +178,56 @@ export class AuthService {
       .pipe(
         catchError((err) => {
           return throwError(err);
-        })
-        // tap(userData => this.setUserData(userData))
-        // tap(this.setUserData.bind(this))
+        }),
+        tap((token: string) => {
+          if (!token) {
+            throw new Error('Credenziali errate');
+          }
+          this.setUserData(token);
+        }),
+        // https://accademia.dev/takeuntil-attenzione-a-sharereplay/
+        shareReplay({ refCount: true, bufferSize: 1 })
       );
   }
 
-  // setUserData(userData) {
-  //   const expirationTime = new Date(new Date().getTime() + (+userData.expiresIn * 1000));
-  //   this._user.next(
-  //     new AuthUser(
-  //       // userData.id,
-  //       userData.username,
-  //       userData.token,
-  //       expirationTime)
-  //   );
-  // }
+  setUserData(token) {
+    console.log(token);
+    const payload: TokenPayload = this.helper.decodeToken(token['token']);
+    const expDate: Date = this.helper.getTokenExpirationDate(token['token']);
+    // const expirationTime = new Date(new Date().getTime() + (+decodedToken.exp / 1000));
+    console.log('decodedToken', payload);
+    console.log('expirationDate', expDate);
+    // console.log('expirationTime', expirationTime);
+    this._user.next(
+      new AuthUser('1', payload.username, 'commessa', '2', token, expDate)
+    );
+    this.storeAuthDate(
+      '1',
+      payload.username,
+      'commessa',
+      '2',
+      token,
+      expDate.toISOString()
+    );
+  }
+
+  private storeAuthDate(
+    userId: string,
+    username: string,
+    commessa: string,
+    autorizzazione: string,
+    token: string,
+    tokenExpirationDate: string
+  ) {
+    const data = JSON.stringify({
+      userId: userId,
+      username: username,
+      commessa: commessa,
+      autorizzazione: autorizzazione,
+      token: token,
+      tokenExpirationDate: tokenExpirationDate,
+    });
+    console.log('data', data);
+    Plugins.Storage.set({ key: 'authData', value: data });
+  }
 }
