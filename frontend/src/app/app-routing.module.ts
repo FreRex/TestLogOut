@@ -29,8 +29,10 @@ const routes: Routes = [
       import('./admin/admin.module').then((m) => m.AdminPageModule),
     canLoad: [AuthGuard],
   },
-];
-
+{
+    path: 'gallery',
+    loadChildren: () => import('./gallery/gallery.module').then( m => m.GalleryPageModule)
+  },
 @NgModule({
   imports: [
     RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules }),
