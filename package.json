@@ -33,7 +33,8 @@
   },
   "scripts": {
     "prepare": "husky install",
-    "p:quick": "pretty-quick",
+    "p:changed": "pretty-quick",
+    "p:staged": "pretty-quick --staged",
     "p:check": "prettier --config .prettierrc --check \"frontend/src/{app,environments}/**/*{.ts,.js,.json,.html,.css,.scss,.md}\"",
     "p:format": "prettier --config .prettierrc --write \"frontend/src/{app,environments}/**/*{.ts,.js,.json,.html,.css,.scss,.md}\"",
     "dback": "tsc --build && NODE_ENV=development node ./build/server.js",
