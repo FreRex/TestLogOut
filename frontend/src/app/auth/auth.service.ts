@@ -11,44 +11,51 @@ interface TokenData {
   exp: number;
   iat: number;
   password: string;
-  username: string
+  username: string;
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
-
   helper;
 
-  constructor(
-    private http: HttpClient,
-  ) {
+  constructor(private http: HttpClient) {
     this.helper = new JwtHelperService();
   }
 
   private _token: string = '';
-  get token() { return this._token; }
-  set token(token: string) { this._token = token; }
-
-  fetchToken() {
-    return this.http
-      .post<{ [key: string]: string }>(`${environment.apiUrl}/token/`, {})
-      .pipe(
-        catchError(err => { return throwError(err); }),
-        tap(res => { this._token = res['token']; })
-      );
+  get token() {
+    return this._token;
+  }
+  set token(token: string) {
+    this._token = token;
   }
 
-  /** currentUser DEVE essere un Osservabile perchè altrimenti 
-   * la direttiva *userIsAdmin non funziona correttamente e 
+  fetchToken() {
+    return this.http.post<{ [key: string]: string }>(`${environment.apiUrl}/token/`, {}).pipe(
+      catchError((err) => {
+        return throwError(err);
+      }),
+      tap((res) => {
+        this._token = res['token'];
+      })
+    );
+  }
+
+  /** currentUser DEVE essere un Osservabile perché altrimenti
+   * la direttiva *userIsAdmin non funziona correttamente e
    * il template non viene aggiornato in tempo in base al ruolo*/
   currentUser: BehaviorSubject<User> = new BehaviorSubject(null);
   currentUser$ = this.currentUser.asObservable();
 
   _userCod: string = '';
-  get userCod() { return this._userCod; };
-  set userCod(userId: string) { this._userCod = userId; };
+  get userCod() {
+    return this._userCod;
+  }
+  set userCod(userId: string) {
+    this._userCod = userId;
+  }
 
   onLogin(user: User) {
     if (this.userCod === '') {
@@ -61,10 +68,10 @@ export class AuthService {
 
   get userIsAuthenticated() {
     return this._user.asObservable().pipe(
-      map(user => {
+      map((user) => {
         if (user) {
-          // !! forza una conversione a Boolean del token 
-          // ritorn vero se esiste, falso se non esiste
+          // !! forza una conversione a Boolean del token
+          // ritorna vero se esiste, falso se non esiste
           return !!user.token;
         } else {
           return false;
@@ -75,7 +82,7 @@ export class AuthService {
 
   get userName() {
     return this._user.asObservable().pipe(
-      map(user => {
+      map((user) => {
         if (user) {
           return user.username;
         } else {
@@ -85,33 +92,53 @@ export class AuthService {
     );
   }
 
+  // get userId() {
+  //   return this._user.asObservable().pipe(
+  //     map(user => {
+  //       if (user) {
+  //         return user.id;
+  //       } else {
+  //         return null;
+  //       }
+  //     })
+  //   );
+  // }
+
   login(username: string, password: string) {
-    return this.http.post(`${environment.apiUrl}/lgn/`, {
-      "usr": username,
-      "pwd": password,
-    }).pipe(
-      catchError(err => { return throwError(err); }),
-      tap((token: string) => {
-        console.log(token);
-        const decodedToken = this.helper.decodeToken(token['token']);
-        const expirationDate = this.helper.getTokenExpirationDate(token['token']);
-        // const expirationTime = new Date(new Date().getTime() + (+decodedToken.exp / 1000));
+    return this.http
+      .post(`${environment.apiUrl}/lgn/`, {
+        usr: username,
+        pwd: password,
+      })
+      .pipe(
+        catchError((err) => {
+          return throwError(err);
+        }),
+        tap((token: string) => {
+          if (!token) {
+            throw new Error('Credenziali errate');
+          }
+          console.log(token);
+          const decodedToken = this.helper.decodeToken(token['token']);
+          const expirationDate = this.helper.getTokenExpirationDate(token['token']);
+          // const expirationTime = new Date(new Date().getTime() + (+decodedToken.exp / 1000));
 
-        console.log('decodedToken', decodedToken);
-        console.log('expirationDate', expirationDate);
-        // console.log('expirationTime', expirationTime);
+          console.log('decodedToken', decodedToken);
+          console.log('expirationDate', expirationDate);
+          // console.log('expirationTime', expirationTime);
 
-        this._user.next(
-          new AuthUser(
-            // userData.id,
-            decodedToken.username,
-            token,
-            expirationDate)
-        );
-      }),
-      // https://accademia.dev/takeuntil-attenzione-a-sharereplay/
-      shareReplay({ refCount: true, bufferSize: 1 }),
-    )
+          this._user.next(
+            new AuthUser(
+              // userData.id,
+              decodedToken.username,
+              token,
+              expirationDate
+            )
+          );
+        }),
+        // https://accademia.dev/takeuntil-attenzione-a-sharereplay/
+        shareReplay({ refCount: true, bufferSize: 1 })
+      );
   }
 
   logout() {
@@ -119,14 +146,18 @@ export class AuthService {
   }
 
   signup(username: string, password: string) {
-    return this.http.post(`${environment.apiUrl}/signup/`, {
-      "usr": username,
-      "pwd": password,
-    }).pipe(
-      catchError(err => { return throwError(err); }),
-      // tap(userData => this.setUserData(userData))
-      // tap(this.setUserData.bind(this))
-    )
+    return this.http
+      .post(`${environment.apiUrl}/signup/`, {
+        usr: username,
+        pwd: password,
+      })
+      .pipe(
+        catchError((err) => {
+          return throwError(err);
+        })
+        // tap(userData => this.setUserData(userData))
+        // tap(this.setUserData.bind(this))
+      );
   }
 
   // setUserData(userData) {
@@ -139,5 +170,4 @@ export class AuthService {
   //       expirationTime)
   //   );
   // }
-
 }
