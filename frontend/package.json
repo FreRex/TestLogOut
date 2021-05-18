@@ -9,10 +9,7 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e",
-    "p:check": "prettier --config .prettierrc --check \"src/{app,environments}/**/*{.ts,.js,.json,.html,.css,.scss,.md}\"",
-    "p:format": "prettier --config .prettierrc --write \"src/{app,environments}/**/*{.ts,.js,.json,.html,.css,.scss,.md}\"",
-    "p:quick": "pretty-quick"
+    "e2e": "ng e2e"
   },
   "private": true,
   "dependencies": {
@@ -44,7 +41,6 @@
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "^12.11.1",
     "codelyzer": "^6.0.0",
-    "husky": "^6.0.0",
     "jasmine-core": "~3.6.0",
     "jasmine-spec-reporter": "~5.0.0",
     "karma": "~5.2.0",
@@ -61,10 +57,5 @@
     "tslint-config-prettier": "^1.18.0",
     "typescript": "~4.0.2"
   },
-  "description": "An Ionic project",
-  "husky": {
-    "hooks": {
-      "pre-commit": "pretty-quick --staged && ng lint"
-    }
-  }
+  "description": "An Ionic project"
 }
