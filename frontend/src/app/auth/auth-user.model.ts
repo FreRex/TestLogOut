@@ -1,17 +1,25 @@
 export class AuthUser {
   constructor(
-    public id: string,
+    public idutente: string,
     public username: string,
+    public idcommessa: string,
     public commessa: string,
     public autorizzazione: string,
     private _token: string,
-    private _tokenExpirationDate: Date
+    public tokenExpirationDate: Date
   ) {}
 
   get token() {
-    if (!this._tokenExpirationDate || this._tokenExpirationDate <= new Date()) {
+    if (!this.tokenExpirationDate || this.tokenExpirationDate <= new Date()) {
       return null;
     }
     return this._token;
+  }
+
+  get tokenDuration() {
+    if (!this.token) {
+      return 0;
+    }
+    return this.tokenExpirationDate.getTime() - new Date().getTime();
   }
 }

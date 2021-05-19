@@ -1,9 +1,9 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, interval, Observable, throwError } from 'rxjs';
-import { catchError, delay, map, switchMap, take, tap } from 'rxjs/operators';
-import { AuthService } from 'src/app/auth/auth.service';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { catchError, map, switchMap, take, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
+
 import { UserService } from '../users-tab/user.service';
 
 export interface ProjectData {

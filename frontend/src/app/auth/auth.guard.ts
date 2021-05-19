@@ -19,7 +19,7 @@ export class AuthGuard implements CanLoad {
     | Promise<boolean | UrlTree>
     | boolean
     | UrlTree {
-    return this.authService.userIsAuthenticated.pipe(
+    return this.authService.userIsAuthenticated$.pipe(
       take(1),
       switchMap((isAuthenticated) => {
         if (!isAuthenticated) {
@@ -29,6 +29,7 @@ export class AuthGuard implements CanLoad {
         }
       }),
       tap((isAuthenticated) => {
+        console.log('🐱‍👤 : AuthGuard : isAuthenticated', isAuthenticated);
         if (!isAuthenticated) {
           this.router.navigateByUrl('/auth');
         }

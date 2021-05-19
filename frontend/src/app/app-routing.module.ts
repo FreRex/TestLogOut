@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+
 import { AuthGuard as AuthGuard } from './auth/auth.guard';
 
 const routes: Routes = [
@@ -29,10 +30,12 @@ const routes: Routes = [
       import('./admin/admin.module').then((m) => m.AdminPageModule),
     canLoad: [AuthGuard],
   },
-{
+  {
     path: 'gallery',
-    loadChildren: () => import('./gallery/gallery.module').then( m => m.GalleryPageModule)
+    loadChildren: () =>
+      import('./gallery/gallery.module').then((m) => m.GalleryPageModule),
   },
+];
 @NgModule({
   imports: [
     RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules }),

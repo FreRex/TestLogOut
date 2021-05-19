@@ -1,16 +1,13 @@
-import {
-  Directive,
-  Input,
-  OnInit,
-  TemplateRef,
-  ViewContainerRef,
-} from '@angular/core';
+import { Directive, OnDestroy, OnInit, TemplateRef, ViewContainerRef } from '@angular/core';
+import { Subject } from 'rxjs';
+import { shareReplay, takeUntil } from 'rxjs/operators';
+
 import { AuthService } from '../auth/auth.service';
 
 @Directive({
   selector: '[userIsAdmin]',
 })
-export class HasRoleDirective implements OnInit {
+export class HasRoleDirective implements OnInit, OnDestroy {
   constructor(
     private authService: AuthService,
     private templateRef: TemplateRef<any>,
@@ -18,12 +15,23 @@ export class HasRoleDirective implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.authService.currentUser$.subscribe((currentUser) => {
-      if (currentUser && currentUser.autorizzazione == 'admin') {
-        this.viewContainer.createEmbeddedView(this.templateRef);
-      } else {
-        this.viewContainer.clear();
-      }
-    });
+    this.authService.currentUser$
+      .pipe(
+        shareReplay({ refCount: true, bufferSize: 1 }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe((user) => {
+        console.log('🐱‍👤 : HasRoleDirective : user', user);
+        if (user.autorizzazione == '1') {
+          this.viewContainer.createEmbeddedView(this.templateRef);
+        } else {
+          this.viewContainer.clear();
+        }
+      });
+  }
+
+  destroy$ = new Subject();
+  ngOnDestroy() {
+    this.destroy$.next();
   }
 }

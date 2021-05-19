@@ -1,76 +1,69 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Injectable, OnDestroy } from '@angular/core';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { Plugins } from '@capacitor/core';
 import { BehaviorSubject, from, throwError } from 'rxjs';
-import { catchError, map, shareReplay, take, tap } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 
-import { User } from '../admin/users-tab/user.service';
 import { AuthUser } from './auth-user.model';
 
 interface TokenPayload {
+  idutente: string;
+  username: string;
+  // idcommessa: string;
+  commessa: string;
+  autorizzazione: string;
   exp: number;
   iat: number;
-  password: string;
-  username: string;
 }
 
 @Injectable({
   providedIn: 'root',
 })
-export class AuthService {
-  helper;
+export class AuthService implements OnDestroy {
+  private helper;
+  loginToken: string = '';
+  private activeLogoutTimer;
+  private _user = new BehaviorSubject<AuthUser>(null);
 
   constructor(private http: HttpClient) {
     this.helper = new JwtHelperService();
   }
 
-  private _token: string = '';
-  get token() {
-    return this._token;
-  }
-  set token(token: string) {
-    this._token = token;
-  }
-
-  fetchToken() {
-    return this.http
-      .post<{ [key: string]: string }>(`${environment.apiUrl}/token/`, {})
-      .pipe(
-        catchError((err) => {
-          return throwError(err);
-        }),
-        tap((res) => {
-          this._token = res['token'];
-        })
-      );
+  getLoginToken() {
+    return this.http.post(`${environment.apiUrl}/token/`, {}).pipe(
+      catchError((err) => {
+        return throwError(err);
+      }),
+      tap((loginToken) => {
+        if (!loginToken) {
+          throw new Error('Errore server');
+        } else {
+          this.loginToken = loginToken['token'];
+        }
+      })
+    );
   }
 
   /** currentUser DEVE essere un Osservabile perché altrimenti
    * la direttiva *userIsAdmin non funziona correttamente e
    * il template non viene aggiornato in tempo in base al ruolo*/
-  currentUser: BehaviorSubject<User> = new BehaviorSubject(null);
-  currentUser$ = this.currentUser.asObservable();
 
-  _userCod: string = '';
-  get userCod() {
-    return this._userCod;
-  }
-  set userCod(userId: string) {
-    this._userCod = userId;
-  }
-
-  onLogin(user: User) {
-    if (this.userCod === '') {
-      this.userCod = user.autorizzazione === 'admin' ? '0' : user.idutcas;
-      this.currentUser.next(user);
-    }
+  get currentUser$() {
+    return this._user.asObservable().pipe(
+      // take(1),
+      map((user) => {
+        if (user) {
+          return user;
+        } else {
+          return null;
+        }
+      })
+    );
   }
 
-  private _user = new BehaviorSubject<AuthUser>(null);
-
-  get userIsAuthenticated() {
+  get userIsAuthenticated$() {
     return this._user.asObservable().pipe(
       map((user) => {
         if (user) {
@@ -83,59 +76,33 @@ export class AuthService {
     );
   }
 
-  get authUser() {
-    return this._user.asObservable().pipe(
-      take(1),
-      map((user) => {
-        if (user) {
-          return user;
-        } else {
-          return null;
-        }
-      })
-    );
-  }
-
-  // get userId() {
-  //   return this._user.asObservable().pipe(
-  //     map(user => {
-  //       if (user) {
-  //         return user.id;
-  //       } else {
-  //         return null;
-  //       }
-  //     })
-  //   );
-  // }
-
   autoLogin() {
     return from(Plugins.Storage.get({ key: 'authData' })).pipe(
       map((storedData) => {
         if (!storedData || !storedData.value) {
           return null;
         }
-        const parsedData = JSON.parse(storedData.value) as {
-          username: string;
-          token: string;
-          tokenExpirationDate: string;
-        };
+        const parsedData = JSON.parse(storedData.value);
         const expirationTime = new Date(parsedData.tokenExpirationDate);
         if (expirationTime <= new Date()) {
           return null;
         }
         const user = new AuthUser(
-          '1',
+          parsedData.idutente,
           parsedData.username,
-          'commessa',
-          '2',
+          parsedData.idcommessa,
+          'parsedData.commessa',
+          parsedData.autorizzazione,
           parsedData.token,
           expirationTime
         );
+        console.log('🐱‍👤 : AuthService : parsedData.token', storedData.value);
         return user;
       }),
       tap((user) => {
         if (user) {
           this._user.next(user);
+          this.autoLogout(user.tokenDuration);
         }
       }),
       map((user) => {
@@ -146,10 +113,19 @@ export class AuthService {
 
   login(username: string, password: string) {
     return this.http
-      .post(`${environment.apiUrl}/lgn/`, {
-        usr: username,
-        pwd: password,
-      })
+      .post(
+        `${environment.apiUrl}/lgn/`,
+        {
+          usr: username,
+          pwd: password,
+        },
+        {
+          headers: new HttpHeaders().set(
+            'Authorization',
+            `Bearer ${this.loginToken}`
+          ),
+        }
+      )
       .pipe(
         catchError((err) => {
           return throwError(err);
@@ -157,16 +133,11 @@ export class AuthService {
         tap((token: string) => {
           if (!token) {
             throw new Error('Credenziali errate');
+          } else {
+            this.setUserData(token);
           }
-          this.setUserData(token);
-        }),
-        // https://accademia.dev/takeuntil-attenzione-a-sharereplay/
-        shareReplay({ refCount: true, bufferSize: 1 })
+        })
       );
-  }
-
-  logout() {
-    this._user.next(null);
   }
 
   signup(username: string, password: string) {
@@ -184,50 +155,68 @@ export class AuthService {
             throw new Error('Credenziali errate');
           }
           this.setUserData(token);
-        }),
-        // https://accademia.dev/takeuntil-attenzione-a-sharereplay/
-        shareReplay({ refCount: true, bufferSize: 1 })
+        })
       );
   }
 
   setUserData(token) {
-    console.log(token);
     const payload: TokenPayload = this.helper.decodeToken(token['token']);
+    console.log('🐱‍👤 : AuthService : payload', payload);
     const expDate: Date = this.helper.getTokenExpirationDate(token['token']);
-    // const expirationTime = new Date(new Date().getTime() + (+decodedToken.exp / 1000));
-    console.log('decodedToken', payload);
-    console.log('expirationDate', expDate);
-    // console.log('expirationTime', expirationTime);
-    this._user.next(
-      new AuthUser('1', payload.username, 'commessa', '2', token, expDate)
-    );
-    this.storeAuthDate(
-      '1',
+    console.log('🐱‍👤 : AuthService : expDate', expDate);
+
+    // * Crea un nuovo utente
+    const newUser = new AuthUser(
+      payload.idutente,
       payload.username,
-      'commessa',
-      '2',
+      payload.commessa, // TODO: payload['idcommessa]
+      'payload.commessa',
+      payload.autorizzazione,
       token,
-      expDate.toISOString()
+      expDate
     );
+
+    // * Produce un nuovo utente sull'osservabile
+    this._user.next(newUser);
+
+    // * Salva i parametri dell'utente sul localStorage
+    Plugins.Storage.set({
+      key: 'authData',
+      value: JSON.stringify({
+        idutente: newUser.idutente,
+        username: newUser.username,
+        idcommessa: newUser.commessa, // TODO: payload['idcommessa]
+        commessa: 'newUser.commessa',
+        autorizzazione: newUser.autorizzazione,
+        token: newUser.token,
+        tokenExpirationDate: newUser.tokenExpirationDate.toISOString(),
+      }),
+    });
+
+    // * Imposta un nuovo timer per l'autologout
+    this.autoLogout(newUser.tokenDuration);
   }
 
-  private storeAuthDate(
-    userId: string,
-    username: string,
-    commessa: string,
-    autorizzazione: string,
-    token: string,
-    tokenExpirationDate: string
-  ) {
-    const data = JSON.stringify({
-      userId: userId,
-      username: username,
-      commessa: commessa,
-      autorizzazione: autorizzazione,
-      token: token,
-      tokenExpirationDate: tokenExpirationDate,
-    });
-    console.log('data', data);
-    Plugins.Storage.set({ key: 'authData', value: data });
+  autoLogout(duration: number) {
+    if (this.activeLogoutTimer) {
+      clearTimeout(this.activeLogoutTimer);
+    }
+    this.activeLogoutTimer = setTimeout(() => {
+      this.logout();
+    }, duration);
+  }
+
+  logout() {
+    if (this.activeLogoutTimer) {
+      clearTimeout(this.activeLogoutTimer);
+    }
+    this._user.next(null);
+    Plugins.Storage.remove({ key: 'authData' });
+  }
+
+  ngOnDestroy() {
+    if (this.activeLogoutTimer) {
+      clearTimeout(this.activeLogoutTimer);
+    }
   }
 }

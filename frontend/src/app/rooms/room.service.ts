@@ -1,10 +1,10 @@
-import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, map, switchMap, take, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
+
 import { AuthService } from '../auth/auth.service';
-import { UserService } from '../admin/users-tab/user.service';
 
 /** Interfaccia che definisce la Room come mi arriva sul JSON */
 export interface RoomData {
@@ -76,73 +76,63 @@ export class RoomService {
 
   /** SELECT singola room */
   selectRoom(roomId: string): Observable<Room> {
-    return this.http
-      .get<RoomData>(
-        `${environment.apiUrl}/s/room/${this.authService.userCod}/${roomId}`,
-        {
-          headers: new HttpHeaders().set(
-            'Authorization',
-            `Bearer ${this.authService.token}`
-          ),
-        }
-      )
-      .pipe(
-        map((roomData) => {
-          return {
-            id: roomData[0].id,
-            usermobile: roomData[0].usermobile,
-            data_inserimento: new Date(roomData[0].DataInsert),
-            pk_project: roomData[0].cod,
-            progetto: roomData[0].progettoselezionato,
-            data_sincronizzazione: roomData[0].dataLastsincro,
-            idutente: roomData[0].idutente,
-            collaudatore: roomData[0].collaudatoreufficio,
-            idcommessa: roomData[0].idcommessa,
-            commessa: roomData[0].commessa,
-          };
-        })
-      );
+    return this.authService.currentUser$.pipe(
+      switchMap((user) => {
+        return this.http.get<RoomData>(
+          `${environment.apiUrl}/s/room/${user.idutente}/${roomId}`
+        );
+      }),
+      map((roomData) => {
+        return {
+          id: roomData[0].id,
+          usermobile: roomData[0].usermobile,
+          data_inserimento: new Date(roomData[0].DataInsert),
+          pk_project: roomData[0].cod,
+          progetto: roomData[0].progettoselezionato,
+          data_sincronizzazione: roomData[0].dataLastsincro,
+          idutente: roomData[0].idutente,
+          collaudatore: roomData[0].collaudatoreufficio,
+          idcommessa: roomData[0].idcommessa,
+          commessa: roomData[0].commessa,
+        };
+      })
+    );
   }
 
   /** SELECT rooms */
   loadRooms(): Observable<Room[]> {
-    return this.http
-      .get<{ [key: string]: RoomData }>(
-        `${environment.apiUrl}/s/room/${this.authService.userCod}/0`,
-        {
-          headers: new HttpHeaders().set(
-            'Authorization',
-            `Bearer ${this.authService.token}`
-          ),
-        }
-      )
-      .pipe(
-        // <-- Rimappa i dati che arrivano dal server sull'interfaccia della Room
-        map((roomData: { [key: string]: RoomData }) => {
-          const rooms: Room[] = [];
-          for (const key in roomData) {
-            // console.log("Key:", key," - ","Res[key]",res[key]);
-            // resData.hasOwnProperty(key) = iterate all enumerable properties, directly on the object (not on the prototype)
-            if (roomData.hasOwnProperty(key)) {
-              rooms.push({
-                id: roomData[key].id,
-                usermobile: roomData[key].usermobile,
-                data_inserimento: new Date(roomData[key].DataInsert),
-                pk_project: roomData[key].cod,
-                progetto: roomData[key].progettoselezionato,
-                data_sincronizzazione: new Date(roomData[key].dataLastsincro),
-                idutente: roomData[key].idutente,
-                collaudatore: roomData[key].collaudatoreufficio,
-                idcommessa: roomData[key].idcommessa,
-                commessa: roomData[key].commessa,
-              });
-            }
+    return this.authService.currentUser$.pipe(
+      switchMap((user) => {
+        return this.http.get<{ [key: string]: RoomData }>(
+          `${environment.apiUrl}/s/room/${user.idutente}/0`
+        );
+      }),
+      // <-- Rimappa i dati che arrivano dal server sull'interfaccia della Room
+      map((roomData: { [key: string]: RoomData }) => {
+        const rooms: Room[] = [];
+        for (const key in roomData) {
+          // console.log("Key:", key," - ","Res[key]",res[key]);
+          // resData.hasOwnProperty(key) = iterate all enumerable properties, directly on the object (not on the prototype)
+          if (roomData.hasOwnProperty(key)) {
+            rooms.push({
+              id: roomData[key].id,
+              usermobile: roomData[key].usermobile,
+              data_inserimento: new Date(roomData[key].DataInsert),
+              pk_project: roomData[key].cod,
+              progetto: roomData[key].progettoselezionato,
+              data_sincronizzazione: new Date(roomData[key].dataLastsincro),
+              idutente: roomData[key].idutente,
+              collaudatore: roomData[key].collaudatoreufficio,
+              idcommessa: roomData[key].idcommessa,
+              commessa: roomData[key].commessa,
+            });
           }
-          return rooms;
-        }),
-        // <-- emette il nuovo array come valore del BehaviourSubject _rooms
-        tap((rooms: Room[]) => this.roomsSubject.next(rooms))
-      );
+        }
+        return rooms;
+      }),
+      // <-- emette il nuovo array come valore del BehaviourSubject _rooms
+      tap((rooms: Room[]) => this.roomsSubject.next(rooms))
+    );
   }
 
   /** CREATE room e aggiungila alla lista */
@@ -176,21 +166,12 @@ export class RoomService {
       take(1),
       switchMap((rooms) => {
         updatedRooms = [...rooms];
-        return this.http.post(
-          `${environment.apiUrl}/cr/`,
-          {
-            usermobile: usermobile,
-            progettoselezionato: progetto,
-            cod: pk_project,
-            collaudatoreufficio: idutente,
-          },
-          {
-            headers: new HttpHeaders().set(
-              'Authorization',
-              `Bearer ${this.authService.token}`
-            ),
-          }
-        );
+        return this.http.post(`${environment.apiUrl}/cr/`, {
+          usermobile: usermobile,
+          progettoselezionato: progetto,
+          cod: pk_project,
+          collaudatoreufficio: idutente,
+        });
       }),
       catchError((err) => {
         return throwError(err);
@@ -229,19 +210,10 @@ export class RoomService {
           idcommessa: oldRoom.idcommessa,
           commessa: oldRoom.commessa,
         };
-        return this.http.put(
-          `${environment.apiUrl}/ur`,
-          {
-            id: roomId,
-            usermobile: newUsermobile,
-          },
-          {
-            headers: new HttpHeaders().set(
-              'Authorization',
-              `Bearer ${this.authService.token}`
-            ),
-          }
-        );
+        return this.http.put(`${environment.apiUrl}/ur`, {
+          id: roomId,
+          usermobile: newUsermobile,
+        });
       }),
       catchError((err) => {
         return throwError(err);
@@ -261,19 +233,10 @@ export class RoomService {
         // filter() = filtra un array in base a una regola ("se è vero")
         // ritrorna vero per tutte le room tranne quella che voglio scartare
         updatedRooms = rooms.filter((room) => room.id !== roomId);
-        return this.http.post(
-          `${environment.apiUrl}/d/`,
-          {
-            id: roomId,
-            tableDelete: 'multistreaming',
-          },
-          {
-            headers: new HttpHeaders().set(
-              'Authorization',
-              `Bearer ${this.authService.token}`
-            ),
-          }
-        );
+        return this.http.post(`${environment.apiUrl}/d/`, {
+          id: roomId,
+          tableDelete: 'multistreaming',
+        });
       }),
       catchError((err) => {
         return throwError(err);
@@ -286,25 +249,11 @@ export class RoomService {
 
   checkDownload(nomeProgetto: string) {
     return this.http.get(
-      `${environment.apiUrl}/checkdownloadzip/${nomeProgetto}`,
-      {
-        headers: new HttpHeaders().set(
-          'Authorization',
-          `Bearer ${this.authService.token}`
-        ),
-      }
+      `${environment.apiUrl}/checkdownloadzip/${nomeProgetto}`
     );
   }
 
   downloadFoto(nomeProgetto: string) {
-    return this.http.get(`${environment.apiUrl}/downloadzip/${nomeProgetto}`, {
-      // responseType: 'arraybuffer',
-      // reportProgress: true,
-      // observe: 'events',
-      headers: new HttpHeaders().set(
-        'Authorization',
-        `Bearer ${this.authService.token}`
-      ),
-    });
+    return this.http.get(`${environment.apiUrl}/downloadzip/${nomeProgetto}`);
   }
 }

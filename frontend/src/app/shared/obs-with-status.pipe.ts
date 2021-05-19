@@ -1,7 +1,6 @@
-import { resolveForwardRef } from '@angular/compiler/src/util';
 import { Pipe, PipeTransform } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { catchError, map, startWith, tap } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
 
 export interface ObsWithStatusResult<T> {
   loading?: boolean;
