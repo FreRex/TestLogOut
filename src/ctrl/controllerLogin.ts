@@ -1,21 +1,5 @@
 exports.checkLogin = (req: any, res: any, next: any) => {  
    
-    /*
-    let pkproject: number;
-    if(!req.params.pkproject){
-      pkproject=0;
-    }
-    else
-    {
-      pkproject = req.params.pkproject;
-    }
-
-    console.log(pkproject)
-
-    let usr = req.params.usr;
-    let pwd = req.params.pwd;
-    */
-
     let pkproject: number;
     if(!req.body.pkproject){
       pkproject=0;
@@ -38,21 +22,21 @@ exports.checkLogin = (req: any, res: any, next: any) => {
     const db = require('../conf/db'); 
 
     if(pkproject==0){
-      select = "SELECT id FROM utenti WHERE username = ? AND password = ?";
+      select = "SELECT id AS idutente, idcommessa AS commessa, autorizzazioni AS autorizzazione FROM utenti WHERE username = ? AND password = ?";
       datiDb = [usr, pwd];
     }
     else
     {
-      select = "SELECT utenti.id, utenti.username, utenti.password, multistreaming.collaudatoreufficio, multistreaming.cod FROM utenti INNER JOIN multistreaming ON multistreaming.collaudatoreufficio = utenti.id WHERE utenti.username = ? AND utenti.password = ? AND multistreaming.cod = ?";
+      select = "SELECT utenti.id AS idutente, utenti.idcommessa AS commessa, utenti.autorizzazioni AS autorizzazione, utenti.username, utenti.password, multistreaming.collaudatoreufficio, multistreaming.cod FROM utenti INNER JOIN multistreaming ON multistreaming.collaudatoreufficio = utenti.id WHERE utenti.username = ? AND utenti.password = ? AND multistreaming.cod = ?";
       datiDb = [usr, pwd, pkproject];
     }    
     
     db.query(select, datiDb, function (err: any, result: any, fields: any) {        
         if(result.length >= 1){
-          console.log('Credenziali presenti.');          
-          
+          console.log('Credenziali presenti.');         
+                   
           const jwt = require('.././middleware/jwt'); 
-          let token: any = jwt.setToken(usr,pwd);
+          let token: any = jwt.setToken(usr,pwd,result[0]['idutente'],result[0]['commessa'],result[0]['autorizzazione']);
           let payload = jwt.getPayload(token);
           
           if(pkproject==0){

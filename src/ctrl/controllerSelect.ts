@@ -120,7 +120,7 @@ exports.getSelect = (req: any, res: any, next: any) => {
             paginit = pagGall * numberFotoPage;
           }
 
-          sql = 'SELECT id, progettoselezionato, collaudatoreufficio, dataimg, nameimg, latitu, longitu, nomelemento, noteimg, onlynota FROM collaudolive ORDER BY id DESC limit '+paginit+',' +numberFotoPage   
+          sql = 'SELECT id, progettoselezionato, collaudatoreufficio, dataimg, nameimg, latitu, longitu, nomelemento, noteimg, onlynota, TO_BASE64(img) FROM collaudolive ORDER BY id DESC limit '+paginit+',' +numberFotoPage   
 
         break;          
 
@@ -131,9 +131,10 @@ exports.getSelect = (req: any, res: any, next: any) => {
     // Esecuzione query
     //-------------------
     db.query(sql, (err: any, rows: any, fields: any) => {
+      /* let base64data = Buffer.from(rows[0]['img']).toString('base64'); */
       if(err){
         res.send('Query error: ' + err.sqlMessage);
-       }else{                                       
+       }else{                                             
          res.json(rows);
        }
     });      
