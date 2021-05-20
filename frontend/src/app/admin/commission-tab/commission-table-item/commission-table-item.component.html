@@ -1,11 +1,7 @@
 <ion-row class="ion-align-items-center row-data">
   <ion-col *ngFor="let col of columns" [size]="col.size">
     <div *ngIf="col.type !== 'buttons'" class="data-item">
-      {{
-        col.type === 'date'
-          ? (commission[col.key] | date: 'dd/MM/yy')
-          : commission[col.key]
-      }}
+      {{ col.type === 'date' ? (commission[col.key] | date: 'dd/MM/yy') : commission[col.key] }}
     </div>
     <div *ngIf="col.type === 'buttons'" class="btns">
       <span data-tooltip="Modifica" data-tooltip-position="top">

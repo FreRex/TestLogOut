@@ -12,9 +12,7 @@ const routes: Routes = [
   {
     path: ':roomId',
     loadChildren: () =>
-      import('./room-detail/room-detail.module').then(
-        (m) => m.RoomDetailPageModule
-      ),
+      import('./room-detail/room-detail.module').then((m) => m.RoomDetailPageModule),
     canLoad: [AuthGuard],
   },
 ];

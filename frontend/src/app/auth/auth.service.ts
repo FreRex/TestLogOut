@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable, OnDestroy } from '@angular/core';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { Plugins } from '@capacitor/core';
@@ -10,6 +10,7 @@ import { AuthUser } from './auth-user.model';
 
 interface TokenPayload {
   idutente: string;
+  idutcas: string;
   username: string;
   // idcommessa: string;
   commessa: string;
@@ -63,7 +64,7 @@ export class AuthService implements OnDestroy {
     );
   }
 
-  get userIsAuthenticated$() {
+  get userIsAuthenticated() {
     return this._user.asObservable().pipe(
       map((user) => {
         if (user) {
@@ -89,6 +90,7 @@ export class AuthService implements OnDestroy {
         }
         const user = new AuthUser(
           parsedData.idutente,
+          parsedData.idutcas,
           parsedData.username,
           parsedData.idcommessa,
           'parsedData.commessa',
@@ -96,7 +98,6 @@ export class AuthService implements OnDestroy {
           parsedData.token,
           expirationTime
         );
-        console.log('🐱‍👤 : AuthService : parsedData.token', storedData.value);
         return user;
       }),
       tap((user) => {
@@ -118,13 +119,13 @@ export class AuthService implements OnDestroy {
         {
           usr: username,
           pwd: password,
-        },
-        {
-          headers: new HttpHeaders().set(
-            'Authorization',
-            `Bearer ${this.loginToken}`
-          ),
         }
+        // {
+        //   headers: new HttpHeaders().set(
+        //     'Authorization',
+        //     `Bearer ${this.loginToken}`
+        //   ),
+        // }
       )
       .pipe(
         catchError((err) => {
@@ -168,11 +169,12 @@ export class AuthService implements OnDestroy {
     // * Crea un nuovo utente
     const newUser = new AuthUser(
       payload.idutente,
+      payload.idutcas,
       payload.username,
       payload.commessa, // TODO: payload['idcommessa]
       'payload.commessa',
       payload.autorizzazione,
-      token,
+      token['token'],
       expDate
     );
 
@@ -184,6 +186,7 @@ export class AuthService implements OnDestroy {
       key: 'authData',
       value: JSON.stringify({
         idutente: newUser.idutente,
+        idutcas: newUser.idutcas,
         username: newUser.username,
         idcommessa: newUser.commessa, // TODO: payload['idcommessa]
         commessa: 'newUser.commessa',

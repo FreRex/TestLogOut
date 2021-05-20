@@ -1,4 +1,10 @@
-import { HttpEvent, HttpEventType, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
+import {
+  HttpEvent,
+  HttpEventType,
+  HttpHandler,
+  HttpInterceptor,
+  HttpRequest,
+} from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
@@ -9,10 +15,7 @@ import { tap } from 'rxjs/operators';
 export class HttpProgressInterceptor implements HttpInterceptor {
   constructor() {} // private spinnerService: SpinnerService // my personal service for the progress bar - replace with your own
 
-  intercept(
-    req: HttpRequest<any>,
-    next: HttpHandler
-  ): Observable<HttpEvent<any>> {
+  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     if (req.reportProgress) {
       // only intercept when the request is configured to report its progress
       return next.handle(req).pipe(

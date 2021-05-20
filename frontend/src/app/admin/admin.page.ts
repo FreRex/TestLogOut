@@ -2,8 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { LoadingController } from '@ionic/angular';
 import { forkJoin } from 'rxjs';
 
-import { AuthService } from '../auth/auth.service';
-import { StorageDataService } from '../shared/storage-data.service';
 import { CommissionService } from './commission-tab/commission.service';
 import { ProjectService } from './projects-tab/project.service';
 import { UserService } from './users-tab/user.service';
@@ -15,9 +13,7 @@ import { UserService } from './users-tab/user.service';
 })
 export class AdminPage implements OnInit {
   constructor(
-    private dataService: StorageDataService,
     private loadingController: LoadingController,
-    private authService: AuthService,
     private userService: UserService,
     public commissionService: CommissionService,
     private projectService: ProjectService
@@ -32,10 +28,20 @@ export class AdminPage implements OnInit {
           reqUsers: this.userService.loadUsers(),
           reqCommissions: this.commissionService.loadCommissions(),
           reqProjects: this.projectService.loadProjects(),
-          // requestRooms: this.roomService.loadRooms(),
-        }).subscribe(({ reqUsers, reqCommissions, reqProjects }) => {
-          loadingEl.dismiss();
-        });
+        }).subscribe(
+          ({ reqUsers, reqCommissions, reqProjects }) => {
+            // console.log(
+            //   '🐱‍👤 : AdminPage : reqUsers, reqCommissions, reqProjects',
+            //   reqUsers,
+            //   reqCommissions,
+            //   reqProjects
+            // );
+            loadingEl.dismiss();
+          },
+          (err) => {
+            console.log('🐱‍👤 : AdminPage : err', err);
+          }
+        );
       });
   }
 }

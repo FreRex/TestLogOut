@@ -1,19 +1,19 @@
-.backTitle{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+.backTitle {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
-.card-title{
-    box-shadow: none;
+.card-title {
+  box-shadow: none;
 }
-.icons{
-    display: flex;
-    flex-direction: row;
-    align-items: center;  
-    justify-content: flex-end;
+.icons {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
 }
-.image-container{
-    background-size: cover;
-    min-height: 160px;
-    min-width: 160px;
+.image-container {
+  background-size: cover;
+  min-height: 160px;
+  min-width: 160px;
 }

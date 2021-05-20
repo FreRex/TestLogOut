@@ -61,14 +61,8 @@ export class RoomService {
           (room) =>
             room.usermobile.toLowerCase().includes(query.toLowerCase()) ||
             room.commessa.toLowerCase().includes(query.toLowerCase()) ||
-            room.progetto
-              .toString()
-              .toLowerCase()
-              .includes(query.toLowerCase()) ||
-            room.collaudatore
-              .toString()
-              .toLowerCase()
-              .includes(query.toLowerCase())
+            room.progetto.toString().toLowerCase().includes(query.toLowerCase()) ||
+            room.collaudatore.toString().toLowerCase().includes(query.toLowerCase())
         )
       )
     );
@@ -78,9 +72,7 @@ export class RoomService {
   selectRoom(roomId: string): Observable<Room> {
     return this.authService.currentUser$.pipe(
       switchMap((user) => {
-        return this.http.get<RoomData>(
-          `${environment.apiUrl}/s/room/${user.idutente}/${roomId}`
-        );
+        return this.http.get<RoomData>(`${environment.apiUrl}/s/room/${user.idutcas}/${roomId}`);
       }),
       map((roomData) => {
         return {
@@ -102,9 +94,13 @@ export class RoomService {
   /** SELECT rooms */
   loadRooms(): Observable<Room[]> {
     return this.authService.currentUser$.pipe(
+      take(1),
       switchMap((user) => {
+        if (!user) {
+          throw new Error('User non autenticato');
+        }
         return this.http.get<{ [key: string]: RoomData }>(
-          `${environment.apiUrl}/s/room/${user.idutente}/0`
+          `${environment.apiUrl}/s/room/${user.idutcas}/0`
         );
       }),
       // <-- Rimappa i dati che arrivano dal server sull'interfaccia della Room
@@ -248,9 +244,7 @@ export class RoomService {
   }
 
   checkDownload(nomeProgetto: string) {
-    return this.http.get(
-      `${environment.apiUrl}/checkdownloadzip/${nomeProgetto}`
-    );
+    return this.http.get(`${environment.apiUrl}/checkdownloadzip/${nomeProgetto}`);
   }
 
   downloadFoto(nomeProgetto: string) {

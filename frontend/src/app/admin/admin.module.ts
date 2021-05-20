@@ -23,13 +23,7 @@ import { CreateCommissionModalComponent } from './commission-tab/create-commissi
 import { EditCommissionModalComponent } from './commission-tab/edit-commission-modal/edit-commission-modal.component';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    IonicModule,
-    SharedModule,
-    AdminPageRoutingModule,
-  ],
+  imports: [CommonModule, ReactiveFormsModule, IonicModule, SharedModule, AdminPageRoutingModule],
   declarations: [
     AdminPage,
 

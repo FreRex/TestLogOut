@@ -1,11 +1,4 @@
 import { Injectable, OnInit } from '@angular/core';
-import { Project, ProjectService } from '../admin/projects-tab/project.service';
-import { ajax } from 'rxjs/ajax';
-
-
-@Injectable({
-  providedIn: 'root'
-})
 
 export interface foto {
   id: number;
@@ -20,15 +13,13 @@ export interface foto {
   onlynota: number;
 }
 
-export class MediaServiceService implements OnInit{
-
-  constructor(
-
-  ) { }
+@Injectable({
+  providedIn: 'root',
+})
+export class MediaServiceService implements OnInit {
+  constructor() {}
 
   ngOnInit() {
-    console.log("quiqui");
-
+    console.log('quiqui');
   }
-
 }

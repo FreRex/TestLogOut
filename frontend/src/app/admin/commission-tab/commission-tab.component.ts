@@ -1,10 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import {
-  AlertController,
-  ModalController,
-  ToastController,
-} from '@ionic/angular';
+import { AlertController, ModalController, ToastController } from '@ionic/angular';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { distinctUntilChanged, startWith, switchMap } from 'rxjs/operators';
 import { AuthService } from 'src/app/auth/auth.service';
@@ -17,10 +13,7 @@ import { GenericCommissionItemComponent } from './generic-commission-item.compon
   templateUrl: './commission-tab.component.html',
   styleUrls: ['./commission-tab.component.scss'],
 })
-export class CommissionTabComponent
-  extends GenericCommissionItemComponent
-  implements OnInit
-{
+export class CommissionTabComponent extends GenericCommissionItemComponent implements OnInit {
   searchStream$ = new BehaviorSubject('');
   commissions$: Observable<Commission[]>;
 

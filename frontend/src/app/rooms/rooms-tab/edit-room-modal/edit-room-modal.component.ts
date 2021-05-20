@@ -1,10 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ToastController } from '@ionic/angular';
 import { AlertController, ModalController } from '@ionic/angular';
 import { RoomValidator } from 'src/app/rooms/room.validator.service';
@@ -53,28 +48,26 @@ export class EditRoomModalComponent implements OnInit {
     if (!this.form.valid) {
       return;
     }
-    this.roomsService
-      .updateRoom(this.room.id, this.form.value.usermobile)
-      .subscribe(
-        /** Il server risponde con 200 */
-        (res) => {
-          // non ci sono errori
-          if (res['affectedRows'] === 1) {
-            this.form.reset();
-            this.modalController.dismiss({ message: 'Room Aggiornata' }, 'ok');
-          }
-          // possibili errori
-          else {
-            this.form.reset();
-            this.modalController.dismiss({ message: res['message'] }, 'error');
-          }
-        },
-        /** Il server risponde con un errore */
-        (err) => {
+    this.roomsService.updateRoom(this.room.id, this.form.value.usermobile).subscribe(
+      /** Il server risponde con 200 */
+      (res) => {
+        // non ci sono errori
+        if (res['affectedRows'] === 1) {
           this.form.reset();
-          this.modalController.dismiss({ message: err.error['text'] }, 'error');
+          this.modalController.dismiss({ message: 'Room Aggiornata' }, 'ok');
         }
-      );
+        // possibili errori
+        else {
+          this.form.reset();
+          this.modalController.dismiss({ message: res['message'] }, 'error');
+        }
+      },
+      /** Il server risponde con un errore */
+      (err) => {
+        this.form.reset();
+        this.modalController.dismiss({ message: err.error['text'] }, 'error');
+      }
+    );
     // this.presentToast('Room Aggiornata', 'secondary');
   }
 

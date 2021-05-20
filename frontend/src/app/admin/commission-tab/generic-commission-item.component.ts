@@ -1,11 +1,6 @@
 import { Component, Injectable, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import {
-  AlertController,
-  IonItemSliding,
-  ModalController,
-  ToastController,
-} from '@ionic/angular';
+import { AlertController, IonItemSliding, ModalController, ToastController } from '@ionic/angular';
 import { AuthService } from 'src/app/auth/auth.service';
 import { CreateCommissionModalComponent } from './create-commission-modal/create-commission-modal.component';
 import { EditCommissionModalComponent } from './edit-commission-modal/edit-commission-modal.component';
@@ -48,11 +43,7 @@ export class GenericCommissionItemComponent implements OnInit {
         if (res.role === 'ok') {
           this.presentToast(res.data['message'], 'secondary');
         } else if (res.role === 'error') {
-          this.presentToast(
-            `Aggiornamento fallito.\n ${res.data['message']}`,
-            'danger',
-            5000
-          );
+          this.presentToast(`Aggiornamento fallito.\n ${res.data['message']}`, 'danger', 5000);
         }
       });
   }
@@ -78,11 +69,7 @@ export class GenericCommissionItemComponent implements OnInit {
         if (res.role === 'ok') {
           this.presentToast(res.data['message'], 'secondary');
         } else if (res.role === 'error') {
-          this.presentToast(
-            `Aggiornamento fallito.\n ${res.data['message']}`,
-            'danger',
-            5000
-          );
+          this.presentToast(`Aggiornamento fallito.\n ${res.data['message']}`, 'danger', 5000);
         }
       });
   }
@@ -106,9 +93,7 @@ export class GenericCommissionItemComponent implements OnInit {
             handler: () =>
               this.commissionService
                 .deleteCommission(this.commission.id)
-                .subscribe((res) =>
-                  this.presentToast('Commessa Eliminata', 'secondary')
-                ),
+                .subscribe((res) => this.presentToast('Commessa Eliminata', 'secondary')),
           },
         ],
       })

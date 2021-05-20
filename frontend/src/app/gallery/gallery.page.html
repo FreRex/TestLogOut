@@ -10,10 +10,15 @@
 </ion-header>
 
 <ion-content padding>
-<!-- CARD TEMPORANEA TITOLO PROGETTO E BTN -->
+  <!-- CARD TEMPORANEA TITOLO PROGETTO E BTN -->
   <ion-card class="card-title">
     <div class="backTitle">
-      <ion-icon name="chevron-back-outline" size="large" slot="icon-only" class="ion-margin"></ion-icon>
+      <ion-icon
+        name="chevron-back-outline"
+        size="large"
+        slot="icon-only"
+        class="ion-margin"
+      ></ion-icon>
       <div>
         <h6><b>NOME PROGETTO</b></h6>
         <p>Mattina</p>
@@ -26,25 +31,22 @@
     </div>
   </ion-card>
   <!--  -->
-  
+
   <ion-segment [(ngModel)]="galleryType" color="primary" class="ion-padding">
-    <ion-segment-button value="foto">
-      Foto
-    </ion-segment-button>
-    <ion-segment-button value="files">
-      Files
-    </ion-segment-button>
+    <ion-segment-button value="foto"> Foto </ion-segment-button>
+    <ion-segment-button value="files"> Files </ion-segment-button>
   </ion-segment>
 
-  <div [ngSwitch] = "galleryType">
+  <div [ngSwitch]="galleryType">
     <ion-grid *ngSwitchCase="'foto'">
       <ion-row>
         <ion-col size-sm="6" size-md="3" *ngFor="let foto of [1,2,3,4,5,6]">
-          <div class="image-container" [style.background-image]="'url(../assets/testFoto/'+foto+'.jpg)'">
-          </div>
+          <div
+            class="image-container"
+            [style.background-image]="'url(../assets/testFoto/'+foto+'.jpg)'"
+          ></div>
         </ion-col>
       </ion-row>
     </ion-grid>
   </div>
-
 </ion-content>

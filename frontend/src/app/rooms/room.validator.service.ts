@@ -27,17 +27,14 @@ export class RoomValidator {
   }
 
   usermobileValidator(oldValue?: string): AsyncValidatorFn {
-    return (
-      control: AbstractControl
-    ): Observable<{ [key: string]: any } | null> => {
+    return (control: AbstractControl): Observable<{ [key: string]: any } | null> => {
       return this.searchUsermobile(control.value).pipe(
         map((res) => {
           // res = true --> taken
           // res = false --> not taken
           if (oldValue) {
             // return a custom error if username is taken and is different from the previous value
-            return res == true &&
-              control.value.toLowerCase() !== oldValue.toLowerCase()
+            return res == true && control.value.toLowerCase() !== oldValue.toLowerCase()
               ? { usermobileExist: true }
               : null;
           } else {

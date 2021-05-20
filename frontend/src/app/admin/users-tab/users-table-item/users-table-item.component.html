@@ -14,9 +14,7 @@
         "
       >
       </ion-icon>
-      {{
-        col.type === 'date' ? (user[col.key] | date: 'dd/MM/yy') : user[col.key]
-      }}
+      {{ col.type === 'date' ? (user[col.key] | date: 'dd/MM/yy') : user[col.key] }}
     </div>
     <div *ngIf="col.type === 'buttons'" class="btns">
       <span data-tooltip="Modifica" data-tooltip-position="top">

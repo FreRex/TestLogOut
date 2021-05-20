@@ -59,9 +59,7 @@ export class SyncService {
       switchMap((cod: string) => {
         console.log('codicecasucale: ', cod);
         this.sync.cod = cod;
-        return this.http.get(
-          `${environment.apiUrl}/sincrodb/${idutente}/${pk}/${this.sync.cod}`
-        );
+        return this.http.get(`${environment.apiUrl}/sincrodb/${idutente}/${pk}/${this.sync.cod}`);
       }),
       switchMap((sincroStarted) => {
         console.log('sincroStarted: ', sincroStarted);
@@ -82,41 +80,39 @@ export class SyncService {
   }
 
   startCheck(): Observable<boolean | Object> {
-    return this.http
-      .get(`${environment.apiUrl}/checksincrodb/${this.sync.cod}`)
-      .pipe(
-        map((result) => {
-          console.log('check result: ', result);
-          // DEV: x simulare Completato e Errore Timeout
-          // let newResult = (Math.random() * 5) > 3; // returns a random integer from 0 to 10
-          // let newResult = false; // returns a random integer from 0 to 10
-          if (!result) {
-            this.sync.check++;
-            this.sync.lastCheckDate = new Date();
-            throw result; //error will be picked up by retryWhen
-          } else {
-            this.sync.status = this.STATUS_COMPLETATA;
-          }
-          return result;
-        }),
-        retryWhen((errors) =>
-          errors.pipe(
-            tap((val) => {
-              this.syncStatusSource.next(this.sync);
-              console.log(`Tap!`, this.sync);
-            }),
-            delay(this.CHECK_INTERVAL),
-            take(this.TOTAL_CHECKS)
-          )
-        ),
-        finalize(() => {
-          if (this.sync.status !== this.STATUS_COMPLETATA) {
-            this.sync.status = this.STATUS_ERRORE_TIMEOUT;
-          }
-          this.syncStatusSource.next(this.sync);
-          console.log('Finalize!', this.sync);
-          this.sync = null;
-        })
-      );
+    return this.http.get(`${environment.apiUrl}/checksincrodb/${this.sync.cod}`).pipe(
+      map((result) => {
+        console.log('check result: ', result);
+        // DEV: x simulare Completato e Errore Timeout
+        // let newResult = (Math.random() * 5) > 3; // returns a random integer from 0 to 10
+        // let newResult = false; // returns a random integer from 0 to 10
+        if (!result) {
+          this.sync.check++;
+          this.sync.lastCheckDate = new Date();
+          throw result; //error will be picked up by retryWhen
+        } else {
+          this.sync.status = this.STATUS_COMPLETATA;
+        }
+        return result;
+      }),
+      retryWhen((errors) =>
+        errors.pipe(
+          tap((val) => {
+            this.syncStatusSource.next(this.sync);
+            console.log(`Tap!`, this.sync);
+          }),
+          delay(this.CHECK_INTERVAL),
+          take(this.TOTAL_CHECKS)
+        )
+      ),
+      finalize(() => {
+        if (this.sync.status !== this.STATUS_COMPLETATA) {
+          this.sync.status = this.STATUS_ERRORE_TIMEOUT;
+        }
+        this.syncStatusSource.next(this.sync);
+        console.log('Finalize!', this.sync);
+        this.sync = null;
+      })
+    );
   }
 }

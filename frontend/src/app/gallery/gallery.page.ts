@@ -6,11 +6,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./gallery.page.scss'],
 })
 export class GalleryPage implements OnInit {
-
   galleryType = 'foto';
-  constructor() { }
+  constructor() {}
 
-  ngOnInit() {
-  }
-
+  ngOnInit() {}
 }

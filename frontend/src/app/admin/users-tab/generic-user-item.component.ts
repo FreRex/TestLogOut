@@ -1,11 +1,6 @@
 import { Component, Injectable, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import {
-  AlertController,
-  IonItemSliding,
-  ModalController,
-  ToastController,
-} from '@ionic/angular';
+import { AlertController, IonItemSliding, ModalController, ToastController } from '@ionic/angular';
 import { AuthService } from 'src/app/auth/auth.service';
 import { User, UserService } from 'src/app/admin/users-tab/user.service';
 import { CreateUserModalComponent } from './create-user-modal/create-user-modal.component';
@@ -48,11 +43,7 @@ export class GenericUserItemComponent implements OnInit {
         if (res.role === 'ok') {
           this.presentToast(res.data['message'], 'secondary');
         } else if (res.role === 'error') {
-          this.presentToast(
-            `Aggiornamento fallito.\n ${res.data['message']}`,
-            'danger',
-            5000
-          );
+          this.presentToast(`Aggiornamento fallito.\n ${res.data['message']}`, 'danger', 5000);
         }
       });
   }
@@ -78,11 +69,7 @@ export class GenericUserItemComponent implements OnInit {
         if (res.role === 'ok') {
           this.presentToast(res.data['message'], 'secondary');
         } else if (res.role === 'error') {
-          this.presentToast(
-            `Aggiornamento fallito.\n ${res.data['message']}`,
-            'danger',
-            5000
-          );
+          this.presentToast(`Aggiornamento fallito.\n ${res.data['message']}`, 'danger', 5000);
         }
       });
   }
@@ -106,9 +93,7 @@ export class GenericUserItemComponent implements OnInit {
             handler: () =>
               this.userService
                 .deleteUser(this.user.id)
-                .subscribe((res) =>
-                  this.presentToast('Utente Eliminato', 'secondary')
-                ),
+                .subscribe((res) => this.presentToast('Utente Eliminato', 'secondary')),
           },
         ],
       })

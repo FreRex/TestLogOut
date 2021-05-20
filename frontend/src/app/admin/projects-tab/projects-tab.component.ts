@@ -11,10 +11,7 @@ import { distinctUntilChanged, startWith, switchMap } from 'rxjs/operators';
 import { AuthService } from 'src/app/auth/auth.service';
 import { GenericProjectItemComponent } from 'src/app/admin/projects-tab/generic-project-item.component';
 import { TableColumns } from 'src/app/shared/generic-table/generic-table.component';
-import {
-  Project,
-  ProjectService,
-} from 'src/app/admin/projects-tab/project.service';
+import { Project, ProjectService } from 'src/app/admin/projects-tab/project.service';
 import { SyncService } from 'src/app/shared/sync-toast/sync.service';
 
 @Component({
@@ -22,10 +19,7 @@ import { SyncService } from 'src/app/shared/sync-toast/sync.service';
   templateUrl: './projects-tab.component.html',
   styleUrls: ['./projects-tab.component.scss'],
 })
-export class ProjectsTabComponent
-  extends GenericProjectItemComponent
-  implements OnInit
-{
+export class ProjectsTabComponent extends GenericProjectItemComponent implements OnInit {
   searchStream$ = new BehaviorSubject('');
   projects$: Observable<Project[]>;
 

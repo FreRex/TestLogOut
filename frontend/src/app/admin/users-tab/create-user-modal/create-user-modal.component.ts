@@ -1,10 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { IonSelect, ModalController } from '@ionic/angular';
-import {
-  Commission,
-  CommissionService,
-} from '../../commission-tab/commission.service';
+import { Commission, CommissionService } from '../../commission-tab/commission.service';
 import { UserService } from '../user.service';
 
 @Component({

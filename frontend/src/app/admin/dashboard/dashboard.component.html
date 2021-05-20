@@ -33,11 +33,7 @@
       </ion-col>
       <ion-col size-md="2">
         <ion-button (click)="onRiavviaStreaming()" expand="block">
-          <ion-icon
-            slot="start"
-            name="videocam-off-outline"
-            color="danger"
-          ></ion-icon>
+          <ion-icon slot="start" name="videocam-off-outline" color="danger"></ion-icon>
           Riavvia
         </ion-button>
       </ion-col>
@@ -46,9 +42,7 @@
       <ion-col size-md="4" offset-md="2">
         <ion-card [disabled]="this.syncService.sync" class="gisfo-sync-card">
           <ion-card-header>
-            <ion-card-title color="primary"
-              >Sincronizza Progetto</ion-card-title
-            >
+            <ion-card-title color="primary">Sincronizza Progetto</ion-card-title>
           </ion-card-header>
           <ion-card-content>
             <form [formGroup]="form">
@@ -61,9 +55,7 @@
               >
               </dropdown-item>
               <ion-item>
-                <ion-label position="floating"
-                  >Inserisci il PK Projects</ion-label
-                >
+                <ion-label position="floating">Inserisci il PK Projects</ion-label>
                 <ion-input type="text" formControlName="pk_proj"></ion-input>
               </ion-item>
             </form>
@@ -75,8 +67,7 @@
                 shape="round"
                 (click)="syncProject()"
               >
-                <ion-icon slot="start" name="sync-circle-outline"></ion-icon
-                >Sync
+                <ion-icon slot="start" name="sync-circle-outline"></ion-icon>Sync
               </ion-button>
             </div>
           </ion-card-content>
@@ -92,9 +83,7 @@
           </ion-card-header>
           <ion-card-content>
             <ion-item>
-              <ion-label position="floating" class="ion-text-wrap">
-                Coordinate / Comune
-              </ion-label>
+              <ion-label position="floating" class="ion-text-wrap"> Coordinate / Comune </ion-label>
               <ion-input type="text" #coordinate></ion-input>
             </ion-item>
             <div class="ion-text-right ion-margin-vertical btnNperf">
@@ -115,11 +104,7 @@
                 color="primary"
                 (click)="ricercaComune(coordinate.value.toString())"
               >
-                <ion-icon
-                  slot="start"
-                  name="caret-forward-circle-outline"
-                ></ion-icon
-                >Cerca Comune
+                <ion-icon slot="start" name="caret-forward-circle-outline"></ion-icon>Cerca Comune
               </ion-button>
               <ion-button
                 shape="round"
@@ -127,11 +112,8 @@
                 color="primary"
                 (click)="ricercaCoordinate(coordinate.value.toString())"
               >
-                <ion-icon
-                  slot="start"
-                  name="caret-forward-circle-outline"
-                ></ion-icon
-                >Cerca Coordinate
+                <ion-icon slot="start" name="caret-forward-circle-outline"></ion-icon>Cerca
+                Coordinate
               </ion-button>
             </div>
           </ion-card-content>

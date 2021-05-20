@@ -1,10 +1,4 @@
-import {
-  Component,
-  ElementRef,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { LoadingController } from '@ionic/angular';
 import { forkJoin, Subscription } from 'rxjs';
 import { ProjectService } from 'src/app/admin/projects-tab/project.service';
@@ -31,22 +25,17 @@ export class SyncToastComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.subscription = this.syncService.syncStatus$.subscribe(
-      (sync: SyncInfo) => {
-        this.sync = sync;
-        this.showToast = true;
-        /* Restart Progressbar Animation */
-        // let element = document.getElementById("time-bar");
-        if (
-          this.sync.status === this.syncService.STATUS_IN_CORSO &&
-          this.sync.check !== 0
-        ) {
-          this.bar.nativeElement.classList.remove('time-bar');
-          this.bar.nativeElement.offsetWidth;
-          this.bar.nativeElement.classList.add('time-bar');
-        }
+    this.subscription = this.syncService.syncStatus$.subscribe((sync: SyncInfo) => {
+      this.sync = sync;
+      this.showToast = true;
+      /* Restart Progressbar Animation */
+      // let element = document.getElementById("time-bar");
+      if (this.sync.status === this.syncService.STATUS_IN_CORSO && this.sync.check !== 0) {
+        this.bar.nativeElement.classList.remove('time-bar');
+        this.bar.nativeElement.offsetWidth;
+        this.bar.nativeElement.classList.add('time-bar');
       }
-    );
+    });
   }
 
   reloadData() {

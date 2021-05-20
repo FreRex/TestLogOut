@@ -17,11 +17,7 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
   <!-- Commissions Table -->
-  <app-generic-table
-    [inputDatas$]="commissions$"
-    [columns]="columns"
-    [desktopItem]="desktopItem"
-  >
+  <app-generic-table [inputDatas$]="commissions$" [columns]="columns" [desktopItem]="desktopItem">
     <ng-template #desktopItem let-data="data">
       <!-- Commissions Table Item -->
       <app-commission-table-item

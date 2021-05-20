@@ -6,8 +6,8 @@ import { GalleryPage } from './gallery.page';
 const routes: Routes = [
   {
     path: '',
-    component: GalleryPage
-  }
+    component: GalleryPage,
+  },
 ];
 
 @NgModule({

@@ -27,6 +27,19 @@ export class RoomsPage implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.loadingController
+      .create({ keyboardClose: true, message: 'Loading Rooms...' })
+      .then((loadingEl) => {
+        loadingEl.present();
+        this.roomService
+          .loadRooms()
+          // .pipe(shareReplay({ refCount: true, bufferSize: 1 }), takeUntil(this.destroy$))
+          .subscribe((rooms) => {
+            console.log('🐱‍👤 : RoomsPage : rooms', rooms);
+            loadingEl.dismiss();
+          });
+      });
+
     // let users: User[];
     // this.loadingController
     //   .create({ keyboardClose: true, message: 'Loading...' })

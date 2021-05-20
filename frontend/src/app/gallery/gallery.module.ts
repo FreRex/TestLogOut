@@ -9,12 +9,7 @@ import { GalleryPageRoutingModule } from './gallery-routing.module';
 import { GalleryPage } from './gallery.page';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    GalleryPageRoutingModule
-  ],
-  declarations: [GalleryPage]
+  imports: [CommonModule, FormsModule, IonicModule, GalleryPageRoutingModule],
+  declarations: [GalleryPage],
 })
 export class GalleryPageModule {}

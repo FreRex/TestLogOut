@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
-import { catchError, first, map, switchMap, take, tap } from 'rxjs/operators';
+import { catchError, map, switchMap, take, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 
 export interface UserData {
@@ -23,8 +23,7 @@ export interface User {
   collaudatoreufficio: string;
   username: string;
   password: string;
-  idautorizzazione: number;
-  autorizzazione: string;
+  autorizzazione: number;
   idcommessa: number;
   commessa: string;
 }
@@ -52,44 +51,21 @@ export class UserService {
       map((users) =>
         users.filter(
           (user) =>
-            user.collaudatoreufficio
-              .toLowerCase()
-              .includes(query.toLowerCase()) ||
-            user.commessa
-              .toString()
-              .toLowerCase()
-              .includes(query.toLowerCase()) ||
-            user.username
-              .toString()
-              .toLowerCase()
-              .includes(query.toLowerCase()) ||
+            user.collaudatoreufficio.toString().toLowerCase().includes(query.toLowerCase()) ||
+            user.commessa.toString().toLowerCase().includes(query.toLowerCase()) ||
+            user.username.toString().toLowerCase().includes(query.toLowerCase()) ||
             user.id.toString().toLowerCase().includes(query.toLowerCase())
         )
       )
     );
   }
 
-  getUserIdByName(name: string) {
-    //TODO: probabilmente c'è un modo più elegante
-    let userID: number;
-    this.users$
-      .pipe(
-        take(1),
-        map((users: User[]) => {
-          return { ...users.find((user) => user.collaudatoreufficio === name) };
-        })
-      )
-      .subscribe((user) => (userID = user.id));
-    return userID;
-  }
-
-  getUserByCod(cod: string) {
-    return this.users$.pipe(first((user) => user['idutcas'] === cod));
-  }
-
   /** SELECT utenti */
   loadUsers(): Observable<User[]> {
     return this.http.get<UserData[]>(`${environment.apiUrl}/s/utenti/`).pipe(
+      catchError((err) => {
+        return throwError(err);
+      }),
       // <-- Rimappa i dati che arrivano dal server sull'interfaccia della Room
       map((data) => {
         const users: User[] = [];
@@ -102,10 +78,7 @@ export class UserService {
               collaudatoreufficio: data[key].collaudatoreufficio,
               username: data[key].username,
               password: data[key].password,
-              idautorizzazione: data[key].autorizzazioni,
-              autorizzazione: this.getAutorizzazioneById(
-                +data[key].autorizzazioni
-              ),
+              autorizzazione: data[key].autorizzazioni,
               idcommessa: data[key].idcommessa,
               commessa: data[key].commessa,
             });
@@ -119,30 +92,15 @@ export class UserService {
     );
   }
 
-  getAutorizzazioneById(idautorizzazione: number) {
-    switch (idautorizzazione) {
-      case 1:
-        return 'admin';
-      case 2:
-        return 'user';
-      case 3:
-        return 'supervisor';
-      default:
-        return 'user';
-    }
-  }
-
   /** CREATE utenti */
   addUser(
     collaudatoreufficio: string,
     username: string,
     password: string,
-    idautorizzazione: number,
+    autorizzazione: number,
     idcommessa: number,
     commessa: string
   ) {
-    console.log();
-
     let updatedUsers: User[];
     const newUser = {
       id: null,
@@ -151,8 +109,7 @@ export class UserService {
       collaudatoreufficio: collaudatoreufficio,
       username: username,
       password: password,
-      idautorizzazione: idautorizzazione,
-      autorizzazione: this.getAutorizzazioneById(+idautorizzazione),
+      autorizzazione: autorizzazione,
       idcommessa: idcommessa,
       commessa: commessa,
     };
@@ -164,7 +121,7 @@ export class UserService {
           collaudatoreufficio: collaudatoreufficio,
           username: username,
           password: password,
-          autorizzazioni: +idautorizzazione,
+          autorizzazioni: autorizzazione,
           idcommessa: +idcommessa,
         });
       }),
@@ -189,13 +146,12 @@ export class UserService {
     collaudatoreufficio: string,
     username: string,
     password: string,
-    idautorizzazione: number,
+    autorizzazione: number,
     idcommessa: number,
     commessa: string
   ) {
     let updatedUsers: User[];
-    console.log(idautorizzazione);
-    console.log(this.getAutorizzazioneById(+idautorizzazione));
+    console.log(autorizzazione);
 
     return this.users$.pipe(
       take(1),
@@ -210,8 +166,7 @@ export class UserService {
           collaudatoreufficio: collaudatoreufficio,
           username: username,
           password: password,
-          idautorizzazione: idautorizzazione,
-          autorizzazione: this.getAutorizzazioneById(+idautorizzazione),
+          autorizzazione: autorizzazione,
           idcommessa: idcommessa,
           commessa: commessa,
         };
@@ -220,7 +175,7 @@ export class UserService {
           collaudatoreufficio: collaudatoreufficio,
           username: username,
           password: password,
-          autorizzazioni: +idautorizzazione,
+          autorizzazioni: autorizzazione,
           idcommessa: +idcommessa,
         });
       }),

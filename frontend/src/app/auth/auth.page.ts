@@ -1,8 +1,8 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AlertController, LoadingController } from '@ionic/angular';
-import { Observable, Subject } from 'rxjs';
+import { Observable } from 'rxjs';
 
 import { AuthService } from './auth.service';
 
@@ -11,7 +11,7 @@ import { AuthService } from './auth.service';
   templateUrl: './auth.page.html',
   styleUrls: ['./auth.page.scss'],
 })
-export class AuthPage implements OnInit, OnDestroy {
+export class AuthPage implements OnInit {
   isLogin: boolean = true;
 
   form: FormGroup = this.fb.group({
@@ -34,40 +34,27 @@ export class AuthPage implements OnInit, OnDestroy {
       return;
     }
 
-    this.loadingCtrl
-      .create({ keyboardClose: true, message: 'Logging in..' })
-      .then((loadingEl) => {
-        loadingEl.present();
-        let authObs: Observable<any>;
-        if (this.isLogin) {
-          authObs = this.authService.login(
-            this.form.value.username,
-            this.form.value.password
-          );
-        } else {
-          authObs = this.authService.signup(
-            this.form.value.username,
-            this.form.value.password
-          );
+    this.loadingCtrl.create({ keyboardClose: true, message: 'Logging in..' }).then((loadingEl) => {
+      loadingEl.present();
+      let authObs: Observable<any>;
+      if (this.isLogin) {
+        authObs = this.authService.login(this.form.value.username, this.form.value.password);
+      } else {
+        authObs = this.authService.signup(this.form.value.username, this.form.value.password);
+      }
+      authObs.subscribe(
+        (res) => {
+          this.form.reset();
+          loadingEl.dismiss();
+          this.router.navigateByUrl('/rooms');
+        },
+        (err) => {
+          this.form.reset();
+          loadingEl.dismiss();
+          this.showAlert(err);
         }
-        authObs
-          // .pipe(
-          //   shareReplay({ refCount: true, bufferSize: 1 }),
-          //   takeUntil(this.destroy$)
-          // )
-          .subscribe(
-            (res) => {
-              this.form.reset();
-              loadingEl.dismiss();
-              this.router.navigateByUrl('/rooms');
-            },
-            (err) => {
-              this.form.reset();
-              loadingEl.dismiss();
-              this.showAlert(err);
-            }
-          );
-      });
+      );
+    });
   }
 
   private showAlert(message: string) {
@@ -78,10 +65,5 @@ export class AuthPage implements OnInit, OnDestroy {
         buttons: ['Okay'],
       })
       .then((alertEl) => alertEl.present());
-  }
-
-  destroy$ = new Subject();
-  ngOnDestroy() {
-    this.destroy$.next();
   }
 }

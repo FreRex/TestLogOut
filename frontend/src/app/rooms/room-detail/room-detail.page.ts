@@ -1,10 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import {
-  AlertController,
-  ModalController,
-  NavController,
-} from '@ionic/angular';
+import { AlertController, ModalController, NavController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { Room, RoomService } from '../room.service';
 

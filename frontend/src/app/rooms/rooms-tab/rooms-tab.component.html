@@ -17,17 +17,10 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
   <!-- Rooms Table -->
-  <app-generic-table
-    [inputDatas$]="rooms$"
-    [columns]="columns"
-    [desktopItem]="desktopItem"
-  >
+  <app-generic-table [inputDatas$]="rooms$" [columns]="columns" [desktopItem]="desktopItem">
     <ng-template #desktopItem let-data="data">
       <!-- Rooms Table Item -->
-      <app-rooms-table-item
-        [room]="data"
-        [columns]="columns"
-      ></app-rooms-table-item>
+      <app-rooms-table-item [room]="data" [columns]="columns"></app-rooms-table-item>
     </ng-template>
   </app-generic-table>
 </div>

@@ -25,12 +25,7 @@
               </ion-button>
           </div> -->
       <!-- </ion-item> -->
-      <ng-container
-        *ngTemplateOutlet="
-          mobileItem ? mobileItem : null;
-          context: { data: data }
-        "
-      >
+      <ng-container *ngTemplateOutlet="mobileItem ? mobileItem : null; context: { data: data }">
       </ng-container>
       <!-- </ion-item-sliding> -->
     </ion-col>
