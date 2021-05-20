@@ -22,12 +22,12 @@ exports.checkLogin = (req: any, res: any, next: any) => {
     const db = require('../conf/db'); 
 
     if(pkproject==0){
-      select = "SELECT id AS idutente, idcommessa AS commessa, autorizzazioni AS autorizzazione FROM utenti WHERE username = ? AND password = ?";
+      select = "SELECT id AS idutente, idcommessa AS commessa, autorizzazioni AS autorizzazione, utenti.idutcas AS idutcas FROM utenti WHERE username = ? AND password = ?";
       datiDb = [usr, pwd];
     }
     else
     {
-      select = "SELECT utenti.id AS idutente, utenti.idcommessa AS commessa, utenti.autorizzazioni AS autorizzazione, utenti.username, utenti.password, multistreaming.collaudatoreufficio, multistreaming.cod FROM utenti INNER JOIN multistreaming ON multistreaming.collaudatoreufficio = utenti.id WHERE utenti.username = ? AND utenti.password = ? AND multistreaming.cod = ?";
+      select = "SELECT utenti.id AS idutente, utenti.idcommessa AS commessa, utenti.autorizzazioni AS autorizzazione, utenti.username, utenti.password, multistreaming.collaudatoreufficio, multistreaming.cod, utenti.idutcas AS idutcas FROM utenti INNER JOIN multistreaming ON multistreaming.collaudatoreufficio = utenti.id WHERE utenti.username = ? AND utenti.password = ? AND multistreaming.cod = ?";
       datiDb = [usr, pwd, pkproject];
     }    
     
@@ -36,7 +36,7 @@ exports.checkLogin = (req: any, res: any, next: any) => {
           console.log('Credenziali presenti.');         
                    
           const jwt = require('.././middleware/jwt'); 
-          let token: any = jwt.setToken(usr,pwd,result[0]['idutente'],result[0]['commessa'],result[0]['autorizzazione']);
+          let token: any = jwt.setToken(usr,pwd,result[0]['idutente'],result[0]['commessa'],result[0]['autorizzazione'],result[0]['idutcas'],);
           let payload = jwt.getPayload(token);
           
           if(pkproject==0){
