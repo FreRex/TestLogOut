@@ -8,6 +8,7 @@ exports.getSelect = (req, res, next) => {
     let id;
     let idutcas;
     let idWh;
+    let idroom;
     let pagGall;
     //-------------------------
     //Verifica parametri
@@ -25,6 +26,12 @@ exports.getSelect = (req, res, next) => {
     }
     else {
         idutcas = '';
+    }
+    if (typeof (req.params.idroom) !== 'undefined' && validator.isNumeric(req.params.idroom) && (req.params.idroom) != 0 && (req.params.idroom) != '') {
+        idroom = req.params.idroom;
+    }
+    else {
+        idroom = '';
     }
     if (typeof (req.params.pagGall) !== 'undefined' && validator.isNumeric(req.params.pagGall) && (req.params.pagGall) != 0 && (req.params.pagGall) != '') {
         pagGall = req.params.pagGall;
@@ -92,7 +99,11 @@ exports.getSelect = (req, res, next) => {
             else {
                 paginit = pagGall * numberFotoPage;
             }
-            sql = 'SELECT id, progettoselezionato, collaudatoreufficio, dataimg, nameimg, latitu, longitu, nomelemento, noteimg, onlynota, TO_BASE64(img) FROM collaudolive ORDER BY id DESC limit ' + paginit + ',' + numberFotoPage;
+            //sql = 'SELECT id, progettoselezionato, collaudatoreufficio, dataimg, nameimg, latitu, longitu, nomelemento, noteimg, onlynota, TO_BASE64(img) FROM collaudolive ORDER BY id DESC limit '+paginit+',' +numberFotoPage   
+            //sql = 'SELECT id, progettoselezionato, collaudatoreufficio, dataimg, nameimg, latitu, longitu, nomelemento, noteimg, onlynota, TO_BASE64(img) FROM collaudolive WHERE ORDER BY id DESC limit '+paginit+',' +numberFotoPage   
+            //sql = 'SELECT collaudolive.id, collaudolive.progettoselezionato, collaudolive.collaudatoreufficio, collaudolive.dataimg, collaudolive.nameimg, collaudolive.latitu, collaudolive.longitu, collaudolive.nomelemento, collaudolive.noteimg, collaudolive.onlynota, TO_BASE64(collaudolive.img), rappre_prog_gisfo.pk_proj AS pk_proj FROM collaudolive INNER JOIN rappre_prog_gisfo ON collaudolive.progettoselezionato = rappre_prog_gisfo.nome WHERE rappre_prog_gisfo.pk_proj = '+pkPrj+' ORDER BY id DESC limit '+paginit+',' +numberFotoPage 
+            //sql = 'SELECT collaudolive.progettoselezionato, multistreaming.progettoselezionato, collaudolive.id, multistreaming.id FROM collaudolive INNER JOIN multistreaming ON collaudolive.progettoselezionato = multistreaming.progettoselezionato WHERE multistreaming.id = 1106  ORDER BY id DESC limit '+paginit+',' +numberFotoPage
+            sql = 'SELECT collaudolive.id, collaudolive.progettoselezionato, collaudolive.collaudatoreufficio, collaudolive.dataimg, collaudolive.nameimg, collaudolive.latitu, collaudolive.longitu, collaudolive.nomelemento, collaudolive.noteimg, collaudolive.onlynota, TO_BASE64(collaudolive.img), multistreaming.progettoselezionato, multistreaming.id FROM collaudolive INNER JOIN multistreaming ON collaudolive.progettoselezionato = multistreaming.progettoselezionato WHERE multistreaming.id = ' + idroom + ' ORDER BY collaudolive.id DESC limit ' + paginit + ',' + numberFotoPage;
             break;
     }
     //----------------------------------
