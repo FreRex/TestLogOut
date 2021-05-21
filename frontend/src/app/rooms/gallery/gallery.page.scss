@@ -1,0 +1,36 @@
+
+.card-title{
+    box-shadow: none;
+    .backTitle{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        
+        .title{
+            text-transform: uppercase;
+            font-weight: bolder;
+            color: var(--ion-color-dark);
+            transform: translateY(-3px);
+        }
+    }
+}
+.btn-trasparent{
+    color: var(--ion-color-medium);
+    --background: none;
+    text-transform: lowercase;
+}
+.foto-thumbnail{
+    --size: 100px;
+    margin: 0 auto;
+}
+.icons{
+    display: flex;
+    flex-direction: row;
+    align-items: center;  
+    justify-content: flex-end;
+}
+.image-container{
+    background-size: cover;
+    min-height: 160px;
+    min-width: 160px;
+}

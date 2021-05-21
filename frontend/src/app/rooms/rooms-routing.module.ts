@@ -10,6 +10,14 @@ const routes: Routes = [
     component: RoomsPage
   },
   {
+    path: 'gallery/:id/:proj',
+    loadChildren: () => import('./gallery/gallery.module').then( m => m.GalleryPageModule)
+  },
+  {
+    path: 'conference',
+    loadChildren: () => import('./conference/conference.module').then( m => m.ConferencePageModule)
+  },
+  {
     path: ':roomId',
     loadChildren: () => import('./room-detail/room-detail.module').then(m => m.RoomDetailPageModule),
     canLoad: [AuthGuard]

@@ -31,4 +31,8 @@ export class RoomsTableItemComponent extends GenericRoomItemComponent {
       toastController
     );
   }
+
+  openMedia(id:number,proj:string){
+    this.router.navigate([`/rooms/gallery/${id}/${proj}`])
+  }
 }

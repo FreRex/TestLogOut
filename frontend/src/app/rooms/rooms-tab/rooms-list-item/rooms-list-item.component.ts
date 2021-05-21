@@ -29,4 +29,8 @@ export class RoomsListItemComponent extends GenericRoomItemComponent {
     );
   }
 
+  openMedia(id:number,proj:string){
+    this.router.navigate([`/rooms/gallery/${id}/${proj}`])
+  }
+  
 }

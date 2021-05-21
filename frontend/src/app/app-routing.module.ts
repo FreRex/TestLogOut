@@ -21,15 +21,7 @@ const routes: Routes = [
   {
     path: 'admin',
     loadChildren: () => import('./admin/admin.module').then(m => m.AdminPageModule)
-  },  {
-    path: 'gallery',
-    loadChildren: () => import('./gallery/gallery.module').then( m => m.GalleryPageModule)
   },
-  {
-    path: 'conference',
-    loadChildren: () => import('./conference/conference.module').then( m => m.ConferencePageModule)
-  },
-
 ];
 
 @NgModule({
