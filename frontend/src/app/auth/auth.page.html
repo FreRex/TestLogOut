@@ -17,49 +17,7 @@
       size-xs="11"
       offset-xs="0.5"
     >
-      <div class="login-label">Login</div>
-
-      <div class="form-container">
-        <form [formGroup]="form" class="form-fields">
-          <div class="user-label">USER</div>
-          <ion-item
-            [ngClass]="!form.get('username').valid && form.get('username').touched ? 'invalid' : ''"
-          >
-            <ion-label position="floating">Nome Utente</ion-label>
-            <ion-input
-              type="text"
-              formControlName="username"
-              (keyup.enter)="authenticate()"
-            ></ion-input>
-          </ion-item>
-          <div *ngIf="!form.get('username').valid && form.get('username').touched" lines="none">
-            <ion-text>Inserire un nome utente!</ion-text>
-          </div>
-          <ion-item
-            [ngClass]="!form.get('password').valid && form.get('password').touched ? 'invalid' : ''"
-          >
-            <ion-label position="floating">Password</ion-label>
-            <ion-input
-              type="text"
-              formControlName="password"
-              (keyup.enter)="authenticate()"
-            ></ion-input>
-          </ion-item>
-          <div *ngIf="!form.get('password').valid && form.get('password').touched" lines="none">
-            <ion-text>Inserire una password!</ion-text>
-          </div>
-          <!-- <ion-item *ngIf="!pswCtrl.valid && pswCtrl.touched" lines="none">
-            <ion-label>Inserisci una password!</ion-label>
-          </ion-item> -->
-        </form>
-        <div class="form-button">
-          <ion-button type="submit" (click)="authenticate()"
-            ><ion-icon name="arrow-forward-sharp" slot="icon-only"></ion-icon
-          ></ion-button>
-          <!-- <ion-button type="button" expand="block" fill="clear" (click)="isLogin = !isLogin">Switch to {{isLogin ?
-              "Sign Up" : "Login"}}</ion-button> -->
-        </div>
-      </div>
+      <app-login></app-login>
     </ion-col>
   </ion-row>
 </ion-content>

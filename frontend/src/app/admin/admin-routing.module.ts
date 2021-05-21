@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
+
 import { AdminPage } from './admin.page';
+import { CommissionTabComponent } from './commission-tab/commission-tab.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ProjectsTabComponent } from './projects-tab/projects-tab.component';
-import { RoomsTabComponent } from '../rooms/rooms-tab/rooms-tab.component';
 import { UsersTabComponent } from './users-tab/users-tab.component';
-import { CommissionTabComponent } from './commission-tab/commission-tab.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/admin/tabs/dashboard', pathMatch: 'full' },
