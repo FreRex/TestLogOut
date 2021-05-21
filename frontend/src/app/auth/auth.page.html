@@ -1,50 +1,65 @@
-<!-- <ion-header>
+<ion-header>
   <ion-toolbar>
     <ion-title>Login</ion-title>
   </ion-toolbar>
-</ion-header> -->
+</ion-header>
 
-<ion-content class="ion-padding">
-  <img class="logo" src="../../assets/chat-operativa-round.png" alt="Logo provvisorio" />
-  <form [formGroup]="form">
-    <ion-grid>
-      <ion-row>
-        <ion-col size="12" size-sm="4" offset-sm="4" class="ion-text-center">
-          <ion-card class="ion-padding">
-            <ion-card-header>
-              <ion-card-title>Smartcollaudo 2.0</ion-card-title>
-              <ion-card-subtitle>Login</ion-card-subtitle>
-            </ion-card-header>
-            <ion-card-content>
-              <ion-list>
-                <ion-item>
-                  <ion-label position="floating">Username</ion-label>
-                  <ion-input type="text" formControlName="username"> </ion-input>
-                </ion-item>
-                <!-- <ion-item *ngIf="!userCtrl.valid && userCtrl.touched" lines="none">
-                  <ion-label>Inserisci un username!</ion-label>
-                </ion-item> -->
+<ion-content>
+  <!-- <img class="logo" src="../../assets/chat-operativa-round.png" alt="Logo provvisorio" /> -->
+  <ion-row class="centered">
+    <ion-col
+      size-lg="3"
+      offset-lg="4.5"
+      size-md="5"
+      offset-md="3.5"
+      size-sm="7"
+      offset-sm="2.5"
+      size-xs="11"
+      offset-xs="0.5"
+    >
+      <div class="login-label">Login</div>
 
-                <ion-item>
-                  <ion-label position="floating">Password</ion-label>
-                  <ion-input type="text" formControlName="password"> </ion-input>
-                </ion-item>
-                <!-- <ion-item *ngIf="!pswCtrl.valid && pswCtrl.touched" lines="none">
-                  <ion-label>Inserisci una password!</ion-label>
-                </ion-item> -->
-              </ion-list>
-
-              <div class="ion-padding-top">
-                <ion-button type="submit" expand="block" (click)="authenticate()"
-                  >{{isLogin ? "Login" : "Sign Up"}}
-                </ion-button>
-                <!-- <ion-button type="button" expand="block" fill="clear" (click)="isLogin = !isLogin">Switch to {{isLogin ?
-                  "Sign Up" : "Login"}}</ion-button> -->
-              </div>
-            </ion-card-content>
-          </ion-card>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-  </form>
+      <div class="form-container">
+        <form [formGroup]="form" class="form-fields">
+          <div class="user-label">USER</div>
+          <ion-item
+            [ngClass]="!form.get('username').valid && form.get('username').touched ? 'invalid' : ''"
+          >
+            <ion-label position="floating">Nome Utente</ion-label>
+            <ion-input
+              type="text"
+              formControlName="username"
+              (keyup.enter)="authenticate()"
+            ></ion-input>
+          </ion-item>
+          <div *ngIf="!form.get('username').valid && form.get('username').touched" lines="none">
+            <ion-text>Inserire un nome utente!</ion-text>
+          </div>
+          <ion-item
+            [ngClass]="!form.get('password').valid && form.get('password').touched ? 'invalid' : ''"
+          >
+            <ion-label position="floating">Password</ion-label>
+            <ion-input
+              type="text"
+              formControlName="password"
+              (keyup.enter)="authenticate()"
+            ></ion-input>
+          </ion-item>
+          <div *ngIf="!form.get('password').valid && form.get('password').touched" lines="none">
+            <ion-text>Inserire una password!</ion-text>
+          </div>
+          <!-- <ion-item *ngIf="!pswCtrl.valid && pswCtrl.touched" lines="none">
+            <ion-label>Inserisci una password!</ion-label>
+          </ion-item> -->
+        </form>
+        <div class="form-button">
+          <ion-button type="submit" (click)="authenticate()"
+            ><ion-icon name="arrow-forward-sharp" slot="icon-only"></ion-icon
+          ></ion-button>
+          <!-- <ion-button type="button" expand="block" fill="clear" (click)="isLogin = !isLogin">Switch to {{isLogin ?
+              "Sign Up" : "Login"}}</ion-button> -->
+        </div>
+      </div>
+    </ion-col>
+  </ion-row>
 </ion-content>

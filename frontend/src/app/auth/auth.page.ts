@@ -15,8 +15,8 @@ export class AuthPage implements OnInit {
   isLogin: boolean = true;
 
   form: FormGroup = this.fb.group({
-    username: [null, [Validators.required]],
-    password: [null, [Validators.required]],
+    username: ['', { validators: [Validators.required] /* , updateOn: 'blur' */ }],
+    password: ['', { validators: Validators.required /* , updateOn: 'blur' */ }],
   });
 
   constructor(
@@ -30,6 +30,8 @@ export class AuthPage implements OnInit {
   ngOnInit() {}
 
   authenticate() {
+    console.log('gg');
+
     if (!this.form.valid) {
       return;
     }
@@ -49,7 +51,6 @@ export class AuthPage implements OnInit {
           this.router.navigateByUrl('/rooms');
         },
         (err) => {
-          this.form.reset();
           loadingEl.dismiss();
           this.showAlert(err);
         }
