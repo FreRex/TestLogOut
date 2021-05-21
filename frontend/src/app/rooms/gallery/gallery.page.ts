@@ -10,7 +10,6 @@ import { MediaServiceService } from './media-service.service';
   styleUrls: ['./gallery.page.scss'],
 })
 export class GalleryPage implements OnInit {
-
   galleryType = 'foto';
   roomId: string;
   roomName: string;
@@ -18,48 +17,40 @@ export class GalleryPage implements OnInit {
     private mediaServ: MediaServiceService,
     private activatedRoute: ActivatedRoute,
     private toastController: ToastController,
-    public router: Router,
-  ) { }
+    public router: Router
+  ) {}
 
   ngOnInit() {
-    this.activatedRoute.paramMap.subscribe(
-      (pM: ParamMap)=>{
-        this.roomId = pM.get('id')
-        this.roomName = pM.get('proj')
-        console.log(this.roomId);
-        console.log(this.roomName);
-        
-        this.mediaServ.loadMedia(this.roomId);
-      }
-    )
+    this.activatedRoute.paramMap.subscribe((pM: ParamMap) => {
+      this.roomId = pM.get('id');
+      this.roomName = pM.get('proj');
+      console.log(this.roomId);
+      console.log(this.roomName);
+
+      this.mediaServ.loadMedia(this.roomId);
+    });
     this.mediaServ.checkDownload(this.roomName);
   }
 
-  toRoomPage(){
-    this.router.navigate([`/rooms`])
+  toRoomPage() {
+    this.router.navigate([`/rooms`]);
   }
 
   downloadFoto() {
-  
     const nomeProgetto = this.roomName.trim().replace(' ', '');
-    this.mediaServ.checkDownload(nomeProgetto).subscribe(
-      (value: boolean) => {
-        if (value) {
-          const link = document.createElement('a');
+    this.mediaServ.checkDownload(nomeProgetto).subscribe((value: boolean) => {
+      if (value) {
+        const link = document.createElement('a');
 
-          link.setAttribute('href', `${environment.apiUrl}/downloadzip/${nomeProgetto}`);
-          link.setAttribute('download', `${nomeProgetto}.zip`);
-          document.body.appendChild(link);
-          link.click();
-          link.remove();
-        }
-        else {
-          this.presentToast(`Non ci sono foto sul progetto ${nomeProgetto}!`, 'danger')
-        }
-
+        link.setAttribute('href', `${environment.apiUrl}/downloadzip/${nomeProgetto}`);
+        link.setAttribute('download', `${nomeProgetto}.zip`);
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+      } else {
+        this.presentToast(`Non ci sono foto sul progetto ${nomeProgetto}!`, 'danger');
       }
-    )
-
+    });
   }
 
   async presentToast(message: string, color?: string, duration?: number) {
@@ -68,10 +59,9 @@ export class GalleryPage implements OnInit {
       color: color ? color : 'secondary',
       duration: duration ? duration : 2000,
       cssClass: 'custom-toast',
-    })
+    });
     // FIX: si può fare in entrambi i modi, qual'è il più giusto?
     // .then(toastEl => toastEl.present());
     toast.present();
   }
-
 }

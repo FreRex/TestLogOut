@@ -24,7 +24,7 @@ export class RoomsTableItemComponent extends GenericRoomItemComponent {
     super(router, roomsService, authService, alertController, modalController, toastController);
   }
 
-  openMedia(id:number,proj:string){
-    this.router.navigate([`/rooms/gallery/${id}/${proj}`])
+  openMedia(id: number, proj: string) {
+    this.router.navigate([`/rooms/gallery/${id}/${proj}`]);
   }
 }

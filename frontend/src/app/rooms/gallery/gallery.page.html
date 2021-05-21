@@ -10,53 +10,52 @@
 </ion-header>
 
 <ion-content padding>
-<!-- CARD TEMPORANEA TITOLO PROGETTO E BTN -->
+  <!-- CARD TEMPORANEA TITOLO PROGETTO E BTN -->
   <ion-card class="card-title">
     <div class="backTitle">
       <ion-button class="btn-trasparent ion-no-padding" (click)="toRoomPage()">
-      <ion-icon name="chevron-back-outline" size="large" slot="icon-only" class="ion-margin"></ion-icon>
-    </ion-button>
+        <ion-icon
+          name="chevron-back-outline"
+          size="large"
+          slot="icon-only"
+          class="ion-margin"
+        ></ion-icon>
+      </ion-button>
       <div>
         <h6 class="title">{{roomName}}</h6>
       </div>
     </div>
 
-    
     <div class="icons">
       <ion-button class="btn-trasparent ion-no-padding">
-      <ion-icon class="ion-margin" name="map" size="large" slot="icon-only"></ion-icon>
-    </ion-button>
+        <ion-icon class="ion-margin" name="map" size="large" slot="icon-only"></ion-icon>
+      </ion-button>
       <ion-button class="btn-trasparent ion-no-padding" (click)="downloadFoto()">
         <ion-icon class="ion-margin" name="cloud-download" size="large" slot="icon-only"></ion-icon>
       </ion-button>
       <ion-button class="btn-trasparent ion-no-padding">
-      <ion-icon class="ion-margin" name="trash" size="large" slot="icon-only"></ion-icon>
+        <ion-icon class="ion-margin" name="trash" size="large" slot="icon-only"></ion-icon>
       </ion-button>
     </div>
   </ion-card>
   <!--  -->
-  
+
   <ion-segment [(ngModel)]="galleryType" color="primary" class="ion-padding">
-    <ion-segment-button value="foto">
-      Foto
-    </ion-segment-button>
-    <ion-segment-button value="files">
-      Files
-    </ion-segment-button>
+    <ion-segment-button value="foto"> Foto </ion-segment-button>
+    <ion-segment-button value="files"> Files </ion-segment-button>
   </ion-segment>
 
-  <div [ngSwitch] = "galleryType">
+  <div [ngSwitch]="galleryType">
     <ion-grid *ngSwitchCase="'foto'">
       <ion-row>
-        <ion-col  *ngFor="let foto of [1,2,3,4,5,6]">
-<!--           <div class="image-container" [style.background-image]="'url(../assets/testFoto/'+foto+'.jpg)'">
+        <ion-col *ngFor="let foto of [1,2,3,4,5,6]">
+          <!--           <div class="image-container" [style.background-image]="'url(../assets/testFoto/'+foto+'.jpg)'">
           </div> -->
           <ion-thumbnail class="foto-thumbnail">
-            <img [style.background-image]="'url(../assets/testFoto/'+foto+'.jpg)'">
+            <img [style.background-image]="'url(../assets/testFoto/'+foto+'.jpg)'" />
           </ion-thumbnail>
         </ion-col>
       </ion-row>
     </ion-grid>
   </div>
-
 </ion-content>

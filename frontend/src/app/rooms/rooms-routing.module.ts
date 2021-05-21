@@ -11,11 +11,12 @@ const routes: Routes = [
   },
   {
     path: 'gallery/:id/:proj',
-    loadChildren: () => import('./gallery/gallery.module').then( m => m.GalleryPageModule)
+    loadChildren: () => import('./gallery/gallery.module').then((m) => m.GalleryPageModule),
   },
   {
     path: 'conference',
-    loadChildren: () => import('./conference/conference.module').then( m => m.ConferencePageModule)
+    loadChildren: () =>
+      import('./conference/conference.module').then((m) => m.ConferencePageModule),
   },
   {
     path: ':roomId',
