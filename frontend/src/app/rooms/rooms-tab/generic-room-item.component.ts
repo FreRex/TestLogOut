@@ -1,11 +1,13 @@
-import { Component, Injectable, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController, IonItemSliding, ModalController, ToastController } from '@ionic/angular';
+import { take } from 'rxjs/operators';
 import { AuthService } from 'src/app/auth/auth.service';
-import { EditRoomModalComponent } from './edit-room-modal/edit-room-modal.component';
+import { environment } from 'src/environments/environment';
+
 import { Room, RoomService } from '../room.service';
 import { CreateRoomModalComponent } from './create-room-modal/create-room-modal.component';
-import { environment } from 'src/environments/environment';
+import { EditRoomModalComponent } from './edit-room-modal/edit-room-modal.component';
 
 @Component({
   selector: 'app-generic-room-item',
@@ -83,7 +85,7 @@ export class GenericRoomItemComponent implements OnInit {
     if (slidingItem) slidingItem.close();
     if (room) this.room = room;
 
-    this.authService.currentUser$.subscribe((currentUser) => {
+    this.authService.currentUser$.pipe(take(1)).subscribe((currentUser) => {
       this.linkProgetto =
         this.baseUrl +
         this.room.pk_project +

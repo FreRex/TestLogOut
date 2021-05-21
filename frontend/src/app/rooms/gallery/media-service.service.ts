@@ -1,11 +1,8 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable, OnInit } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { AuthService } from '../../auth/auth.service';
-import { ajax } from 'rxjs/ajax';
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 
-
+import { AuthService } from '../../auth/auth.service';
 
 export interface Foto {
   id: number;
@@ -21,44 +18,24 @@ export interface Foto {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-export class MediaServiceService{
-
+export class MediaServiceService {
   fotoData: Foto;
 
-  constructor(
-    private http: HttpClient,
-    private authService: AuthService
-  ) { }
+  constructor(private http: HttpClient, private authService: AuthService) {}
 
-  loadMedia(id:string){
-    return this.http
-    .get(
-      `${environment.apiUrl}/s/galleria/0/0/${id}/1`,
-    ).subscribe(
-      res =>{
-        console.log(res);
-      }
-    ) 
+  loadMedia(id: string) {
+    return this.http.get(`${environment.apiUrl}/s/galleria/0/0/${id}/1`).subscribe((res) => {
+      console.log(res);
+    });
   }
 
   checkDownload(nomeProgetto: string) {
-    return this.http.get(
-      `${environment.apiUrl}/checkdownloadzip/${nomeProgetto}`,
-      { headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`) });
-  }
-  
-  downloadFoto(nomeProgetto: string) {
-    return this.http.get(
-      `${environment.apiUrl}/downloadzip/${nomeProgetto}`,
-      {
-        // responseType: 'arraybuffer',
-        // reportProgress: true,
-        // observe: 'events',
-        headers: new HttpHeaders().set('Authorization', `Bearer ${this.authService.token}`)
-      }
-    );
+    return this.http.get(`${environment.apiUrl}/checkdownloadzip/${nomeProgetto}`);
   }
 
+  downloadFoto(nomeProgetto: string) {
+    return this.http.get(`${environment.apiUrl}/downloadzip/${nomeProgetto}`);
+  }
 }

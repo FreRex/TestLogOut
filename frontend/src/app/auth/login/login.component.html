@@ -7,7 +7,7 @@
       [ngClass]="!form.get('username').valid && form.get('username').touched ? 'invalid' : ''"
     >
       <ion-label position="floating">Nome Utente</ion-label>
-      <ion-input type="text" formControlName="username" (keyup.enter)="authenticate()"></ion-input>
+      <ion-input type="text" formControlName="username"></ion-input>
     </ion-item>
     <div *ngIf="!form.get('username').valid && form.get('username').touched" lines="none">
       <ion-text>Inserire un nome utente!</ion-text>
