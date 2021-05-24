@@ -41,6 +41,7 @@ ion-item {
   --background: var(--ion-color-primary);
   --border-color: var(--ion-color-tertiary);
   --highlight-height: 0;
+  align-items: center;
 }
 ion-item.invalid {
   --border-color: var(--ion-color-warning);
@@ -66,8 +67,14 @@ ion-button {
   height: 48px;
   width: 48px;
 }
-ion-icon {
+ion-icon.arrow {
   font-size: 1.4rem;
+  // --ionicon-stroke-width: 32px;
+}
+ion-icon.show-password {
+  font-size: 1.2rem;
+  color: var(--ion-color-tertiary);
+  opacity: 60%;
   // --ionicon-stroke-width: 32px;
 }
 ion-text {
