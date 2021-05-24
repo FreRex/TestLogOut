@@ -5,22 +5,12 @@ exports.getSelect = (req, res, next) => {
     // Definizione variabili
     let table = req.params.table;
     let sql;
-    let id;
     let idutcas;
-    let idWh;
     let idroom;
     let pagGall;
     //-------------------------
     //Verifica parametri
     //-------------------------
-    //if (typeof(req.params.id) !== 'undefined' && Number.isInteger(id) && (req.params.id)!= 0 && (req.params.id)!='') {
-    if (typeof (req.params.idroom) !== 'undefined' && validator.isNumeric(req.params.idroom) && (req.params.idroom) != 0 && (req.params.idroom) != '') {
-        id = req.params.idroom;
-    }
-    else {
-        id = '';
-    }
-    //if (typeof(req.params.collaudatoreufficio) !== 'undefined') {
     if (typeof (req.params.idutcas) !== 'undefined' && (req.params.idutcas) != 0 && (req.params.idutcas) != '') {
         idutcas = req.params.idutcas;
     }
@@ -33,12 +23,21 @@ exports.getSelect = (req, res, next) => {
     else {
         idroom = '';
     }
-    if (typeof (req.params.pagGall) !== 'undefined' && validator.isNumeric(req.params.pagGall) && (req.params.pagGall) != 0 && (req.params.pagGall) != '') {
-        pagGall = req.params.pagGall;
-    }
-    else {
-        pagGall = '';
-    }
+    /*  //if (typeof(req.params.id) !== 'undefined' && Number.isInteger(id) && (req.params.id)!= 0 && (req.params.id)!='') {
+     if (typeof(req.params.idroom) !== 'undefined' && validator.isNumeric(req.params.idroom) && (req.params.idroom)!= 0 && (req.params.idroom)!='') {
+         id = req.params.idroom;
+     }
+     else
+     {
+         id = '';
+     }  */
+    /*  if (typeof(req.params.pagGall) !== 'undefined' && validator.isNumeric(req.params.pagGall) && (req.params.pagGall)!= 0 && (req.params.pagGall)!='') {
+       pagGall = req.params.pagGall;
+     }
+     else
+     {
+       pagGall = '';
+     }  */
     //---------------------
     //Selezione tipo query  
     //---------------------  
@@ -50,7 +49,7 @@ exports.getSelect = (req, res, next) => {
             sql = sql + ' INNER JOIN commesse ON commesse.id = utenti.idcommessa ';
             sql = sql + ' INNER JOIN rappre_prog_gisfo ON rappre_prog_gisfo.nome = multistreaming.progettoselezionato ';
             //"id" sarebbe "idroom"
-            if (id == '') {
+            if (idroom == '') {
                 if (idutcas == '') {
                     sql = sql + "ORDER BY id DESC";
                 }
@@ -65,17 +64,15 @@ exports.getSelect = (req, res, next) => {
                     sql = sql + " utenti.idutcas = (SELECT idutcas FROM `utenti` WHERE `idutcas` = '" + idutcas + "')))";
                     sql = sql + " ORDER BY id DESC";
                 }
-                //res.send(sql)           
             }
             else {
                 if (idutcas == '') {
-                    sql = sql + "WHERE multistreaming.id = " + id + " ORDER BY id DESC";
+                    sql = sql + "WHERE multistreaming.id = " + idroom + " ORDER BY id DESC";
                 }
                 else {
-                    sql = sql + "WHERE multistreaming.id = " + id + " AND utenti.id = " + idutcas + " ORDER BY id DESC";
+                    sql = sql + "WHERE multistreaming.id = " + idroom + " AND utenti.id = " + idutcas + " ORDER BY id DESC";
                 }
             }
-            //res.send(sql)
             break;
         case "utenti":
             //sql='SELECT * FROM utenti ORDER BY id DESC';   
@@ -92,18 +89,17 @@ exports.getSelect = (req, res, next) => {
             break;
         case "galleria":
             const numberFotoPage = 6;
-            let paginit;
-            if (pagGall == 1) {
-                paginit = 0;
+            /* let paginit;
+  
+            if (pagGall==1){
+              paginit = 0;
             }
-            else {
-                paginit = pagGall * numberFotoPage;
-            }
-            //sql = 'SELECT id, progettoselezionato, collaudatoreufficio, dataimg, nameimg, latitu, longitu, nomelemento, noteimg, onlynota, TO_BASE64(img) FROM collaudolive ORDER BY id DESC limit '+paginit+',' +numberFotoPage   
-            //sql = 'SELECT id, progettoselezionato, collaudatoreufficio, dataimg, nameimg, latitu, longitu, nomelemento, noteimg, onlynota, TO_BASE64(img) FROM collaudolive WHERE ORDER BY id DESC limit '+paginit+',' +numberFotoPage   
-            //sql = 'SELECT collaudolive.id, collaudolive.progettoselezionato, collaudolive.collaudatoreufficio, collaudolive.dataimg, collaudolive.nameimg, collaudolive.latitu, collaudolive.longitu, collaudolive.nomelemento, collaudolive.noteimg, collaudolive.onlynota, TO_BASE64(collaudolive.img), rappre_prog_gisfo.pk_proj AS pk_proj FROM collaudolive INNER JOIN rappre_prog_gisfo ON collaudolive.progettoselezionato = rappre_prog_gisfo.nome WHERE rappre_prog_gisfo.pk_proj = '+pkPrj+' ORDER BY id DESC limit '+paginit+',' +numberFotoPage 
-            //sql = 'SELECT collaudolive.progettoselezionato, multistreaming.progettoselezionato, collaudolive.id, multistreaming.id FROM collaudolive INNER JOIN multistreaming ON collaudolive.progettoselezionato = multistreaming.progettoselezionato WHERE multistreaming.id = 1106  ORDER BY id DESC limit '+paginit+',' +numberFotoPage
-            sql = 'SELECT collaudolive.id, collaudolive.progettoselezionato, collaudolive.collaudatoreufficio, collaudolive.dataimg, collaudolive.nameimg, collaudolive.latitu, collaudolive.longitu, collaudolive.nomelemento, collaudolive.noteimg, collaudolive.onlynota, TO_BASE64(collaudolive.img), multistreaming.progettoselezionato, multistreaming.id FROM collaudolive INNER JOIN multistreaming ON collaudolive.progettoselezionato = multistreaming.progettoselezionato WHERE multistreaming.id = ' + idroom + ' ORDER BY collaudolive.id DESC limit ' + paginit + ',' + numberFotoPage;
+            else
+            {
+              paginit = pagGall * numberFotoPage;
+            } */
+            //sql = 'SELECT collaudolive.id, collaudolive.progettoselezionato, collaudolive.collaudatoreufficio, collaudolive.dataimg, collaudolive.nameimg, collaudolive.latitu, collaudolive.longitu, collaudolive.nomelemento, collaudolive.noteimg, collaudolive.onlynota, TO_BASE64(collaudolive.img), multistreaming.progettoselezionato, multistreaming.id FROM collaudolive INNER JOIN multistreaming ON collaudolive.progettoselezionato = multistreaming.progettoselezionato WHERE multistreaming.id = '+ idroom +' ORDER BY collaudolive.id DESC limit '+paginit+',' +numberFotoPage
+            sql = 'SELECT collaudolive.id, collaudolive.progettoselezionato, collaudolive.collaudatoreufficio, collaudolive.dataimg, collaudolive.nameimg, collaudolive.latitu, collaudolive.longitu, collaudolive.nomelemento, collaudolive.noteimg, collaudolive.onlynota, TO_BASE64(collaudolive.img), multistreaming.progettoselezionato, multistreaming.id FROM collaudolive INNER JOIN multistreaming ON collaudolive.progettoselezionato = multistreaming.progettoselezionato WHERE multistreaming.id = ' + idroom + ' ORDER BY collaudolive.id DESC';
             break;
     }
     //----------------------------------
