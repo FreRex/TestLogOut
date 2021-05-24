@@ -6,8 +6,8 @@ import { RoomDetailPage } from './room-detail.page';
 const routes: Routes = [
   {
     path: '',
-    component: RoomDetailPage
-  }
+    component: RoomDetailPage,
+  },
 ];
 
 @NgModule({

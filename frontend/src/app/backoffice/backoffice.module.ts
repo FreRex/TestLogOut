@@ -21,10 +21,7 @@ import { SharedModule } from '../shared/shared.module';
     IonicModule,
     BackofficePageRoutingModule,
   ],
-  declarations: [
-    BackofficePage,
-
-  ],
+  declarations: [BackofficePage],
   entryComponents: [
     CreateProjectModalComponent,
     CreateUserModalComponent,
@@ -32,4 +29,4 @@ import { SharedModule } from '../shared/shared.module';
     EditUserModalComponent,
   ],
 })
-export class BackofficePageModule { }
+export class BackofficePageModule {}

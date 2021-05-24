@@ -11,7 +11,6 @@ import { SyncInfo, SyncService } from './sync.service';
   styleUrls: ['./sync-toast.component.scss'],
 })
 export class SyncToastComponent implements OnInit, OnDestroy {
-
   @ViewChild('bar', { static: true }) bar: ElementRef;
 
   sync: SyncInfo;
@@ -23,32 +22,31 @@ export class SyncToastComponent implements OnInit, OnDestroy {
     private loadingController: LoadingController,
     private projectService: ProjectService,
     private roomService: RoomService
-  ) { }
+  ) {}
 
   ngOnInit() {
-    this.subscription = this.syncService.syncStatus$.subscribe(
-      (sync: SyncInfo) => {
-        this.sync = sync;
-        this.showToast = true;
-        /* Restart Progressbar Animation */
-        // let element = document.getElementById("time-bar");
-        if (this.sync.status === this.syncService.STATUS_IN_CORSO && this.sync.check !== 0) {
-          this.bar.nativeElement.classList.remove("time-bar");
-          this.bar.nativeElement.offsetWidth;
-          this.bar.nativeElement.classList.add("time-bar");
-        }
-      });
+    this.subscription = this.syncService.syncStatus$.subscribe((sync: SyncInfo) => {
+      this.sync = sync;
+      this.showToast = true;
+      /* Restart Progressbar Animation */
+      // let element = document.getElementById("time-bar");
+      if (this.sync.status === this.syncService.STATUS_IN_CORSO && this.sync.check !== 0) {
+        this.bar.nativeElement.classList.remove('time-bar');
+        this.bar.nativeElement.offsetWidth;
+        this.bar.nativeElement.classList.add('time-bar');
+      }
+    });
   }
 
   reloadData() {
     this.loadingController
       .create({ keyboardClose: true, message: 'Loading...' })
-      .then(loadingEl => {
+      .then((loadingEl) => {
         loadingEl.present();
         forkJoin({
           reqProjects: this.projectService.loadProjects(),
           // reqRooms: this.roomService.loadRooms(),
-        }).subscribe(({ reqProjects/* , reqRooms */ }) => {
+        }).subscribe(({ reqProjects /* , reqRooms */ }) => {
           this.sync = null;
           this.showToast = false;
           loadingEl.dismiss();

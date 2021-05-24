@@ -14,7 +14,6 @@ import { User, UserService } from 'src/app/admin/users-tab/user.service';
   styleUrls: ['./users-tab.component.scss'],
 })
 export class UsersTabComponent extends GenericUserItemComponent implements OnInit {
-
   searchStream$ = new BehaviorSubject('');
   users$: Observable<User[]>;
 
@@ -27,21 +26,63 @@ export class UsersTabComponent extends GenericUserItemComponent implements OnIni
   ngOnInit() {
     this.columns = [
       { title: 'ID', key: 'id', type: 'number', size: 1, orderEnabled: true },
-      { title: 'Data', key: 'DataCreazione', type: 'date', size: 1, orderEnabled: true },
-      { title: 'Ruolo', key: 'autorizzazione', type: 'string', size: 1, orderEnabled: true/* , customTemplate: this.role */ },
-      { title: 'Collaudatore', key: 'collaudatoreufficio', type: 'string', size: 2, orderEnabled: true },
-      { title: 'User', key: 'username', type: 'string', size: 2, orderEnabled: true },
-      { title: 'Password', key: 'password', type: 'string', size: 2, orderEnabled: true },
-      { title: 'Commessa', key: 'commessa', type: 'string', size: 2, orderEnabled: true },
-      { title: 'Azioni', key: '', type: 'buttons', size: 1, orderEnabled: false/* , customTemplate: this.desktopButtons */ }
+      {
+        title: 'Data',
+        key: 'DataCreazione',
+        type: 'date',
+        size: 1,
+        orderEnabled: true,
+      },
+      {
+        title: 'Ruolo',
+        key: 'autorizzazione',
+        type: 'string',
+        size: 1,
+        orderEnabled: true /* , customTemplate: this.role */,
+      },
+      {
+        title: 'Collaudatore',
+        key: 'collaudatoreufficio',
+        type: 'string',
+        size: 2,
+        orderEnabled: true,
+      },
+      {
+        title: 'User',
+        key: 'username',
+        type: 'string',
+        size: 2,
+        orderEnabled: true,
+      },
+      {
+        title: 'Password',
+        key: 'password',
+        type: 'string',
+        size: 2,
+        orderEnabled: true,
+      },
+      {
+        title: 'Commessa',
+        key: 'commessa',
+        type: 'string',
+        size: 2,
+        orderEnabled: true,
+      },
+      {
+        title: 'Azioni',
+        key: '',
+        type: 'buttons',
+        size: 1,
+        orderEnabled: false /* , customTemplate: this.desktopButtons */,
+      },
     ];
 
     this.users$ = this.searchStream$.pipe(
       // debounceTime(200), //FIX
       distinctUntilChanged(),
-      startWith(""),
+      startWith(''),
       switchMap((query) => {
-        return this.userService.getUsersByFilter(query)
+        return this.userService.getUsersByFilter(query);
       })
     );
   }
@@ -52,15 +93,8 @@ export class UsersTabComponent extends GenericUserItemComponent implements OnIni
     public authService: AuthService,
     public alertController: AlertController,
     public modalController: ModalController,
-    public toastController: ToastController) {
-    super(
-      router,
-      userService,
-      authService,
-      alertController,
-      modalController,
-      toastController
-    );
+    public toastController: ToastController
+  ) {
+    super(router, userService, authService, alertController, modalController, toastController);
   }
-
 }

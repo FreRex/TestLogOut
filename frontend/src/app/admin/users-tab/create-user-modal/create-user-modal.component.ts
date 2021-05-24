@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { IonSelect, ModalController } from '@ionic/angular';
-import { Observable } from 'rxjs';
 import { Commission, CommissionService } from '../../commission-tab/commission.service';
 import { UserService } from '../user.service';
 
@@ -11,9 +10,8 @@ import { UserService } from '../user.service';
   styleUrls: ['./create-user-modal.component.scss'],
 })
 export class CreateUserModalComponent implements OnInit {
-
   @ViewChild('autorizzazione', { static: true }) autorizzazione: IonSelect;
-  selectedCommission: Commission; // valore DROPDOWN 
+  selectedCommission: Commission; // valore DROPDOWN
 
   form: FormGroup = this.fb.group({
     collaudatoreufficio: [null, [Validators.required]],
@@ -22,10 +20,12 @@ export class CreateUserModalComponent implements OnInit {
     password: [null, [Validators.required]],
   });
 
-  ngOnInit() { }
+  ngOnInit() {}
 
   createUser() {
-    if (!this.form.valid) { return; }
+    if (!this.form.valid) {
+      return;
+    }
     this.userService
       .addUser(
         this.form.value.collaudatoreufficio,
@@ -33,11 +33,11 @@ export class CreateUserModalComponent implements OnInit {
         this.form.value.password,
         this.autorizzazione.value,
         this.selectedCommission.id,
-        this.selectedCommission.commessa,
+        this.selectedCommission.commessa
       )
       .subscribe(
         /** Il server risponde con 200 */
-        res => {
+        (res) => {
           // non ci sono errori
           if (res['affectedRows'] === 1) {
             this.form.reset();
@@ -50,7 +50,7 @@ export class CreateUserModalComponent implements OnInit {
           }
         },
         /** Il server risponde con un errore */
-        err => {
+        (err) => {
           this.form.reset();
           this.modalController.dismiss({ message: err.error['text'] }, 'error');
         }
@@ -65,6 +65,5 @@ export class CreateUserModalComponent implements OnInit {
     private fb: FormBuilder,
     private userService: UserService,
     public commissionService: CommissionService
-  ) { }
-
+  ) {}
 }

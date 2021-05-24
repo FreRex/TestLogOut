@@ -1,51 +1,69 @@
-import { Component, OnInit } from '@angular/core';
-import { LoadingController } from '@ionic/angular';
-import { forkJoin } from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { AppState, Capacitor, Plugins } from '@capacitor/core';
+import { AlertController, Platform } from '@ionic/angular';
+import { Subscription } from 'rxjs';
+import { take } from 'rxjs/operators';
+
 import { AuthService } from './auth/auth.service';
-import { ProjectService } from './admin/projects-tab/project.service';
-import { UserService } from './admin/users-tab/user.service';
-import { RoomService } from './rooms/room.service';
-import { environment } from 'src/environments/environment';
-import { switchMap } from 'rxjs/operators';
-import { StorageDataService } from './shared/storage-data.service';
+
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.scss'],
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
+  private previousAuthState = false;
+  private authSub: Subscription;
 
   constructor(
-    private dataService: StorageDataService,
-    private loadingController: LoadingController,
+    private platform: Platform,
     private authService: AuthService,
-    private userService: UserService,
-    private projectService: ProjectService,
-    private roomService: RoomService,
-  ) { }
+    private alertController: AlertController,
+    private router: Router
+  ) {
+    this.initializeApp();
+  }
+
+  initializeApp() {
+    this.platform.ready().then(() => {
+      if (Capacitor.isPluginAvailable('SplashScreen')) {
+        Plugins.SplashScreen.hide();
+      }
+    });
+  }
 
   ngOnInit() {
-    // this.dataService.loadData();
+    this.authSub = this.authService.userIsAuthenticated.subscribe((isAuth) => {
+      if (!isAuth && this.previousAuthState !== isAuth) {
+        this.router.navigateByUrl('/auth');
+      }
+      this.previousAuthState = isAuth;
+    });
+    Plugins.App.addListener('appStateChange', this.checkAuthOnResume.bind(this));
+  }
 
-    // this.authService.token = sessionStorage.getItem('token');
-    // this.authService.token = localStorage.getItem('token');
+  onLogout() {
+    this.authService.logout();
+  }
 
-    this.loadingController
-      .create({ keyboardClose: true, message: 'Loading...' })
-      .then(loadingEl => {
-        loadingEl.present();
-        this.authService.fetchToken().pipe(
-          switchMap(token =>
-            //console.log(this.authService.token);
-            forkJoin({
-              requestUsers: this.userService.loadUsers(),
-              requestProjects: this.projectService.loadProjects(),
-              // requestRooms: this.roomService.loadRooms(),
-            })
-          ),
-        ).subscribe(({ requestUsers, requestProjects/* , requestRooms  */ }) => {
-          loadingEl.dismiss();
+  ngOnDestroy() {
+    if (this.authSub) {
+      this.authSub.unsubscribe();
+    }
+    // Plugins.App.removeListener('appStateChange', this.checkAuthOnResume);
+  }
+
+  private checkAuthOnResume(state: AppState) {
+    if (state.isActive) {
+      this.authService
+        .autoLogin()
+        .pipe(take(1))
+        .subscribe((success) => {
+          if (!success) {
+            this.onLogout();
+          }
         });
-      });
+    }
   }
 }

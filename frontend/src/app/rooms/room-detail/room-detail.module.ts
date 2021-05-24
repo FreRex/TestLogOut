@@ -9,12 +9,7 @@ import { RoomDetailPageRoutingModule } from './room-detail-routing.module';
 import { RoomDetailPage } from './room-detail.page';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    RoomDetailPageRoutingModule
-  ],
-  declarations: [RoomDetailPage]
+  imports: [CommonModule, FormsModule, IonicModule, RoomDetailPageRoutingModule],
+  declarations: [RoomDetailPage],
 })
 export class RoomDetailPageModule {}

@@ -1,6 +1,9 @@
 <!-- Searchbar -->
 <div class="searchbarAdd">
-  <ion-searchbar class="search-bar" (ionInput)="searchStream$.next($event.target.value)"></ion-searchbar>
+  <ion-searchbar
+    class="search-bar"
+    (ionInput)="searchStream$.next($event.target.value)"
+  ></ion-searchbar>
   <!-- Create Commission Button -->
   <ion-button color="secondary" (click)="createCommission()">
     <ion-icon name="add" slot="icon-only"></ion-icon>
@@ -15,9 +18,12 @@
   </ion-refresher>
   <!-- Commissions Table -->
   <app-generic-table [inputDatas$]="commissions$" [columns]="columns" [desktopItem]="desktopItem">
-    <ng-template #desktopItem let-data='data'>
+    <ng-template #desktopItem let-data="data">
       <!-- Commissions Table Item -->
-      <app-commission-table-item [commission]="data" [columns]="columns"></app-commission-table-item>
+      <app-commission-table-item
+        [commission]="data"
+        [columns]="columns"
+      ></app-commission-table-item>
     </ng-template>
   </app-generic-table>
 </ion-content>
@@ -30,7 +36,7 @@
   </ion-refresher>
   <!-- Commissions List -->
   <app-generic-list [inputDatas$]="commissions$" [mobileItem]="mobileItem">
-    <ng-template #mobileItem let-data='data'>
+    <ng-template #mobileItem let-data="data">
       <!-- Commissions List Item -->
       <app-commission-list-item [commission]="data"></app-commission-list-item>
     </ng-template>

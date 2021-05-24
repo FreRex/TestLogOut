@@ -1,20 +1,20 @@
-import { Directive, Input, OnInit, TemplateRef, ViewContainerRef } from '@angular/core';
+import { Directive, OnInit, TemplateRef, ViewContainerRef } from '@angular/core';
+
 import { AuthService } from '../auth/auth.service';
 
 @Directive({
-  selector: '[userIsAdmin]'
+  selector: '[userIsAdmin]',
 })
 export class HasRoleDirective implements OnInit {
-
   constructor(
     private authService: AuthService,
     private templateRef: TemplateRef<any>,
     private viewContainer: ViewContainerRef
-  ) { }
+  ) {}
 
   ngOnInit() {
-    this.authService.currentUser$.subscribe((currentUser) => {
-      if (currentUser && currentUser.autorizzazione == 'admin') {
+    this.authService.currentUser$.subscribe((user) => {
+      if (user && user.autorizzazione == '1') {
         this.viewContainer.createEmbeddedView(this.templateRef);
       } else {
         this.viewContainer.clear();

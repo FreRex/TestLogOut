@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   apiUrl: 'https://www.collaudolive.com:9083',
-  tokenString: 'tokendev'
+  tokenString: 'tokendev',
 };
 
 /*

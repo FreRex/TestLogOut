@@ -1,5 +1,22 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
-import { AbstractControl, ControlValueAccessor, FormBuilder, FormGroup, NG_VALIDATORS, NG_VALUE_ACCESSOR, Validator, Validators } from '@angular/forms';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
+import {
+  AbstractControl,
+  ControlValueAccessor,
+  FormBuilder,
+  FormGroup,
+  NG_VALIDATORS,
+  NG_VALUE_ACCESSOR,
+  Validator,
+  Validators,
+} from '@angular/forms';
 import { IonInput } from '@ionic/angular';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map, startWith, switchMap } from 'rxjs/operators';
@@ -12,17 +29,16 @@ import { debounceTime, distinctUntilChanged, map, startWith, switchMap } from 'r
     {
       provide: NG_VALUE_ACCESSOR,
       multi: true,
-      useExisting: DropdownComponent
+      useExisting: DropdownComponent,
     },
     {
       provide: NG_VALIDATORS,
       multi: true,
-      useExisting: DropdownComponent
+      useExisting: DropdownComponent,
     },
-  ]
+  ],
 })
 export class DropdownComponent implements OnInit, ControlValueAccessor, OnDestroy, Validator {
-
   isListOpen: boolean;
   @Input() title: string;
   @Input() key: string;
@@ -36,7 +52,7 @@ export class DropdownComponent implements OnInit, ControlValueAccessor, OnDestro
     this.isListOpen = false;
     this.selectedItem = item;
     this.form.patchValue({
-      input: this.selectedItem[this.key]
+      input: this.selectedItem[this.key],
     });
     this.event.emit(this.selectedItem);
   }
@@ -44,20 +60,18 @@ export class DropdownComponent implements OnInit, ControlValueAccessor, OnDestro
   ngOnInit() {
     if (this.selectedItem) {
       this.form.patchValue({
-        input: this.selectedItem[this.key]
+        input: this.selectedItem[this.key],
       });
     }
 
     this.items$ = this.searchStream$.pipe(
       // debounceTime(200), //FIX
       distinctUntilChanged(),
-      startWith(""),
-      switchMap(search =>
+      startWith(''),
+      switchMap((search) =>
         this.inputObs$.pipe(
-          map(obs =>
-            obs.filter(item =>
-              item[this.key].toLowerCase().includes(search.toLowerCase())
-            )
+          map((obs) =>
+            obs.filter((item) => item[this.key].toLowerCase().includes(search.toLowerCase()))
           )
         )
       )
@@ -68,11 +82,11 @@ export class DropdownComponent implements OnInit, ControlValueAccessor, OnDestro
     input: [null, [Validators.required]],
   });
 
-  onTouched: Function = () => { };
+  onTouched: Function = () => {};
 
   onChangeSubs: Subscription[] = [];
 
-  constructor(private fb: FormBuilder) { }
+  constructor(private fb: FormBuilder) {}
 
   ngOnDestroy() {
     for (let sub of this.onChangeSubs) {
@@ -108,7 +122,7 @@ export class DropdownComponent implements OnInit, ControlValueAccessor, OnDestro
       return null;
     }
     let errors: any = {};
-    errors = this.addControlErrors(errors, "input");
+    errors = this.addControlErrors(errors, 'input');
     return errors;
   }
 
@@ -120,5 +134,4 @@ export class DropdownComponent implements OnInit, ControlValueAccessor, OnDestro
     }
     return errors;
   }
-
 }

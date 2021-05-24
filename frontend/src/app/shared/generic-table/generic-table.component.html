@@ -1,10 +1,14 @@
 <div class="ion-padding">
-  <ion-row class=" head-menu ion-padding-horizontal">
-    <ion-col class="head-table-menu" *ngFor="let col of columns" [size]="col.size"><b>{{col.title}}</b>
-      <app-order-by-button *ngIf="col.orderEnabled" (event)="sortBy(col, $event)"></app-order-by-button>
+  <ion-row class="head-menu ion-padding-horizontal">
+    <ion-col class="head-table-menu" *ngFor="let col of columns" [size]="col.size"
+      ><b>{{ col.title }}</b>
+      <app-order-by-button
+        *ngIf="col.orderEnabled"
+        (event)="sortBy(col, $event)"
+      ></app-order-by-button>
     </ion-col>
   </ion-row>
-  <div *ngIf="(datas$ | async) as datas" class="ion-padding-horizontal">
+  <div *ngIf="datas$ | async as datas" class="ion-padding-horizontal">
     <div class="ion-text-center ion-padding-vertical" *ngIf="datas.length <= 0">
       <!-- <ion-spinner></ion-spinner> -->
       Nessun dato disponibile.
@@ -13,7 +17,7 @@
       <!-- <ion-row class="ion-align-items-center row-data" *ngFor="let data of datas"> -->
       <!-- <ion-col class="data-item" *ngFor="let col of columns" [size]="col.size"> -->
       <!-- <div>{{ col.type === 'date' ? (data[col.key] | date:'dd/MM/yy') : data[col.key] }} -->
-      <ng-container *ngTemplateOutlet="desktopItem ? desktopItem : null; context: {data: data}">
+      <ng-container *ngTemplateOutlet="desktopItem ? desktopItem : null; context: { data: data }">
       </ng-container>
       <!-- </div> -->
       <!-- </ion-col> -->

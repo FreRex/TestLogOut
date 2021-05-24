@@ -11,7 +11,6 @@ import { ProjectService } from '../project.service';
   styleUrls: ['./create-project-modal.component.scss'],
 })
 export class CreateProjectModalComponent implements OnInit {
-
   selectedUser: User;
   form: FormGroup = this.fb.group({
     collaudatoreufficio: [null], // ---> La validazione viene fatta all'interno del dropdown
@@ -24,14 +23,16 @@ export class CreateProjectModalComponent implements OnInit {
     conn_edif_opta: [null, [Validators.required]],
   });
 
-  ngOnInit() { }
+  ngOnInit() {}
 
   createProject() {
-    if (!this.form.valid) { return; }
-    const coords = this.form.value.coordinate.replace(' ', '').split(",");
+    if (!this.form.valid) {
+      return;
+    }
+    const coords = this.form.value.coordinate.replace(' ', '').split(',');
     this.projectService
       .addProject(
-        +this.form.value.pk_proj,
+        this.form.value.pk_proj,
         this.form.value.nome,
         this.form.value.nodi_fisici,
         this.form.value.nodi_ottici,
@@ -42,10 +43,11 @@ export class CreateProjectModalComponent implements OnInit {
         this.selectedUser.id,
         this.selectedUser.collaudatoreufficio,
         this.selectedUser.idcommessa,
-        this.selectedUser.commessa,
-      ).subscribe(
+        this.selectedUser.commessa
+      )
+      .subscribe(
         /** Il server risponde con 200 */
-        res => {
+        (res) => {
           // non ci sono errori
           if (res['affectedRows'] === 1) {
             this.form.reset();
@@ -58,7 +60,7 @@ export class CreateProjectModalComponent implements OnInit {
           }
         },
         /** Il server risponde con un errore */
-        err => {
+        (err) => {
           this.form.reset();
           this.modalController.dismiss({ message: err.error['text'] }, 'error');
         }
@@ -74,6 +76,5 @@ export class CreateProjectModalComponent implements OnInit {
     private fb: FormBuilder,
     public userService: UserService,
     private projectService: ProjectService
-  ) { }
-
+  ) {}
 }

@@ -11,7 +11,6 @@ import { GenericCommissionItemComponent } from '../generic-commission-item.compo
   styleUrls: ['../../../shared/generic-table/generic-table.component.scss'],
 })
 export class CommissionTableItemComponent extends GenericCommissionItemComponent {
-
   @Input() columns;
 
   constructor(

@@ -1,68 +1,225 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { environment } from 'src/environments/environment';
+import { Injectable, OnDestroy } from '@angular/core';
+import { JwtHelperService } from '@auth0/angular-jwt';
+import { Plugins } from '@capacitor/core';
+import { BehaviorSubject, from, throwError } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
-import { BehaviorSubject, Observable, throwError } from 'rxjs';
-import { User, UserService } from '../admin/users-tab/user.service';
+import { environment } from 'src/environments/environment';
+
+import { AuthUser } from './auth-user.model';
+
+interface TokenPayload {
+  idutente: string;
+  idutcas: string;
+  username: string;
+  // idcommessa: string;
+  commessa: string;
+  autorizzazione: string;
+  exp: number;
+  iat: number;
+}
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-export class AuthService {
+export class AuthService implements OnDestroy {
+  private helper;
+  loginToken: string = '';
+  private activeLogoutTimer;
+  private _user = new BehaviorSubject<AuthUser>(null);
 
-  constructor(
-    private http: HttpClient,
-  ) { }
+  constructor(private http: HttpClient) {
+    this.helper = new JwtHelperService();
+  }
 
-  private _token: string = '';
-  get token() { return this._token; }
-  set token(token: string) { this._token = token; }
+  getLoginToken() {
+    return this.http.post(`${environment.apiUrl}/token/`, {}).pipe(
+      catchError((err) => {
+        return throwError(err);
+      }),
+      tap((loginToken) => {
+        if (!loginToken) {
+          throw new Error('Errore server');
+        } else {
+          this.loginToken = loginToken['token'];
+        }
+      })
+    );
+  }
 
-  fetchToken() {
+  /** currentUser DEVE essere un Osservabile perché altrimenti
+   * la direttiva *userIsAdmin non funziona correttamente e
+   * il template non viene aggiornato in tempo in base al ruolo*/
+
+  get currentUser$() {
+    return this._user.asObservable().pipe(
+      // take(1),
+      map((user) => {
+        if (user) {
+          return user;
+        } else {
+          return null;
+        }
+      })
+    );
+  }
+
+  get userIsAuthenticated() {
+    return this._user.asObservable().pipe(
+      map((user) => {
+        if (user) {
+          // ritorna vero se esiste, falso se non esiste
+          return !!user.token; // --> !! forza una conversione a Boolean del token
+        } else {
+          return false;
+        }
+      })
+    );
+  }
+
+  autoLogin() {
+    return from(Plugins.Storage.get({ key: 'authData' })).pipe(
+      map((storedData) => {
+        if (!storedData || !storedData.value) {
+          return null;
+        }
+        const parsedData = JSON.parse(storedData.value);
+        const expirationTime = new Date(parsedData.tokenExpirationDate);
+        if (expirationTime <= new Date()) {
+          return null;
+        }
+        const user = new AuthUser(
+          parsedData.idutente,
+          parsedData.idutcas,
+          parsedData.username,
+          parsedData.idcommessa,
+          'parsedData.commessa',
+          parsedData.autorizzazione,
+          parsedData.token,
+          expirationTime
+        );
+        return user;
+      }),
+      tap((user) => {
+        if (user) {
+          this._user.next(user);
+          this.autoLogout(user.tokenDuration);
+        }
+      }),
+      map((user) => {
+        return !!user;
+      })
+    );
+  }
+
+  login(username: string, password: string) {
     return this.http
-      .post<{ [key: string]: string }>(`${environment.apiUrl}/token/`, {})
+      .post(
+        `${environment.apiUrl}/lgn/`,
+        {
+          usr: username,
+          pwd: password,
+        }
+        // {
+        //   headers: new HttpHeaders().set(
+        //     'Authorization',
+        //     `Bearer ${this.loginToken}`
+        //   ),
+        // }
+      )
       .pipe(
-        catchError(err => { return throwError(err); }),
-        tap(res => { this._token = res['token']; })
+        catchError((err) => {
+          return throwError(err);
+        }),
+        tap((token: string) => {
+          if (!token) {
+            throw new Error('Credenziali errate');
+          } else {
+            this.setUserData(token);
+          }
+        })
       );
   }
 
-  /** currentUser DEVE essere un Osservabile perchè altrimenti 
-   * la direttiva *userIsAdmin non funziona correttamente e 
-   * il template non viene aggiornato in tempo in base al ruolo*/
-  currentUser: BehaviorSubject<User> = new BehaviorSubject(null);
-  currentUser$ = this.currentUser.asObservable();
-
-  _userCod: string = '';
-  get userCod() { return this._userCod; };
-  set userCod(userId: string) { this._userCod = userId; };
-
-  onLogin(user: User) {
-    if (this.userCod === '') {
-      this.userCod = user.autorizzazione === 'admin' ? '0' : user.idutcas;
-      this.currentUser.next(user);
-    }
+  signup(username: string, password: string) {
+    return this.http
+      .post(`${environment.apiUrl}/signup/`, {
+        usr: username,
+        pwd: password,
+      })
+      .pipe(
+        catchError((err) => {
+          return throwError(err);
+        }),
+        tap((token: string) => {
+          if (!token) {
+            throw new Error('Credenziali errate');
+          }
+          this.setUserData(token);
+        })
+      );
   }
 
-  private _userIsAutenticated = true;
-  get userIsAthenticated() { return this._userIsAutenticated; }
+  setUserData(token) {
+    const payload: TokenPayload = this.helper.decodeToken(token['token']);
+    console.log('🐱‍👤 : AuthService : payload', payload);
+    const expDate: Date = this.helper.getTokenExpirationDate(token['token']);
+    console.log('🐱‍👤 : AuthService : expDate', expDate);
 
-  _userId: number;
-  get userId() { return this._userId; }
-  set userId(user: number) { this._userId = user; }
+    // * Crea un nuovo utente
+    const newUser = new AuthUser(
+      payload.idutente,
+      payload.idutcas,
+      payload.username,
+      payload.commessa, // TODO: payload['idcommessa]
+      'payload.commessa',
+      payload.autorizzazione,
+      token['token'],
+      expDate
+    );
 
-  login() {
-    this._userIsAutenticated = true;
-    console.log("is logged in: " + this._userIsAutenticated);
+    // * Produce un nuovo utente sull'osservabile
+    this._user.next(newUser);
+
+    // * Salva i parametri dell'utente sul localStorage
+    Plugins.Storage.set({
+      key: 'authData',
+      value: JSON.stringify({
+        idutente: newUser.idutente,
+        idutcas: newUser.idutcas,
+        username: newUser.username,
+        idcommessa: newUser.commessa, // TODO: payload['idcommessa]
+        commessa: 'newUser.commessa',
+        autorizzazione: newUser.autorizzazione,
+        token: newUser.token,
+        tokenExpirationDate: newUser.tokenExpirationDate.toISOString(),
+      }),
+    });
+
+    // * Imposta un nuovo timer per l'autologout
+    this.autoLogout(newUser.tokenDuration);
+  }
+
+  autoLogout(duration: number) {
+    if (this.activeLogoutTimer) {
+      clearTimeout(this.activeLogoutTimer);
+    }
+    this.activeLogoutTimer = setTimeout(() => {
+      this.logout();
+    }, duration);
   }
 
   logout() {
-    this._userIsAutenticated = false;
-    this.userId = null;
-    console.log("is logged out: " + this._userIsAutenticated);
+    if (this.activeLogoutTimer) {
+      clearTimeout(this.activeLogoutTimer);
+    }
+    this._user.next(null);
+    Plugins.Storage.remove({ key: 'authData' });
   }
 
-  signup(email: string, password: string) {
-    // return this.http.post('API-REGISTRAZIONE', {email: email, password: password, returnSecureToken: true})
+  ngOnDestroy() {
+    if (this.activeLogoutTimer) {
+      clearTimeout(this.activeLogoutTimer);
+    }
   }
 }

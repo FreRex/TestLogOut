@@ -6,7 +6,7 @@ import { BackofficePage } from './backoffice.page';
 const routes: Routes = [
   {
     path: '',
-    component: BackofficePage
+    component: BackofficePage,
   },
 ];
 

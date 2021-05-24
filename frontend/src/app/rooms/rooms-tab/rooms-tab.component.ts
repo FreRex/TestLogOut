@@ -14,7 +14,6 @@ import { TableColumns } from 'src/app/shared/generic-table/generic-table.compone
   styleUrls: ['./rooms-tab.component.scss'],
 })
 export class RoomsTabComponent extends GenericRoomItemComponent implements OnInit {
-
   searchStream$ = new BehaviorSubject('');
   rooms$: Observable<Room[]>;
   // @ViewChild('desktopButtons', { static: true }) desktopButtons: TemplateRef<any>;
@@ -30,15 +29,15 @@ export class RoomsTabComponent extends GenericRoomItemComponent implements OnIni
       { title: 'Collaudatore', key: 'collaudatore', type: 'string', size: 2, orderEnabled: true },
       { title: 'Usermobile', key: 'usermobile', type: 'string', size: 2, orderEnabled: true },
       { title: 'Progetto', key: 'progetto', type: 'string', size: 2, orderEnabled: true },
-      { title: 'Azioni', key: '', type: 'buttons', size: 2, orderEnabled: false/* , customTemplate: this.desktopButtons */ },
+      { title: 'Azioni', key: '', type: 'buttons', size: 2, orderEnabled: false },
     ];
 
     this.rooms$ = this.searchStream$.pipe(
       // debounceTime(200), //FIX
       distinctUntilChanged(),
-      startWith(""),
+      startWith(''),
       switchMap((query) => {
-        return this.roomService.getRoomsByFilter(query)
+        return this.roomService.getRoomsByFilter(query);
       })
     );
   }
@@ -49,15 +48,8 @@ export class RoomsTabComponent extends GenericRoomItemComponent implements OnIni
     public authService: AuthService,
     public alertController: AlertController,
     public modalController: ModalController,
-    public toastController: ToastController) {
-    super(
-      router,
-      roomService,
-      authService,
-      alertController,
-      modalController,
-      toastController
-    );
+    public toastController: ToastController
+  ) {
+    super(router, roomService, authService, alertController, modalController, toastController);
   }
-
 }

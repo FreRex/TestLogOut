@@ -12,22 +12,26 @@ import { RoomService } from '../../room.service';
   styleUrls: ['./create-room-modal.component.scss'],
 })
 export class CreateRoomModalComponent implements OnInit {
-
   form: FormGroup = this.fb.group({
-    usermobile: [null, {
-      validators: [Validators.required],
-      asyncValidators: this.roomValidator.usermobileValidator(),
-      updateOn: 'blur'
-    }],
+    usermobile: [
+      null,
+      {
+        validators: [Validators.required],
+        asyncValidators: this.roomValidator.usermobileValidator(),
+        updateOn: 'blur',
+      },
+    ],
     progetto: [null], // ---> La validazione viene fatta all'interno del dropdown
   });
 
-  selectedProject: Project; // valore DROPDOWN 
+  selectedProject: Project; // valore DROPDOWN
 
-  ngOnInit() { }
+  ngOnInit() {}
 
   createRoom() {
-    if (!this.form.valid) { return; }
+    if (!this.form.valid) {
+      return;
+    }
     this.roomService
       .addRoom(
         this.form.value.usermobile,
@@ -37,11 +41,11 @@ export class CreateRoomModalComponent implements OnInit {
         this.selectedProject.idutente,
         this.selectedProject.collaudatoreufficio,
         this.selectedProject.idcommessa,
-        this.selectedProject.commessa,
+        this.selectedProject.commessa
       )
       .subscribe(
         /** Il server risponde con 200 */
-        res => {
+        (res) => {
           // non ci sono errori
           if (res['affectedRows'] === 1) {
             this.form.reset();
@@ -54,7 +58,7 @@ export class CreateRoomModalComponent implements OnInit {
           }
         },
         /** Il server risponde con un errore */
-        err => {
+        (err) => {
           this.form.reset();
           this.modalController.dismiss({ message: err.error['text'] }, 'error');
         }
@@ -71,5 +75,5 @@ export class CreateRoomModalComponent implements OnInit {
     private roomValidator: RoomValidator,
     private roomService: RoomService,
     public projectService: ProjectService
-  ) { }
+  ) {}
 }

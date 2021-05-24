@@ -10,7 +10,6 @@ import { GenericCommissionItemComponent } from '../generic-commission-item.compo
   templateUrl: './commission-list-item.component.html',
 })
 export class CommissionListItemComponent extends GenericCommissionItemComponent {
-
   constructor(
     public router: Router,
     public commissionService: CommissionService,
@@ -28,5 +27,4 @@ export class CommissionListItemComponent extends GenericCommissionItemComponent 
       toastController
     );
   }
-
 }

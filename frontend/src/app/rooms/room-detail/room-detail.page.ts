@@ -10,7 +10,6 @@ import { Room, RoomService } from '../room.service';
   styleUrls: ['./room-detail.page.scss'],
 })
 export class RoomDetailPage implements OnInit, OnDestroy {
-
   private sub: Subscription;
   room: Room;
   isLoading = false;
@@ -20,10 +19,10 @@ export class RoomDetailPage implements OnInit, OnDestroy {
     private roomsService: RoomService,
     private navController: NavController,
     private alertController: AlertController
-  ) { }
+  ) {}
 
   ngOnInit() {
-    this.activatedRouter.paramMap.subscribe(paramMap => {
+    this.activatedRouter.paramMap.subscribe((paramMap) => {
       if (!paramMap.has('roomId')) {
         this.navController.navigateBack(['/rooms']);
         return;
@@ -31,31 +30,37 @@ export class RoomDetailPage implements OnInit, OnDestroy {
 
       // mi sottoscrivo all'osservabile "getRoom()" che restituisce una singola room per ID
       this.isLoading = true;
-      this.sub = this.roomsService.selectRoom(paramMap.get('roomId'))
-        .subscribe(
-          (room: Room) => {
-            this.room = room;
-            this.isLoading = false;
-          },
-          error => {
-            this.alertController.create({
+      this.sub = this.roomsService.selectRoom(paramMap.get('roomId')).subscribe(
+        (room: Room) => {
+          this.room = room;
+          this.isLoading = false;
+        },
+        (error) => {
+          this.alertController
+            .create({
               header: 'Errore',
               message: 'Impossibiile caricare la room',
-              buttons: [{
-                text: 'Annulla', handler: () => {
-                  this.navController.navigateBack(['/rooms']);
-                  // this.router.navigate(['/rooms']);
-                }
-              }]
-            }).then(alertEl => {
-              alertEl.present();
+              buttons: [
+                {
+                  text: 'Annulla',
+                  handler: () => {
+                    this.navController.navigateBack(['/rooms']);
+                    // this.router.navigate(['/rooms']);
+                  },
+                },
+              ],
             })
-          }
-        );
+            .then((alertEl) => {
+              alertEl.present();
+            });
+        }
+      );
     });
   }
 
   ngOnDestroy() {
-    if (this.sub) { this.sub.unsubscribe; }
+    if (this.sub) {
+      this.sub.unsubscribe;
+    }
   }
 }
