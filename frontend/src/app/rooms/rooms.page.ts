@@ -35,7 +35,7 @@ export class RoomsPage implements ViewWillEnter {
           .loadRooms()
           // .pipe(shareReplay({ refCount: true, bufferSize: 1 }), takeUntil(this.destroy$))
           .subscribe((rooms) => {
-            console.log('🐱‍👤 : RoomsPage : rooms', rooms);
+            // console.log('🐱‍👤 : RoomsPage : rooms', rooms);
             loadingEl.dismiss();
           });
       });

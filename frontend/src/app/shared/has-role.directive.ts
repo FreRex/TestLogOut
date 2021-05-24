@@ -13,12 +13,13 @@ export class HasRoleDirective implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.authService.currentUser$.subscribe((user) => {
-      if (user && user.autorizzazione == '1') {
-        this.viewContainer.createEmbeddedView(this.templateRef);
-      } else {
-        this.viewContainer.clear();
-      }
-    });
+    this.authService.currentUser$ /* .pipe(take(1)) */
+      .subscribe((user) => {
+        if (user && user.autorizzazione == '1') {
+          this.viewContainer.createEmbeddedView(this.templateRef);
+        } else {
+          this.viewContainer.clear();
+        }
+      });
   }
 }
