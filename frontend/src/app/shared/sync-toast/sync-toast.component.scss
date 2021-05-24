@@ -71,8 +71,9 @@
 }
 
 .time-bar div {
+  margin-top: 11px;
   height: 5px;
-  background: linear-gradient(to bottom, red, #900);
+  background: var(--ion-color-danger);
   animation: roundtime calc(var(--duration) * 1s) steps(var(--duration)) forwards;
   transform-origin: left center;
 }
@@ -86,4 +87,9 @@
     /* More performant than animating `width` */
     transform: scaleX(0);
   }
+}
+
+.title {
+  font-size: 1.2rem;
+  margin-bottom: 6px;
 }

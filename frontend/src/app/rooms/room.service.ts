@@ -81,7 +81,7 @@ export class RoomService {
           data_inserimento: new Date(roomData[0].DataInsert),
           pk_project: roomData[0].cod,
           progetto: roomData[0].progettoselezionato,
-          data_sincronizzazione: roomData[0].dataLastsincro,
+          data_sincronizzazione: new Date(roomData[0].dataLastsincro),
           idutente: roomData[0].idutente,
           collaudatore: roomData[0].collaudatoreufficio,
           idcommessa: roomData[0].idcommessa,

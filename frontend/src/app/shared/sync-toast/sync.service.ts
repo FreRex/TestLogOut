@@ -1,17 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { concat, Observable, of, Subject, throwError } from 'rxjs';
-import {
-  switchMap,
-  map,
-  retryWhen,
-  delay,
-  take,
-  concatMap,
-  catchError,
-  tap,
-  finalize,
-} from 'rxjs/operators';
+import { Observable, of, Subject } from 'rxjs';
+import { delay, finalize, map, retryWhen, switchMap, take, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 
 export interface SyncInfo {
@@ -67,7 +57,6 @@ export class SyncService {
         // let newVar = false;
         if (sincroStarted) {
           this.sync.status = this.STATUS_IN_CORSO;
-          this.syncStatusSource.next(this.sync);
           return this.startCheck();
         } else {
           this.sync.status = this.STATUS_ERRORE_RICHIESTA;
@@ -89,6 +78,7 @@ export class SyncService {
         if (!result) {
           this.sync.check++;
           this.sync.lastCheckDate = new Date();
+          this.syncStatusSource.next(this.sync);
           throw result; //error will be picked up by retryWhen
         } else {
           this.sync.status = this.STATUS_COMPLETATA;

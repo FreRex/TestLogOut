@@ -30,8 +30,6 @@ export class LoginComponent implements OnInit {
   ngOnInit() {}
 
   authenticate() {
-    console.log('gg');
-
     if (!this.form.valid) {
       return;
     }

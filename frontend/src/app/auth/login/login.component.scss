@@ -46,13 +46,14 @@ ion-item.invalid {
   --border-color: var(--ion-color-warning);
   --border-width: 2px;
 }
-ion-label {
-  color: var(--ion-color-tertiary) !important;
-  font-size: 0.7rem;
+ion-label.smallLabel {
+  color: white !important;
+  opacity: 60%;
+  font-size: 0.8rem;
 }
 ion-input {
-  color: var(--ion-color-tertiary) !important;
-  font-size: 1.2rem;
+  color: white !important;
+  font-size: 1rem;
 }
 ion-button {
   --background: white;

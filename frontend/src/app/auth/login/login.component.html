@@ -6,7 +6,7 @@
     <ion-item
       [ngClass]="!form.get('username').valid && form.get('username').touched ? 'invalid' : ''"
     >
-      <ion-label position="floating">Nome Utente</ion-label>
+      <ion-label class="smallLabel" position="floating">Nome Utente</ion-label>
       <ion-input type="text" formControlName="username"></ion-input>
     </ion-item>
     <div *ngIf="!form.get('username').valid && form.get('username').touched" lines="none">
@@ -15,7 +15,7 @@
     <ion-item
       [ngClass]="!form.get('password').valid && form.get('password').touched ? 'invalid' : ''"
     >
-      <ion-label position="floating">Password</ion-label>
+      <ion-label class="smallLabel" position="floating">Password</ion-label>
       <ion-input type="text" formControlName="password" (keyup.enter)="authenticate()"></ion-input>
     </ion-item>
     <div *ngIf="!form.get('password').valid && form.get('password').touched" lines="none">

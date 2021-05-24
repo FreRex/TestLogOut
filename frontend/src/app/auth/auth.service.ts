@@ -188,7 +188,7 @@ export class AuthService implements OnDestroy {
         idutente: newUser.idutente,
         idutcas: newUser.idutcas,
         username: newUser.username,
-        idcommessa: newUser.commessa, // TODO: payload['idcommessa]
+        idcommessa: newUser.idcommessa, // TODO: payload['idcommessa]
         commessa: 'newUser.commessa',
         autorizzazione: newUser.autorizzazione,
         token: newUser.token,
