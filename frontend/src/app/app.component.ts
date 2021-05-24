@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AppState, Capacitor, Plugins } from '@capacitor/core';
-import { AlertController, Platform } from '@ionic/angular';
+import { Platform } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 
@@ -17,10 +17,9 @@ export class AppComponent implements OnInit, OnDestroy {
   private authSub: Subscription;
 
   constructor(
+    private router: Router,
     private platform: Platform,
-    private authService: AuthService,
-    private alertController: AlertController,
-    private router: Router
+    private authService: AuthService
   ) {
     this.initializeApp();
   }
@@ -34,13 +33,15 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    if (this.platform.is('mobile')) {
+      Plugins.App.addListener('appStateChange', this.checkAuthOnResume.bind(this));
+    }
     this.authSub = this.authService.userIsAuthenticated.subscribe((isAuth) => {
       if (!isAuth && this.previousAuthState !== isAuth) {
         this.router.navigateByUrl('/auth');
       }
       this.previousAuthState = isAuth;
     });
-    Plugins.App.addListener('appStateChange', this.checkAuthOnResume.bind(this));
   }
 
   onLogout() {

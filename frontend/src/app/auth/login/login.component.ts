@@ -16,7 +16,7 @@ export class LoginComponent implements OnInit {
 
   form: FormGroup = this.fb.group({
     username: ['', { validators: [Validators.required] /* , updateOn: 'blur' */ }],
-    password: ['', { validators: Validators.required /* , updateOn: 'blur' */ }],
+    password: ['', { validators: [Validators.required] /* , updateOn: 'blur' */ }],
   });
 
   constructor(
@@ -29,9 +29,13 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {}
 
-  authenticate() {
-    console.log('gg');
+  showPassword: boolean;
 
+  toggleShowPassword() {
+    this.showPassword = !this.showPassword;
+  }
+
+  authenticate() {
     if (!this.form.valid) {
       return;
     }

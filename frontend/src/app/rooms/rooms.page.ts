@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { LoadingController } from '@ionic/angular';
+import { LoadingController, ViewWillEnter } from '@ionic/angular';
 
 import { CommissionService } from '../admin/commission-tab/commission.service';
 import { ProjectService } from '../admin/projects-tab/project.service';
@@ -14,7 +14,7 @@ import { RoomService } from './room.service';
   templateUrl: './rooms.page.html',
   styleUrls: ['./rooms.page.scss'],
 })
-export class RoomsPage implements OnInit {
+export class RoomsPage implements ViewWillEnter {
   constructor(
     public route: ActivatedRoute,
     public authService: AuthService,
@@ -26,7 +26,7 @@ export class RoomsPage implements OnInit {
     private loadingController: LoadingController
   ) {}
 
-  ngOnInit() {
+  ionViewWillEnter() {
     this.loadingController
       .create({ keyboardClose: true, message: 'Loading Rooms...' })
       .then((loadingEl) => {
@@ -35,7 +35,7 @@ export class RoomsPage implements OnInit {
           .loadRooms()
           // .pipe(shareReplay({ refCount: true, bufferSize: 1 }), takeUntil(this.destroy$))
           .subscribe((rooms) => {
-            console.log('🐱‍👤 : RoomsPage : rooms', rooms);
+            // console.log('🐱‍👤 : RoomsPage : rooms', rooms);
             loadingEl.dismiss();
           });
       });

@@ -1,12 +1,12 @@
 <div id="snackbar" [ngClass]="showToast ? 'fadein' : ''">
+  <div class="title">Sincronizzazione progetto {{ sync?.pk }}</div>
   <div>
-    {{ sync?.startDate | date: 'hh:mm:ss' }} - Sincronizzazione progetto {{ sync?.pk }}:
-    {{ sync?.status }}
-  </div>
-  <div>
-    {{ sync?.lastCheckDate | date: 'hh:mm:ss' }} - Check:{{ sync?.check }}/{{
+    {{ sync?.startDate | date: 'hh:mm:ss' }} - {{ sync?.status }}
+    <br />
+    {{ sync?.lastCheckDate | date: 'hh:mm:ss' }} - Check: {{ sync?.check }} ({{
       this.syncService.TOTAL_CHECKS
     }}
+    max)
     <div
       #bar
       id="time-bar"

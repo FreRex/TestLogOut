@@ -41,18 +41,20 @@ ion-item {
   --background: var(--ion-color-primary);
   --border-color: var(--ion-color-tertiary);
   --highlight-height: 0;
+  align-items: center;
 }
 ion-item.invalid {
   --border-color: var(--ion-color-warning);
   --border-width: 2px;
 }
-ion-label {
-  color: var(--ion-color-tertiary) !important;
-  font-size: 0.7rem;
+ion-label.smallLabel {
+  color: white !important;
+  opacity: 60%;
+  font-size: 0.8rem;
 }
 ion-input {
-  color: var(--ion-color-tertiary) !important;
-  font-size: 1.2rem;
+  color: white !important;
+  font-size: 1rem;
 }
 ion-button {
   --background: white;
@@ -65,8 +67,14 @@ ion-button {
   height: 48px;
   width: 48px;
 }
-ion-icon {
+ion-icon.arrow {
   font-size: 1.4rem;
+  // --ionicon-stroke-width: 32px;
+}
+ion-icon.show-password {
+  font-size: 1.2rem;
+  color: var(--ion-color-tertiary);
+  opacity: 60%;
   // --ionicon-stroke-width: 32px;
 }
 ion-text {
