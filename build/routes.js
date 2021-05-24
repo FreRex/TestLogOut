@@ -11,6 +11,7 @@ const controllerLogin = require('./ctrl/controllerLogin');
 const controllerSincroDb = require('./ctrl/controllerSincroDb');
 const controllerToken = require('./ctrl/controllerToken');
 const controllerVidApp = require('./ctrl/controllerVidApp');
+const controllerVarie = require('./ctrl/controllerVarie');
 const controllerSelect = require('./ctrl/controllerSelect');
 const controllerUpdate = require('./ctrl/controllerUpdate');
 const controllerDelete = require('./ctrl/controllerDelete');
@@ -39,14 +40,19 @@ router.use(function (req, res, next) {
 //Test
 router.get('/test/', controllerTest.test);
 //--------------------------------------------------------------------
+//Check galleria foto
+router.get('/checkGalleria/:idroom', [mid.checkAuth], controllerVarie.getCheckGalleria);
 //Downloadzip (download foto compresse)
 router.get('/checkdownloadzip/:folderzip/', controllerDownloadZip.CheckDownloadZip);
 router.get('/downloadzip/:folderzip/', controllerDownloadZip.DownloadZip);
 //Login/usermobile
 //router.get('/lgn/:usr/:pwd/:pkproject?', controllerLogin.checkLogin);
-router.post('/lgn/', [mid.checkAuth], controllerLogin.checkLogin);
+/* router.post('/lgn/', [mid.checkAuth], controllerLogin.checkLogin);
 router.post('/pltklgn/', [mid.checkAuth], controllerLogin.decodeToken);
-router.post('/checkum/', [mid.checkAuth], controllerLogin.checkUserMobile);
+router.post('/checkum/', [mid.checkAuth], controllerLogin.checkUserMobile); */
+router.post('/lgn/', controllerLogin.checkLogin);
+router.post('/pltklgn/', controllerLogin.decodeToken);
+router.post('/checkum/', controllerLogin.checkUserMobile);
 //SincroDb
 router.get('/alfanumcasuale/', [mid.checkAuth], controllerAlfaNumCasuale.getAlfaNumeCasuale);
 router.get('/sincrodb/:idutente?/:drawing?/:codicecasuale', [mid.checkAuth], controllerSincroDb.sincroDb);
