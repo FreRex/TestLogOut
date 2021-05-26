@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
+import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { MediaServiceService } from './media-service.service';
+import { Foto, MediaService } from './media.service';
 
 @Component({
   selector: 'app-gallery',
@@ -13,11 +15,14 @@ export class GalleryPage implements OnInit {
   galleryType = 'foto';
   roomId: string;
   roomName: string;
+  foto:Foto[] = [];
+
   constructor(
-    private mediaServ: MediaServiceService,
+    private mediaServ: MediaService,
     private activatedRoute: ActivatedRoute,
     private toastController: ToastController,
-    public router: Router
+    public router: Router,
+
   ) {}
 
   ngOnInit() {
@@ -27,7 +32,29 @@ export class GalleryPage implements OnInit {
       console.log(this.roomId);
       console.log(this.roomName);
 
-      this.mediaServ.loadMedia(this.roomId);
+      this.mediaServ.checkMedia(this.roomId)      
+      .subscribe(
+        (res) => {
+          if (res.numeroPagine == 0){
+            this.presentToast('Non ci sono Foto')
+          }
+        },
+        err =>console.log('errore', err),
+        () => console.log('complete')
+      );
+
+      this.mediaServ.loadMedia(this.roomId)
+      .subscribe(
+        (res:Foto[]) => {
+         this.foto = res 
+         console.log("SIAMO QUI: ", this.foto[0].imageBase64);
+         
+        },
+        err =>console.log('errore', err),
+        () => console.log('complete')
+        
+      );
+
     });
     this.mediaServ.checkDownload(this.roomName);
   }

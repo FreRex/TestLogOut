@@ -8,12 +8,12 @@ Info progetto
 # clona la repository
 git clone https://github.com/tinatotty91/chat-operativa.git
 
+# entra nella cartella creata
+cd chat-operativa
+
 # crea un branch locale "sviluppo" e aggiorna il progetto
 git checkout -b sviluppo
 git pull origin sviluppo
-
-# entra nella cartella creata
-cd chat-operativa
 
 # DENTRO CHAT-OPERATIVA: installa i node_modules del backend
 npm i
@@ -30,6 +30,30 @@ code .
 # Se non ci sono errori, servi l'app del frontend
 ionic serve
 ```
+
+## Streaming RTMP Node.js/Angular
+
+### Librerie npm interessanti:
+
+- [node-media-server](https://www.npmjs.com/package/node-media-server): libreria base per pubblicare uno stream
+  - https://github.com/dougsillars/browserLiveStream
+  - https://www.fatalerrors.org/a/0t590jE.html
+- [video.js](https://www.npmjs.com/package/video.js): video player HTML5 open source
+  - https://opensource.com/article/20/2/video-streaming-tools
+  - https://docs.videojs.com/tutorial-angular.html
+- [socket.io](https://www.npmjs.com/package/socket.io): libreria base per connessione socket
+  - https://www.digitalocean.com/community/tutorials/angular-socket-io
+  - https://javascript-conference.com/blog/real-time-in-angular-a-journey-into-websocket-and-rxjs/
+  - https://blog.briebug.com/blog/making-use-of-websockets-in-angular
+- [ngx-webcam](https://www.npmjs.com/package/ngx-webcam): forse interessante ma WebRTC
+- [node-rtsp-stream](https://www.npmjs.com/package/node-rtsp-stream): forse interessante ma RTSP
+
+### Altri spunti:
+
+- https://community.api.video/t/integration-with-ioni/2154/7
+- https://stackoverflow.com/questions/58899464/not-able-to-show-live-camera-rtsp-streaming-with-angular
+- https://stackoverflow.com/questions/56439937/how-to-stream-rtmp-in-angular-6-or-in-html-5
+- https://stackoverflow.com/questions/46625044/how-to-stream-a-m4v-video-with-nodejs
 
 ## Configurazione Prettier
 
