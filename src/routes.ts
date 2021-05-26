@@ -80,17 +80,13 @@ router.post('/token/', controllerToken.getToken);
 router.get('/vidapp/', [mid.checkAuth], controllerVidApp.VidApp);
 
 
-
-
-
 //------------------------------------------------------------------------
 //----------- API-db -----------------------------------------------------
 //------------------------------------------------------------------------
 
 //Indirizzamento ad API-db di lettura (SELECT)
 /* router.get('/s/:table/:idutcas?/:idroom?/:idroom?/:pagGall?', [mid.checkAuth], controllerSelect.getSelect); */
-router.get('/s/:table/:idutcas?/:idroom?', [mid.checkAuth], controllerSelect.getSelect);
-
+router.get('/s/:table/:idutcas?/:idroom?/:pagGall?', [mid.checkAuth], controllerSelect.getSelect);
 
 //Indirizzamento ad API-db di modifica (UPDATE)
 router.put('/ur/', [mid.checkAuth], controllerUpdate.putUpdateRoom);
