@@ -10,6 +10,7 @@ import { HasRoleDirective } from './has-role.directive';
 import { ObsWithStatusPipe } from './obs-with-status.pipe';
 import { OrderByButtonComponent } from './order-by-button/order-by-button.component';
 import { SyncToastComponent } from './sync-toast/sync-toast.component';
+import { SafeHtmlPipe } from './safe-html.pipe';
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import { SyncToastComponent } from './sync-toast/sync-toast.component';
     GenericListComponent,
     GenericTableComponent,
     SyncToastComponent,
+    SafeHtmlPipe,
     // RoomsTableItemComponent,
     // RoomsListItemComponent,
     // ProjectsTableItemComponent,
@@ -43,6 +45,7 @@ import { SyncToastComponent } from './sync-toast/sync-toast.component';
     GenericTableComponent,
     GenericListComponent,
     SyncToastComponent,
+    SafeHtmlPipe,
     // RoomsTableItemComponent,
     // RoomsListItemComponent,
     // ProjectsTableItemComponent,

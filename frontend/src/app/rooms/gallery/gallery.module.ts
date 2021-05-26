@@ -7,9 +7,10 @@ import { IonicModule } from '@ionic/angular';
 import { GalleryPageRoutingModule } from './gallery-routing.module';
 
 import { GalleryPage } from './gallery.page';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 @NgModule({
-  imports: [CommonModule, FormsModule, IonicModule, GalleryPageRoutingModule],
-  declarations: [GalleryPage],
+  imports: [CommonModule, FormsModule, IonicModule, GalleryPageRoutingModule, SharedModule],
+  declarations: [GalleryPage], 
 })
 export class GalleryPageModule {}
