@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { ToastController } from '@ionic/angular';
+import { ModalController, ToastController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Foto, MediaService } from './media.service';
+import { PhotoDetailsComponent } from './photo-details/photo-details.component';
 
 @Component({
   selector: 'app-gallery',
@@ -22,6 +23,7 @@ export class GalleryPage implements OnInit {
     private activatedRoute: ActivatedRoute,
     private toastController: ToastController,
     public router: Router,
+    public modalController: ModalController
 
   ) {}
 
@@ -48,11 +50,9 @@ export class GalleryPage implements OnInit {
         (res:Foto[]) => {
          this.foto = res 
          console.log("SIAMO QUI: ", this.foto[0].imageBase64);
-         
         },
         err =>console.log('errore', err),
         () => console.log('complete')
-        
       );
 
     });
@@ -78,6 +78,17 @@ export class GalleryPage implements OnInit {
         this.presentToast(`Non ci sono foto sul progetto ${nomeProgetto}!`, 'danger');
       }
     });
+  }
+
+  async editFoto(singleFoto:Foto) {
+
+    const modal = await this.modalController.create({
+      component: PhotoDetailsComponent,
+      componentProps: { foto: singleFoto }
+    });
+
+    return await modal.present();
+    
   }
 
   async presentToast(message: string, color?: string, duration?: number) {
