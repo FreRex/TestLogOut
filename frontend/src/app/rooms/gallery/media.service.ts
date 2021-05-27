@@ -62,8 +62,8 @@ export class MediaService {
           if (res.hasOwnProperty(key)) {
             
             foto.push({
-              imageBase64:res[key]['TO_BASE64(collaudolive.img)'].replace(/(\r\n|\n|\r)/gm, "").replace(/ /g, "").trim(),
-              /* imageBase64:res[key]['TO_BASE64(collaudolive.img)'], */
+              /* imageBase64:res[key]['TO_BASE64(collaudolive.img)'].replace(/(\r\n|\n|\r)/gm, "").replace(/ /g, "").trim(), */
+              imageBase64:res[key]['foto'],
               id: res[key]['id'],
               progettoselezionato: res[key]['progettoselezionato'],
               collaudatoreufficio: res[key]['collaudatoreufficio'],

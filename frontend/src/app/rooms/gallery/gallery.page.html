@@ -43,9 +43,9 @@
   <div [ngSwitch]="galleryType">
     <ion-grid *ngSwitchCase="'foto'">
       <ion-row>
-        <ion-col *ngFor="let singleFoto of foto">
-          <ion-thumbnail class="foto-thumbnail">
-            <img [src]="'data:image/jpeg;base64,'+singleFoto.imageBase64 | safeHtml">
+        <ion-col *ngFor="let singleFoto of foto" >
+          <ion-thumbnail class="foto-thumbnail" (click)="editFoto(singleFoto)">
+            <img [src]="'data:image/png;base64,'+singleFoto.imageBase64 | safeHtml" >
           </ion-thumbnail>
         </ion-col>
       </ion-row>
