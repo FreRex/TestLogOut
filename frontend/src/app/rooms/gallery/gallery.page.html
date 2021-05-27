@@ -47,9 +47,14 @@
           <ion-thumbnail class="foto-thumbnail" (click)="editFoto(singleFoto)">
             <img [src]="'data:image/png;base64,'+singleFoto.imageBase64 | safeHtml" >
           </ion-thumbnail>
+
         </ion-col>
       </ion-row>
     </ion-grid>
+    <ion-infinite-scroll threshold="5%" position="bottom" (ionInfinite)="loadMoreFoto($event)">
+      <ion-infinite-scroll-content loadingSpinner="dots" loadingText="Caricamento...">
+      </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
   </div>
 
 
