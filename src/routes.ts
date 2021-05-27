@@ -59,14 +59,9 @@ router.get('/checkdownloadzip/:folderzip/', controllerDownloadZip.CheckDownloadZ
 router.get('/downloadzip/:folderzip/', controllerDownloadZip.DownloadZip);
 
 //Login/usermobile
-//router.get('/lgn/:usr/:pwd/:pkproject?', controllerLogin.checkLogin);
-/* router.post('/lgn/', [mid.checkAuth], controllerLogin.checkLogin);
-router.post('/pltklgn/', [mid.checkAuth], controllerLogin.decodeToken);
-router.post('/checkum/', [mid.checkAuth], controllerLogin.checkUserMobile); */
-
 router.post('/lgn/', controllerLogin.checkLogin);
-router.post('/pltklgn/', controllerLogin.decodeToken);
-router.post('/checkum/', controllerLogin.checkUserMobile);
+router.post('/pltklgn/', [mid.checkAuth], controllerLogin.decodeToken);
+router.post('/checkum/', [mid.checkAuth], controllerLogin.checkUserMobile);
 
 //SincroDb
 router.get('/alfanumcasuale/', [mid.checkAuth], controllerAlfaNumCasuale.getAlfaNumeCasuale);
