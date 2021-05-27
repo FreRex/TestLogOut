@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { ModalController, ToastController } from '@ionic/angular';
-import { Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { Foto, MediaService } from './media.service';
+
+import { Check, Foto, MediaService } from './media.service';
 import { PhotoDetailsComponent } from './photo-details/photo-details.component';
 
 @Component({
@@ -17,6 +17,7 @@ export class GalleryPage implements OnInit {
   roomId: string;
   roomName: string;
   foto:Foto[] = [];
+  public pageNum: number = 1;
 
   constructor(
     private mediaServ: MediaService,
@@ -33,30 +34,41 @@ export class GalleryPage implements OnInit {
       this.roomName = pM.get('proj');
       console.log(this.roomId);
       console.log(this.roomName);
-
-      this.mediaServ.checkMedia(this.roomId)      
-      .subscribe(
-        (res) => {
-          if (res.numeroPagine == 0){
+      this.mediaServ.loadMedia(this.roomId, this.pageNum).subscribe(
+        (res:Foto[]) => {
+          if (res.length == 0 ){
             this.presentToast('Non ci sono Foto')
+          }else{
+            this.foto.push(...res) 
           }
         },
         err =>console.log('errore', err),
         () => console.log('complete')
-      );
-
-      this.mediaServ.loadMedia(this.roomId)
-      .subscribe(
-        (res:Foto[]) => {
-         this.foto = res 
-         console.log("SIAMO QUI: ", this.foto[0].imageBase64);
-        },
-        err =>console.log('errore', err),
-        () => console.log('complete')
-      );
-
+      );      
     });
     this.mediaServ.checkDownload(this.roomName);
+  }
+
+  loadMoreFoto(event){
+    this.pageNum++;
+    this.mediaServ.loadMedia(this.roomId, this.pageNum)
+    .subscribe(
+      (res:Foto[]) => {
+        if (res.length == 0 ){
+          if (event){
+            event.target.complete();
+            event.target.disable = true;
+          }
+        }else{
+          this.foto.push(...res) 
+          if (event){
+            event.target.complete();
+          }
+        }
+      },
+      err =>console.log('errore', err),
+      () => console.log('complete')
+    );      
   }
 
   toRoomPage() {
@@ -86,9 +98,7 @@ export class GalleryPage implements OnInit {
       component: PhotoDetailsComponent,
       componentProps: { foto: singleFoto }
     });
-
     return await modal.present();
-    
   }
 
   async presentToast(message: string, color?: string, duration?: number) {
@@ -98,8 +108,6 @@ export class GalleryPage implements OnInit {
       duration: duration ? duration : 2000,
       cssClass: 'custom-toast',
     });
-    // FIX: si può fare in entrambi i modi, qual'è il più giusto?
-    // .then(toastEl => toastEl.present());
     toast.present();
   }
 }

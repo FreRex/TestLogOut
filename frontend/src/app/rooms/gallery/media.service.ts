@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { catchError, map, tap } from 'rxjs/operators';
+import { catchError, map, take, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 
 import { AuthService } from '../../auth/auth.service';
@@ -30,7 +30,6 @@ export interface Check {
 })
 export class MediaService {
   fotoData: Foto;
-  public pageNum: number = 1;
 
   private fotoSetSubject = new BehaviorSubject<Foto[]>([]);
   fotoSet$: Observable<Foto[]> = this.fotoSetSubject.asObservable();
@@ -45,24 +44,22 @@ export class MediaService {
       })
     )
   }
-  
 
-  loadMedia(id: string) {
-    return this.http.get(`${environment.apiUrl}/s/galleria/0/${id}`)
+  loadMedia(id: string, numPage:number, event?) {
+    return this.http.get(`${environment.apiUrl}/s/galleria/0/${id}/${numPage}`)
     .pipe(
+      take(1),
       catchError(err =>{
         console.log('errore: ', err)
         return of ([])
         }
       ),
-
       map(res=>{
         const foto: Foto[] = [];
         for (const key in res) {
           if (res.hasOwnProperty(key)) {
             
             foto.push({
-              /* imageBase64:res[key]['TO_BASE64(collaudolive.img)'].replace(/(\r\n|\n|\r)/gm, "").replace(/ /g, "").trim(), */
               imageBase64:res[key]['foto'],
               id: res[key]['id'],
               progettoselezionato: res[key]['progettoselezionato'],
@@ -79,15 +76,10 @@ export class MediaService {
       }
       return foto;
     }),
-
       tap((res:Foto[])=>{
         this.fotoSetSubject.next(res)
       })
-
       )
-      
-    
-
   }
 
   checkDownload(nomeProgetto: string) {
