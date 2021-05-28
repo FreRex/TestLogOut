@@ -30,6 +30,7 @@ export interface Check {
 })
 export class MediaService {
   fotoData: Foto;
+  numberOfFotoXPage: string = "10";
 
   private fotoSetSubject = new BehaviorSubject<Foto[]>([]);
   fotoSet$: Observable<Foto[]> = this.fotoSetSubject.asObservable();
@@ -46,7 +47,7 @@ export class MediaService {
   }
 
   loadMedia(id: string, numPage:number, event?) {
-    return this.http.get(`${environment.apiUrl}/s/galleria/0/${id}/${numPage}`)
+    return this.http.get(`${environment.apiUrl}/s/galleria/0/${id}/${numPage}/${this.numberOfFotoXPage}`)
     .pipe(
       take(1),
       catchError(err =>{
