@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { ModalController, ToastController } from '@ionic/angular';
+import { IonContent, Platform, ModalController, ToastController } from '@ionic/angular';
 import { switchMap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 
@@ -18,13 +18,17 @@ export class GalleryPage implements OnInit {
   roomName: string;
   foto:Foto[] = [];
   public pageNum: number = 1;
+  backToTop: boolean = false;
+
+  @ViewChild(IonContent) content: IonContent;
 
   constructor(
     private mediaServ: MediaService,
     private activatedRoute: ActivatedRoute,
     private toastController: ToastController,
     public router: Router,
-    public modalController: ModalController
+    public modalController: ModalController,
+    public platform: Platform
 
   ) {}
 
@@ -110,4 +114,15 @@ export class GalleryPage implements OnInit {
     });
     toast.present();
   }
+
+  getScrollPos(pos: number) {
+    if (pos > this.platform.height()) {
+         this.backToTop = true;
+    } else {
+         this.backToTop = false;
+    }
+}
+gotToTop() {
+  this.content.scrollToTop(1000);
+}
 }

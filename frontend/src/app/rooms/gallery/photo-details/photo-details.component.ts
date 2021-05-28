@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import { Foto } from '../media.service';
 
@@ -9,19 +10,26 @@ import { Foto } from '../media.service';
 })
 export class PhotoDetailsComponent implements OnInit{
 
-
+  
   @Input() foto: Foto;
 
   constructor(
     public modalController: ModalController,
-    
+    private fb: FormBuilder,
   ) { }
 
   ngOnInit() {
-    console.log("modale aperto:",this.foto);
-    
+/*     this.form.patchValue({
+      nome: this.foto.nameimg,
+      note: this.foto.noteimg
+    }) */
     
   }
+
+  form: FormGroup = this.fb.group({
+    nome: [null, [Validators.required]],
+    note: [null, [Validators.required]],
+  });
 
   closeModal() {
     this.modalController.dismiss(null, 'cancel');

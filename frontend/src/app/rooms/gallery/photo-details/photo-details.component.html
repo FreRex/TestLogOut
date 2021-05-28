@@ -1,16 +1,33 @@
-
 <ion-content>
-  <ion-card>
-    <ion-card-header>
-      <ion-card-subtitle>Card Subtitle</ion-card-subtitle>
-      <ion-card-title>Card Title</ion-card-title>
-    </ion-card-header>
-  
-    <ion-card-content>
-      <img [src]="'data:image/jpeg;base64,'+foto.imageBase64 | safeHtml">
-    </ion-card-content>
+  <ion-card class="container ion-no-margin">
+    <div class="data-container">
+      <ion-card-content>
+        <div class="image">
+          <img [src]="'data:image/jpeg;base64,'+foto.imageBase64 | safeHtml">
+          <div class="geo-data">
+            {{foto.longitu}}<br>
+            {{foto.latitu}}
+          </div>
+        </div>
+      </ion-card-content>
+      <ion-card-header>
+        <p>{{foto.dataimg | date: 'dd/MM/yyyy - HH:mm'}}</p>
+        <form [formGroup]="form" class="ion-padding">
+
+          <ion-item>
+            <ion-label position="stacked">Nome</ion-label>
+            <ion-input type="text" disabled="true">{{foto.nameimg}}</ion-input>
+          </ion-item>
+
+          <ion-item>
+            <ion-label position="stacked">Note</ion-label>
+            <ion-input type="text" disabled="true">{{foto.noteimg}}</ion-input>
+          </ion-item>
+        </form>
+        <ion-button float="right" size="small" color="primary" (click)="closeModal()">Annulla</ion-button>
+      </ion-card-header>
+    </div>
   </ion-card>
-  
-  <ion-button color="primary" (click)="closeModal()">CHIUDI</ion-button>
+
 
 </ion-content>

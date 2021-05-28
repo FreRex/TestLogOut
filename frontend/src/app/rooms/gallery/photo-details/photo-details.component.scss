@@ -1,0 +1,15 @@
+.container{
+    height: 100%;
+    .image{
+        position: relative;
+        .geo-data{
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            background-color: #444546a1;
+            color: var(--ion-color-dark-contrast);
+            font-size: 10px;
+            padding: 2px 4px;
+        }
+    }
+}
