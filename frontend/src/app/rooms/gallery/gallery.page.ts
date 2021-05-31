@@ -12,6 +12,7 @@ import { PhotoDetailsComponent } from './photo-details/photo-details.component';
   templateUrl: './gallery.page.html',
   styleUrls: ['./gallery.page.scss'],
 })
+
 export class GalleryPage implements OnInit {
   galleryType = 'foto';
   roomId: string;
@@ -100,7 +101,7 @@ export class GalleryPage implements OnInit {
 
     const modal = await this.modalController.create({
       component: PhotoDetailsComponent,
-      componentProps: { foto: singleFoto }
+      componentProps: { foto: singleFoto , roomName: this.roomName}
     });
     return await modal.present();
   }
