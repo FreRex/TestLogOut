@@ -81,7 +81,7 @@ router.get('/vidapp/', [mid.checkAuth], controllerVidApp.VidApp);
 
 //Indirizzamento ad API-db di lettura (SELECT)
 /* router.get('/s/:table/:idutcas?/:idroom?/:idroom?/:pagGall?', [mid.checkAuth], controllerSelect.getSelect); */
-router.get('/s/:table/:idutcas?/:idroom?/:pagGall?', [mid.checkAuth], controllerSelect.getSelect);
+router.get('/s/:table/:idutcas?/:idroom?/:pagGall?/:numberFotoPage?', [mid.checkAuth], controllerSelect.getSelect);
 
 //Indirizzamento ad API-db di modifica (UPDATE)
 router.put('/ur/', [mid.checkAuth], controllerUpdate.putUpdateRoom);

@@ -10,6 +10,7 @@ exports.getSelect = (req: any, res: any, next: any) => {
     let idutcas;
     let idroom;
     let pagGall;
+    let numberFotoPage;
 
     //-------------------------
     //Verifica parametri
@@ -46,6 +47,14 @@ exports.getSelect = (req: any, res: any, next: any) => {
     else
     {
       pagGall = '';
+    }
+
+    if (typeof(req.params.numberFotoPage) !== 'undefined' && validator.isNumeric(req.params.numberFotoPage) && (req.params.numberFotoPage)!= 0 && (req.params.numberFotoPage)!='') {
+      numberFotoPage = req.params.numberFotoPage;            
+    }
+    else
+    {
+      numberFotoPage = '';
     }
     
     //---------------------
@@ -116,18 +125,22 @@ exports.getSelect = (req: any, res: any, next: any) => {
         break;
 
         case "galleria":
-          const numberFotoPage = 6;
+          //const numberFotoPage = 6;
           let paginit;
           
           if(pagGall==''){
 
            //sql = 'SELECT collaudolive.id, collaudolive.progettoselezionato, collaudolive.collaudatoreufficio, collaudolive.dataimg, collaudolive.nameimg, collaudolive.latitu, collaudolive.longitu, collaudolive.nomelemento, collaudolive.noteimg, collaudolive.onlynota, TO_BASE64(collaudolive.img) AS foto, multistreaming.progettoselezionato, multistreaming.id FROM collaudolive INNER JOIN multistreaming ON collaudolive.progettoselezionato = multistreaming.progettoselezionato WHERE multistreaming.id = '+ idroom +' ORDER BY collaudolive.id DESC'
-           sql = 'SELECT collaudolive.id, collaudolive.progettoselezionato, collaudolive.collaudatoreufficio, collaudolive.dataimg, collaudolive.nameimg, collaudolive.latitu, collaudolive.longitu, collaudolive.nomelemento, collaudolive.noteimg, collaudolive.onlynota, collaudolive.img AS foto, multistreaming.progettoselezionato, multistreaming.id FROM collaudolive INNER JOIN multistreaming ON collaudolive.progettoselezionato = multistreaming.progettoselezionato WHERE multistreaming.id = '+ idroom +' ORDER BY collaudolive.id DESC'
+           sql = 'SELECT multistreaming.id, collaudolive.id AS idPhoto, collaudolive.progettoselezionato, collaudolive.collaudatoreufficio, collaudolive.dataimg, collaudolive.nameimg, collaudolive.latitu, collaudolive.longitu, collaudolive.nomelemento, collaudolive.noteimg, collaudolive.onlynota, collaudolive.img AS foto, multistreaming.progettoselezionato, multistreaming.id FROM collaudolive INNER JOIN multistreaming ON collaudolive.progettoselezionato = multistreaming.progettoselezionato WHERE multistreaming.id = '+ idroom +' ORDER BY collaudolive.id DESC'
            //sql = 'SELECT collaudolive.img AS foto FROM collaudolive INNER JOIN multistreaming ON collaudolive.progettoselezionato = multistreaming.progettoselezionato WHERE multistreaming.id = '+ idroom +' ORDER BY collaudolive.id DESC'
             
           }
           else
           {
+            if(numberFotoPage==''){
+              numberFotoPage=6;
+            }
+
             if (pagGall==1){
               paginit = 0;
             }
@@ -137,9 +150,9 @@ exports.getSelect = (req: any, res: any, next: any) => {
             }
             
             //sql = 'SELECT collaudolive.id, collaudolive.progettoselezionato, collaudolive.collaudatoreufficio, collaudolive.dataimg, collaudolive.nameimg, collaudolive.latitu, collaudolive.longitu, collaudolive.nomelemento, collaudolive.noteimg, collaudolive.onlynota, TO_BASE64(collaudolive.img) AS foto, multistreaming.progettoselezionato, multistreaming.id FROM collaudolive INNER JOIN multistreaming ON collaudolive.progettoselezionato = multistreaming.progettoselezionato WHERE multistreaming.id = '+ idroom +' ORDER BY collaudolive.id DESC limit '+paginit+',' +numberFotoPage
-            sql = 'SELECT collaudolive.id, collaudolive.progettoselezionato, collaudolive.collaudatoreufficio, collaudolive.dataimg, collaudolive.nameimg, collaudolive.latitu, collaudolive.longitu, collaudolive.nomelemento, collaudolive.noteimg, collaudolive.onlynota, collaudolive.img AS foto, multistreaming.progettoselezionato, multistreaming.id FROM collaudolive INNER JOIN multistreaming ON collaudolive.progettoselezionato = multistreaming.progettoselezionato WHERE multistreaming.id = '+ idroom +' ORDER BY collaudolive.id DESC limit '+paginit+',' +numberFotoPage
+            sql = 'SELECT multistreaming.id, collaudolive.id AS idPhoto, collaudolive.progettoselezionato, collaudolive.collaudatoreufficio, collaudolive.dataimg, collaudolive.nameimg, collaudolive.latitu, collaudolive.longitu, collaudolive.nomelemento, collaudolive.noteimg, collaudolive.onlynota, collaudolive.img AS foto, multistreaming.progettoselezionato FROM collaudolive INNER JOIN multistreaming ON collaudolive.progettoselezionato = multistreaming.progettoselezionato WHERE multistreaming.id = '+ idroom +' ORDER BY collaudolive.id DESC limit '+paginit+',' +numberFotoPage
             //sql = 'SELECT collaudolive.img AS foto FROM collaudolive INNER JOIN multistreaming ON collaudolive.progettoselezionato = multistreaming.progettoselezionato WHERE multistreaming.id = '+ idroom +' ORDER BY collaudolive.id DESC limit '+paginit+',' +numberFotoPage
-            
+            console.log(sql);
           }        
 
           break;          
