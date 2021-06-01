@@ -21,7 +21,8 @@ export class PhotoDetailsComponent implements OnInit{
     private fb: FormBuilder,
     private mediaService: MediaService,
     private toastController: ToastController,
-    private alertController: AlertController
+    private alertController: AlertController,
+    
   ) { }
 
   ngOnInit() {
@@ -39,10 +40,10 @@ export class PhotoDetailsComponent implements OnInit{
 
   closeModal() {
     this.modalController.dismiss(null, 'cancel');
+    
   }
 
   deleteFoto(fotoID) {
-    console.log("questa foto: ", fotoID);
     
     this.alertController
       .create({
@@ -52,20 +53,22 @@ export class PhotoDetailsComponent implements OnInit{
           { text: 'Annulla', role: 'cancel' },
           {
             text: 'Elimina',
-            handler: () =>
-            
-            this.mediaService
-            .deleteFoto(fotoID)
-            .subscribe((res) => this.presentToast('Foto Eliminata', 'secondary'),
-            
-            ),
-          },
+            handler: () => (this.mediaService
+              .deleteFoto(fotoID)
+              .subscribe((res) => {
+                this.presentToast('Foto Eliminata', 'secondary');
+                this.closeModal();
+                this.modalController.dismiss({message: "ok"}, 'ok') 
+              })
+            )},
         ],
       })
       .then((alertEl) => {
+        
         alertEl.present();
         
-      });
+      })
+      
       
     }
     

@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
-import { catchError, map, take, tap } from 'rxjs/operators';
+import { catchError, map, switchMap, take, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 
 import { AuthService } from '../../auth/auth.service';
@@ -48,20 +48,28 @@ export class MediaService {
   }
 
   loadMedia(id: string, numPage:number, event?) {
-    return this.http.get(`${environment.apiUrl}/s/galleria/0/${id}/${numPage}/${this.numberOfFotoXPage}`)
+    let addedFoto : Foto [];
+
+    return this.fotoSet$
+    
     .pipe(
       take(1),
+      switchMap( res => {
+        addedFoto = [...res]
+        return this.http.get(`${environment.apiUrl}/s/galleria/0/${id}/${numPage}/${this.numberOfFotoXPage}`)
+      }
+      ),
       catchError(err =>{
         console.log('errore: ', err)
         return of ([])
         }
       ),
       map(res=>{
-        const foto: Foto[] = [];
+        
         for (const key in res) {
           if (res.hasOwnProperty(key)) {
             
-            foto.push({
+            addedFoto.push({
               imageBase64:res[key]['foto'],
               id: res[key]['id'],
               idPhoto: res[key]['idPhoto'],
@@ -77,7 +85,7 @@ export class MediaService {
             });
           }
       }
-      return foto;
+      return addedFoto;
     }),
       tap((res:Foto[])=>{
         this.fotoSetSubject.next(res)
@@ -93,14 +101,37 @@ export class MediaService {
     return this.http.get(`${environment.apiUrl}/downloadzip/${nomeProgetto}`);
   }
 
-  deleteFoto(idFoto){
-    return this.http.post(`${environment.apiUrl}/d`, {id: idFoto, tableDelete: 'collaudolive' }).pipe(
-      catchError((err) => {
+  deleteFoto(idFoto: number){
+    
+    
+    let updatedFotos : Foto [];
+    return this.fotoSet$.pipe(
+      take(1),
+      switchMap(
+        fotoRes =>{
+          console.log("array prima",fotoRes);
+          
+          updatedFotos = fotoRes.filter(
+            foto => foto.idPhoto != idFoto
+            
+          )
+          return this.http.post(`${environment.apiUrl}/d`, {id: idFoto, tableDelete: 'collaudolive' })
+        }
+      ),
+        catchError((err) => {
         return throwError(err);
       }),
-
-
+      tap((res)=>{
+        console.log("eccolo", updatedFotos);
+        
+        this.fotoSetSubject.next(updatedFotos)
+      })
     )
+     
+
+
+
+    
 
 
  

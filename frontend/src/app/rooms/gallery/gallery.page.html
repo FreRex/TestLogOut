@@ -45,7 +45,7 @@
     <div [ngSwitch]="galleryType">
       <ion-grid *ngSwitchCase="'foto'">
         <ion-row>
-          <ion-col *ngFor="let singleFoto of foto">
+          <ion-col *ngFor="let singleFoto of (foto$ | async)">
             <ion-thumbnail class="foto-thumbnail-mobile" (click)="editFoto(singleFoto)">
               <img [src]="'data:image/png;base64,'+singleFoto.imageBase64 | safeHtml">
             </ion-thumbnail>
@@ -105,7 +105,7 @@
           <div [ngSwitch]="galleryType">
             <ion-grid *ngSwitchCase="'foto'">
               <ion-row>
-                <ion-col *ngFor="let singleFoto of foto">
+                <ion-col *ngFor="let singleFoto of (foto$ |async)">
                   <ion-thumbnail class="foto-thumbnail-desktop" (click)="editFoto(singleFoto)">
                     <img [src]="'data:image/png;base64,'+singleFoto.imageBase64 | safeHtml">
                   </ion-thumbnail>
