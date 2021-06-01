@@ -179,38 +179,40 @@ spawn('ffmpeg',['-h']).on('error',function(m:any){
 //-----------------------------------------------------------------------------------------
 
 io.on('connection', function(socket: any){
-	socket.emit('message','Hello from mediarecorder-to-rtmp server!');
-	socket.emit('message','Please set rtmp destination before start streaming.');	
-
-	//test Frex da FrontEnd
-	socket.on('testFrexFromClient',function(m: any){
-		console.log('testFrexClient: ' + m);
-		socket.emit('testFrexFromServer','risposta da server !!!!!');
-	});
+	//socket.emit('message','Hello from mediarecorder-to-rtmp server!');
+	socket.emit('message',{type: 'welcome', data: 'Hello from mediarecorder-to-rtmp server!'});
+	//socket.emit('message','Please set rtmp destination before start streaming.');	
+	socket.emit('message',{type: 'welcome', data: 'Please set rtmp destination before start streaming.'});
 	
 	let ffmpeg_process: any;
 	let feedStream: any = false;
 	socket.on('config_rtmpDestination',function(m: any){
 		if(typeof m != 'string'){
-			socket.emit('fatal','rtmp destination setup error.');
+			//socket.emit('fatal','rtmp destination setup error.');
+			socket.emit('message',{type: 'welcome', data: 'rtmp destination setup error.'});
 			return;
 		}
 		var regexValidator=/^rtmp:\/\/[^\s]*$/;//TODO: should read config
 		if(!regexValidator.test(m)){
-			socket.emit('fatal','rtmp address rejected.');
+			//socket.emit('fatal','rtmp address rejected.');
+			socket.emit('message',{type: 'welcome', data: 'rtmp address rejected.'});
 			return;
 		}
 		socket._rtmpDestination=m;
-		socket.emit('message','rtmp destination set to:'+m);
+		//socket.emit('message','rtmp destination set to:'+m);
+		let dataforsocket: string='rtmp destination set to:'+m;
+		socket.emit('message',{type: 'welcome', data: dataforsocket});
 	}); 
 	
 	socket.on('config_vcodec',function(m: any){
 		if(typeof m != 'string'){
-			socket.emit('fatal','input codec setup error.');
+			//socket.emit('fatal','input codec setup error.');
+			socket.emit('message',{type: 'fatal', data: 'input codec setup error.'});
 			return;
 		}
 		if(!/^[0-9a-z]{2,}$/.test(m)){
-			socket.emit('fatal','input codec contains illegal character?.');
+			//socket.emit('fatal','input codec contains illegal character?.');
+			socket.emit('message',{type: 'fatal', data: 'input codec contains illegal character?.'});
 			return;
 		}//for safety
 		socket._vcodec=m;
@@ -219,11 +221,13 @@ io.on('connection', function(socket: any){
 	socket.on('start',function(m: any){
 		
 		if(ffmpeg_process || feedStream){			
-			socket.emit('fatal','stream already started.');
+			//socket.emit('fatal','stream already started.');
+			socket.emit('message',{type: 'fatal', data: 'stream already started.'});
 			return;
 		}
 		if(!socket._rtmpDestination){
-			socket.emit('fatal','no destination given.');
+			//socket.emit('fatal','no destination given.');
+			socket.emit('message',{type: 'fatal', data: 'no destination given.'});
 			return;
 		}
 		
@@ -307,19 +311,25 @@ io.on('connection', function(socket: any){
 		}
 
 		ffmpeg_process.stderr.on('data',function(d: any){
-			socket.emit('ffmpeg_stderr',''+d);
+			//socket.emit('ffmpeg_stderr','ffmpeg_stderr'+d);
+			let ffmpeg_stderrforsocket = 'ffmpeg_stderr'+d;
+			socket.emit('message',{type: 'fatal', data: ffmpeg_stderrforsocket});
 		});
 	
 		ffmpeg_process.on('error',function(e: any){
 			console.log('child process error'+e);
-			socket.emit('fatal','ffmpeg error!'+e);
+			//socket.emit('fatal','ffmpeg error!'+e);
+			let ffmpeg_error = 'ffmpeg error!'+e;
+			socket.emit('message',{type: 'fatal', data: ffmpeg_error});
 			feedStream=false;
 			socket.disconnect();
 		});
 	
 		ffmpeg_process.on('exit',function(e: any){
 			console.log('child process exit'+e);
-			socket.emit('fatal','ffmpeg exit!'+e);
+			//socket.emit('fatal','ffmpeg exit!'+e);
+			let ffmpeg_exit = 'ffmpeg exit!'+e;
+			socket.emit('message',{type: 'fatal', data: ffmpeg_exit});
 			socket.disconnect();
 		});
 	});
@@ -328,7 +338,8 @@ io.on('connection', function(socket: any){
 
 	socket.on('binarystream',function(m: any){
 		if(!feedStream){
-			socket.emit('fatal','rtmp not set yet.');
+			//socket.emit('fatal','rtmp not set yet.');
+			socket.emit('message',{type: 'fatal', data: 'rtmp not set yet.'});
 			ffmpeg_process.stdin.end();
 			ffmpeg_process.kill('SIGINT');
 			return;

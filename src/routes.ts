@@ -10,7 +10,6 @@ const controllerToken = require('./ctrl/controllerToken');
 const controllerVidApp = require('./ctrl/controllerVidApp');
 const controllerVarie = require('./ctrl/controllerVarie');
 
-
 const controllerSelect = require('./ctrl/controllerSelect');
 const controllerUpdate = require('./ctrl/controllerUpdate');
 const controllerDelete = require('./ctrl/controllerDelete');
