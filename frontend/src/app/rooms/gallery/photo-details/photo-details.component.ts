@@ -1,7 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ModalController } from '@ionic/angular';
-import { Foto } from '../media.service';
+import { AlertController, ModalController, ToastController } from '@ionic/angular';
+import { RoomsPageRoutingModule } from '../../rooms-routing.module';
+import { Foto, MediaService } from '../media.service';
 
 @Component({
   selector: 'app-photo-details',
@@ -12,10 +13,16 @@ export class PhotoDetailsComponent implements OnInit{
 
   
   @Input() foto: Foto;
+  @Input() roomName: string;
+  
 
   constructor(
     public modalController: ModalController,
     private fb: FormBuilder,
+    private mediaService: MediaService,
+    private toastController: ToastController,
+    private alertController: AlertController,
+    
   ) { }
 
   ngOnInit() {
@@ -33,5 +40,46 @@ export class PhotoDetailsComponent implements OnInit{
 
   closeModal() {
     this.modalController.dismiss(null, 'cancel');
+    
+  }
+
+  deleteFoto(fotoID) {
+    
+    this.alertController
+      .create({
+        header: 'Sei sicuro?',
+        message: 'Vuoi davvero cancellare la Foto?',
+        buttons: [
+          { text: 'Annulla', role: 'cancel' },
+          {
+            text: 'Elimina',
+            handler: () => (this.mediaService
+              .deleteFoto(fotoID)
+              .subscribe((res) => {
+                this.presentToast('Foto Eliminata', 'secondary');
+                this.closeModal();
+                this.modalController.dismiss({message: "ok"}, 'Foto cancellata') 
+              })
+            )},
+        ],
+      })
+      .then((alertEl) => {
+        
+        alertEl.present();
+        
+      })
+      
+      
+    }
+    
+
+  async presentToast(message: string, color?: string, duration?: number) {
+    const toast = await this.toastController.create({
+      message: message,
+      color: color ? color : 'secondary',
+      duration: duration ? duration : 2000,
+      cssClass: 'custom-toast',
+    });
+    toast.present();
   }
 }

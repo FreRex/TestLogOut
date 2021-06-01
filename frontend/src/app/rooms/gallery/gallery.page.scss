@@ -10,6 +10,8 @@
       font-weight: bolder;
       color: var(--ion-color-dark);
       transform: translateY(-3px);
+      word-wrap:break-word;
+      word-break: break-all;
     }
   }
 }
