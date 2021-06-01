@@ -58,7 +58,7 @@ export class PhotoDetailsComponent implements OnInit{
               .subscribe((res) => {
                 this.presentToast('Foto Eliminata', 'secondary');
                 this.closeModal();
-                this.modalController.dismiss({message: "ok"}, 'ok') 
+                this.modalController.dismiss({message: "ok"}, 'Foto cancellata') 
               })
             )},
         ],
