@@ -1,15 +1,16 @@
-{   
-    "compilerOptions": {
-      "target": "es2019",
-      "module": "commonjs",  
-      "moduleResolution": "node",  
-      "rootDir": "./src",
-      "outDir": "./build",
-      "esModuleInterop": true,
-      "strict": true
-    },
-    "compileOnSave": true,
-    "include": [
-        "./src/**/*"
-    ]
+{
+  "compilerOptions": {
+    "target": "es2019",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "rootDir": "./src",
+    "outDir": "./build",
+    "esModuleInterop": true,
+    "strict": true,
+    "paths": {
+      "rxjs": ["node_modules/rxjs"]
+    }
+  },
+  "compileOnSave": true,
+  "include": ["./src/**/*"]
 }

@@ -1,7 +1,8 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { AlertController, ModalController, NavController } from '@ionic/angular';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { AlertController, NavController } from '@ionic/angular';
 import { Subscription } from 'rxjs';
+
 import { Room, RoomService } from '../room.service';
 
 @Component({
@@ -9,7 +10,7 @@ import { Room, RoomService } from '../room.service';
   templateUrl: './room-detail.page.html',
   styleUrls: ['./room-detail.page.scss'],
 })
-export class RoomDetailPage implements OnInit, OnDestroy {
+export class RoomDetailPage implements OnInit {
   private sub: Subscription;
   room: Room;
   isLoading = false;
@@ -27,7 +28,6 @@ export class RoomDetailPage implements OnInit, OnDestroy {
         this.navController.navigateBack(['/rooms']);
         return;
       }
-
       // mi sottoscrivo all'osservabile "getRoom()" che restituisce una singola room per ID
       this.isLoading = true;
       this.sub = this.roomsService.selectRoom(paramMap.get('roomId')).subscribe(
@@ -56,11 +56,5 @@ export class RoomDetailPage implements OnInit, OnDestroy {
         }
       );
     });
-  }
-
-  ngOnDestroy() {
-    if (this.sub) {
-      this.sub.unsubscribe;
-    }
   }
 }

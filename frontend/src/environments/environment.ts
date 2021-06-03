@@ -5,7 +5,8 @@
 export const environment = {
   production: false,
   apiUrl: 'https://www.collaudolive.com:9083',
-  tokenString: 'tokendev',
+  urlRTMP: 'rtmp://www.chop.click:1941',
+  urlWSS: 'wss://www.chop.click:8471',
 };
 
 /*

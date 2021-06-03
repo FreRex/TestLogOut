@@ -1,7 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController, IonItemSliding, ModalController, ToastController } from '@ionic/angular';
-import { take } from 'rxjs/operators';
 import { AuthService } from 'src/app/auth/auth.service';
 import { environment } from 'src/environments/environment';
 
@@ -81,25 +80,30 @@ export class GenericRoomItemComponent implements OnInit {
   }
 
   /** Apre il link della ROOM */
+  // enterRoom(room?: Room, slidingItem?: IonItemSliding) {
+  //   if (slidingItem) slidingItem.close();
+  //   if (room) this.room = room;
+
+  //   this.authService.currentUser$.pipe(take(1)).subscribe((currentUser) => {
+  //     this.linkProgetto =
+  //       this.baseUrl +
+  //       this.room.pk_project +
+  //       (currentUser.autorizzazione === 'admin' ? '&useringresso=admin' : '');
+  //   });
+
+  //   // window.open(this.linkProgetto);
+
+  //   const link = document.createElement('a');
+  //   link.setAttribute('target', '_blank');
+  //   link.setAttribute('href', this.linkProgetto);
+  //   document.body.appendChild(link);
+  //   link.click();
+  //   link.remove();
+  // }
   enterRoom(room?: Room, slidingItem?: IonItemSliding) {
     if (slidingItem) slidingItem.close();
     if (room) this.room = room;
-
-    this.authService.currentUser$.pipe(take(1)).subscribe((currentUser) => {
-      this.linkProgetto =
-        this.baseUrl +
-        this.room.pk_project +
-        (currentUser.autorizzazione === 'admin' ? '&useringresso=admin' : '');
-    });
-
-    // window.open(this.linkProgetto);
-
-    const link = document.createElement('a');
-    link.setAttribute('target', '_blank');
-    link.setAttribute('href', this.linkProgetto);
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
+    this.router.navigate([`/rooms/test-stream/${this.room.id}`]);
   }
 
   /** Copia il link della ROOM */

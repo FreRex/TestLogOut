@@ -1,6 +1,12 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { Plugins } from '@capacitor/core';
+import { NavController } from '@ionic/angular';
 import FlvJs from 'flv.js';
 import { Socket } from 'ngx-socket-io';
+import { from, Subscription } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
 
 const height = 120;
 const width = 120;
@@ -12,31 +18,69 @@ const audiobitrate = 44100;
   templateUrl: './test-stream.page.html',
   styleUrls: ['./test-stream.page.scss'],
 })
-export class TestStreamPage implements OnInit, AfterViewInit {
+export class TestStreamPage implements OnInit, AfterViewInit, OnDestroy {
+  private sub: Subscription;
+
   @ViewChild('local_video', { static: false }) localVideo: ElementRef;
   @ViewChild('output_video', { static: false }) remoteVideo: ElementRef;
+
+  roomId: string = '';
+  userId: string = '';
+  rtmpDestination: string = '';
+  flvOrigin: string = '';
 
   private localStream: MediaStream;
   private mediaRecorder: MediaRecorder;
   private constraints: MediaStreamConstraints;
 
-  constructor(private socket: Socket) {}
+  constructor(
+    private socket: Socket,
+    private activatedRouter: ActivatedRoute,
+    private navController: NavController
+  ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.activatedRouter.paramMap
+      .pipe(
+        switchMap((paramMap) => {
+          if (!paramMap.has('roomId')) {
+            this.navController.navigateBack(['/rooms']);
+            return;
+          }
+          this.roomId = paramMap.get('roomId');
+          return from(Plugins.Storage.get({ key: 'authData' }));
+        }),
+        map((storedData) => {
+          if (!storedData || !storedData.value) {
+            return null;
+          }
+          return JSON.parse(storedData.value).idutcas;
+        })
+      )
+      .subscribe((userId) => {
+        this.userId = userId;
+        this.rtmpDestination = `${environment.urlRTMP}/${this.roomId}/${this.userId}`;
+        this.flvOrigin = `${environment.urlWSS}/${this.roomId}/${this.userId}.flv`;
+      });
+  }
 
   ngAfterViewInit() {
     this.listaDispositivi();
     this.configureSocketMessageHandler();
   }
 
+  ngOnDestroy() {
+    if (this.sub) {
+      this.sub.unsubscribe;
+    }
+  }
+
   // handles messages coming from signalling_server (remote party)
   private configureSocketMessageHandler(): void {
-    this.socket.emit('config_rtmpDestination', `${this.urlRTMP}${this.suffix}`);
+    this.socket.emit('config_rtmpDestination', this.rtmpDestination);
 
     this.socket.fromEvent<any>('message').subscribe(
       (msg) => {
-        console.log('🐱‍👤 : TestStreamPage : msg', msg);
-
         switch (msg.type) {
           case 'connect_timeout':
             console.log('state on connection timeout= ' + msg.data);
@@ -113,7 +157,6 @@ export class TestStreamPage implements OnInit, AfterViewInit {
         this.socket.emit('start', 'start');
       });
     } catch (err) {
-      console.log('🐱‍👤 : TestStreamPage : err', err);
       this.closeVideoCall();
     }
     return null;
@@ -179,9 +222,6 @@ export class TestStreamPage implements OnInit, AfterViewInit {
   idVarVideoZoomInFunction;
 
   player: FlvJs.Player;
-  suffix: string = 'test/a';
-  urlRTMP: string = 'rtmp://www.chop.click:1941/';
-  urlWSS: string = 'wss://www.chop.click:8471/';
 
   startFlvPlayer() {
     if (typeof this.player !== 'undefined') {
@@ -195,7 +235,7 @@ export class TestStreamPage implements OnInit, AfterViewInit {
     this.player = FlvJs.createPlayer(
       {
         type: 'flv',
-        url: `${this.urlWSS}${this.suffix}.flv`,
+        url: this.flvOrigin,
       },
       {
         enableWorker: false,
@@ -205,8 +245,6 @@ export class TestStreamPage implements OnInit, AfterViewInit {
         autoCleanupSourceBuffer: true,
       }
     );
-    console.log('🐱‍👤 : TestStreamPage : urlFLV', `${this.urlWSS}${this.suffix}.flv`);
-    console.log('🐱‍👤 : TestStreamPage : this.player', this.player);
     this.player.attachMediaElement(this.remoteVideo.nativeElement);
     this.player.load();
     this.player.play();
@@ -274,7 +312,6 @@ export class TestStreamPage implements OnInit, AfterViewInit {
 // };
 
 // private handleOfferMessage(msg: RTCSessionDescription): void {
-//   console.log('🐱‍👤 : TestStreamPage : msg', msg);
 //   if (!this.peerConnection) {
 //     this.createPeerConnection();
 //   }
@@ -386,7 +423,6 @@ export class TestStreamPage implements OnInit, AfterViewInit {
 /** funzioneplayer 
   funzioneplayer(valore, urlrtmp) {
 
-    console.log('🐱‍👤 : TestStreamPage : urlrtmp', urlrtmp);
     console.log(
       '🐱‍👤 : TestStreamPage : output_video',
       this.output_video.nativeElement.innerHTML
@@ -395,12 +431,7 @@ export class TestStreamPage implements OnInit, AfterViewInit {
     const words = urlrtmp.split('/');
     let startString = urlrtmp.search(words[3]);
     let suffissoUrlStream = urlrtmp.substring(startString, urlrtmp.length);
-    console.log(
-      '🐱‍👤 : TestStreamPage : suffissoUrlStream',
-      suffissoUrlStream
-    );
     let urlstream = 'wss://www.chop.click:8471/' + suffissoUrlStream + '.flv';
-    console.log('🐱‍👤 : TestStreamPage : urlstream', urlstream);
 
     // let secRefresh = 30;
     // switch (valore) {
