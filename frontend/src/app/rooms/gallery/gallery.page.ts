@@ -1,9 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { ModalController, ToastController } from '@ionic/angular';
-import { switchMap } from 'rxjs/operators';
+import { IonContent, Platform, ModalController, ToastController } from '@ionic/angular';
+import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-
 import { Check, Foto, MediaService } from './media.service';
 import { PhotoDetailsComponent } from './photo-details/photo-details.component';
 
@@ -12,42 +11,54 @@ import { PhotoDetailsComponent } from './photo-details/photo-details.component';
   templateUrl: './gallery.page.html',
   styleUrls: ['./gallery.page.scss'],
 })
+
 export class GalleryPage implements OnInit {
   galleryType = 'foto';
   roomId: string;
   roomName: string;
-  foto:Foto[] = [];
+  /* public foto:Foto[] = []; */
   public pageNum: number = 1;
+  backToTop: boolean = false;
+
+  foto$: Observable<Foto[]>
+
+  @ViewChild(IonContent) content: IonContent;
 
   constructor(
     private mediaServ: MediaService,
     private activatedRoute: ActivatedRoute,
     private toastController: ToastController,
     public router: Router,
-    public modalController: ModalController
+    public modalController: ModalController,
+    public platform: Platform
 
   ) {}
 
   ngOnInit() {
+    this.foto$ = this.mediaServ.fotoSet$;
     this.activatedRoute.paramMap.subscribe((pM: ParamMap) => {
       this.roomId = pM.get('id');
       this.roomName = pM.get('proj');
-      console.log(this.roomId);
-      console.log(this.roomName);
-      this.mediaServ.loadMedia(this.roomId, this.pageNum).subscribe(
-        (res:Foto[]) => {
-          if (res.length == 0 ){
-            this.presentToast('Non ci sono Foto')
-          }else{
-            this.foto.push(...res) 
-          }
-        },
-        err =>console.log('errore', err),
-        () => console.log('complete')
-      );      
+      this.loadFoto();
     });
     this.mediaServ.checkDownload(this.roomName);
   }
+
+  loadFoto(){
+    this.mediaServ.loadMedia(this.roomId, this.pageNum).subscribe(
+      (res:Foto[]) => {
+        if (res.length == 0 ){
+          this.presentToast('Non ci sono Foto')
+        }else{
+          /* this.foto.push(...res)  */
+          
+        }
+      },
+      err =>console.log('errore', err),
+      () => console.log('complete')
+    ); 
+  }
+
 
   loadMoreFoto(event){
     this.pageNum++;
@@ -60,7 +71,7 @@ export class GalleryPage implements OnInit {
             event.target.disable = true;
           }
         }else{
-          this.foto.push(...res) 
+          /* this.foto.push(...res)  */
           if (event){
             event.target.complete();
           }
@@ -92,13 +103,25 @@ export class GalleryPage implements OnInit {
     });
   }
 
-  async editFoto(singleFoto:Foto) {
+  editFoto(singleFoto:Foto) {
 
-    const modal = await this.modalController.create({
+    this.modalController.create({
       component: PhotoDetailsComponent,
-      componentProps: { foto: singleFoto }
-    });
-    return await modal.present();
+      componentProps: { foto: singleFoto , roomName: this.roomName},
+    })
+    .then((modalEl) =>{
+      modalEl.present();
+      return modalEl.onDidDismiss();
+    }).then(res => {
+      if (res.role === 'ok'){
+/*         this.foto.filter(foto => {
+          foto.idPhoto !== singleFoto.idPhoto
+        }) */
+      }
+    })
+    
+    
+    
   }
 
   async presentToast(message: string, color?: string, duration?: number) {
@@ -110,4 +133,15 @@ export class GalleryPage implements OnInit {
     });
     toast.present();
   }
+
+  getScrollPos(pos: number) {
+    if (pos > this.platform.height()) {
+         this.backToTop = true;
+    } else {
+         this.backToTop = false;
+    }
+}
+gotToTop() {
+  this.content.scrollToTop(1000);
+}
 }
