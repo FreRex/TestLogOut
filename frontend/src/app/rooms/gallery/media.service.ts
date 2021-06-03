@@ -127,14 +127,10 @@ export class MediaService {
         this.fotoSetSubject.next(updatedFotos)
       })
     )
-     
-
-
-
-    
-
-
- 
     
   }
+
+
+
+  
 }

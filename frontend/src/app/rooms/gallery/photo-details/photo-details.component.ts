@@ -14,6 +14,8 @@ export class PhotoDetailsComponent implements OnInit{
   
   @Input() foto: Foto;
   @Input() roomName: string;
+
+  inputArea: boolean = false;
   
 
   constructor(
@@ -32,6 +34,13 @@ export class PhotoDetailsComponent implements OnInit{
     }) */
     
   }
+  updateOn(){
+    this.inputArea = true;
+  }
+  updateOff(){
+    this.inputArea = false;
+  }
+
 
   form: FormGroup = this.fb.group({
     nome: [null, [Validators.required]],

@@ -33,21 +33,32 @@
         <img [src]="'data:image/jpeg;base64,'+foto.imageBase64 | safeHtml">
       </div>
 
-      <div>
-        <p class="data-ora">{{foto.dataimg | date: 'dd/MM/yyyy - HH:mm'}}</p>
+      <div class="info-area">
+        <div *ngIf="!inputArea" class="nome-note">
+          <ion-icon name="pencil" size="large" color="light" class="pen-update" (click)="updateOn()"></ion-icon>
+          <p class="data-bold">{{foto.nameimg}}</p>
+          <p class="data-bold">{{foto.dataimg | date: 'dd/MM/yyyy - HH:mm'}}</p>
+          <p class="data-bold">Nota:</p>
+          <p class="nota">{{foto.noteimg}}</p>
+        </div>
 
-        <form [formGroup]="form" class="form ion-padding">
 
-          <ion-item>
-            <ion-label position="stacked">Nome</ion-label>
-            <ion-input type="text" disabled="true">{{foto.nameimg}}</ion-input>
-          </ion-item>
-          <br>
-          <ion-item>
-            <ion-label position="stacked">Note</ion-label>
-            <ion-input type="text" disabled="true">{{foto.noteimg}}</ion-input>
-          </ion-item>
-        </form>
+        <div *ngIf="inputArea" class="nome-note">
+          <ion-icon name="checkmark-sharp" size="large" color="light" class="pen-update" (click)="updateOff()">
+          </ion-icon>
+          <form [formGroup]="form" class="form ion-padding">
+            <ion-item>
+              <ion-label position="stacked">Nome</ion-label>
+              <ion-input type="text">{{foto.nameimg}}</ion-input>
+            </ion-item>
+            <br>
+            <ion-item>
+              <ion-label position="stacked">Note</ion-label>
+              <ion-input type="text">{{foto.noteimg}}</ion-input>
+            </ion-item>
+          </form>
+        </div>
+
       </div>
     </div>
   </div>
