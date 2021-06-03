@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { AuthGuard } from '../auth/auth.guard';
+import { RouterModule, Routes } from '@angular/router';
 
+import { AuthGuard } from '../auth/auth.guard';
 import { RoomsPage } from './rooms.page';
 
 const routes: Routes = [
@@ -17,6 +17,11 @@ const routes: Routes = [
     path: 'conference',
     loadChildren: () =>
       import('./conference/conference.module').then((m) => m.ConferencePageModule),
+  },
+  {
+    path: 'test-stream',
+    loadChildren: () =>
+      import('./test-stream/test-stream.module').then((m) => m.TestStreamPageModule),
   },
   {
     path: ':roomId',

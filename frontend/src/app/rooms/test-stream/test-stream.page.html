@@ -1,0 +1,58 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>testStream</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-row>
+    <ion-col>
+      <!-- ! <input #socketio_address class="form" id="socket.io_address" value="/" /> -->
+      <h3>RTMP Destination:</h3>
+      <input [(ngModel)]="suffix" type="text" style="width: 100%" />
+      <!-- ! <ion-checkbox #checkbox_Reconection></ion-checkbox> -->
+      <!-- ! <label class="form" style="display: none">Reconnection</label> -->
+    </ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-col>
+      <p>Local</p>
+      <video
+        style="background-color: black"
+        #local_video
+        width="320"
+        height="240"
+        [autoplay]="true"
+        [muted]="true"
+      ></video>
+      <div>
+        <ion-button color="tertiary" (click)="startStreming('fronte')">Start Stream</ion-button>
+        <ion-button color="success" (click)="startStreming('retro')" [hidden]="!checkRetroCam"
+          >Start Stream RetroCam</ion-button
+        >
+        <ion-button color="primary" (click)="stopStreaming()">Stop Streaming</ion-button>
+      </div>
+    </ion-col>
+    <ion-col>
+      <p>Remote</p>
+      <video
+        #output_video
+        width="320"
+        height="240"
+        [autoplay]="true"
+        controls="controls"
+        playsinline
+      ></video>
+      <div>
+        <ion-button color="tertiary" (click)="startFlvPlayer()">Start Player</ion-button>
+        <ion-button color="primary" (click)="stopFlvPlayer()">Stop Player</ion-button>
+        <!-- <ion-button color="medium" (click)="startLocalVideo()"
+          >Start Local Video</ion-button
+        >
+        <ion-button color="medium" (click)="stopLocalVideo()"
+          >Pause Local Video</ion-button
+        > -->
+      </div>
+    </ion-col>
+  </ion-row>
+</ion-content>
