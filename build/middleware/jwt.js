@@ -7,7 +7,7 @@ let jwt = require('jsonwebtoken');
 const fs_1 = __importDefault(require("fs"));
 let option = {
     algorithm: "RS256",
-    expiresIn: "1h"
+    expiresIn: "12h"
 };
 let getPayload = (token) => {
     let decode = jwt.decode(token, { complete: true });
