@@ -39,7 +39,9 @@ export class TestStreamPage implements OnInit, AfterViewInit, OnDestroy {
     private navController: NavController
   ) {}
 
-  ngOnInit() {
+  ngOnInit() {}
+
+  ngAfterViewInit() {
     this.activatedRouter.paramMap
       .pipe(
         switchMap((paramMap) => {
@@ -61,12 +63,9 @@ export class TestStreamPage implements OnInit, AfterViewInit, OnDestroy {
         this.userId = userId;
         this.rtmpDestination = `${environment.urlRTMP}/${this.roomId}/${this.userId}`;
         this.flvOrigin = `${environment.urlWSS}/${this.roomId}/${this.userId}.flv`;
+        this.listaDispositivi();
+        this.configureSocketMessageHandler();
       });
-  }
-
-  ngAfterViewInit() {
-    this.listaDispositivi();
-    this.configureSocketMessageHandler();
   }
 
   ngOnDestroy() {
