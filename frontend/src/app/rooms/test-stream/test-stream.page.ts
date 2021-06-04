@@ -81,29 +81,14 @@ export class TestStreamPage implements OnInit, AfterViewInit, OnDestroy {
     this.socket.fromEvent<any>('message').subscribe(
       (msg) => {
         switch (msg.type) {
-          case 'connect_timeout':
-            console.log('state on connection timeout= ' + msg.data);
-            break;
-          case 'error':
-            console.log('error: ' + msg.data);
-            break;
-          case 'connect_error':
-            console.log('connection error= ' + msg.data);
+          case 'welcome':
+            console.log('Welcome! ', msg.data);
             break;
           case 'fatal':
-            console.log('fatal socket error! ' + msg.data);
-            break;
-          case 'disconnect':
-            console.log('ERROR: server disconnected! ' + msg.data);
-            break;
-          case 'ffmpeg_stderr':
-            console.log('fatal socket error!!', msg.data);
-            break;
-          case 'message':
-            console.log('recv server message', msg.data);
+            console.log('Error: ', msg.data);
             break;
           default:
-            console.log('unknown message: ' + msg);
+            console.log('unknown message: ', msg);
         }
       },
       (err) => console.log(err)

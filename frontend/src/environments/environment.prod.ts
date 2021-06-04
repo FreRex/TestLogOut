@@ -1,3 +1,5 @@
+console.log('location.hostname: ', location.hostname);
+
 export const environment = {
   production: true,
   apiUrl: 'https://www.collaudolive.com:9666',
