@@ -19,44 +19,7 @@
     </ion-col>
   </ion-row>
   <ion-row>
-    <ion-col>
-      <p>Local</p>
-      <video
-        style="background-color: black"
-        #local_video
-        width="320"
-        height="240"
-        [autoplay]="true"
-        [muted]="true"
-      ></video>
-      <div>
-        <ion-button color="tertiary" (click)="startStreming('fronte')">Start Stream</ion-button>
-        <ion-button color="success" (click)="startStreming('retro')" [hidden]="!checkRetroCam"
-          >Start Stream RetroCam</ion-button
-        >
-        <ion-button color="primary" (click)="stopStreaming()">Stop Streaming</ion-button>
-      </div>
-    </ion-col>
-    <ion-col>
-      <p>Remote</p>
-      <video
-        #output_video
-        width="320"
-        height="240"
-        [autoplay]="true"
-        controls="controls"
-        playsinline
-      ></video>
-      <div>
-        <ion-button color="tertiary" (click)="startFlvPlayer()">Start Player</ion-button>
-        <ion-button color="primary" (click)="stopFlvPlayer()">Stop Player</ion-button>
-        <!-- <ion-button color="medium" (click)="startLocalVideo()"
-          >Start Local Video</ion-button
-        >
-        <ion-button color="medium" (click)="stopLocalVideo()"
-          >Pause Local Video</ion-button
-        > -->
-      </div>
-    </ion-col>
+    <ion-col><app-webcam [rtmpDestination]="rtmpDestination"></app-webcam></ion-col>
+    <ion-col><app-player [flvOrigin]="flvOrigin"></app-player></ion-col>
   </ion-row>
 </ion-content>
