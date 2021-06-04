@@ -6,10 +6,7 @@
     "rootDir": "./src",
     "outDir": "./build",
     "esModuleInterop": true,
-    "strict": true,
-    "paths": {
-      "rxjs": ["node_modules/rxjs"]
-    }
+    "strict": true
   },
   "compileOnSave": true,
   "include": ["./src/**/*"]
