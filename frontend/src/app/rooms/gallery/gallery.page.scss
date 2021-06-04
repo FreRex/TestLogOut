@@ -51,7 +51,7 @@
 .backTitle-desktop{
   display: flex;
   flex-direction: row;
-  justify-content: start;
+  justify-content: flex-start;
   align-items: center;
   .title-btn{
     margin-top: 8px;
@@ -60,7 +60,7 @@
 .head-btn-desktop{
   display: flex;
   flex-direction: row;
-  justify-content: end;
+  justify-content: flex-end;
   align-items: center;
 }
 .divider{
