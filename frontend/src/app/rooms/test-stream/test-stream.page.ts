@@ -26,6 +26,7 @@ export class TestStreamPage implements OnInit, AfterViewInit, OnDestroy {
 
   roomId: string = '';
   userId: string = '';
+
   rtmpDestination: string = '';
   flvOrigin: string = '';
 
@@ -83,6 +84,9 @@ export class TestStreamPage implements OnInit, AfterViewInit, OnDestroy {
         switch (msg.type) {
           case 'welcome':
             console.log('Welcome! ', msg.data);
+            break;
+          case 'info':
+            console.log('Info: ', msg.data);
             break;
           case 'fatal':
             console.log('Error: ', msg.data);
