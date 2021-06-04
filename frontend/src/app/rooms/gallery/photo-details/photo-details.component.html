@@ -36,25 +36,24 @@
       <div class="info-area">
         <div *ngIf="!inputArea" class="nome-note">
           <ion-icon name="pencil" size="large" color="light" class="pen-update" (click)="updateOn()"></ion-icon>
-          <p class="data-bold">{{foto.nameimg}}</p>
+          <p class="data-bold">{{foto.nomelemento}}</p>
           <p class="data-bold">{{foto.dataimg | date: 'dd/MM/yyyy - HH:mm'}}</p>
           <p class="data-bold">Nota:</p>
           <p class="nota">{{foto.noteimg}}</p>
         </div>
-
 
         <div *ngIf="inputArea" class="nome-note">
           <ion-icon name="checkmark-sharp" size="large" color="light" class="pen-update" (click)="updateOff()">
           </ion-icon>
           <form [formGroup]="form" class="form ion-padding">
             <ion-item>
-              <ion-label position="stacked">Nome</ion-label>
-              <ion-input type="text">{{foto.nameimg}}</ion-input>
+              <ion-label position="floating"><b>Nome</b></ion-label>
+              <ion-input formControlName="nome" type="text"></ion-input>
             </ion-item>
-            <br>
+
             <ion-item>
-              <ion-label position="stacked">Note</ion-label>
-              <ion-input type="text">{{foto.noteimg}}</ion-input>
+              <ion-label position="floating"><b>Note</b></ion-label>
+              <ion-textarea autoGrow="true" formControlName="note" type="text"></ion-textarea>
             </ion-item>
           </form>
         </div>

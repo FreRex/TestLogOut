@@ -9,51 +9,82 @@ import { Foto, MediaService } from '../media.service';
   templateUrl: './photo-details.component.html',
   styleUrls: ['./photo-details.component.scss'],
 })
-export class PhotoDetailsComponent implements OnInit{
-
-  
+export class PhotoDetailsComponent implements OnInit {
   @Input() foto: Foto;
   @Input() roomName: string;
 
   inputArea: boolean = false;
-  
 
   constructor(
     public modalController: ModalController,
     private fb: FormBuilder,
     private mediaService: MediaService,
     private toastController: ToastController,
-    private alertController: AlertController,
-    
-  ) { }
+    private alertController: AlertController
+  ) {}
 
   ngOnInit() {
-/*     this.form.patchValue({
-      nome: this.foto.nameimg,
-      note: this.foto.noteimg
-    }) */
-    
+    this.form.patchValue({
+      nome: this.foto.nomelemento,
+      note: this.foto.noteimg,
+    });
   }
-  updateOn(){
-    this.inputArea = true;
-  }
-  updateOff(){
-    this.inputArea = false;
-  }
-
 
   form: FormGroup = this.fb.group({
     nome: [null, [Validators.required]],
     note: [null, [Validators.required]],
   });
 
+  updateOn() {
+    this.inputArea = true;
+  }
+  updateOff() {
+    this.inputArea = false;
+
+    /* chiamata UPDATE FOTO */
+
+    /*     if (!this.form.valid) {
+      return;
+    } */
+    this.mediaService
+      .updateFoto(this.foto.idPhoto, this.form.value.nome, this.form.value.note)
+      .subscribe(
+        /** Il server risponde con 200 */
+
+        (res) => {
+          // non ci sono errori
+          console.log('chiamata update:', res);
+          if (res['affectedRows'] === 1) {
+            const foto = this.mediaService.fotoSetSubject
+              .getValue()
+              .find((ph) => ph.idPhoto === this.foto.idPhoto);
+            foto.nomelemento = this.form.value.nome;
+            foto.noteimg = this.form.value.note;
+            this.form.reset();
+            this.modalController.dismiss({ message: 'Foto Aggiornata' }, 'ok');
+          }
+          // possibili errori
+          else {
+            console.log('chiamata update fallita:', res);
+            this.form.reset();
+            this.modalController.dismiss({ message: res['message'] }, 'error');
+          }
+        },
+        /** Il server risponde con un errore */
+        (err) => {
+          console.log('chiamata update errore:', err);
+          this.form.reset();
+          this.modalController.dismiss({ message: err.error['text'] }, 'error');
+        }
+      );
+    // this.presentToast('Room Aggiornata', 'secondary');
+  }
+
   closeModal() {
     this.modalController.dismiss(null, 'cancel');
-    
   }
 
   deleteFoto(fotoID) {
-    
     this.alertController
       .create({
         header: 'Sei sicuro?',
@@ -62,25 +93,19 @@ export class PhotoDetailsComponent implements OnInit{
           { text: 'Annulla', role: 'cancel' },
           {
             text: 'Elimina',
-            handler: () => (this.mediaService
-              .deleteFoto(fotoID)
-              .subscribe((res) => {
+            handler: () =>
+              this.mediaService.deleteFoto(fotoID).subscribe((res) => {
                 this.presentToast('Foto Eliminata', 'secondary');
                 this.closeModal();
-                this.modalController.dismiss({message: "ok"}, 'Foto cancellata') 
-              })
-            )},
+                this.modalController.dismiss({ message: 'ok' }, 'Foto cancellata');
+              }),
+          },
         ],
       })
       .then((alertEl) => {
-        
         alertEl.present();
-        
-      })
-      
-      
-    }
-    
+      });
+  }
 
   async presentToast(message: string, color?: string, duration?: number) {
     const toast = await this.toastController.create({

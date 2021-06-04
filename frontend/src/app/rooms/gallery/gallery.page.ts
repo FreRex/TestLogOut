@@ -11,16 +11,14 @@ import { PhotoDetailsComponent } from './photo-details/photo-details.component';
   templateUrl: './gallery.page.html',
   styleUrls: ['./gallery.page.scss'],
 })
-
 export class GalleryPage implements OnInit {
   galleryType = 'foto';
   roomId: string;
   roomName: string;
-  /* public foto:Foto[] = []; */
-  public pageNum: number = 1;
+  pageNum: number = 1;
   backToTop: boolean = false;
 
-  foto$: Observable<Foto[]>
+  foto$: Observable<Foto[]>;
 
   @ViewChild(IonContent) content: IonContent;
 
@@ -31,7 +29,6 @@ export class GalleryPage implements OnInit {
     public router: Router,
     public modalController: ModalController,
     public platform: Platform
-
   ) {}
 
   ngOnInit() {
@@ -44,42 +41,39 @@ export class GalleryPage implements OnInit {
     this.mediaServ.checkDownload(this.roomName);
   }
 
-  loadFoto(){
+  loadFoto() {
     this.mediaServ.loadMedia(this.roomId, this.pageNum).subscribe(
-      (res:Foto[]) => {
-        if (res.length == 0 ){
-          this.presentToast('Non ci sono Foto')
-        }else{
+      (res: Foto[]) => {
+        if (res.length == 0) {
+          this.presentToast('Non ci sono Foto');
+        } else {
           /* this.foto.push(...res)  */
-          
         }
       },
-      err =>console.log('errore', err),
+      (err) => console.log('errore', err),
       () => console.log('complete')
-    ); 
+    );
   }
 
-
-  loadMoreFoto(event){
+  loadMoreFoto(event) {
     this.pageNum++;
-    this.mediaServ.loadMedia(this.roomId, this.pageNum)
-    .subscribe(
-      (res:Foto[]) => {
-        if (res.length == 0 ){
-          if (event){
+    this.mediaServ.loadMedia(this.roomId, this.pageNum).subscribe(
+      (res: Foto[]) => {
+        if (res.length == 0) {
+          if (event) {
             event.target.complete();
             event.target.disable = true;
           }
-        }else{
+        } else {
           /* this.foto.push(...res)  */
-          if (event){
+          if (event) {
             event.target.complete();
           }
         }
       },
-      err =>console.log('errore', err),
+      (err) => console.log('errore', err),
       () => console.log('complete')
-    );      
+    );
   }
 
   toRoomPage() {
@@ -103,25 +97,23 @@ export class GalleryPage implements OnInit {
     });
   }
 
-  editFoto(singleFoto:Foto) {
-
-    this.modalController.create({
-      component: PhotoDetailsComponent,
-      componentProps: { foto: singleFoto , roomName: this.roomName},
-    })
-    .then((modalEl) =>{
-      modalEl.present();
-      return modalEl.onDidDismiss();
-    }).then(res => {
-      if (res.role === 'ok'){
-/*         this.foto.filter(foto => {
+  editFoto(singleFoto: Foto) {
+    this.modalController
+      .create({
+        component: PhotoDetailsComponent,
+        componentProps: { foto: singleFoto, roomName: this.roomName },
+      })
+      .then((modalEl) => {
+        modalEl.present();
+        return modalEl.onDidDismiss();
+      })
+      .then((res) => {
+        if (res.role === 'ok') {
+          /*         this.foto.filter(foto => {
           foto.idPhoto !== singleFoto.idPhoto
         }) */
-      }
-    })
-    
-    
-    
+        }
+      });
   }
 
   async presentToast(message: string, color?: string, duration?: number) {
@@ -136,12 +128,12 @@ export class GalleryPage implements OnInit {
 
   getScrollPos(pos: number) {
     if (pos > this.platform.height()) {
-         this.backToTop = true;
+      this.backToTop = true;
     } else {
-         this.backToTop = false;
+      this.backToTop = false;
     }
-}
-gotToTop() {
-  this.content.scrollToTop(1000);
-}
+  }
+  gotToTop() {
+    this.content.scrollToTop(1000);
+  }
 }
