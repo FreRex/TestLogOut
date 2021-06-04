@@ -50,6 +50,7 @@
   padding: 5%;
   position: relative;
   transition: all 0.5s;
+  background: var(--ion-color-dark-tint);
   .nome-note {
     word-break: break-all;
     word-wrap: break-word;
@@ -99,5 +100,19 @@
     align-items: center;
     word-break: break-all;
     word-wrap: normal;
+  }
+}
+
+@media only screen and (min-width: 600px) {
+  .image {
+    width: 50%;
+    margin: 0 auto;
+  }
+  .coord-btns {
+    .geo-data {
+      font-size: 12px;
+      padding: 2px 4px;
+      width: 10vw;
+    }
   }
 }

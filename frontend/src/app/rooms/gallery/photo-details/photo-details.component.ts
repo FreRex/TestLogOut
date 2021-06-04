@@ -1,7 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AlertController, ModalController, ToastController } from '@ionic/angular';
-import { RoomsPageRoutingModule } from '../../rooms-routing.module';
 import { Foto, MediaService } from '../media.service';
 
 @Component({
