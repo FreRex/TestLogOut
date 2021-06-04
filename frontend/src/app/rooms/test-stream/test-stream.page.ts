@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Plugins } from '@capacitor/core';
+import { Storage } from '@capacitor/storage';
 import { NavController } from '@ionic/angular';
 import FlvJs from 'flv.js';
 import { Socket } from 'ngx-socket-io';
@@ -51,7 +51,7 @@ export class TestStreamPage implements OnInit, AfterViewInit, OnDestroy {
             return;
           }
           this.roomId = paramMap.get('roomId');
-          return from(Plugins.Storage.get({ key: 'authData' }));
+          return from(Storage.get({ key: 'authData' }));
         }),
         map((storedData) => {
           if (!storedData || !storedData.value) {
