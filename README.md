@@ -79,15 +79,23 @@ export class AppModule {}
 
 **Now you can inject SocketOne, SocketTwo in any other services and / or components**
 
-❗ Know Issue For error TS2345 you need to add this to your tsconfig.json.
+❗ Know Issue For error TS2345 --> Add this to the app's _tsconfig.json_:
 
 ```
-{
-  "compilerOptions": {
-    "paths": {
-      "rxjs": ["node_modules/rxjs"]
-    }
-  },
+"compilerOptions": {
+  "paths": {
+    "rxjs": ["./node_modules/rxjs"]
+  }
+}
+```
+
+❗ Build Warning: "ngx-socket-io.js depends on 'socket.io-client'. CommonJS or AMD dependencies can cause optimization bailouts" --> Add this to the app's _angular.json_:
+
+```
+"build": {
+  "options": {
+    "allowedCommonJsDependencies": ["socket.io-client"],
+  }
 }
 ```
 
