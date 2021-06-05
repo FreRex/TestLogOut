@@ -77,6 +77,9 @@ export class TestStreamPage implements OnInit, AfterViewInit, OnDestroy {
           case 'fatal':
             console.log('Fatal: ', msg.data);
             break;
+          case 'userInConference':
+            console.log('userInConference: ', msg.data);
+            break;
           default:
             console.log('unknown message: ', msg);
         }

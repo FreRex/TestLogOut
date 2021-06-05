@@ -170,9 +170,63 @@ const io = require('socket.io')(server, {
 });
 
 spawn('ffmpeg',['-h']).on('error',function(m:any){
+	console.log('zzzzz:');
 	console.error("FFMpeg not found in system cli; please install ffmpeg properly or make a softlink to ./!");
 	process.exit(-1);
 });
+
+//---------------------------------------------------------------
+// --- Sezione per presenza utenti in conference
+let utentiInConference: any[] = [];
+
+function utentiConferenza(idutente: any, dataAction:any){
+	
+	// "idutente" vuole ENTRARE in conference
+	if((idutente) && dataAction=='entrance'){
+		//Verifica presenza in array "utentiInConference"
+		let verificapsz: Boolean = utentiInConference.includes(idutente);	
+		if(verificapsz==true){				
+			// Utente già presente							
+		}
+		else
+		{
+			// Utente NON presente.
+			//Inserimento utente in array "utentiInConference".
+			utentiInConference.push(idutente);	
+			//console.log(utentiInConference);
+		}
+	}
+
+	// "idutente" vuole USCIRE dalla conference
+	if((idutente) && dataAction=='exitUser'){
+	
+		//Ricerca posizione "idutente" in array "utentiInConference"
+		let pos = utentiInConference.indexOf(idutente);	
+		
+		//Se streamId è presente nell'array allora POSSIAMO effettivamente eliminarlo
+		if(pos!=-1){			
+			//Eliminare "partecipante" dall'array
+			utentiInConference.splice(pos, 1);	
+			//console.log(utentiInConference);						
+		}
+		else
+		{
+			// Utente NON presente.			
+		}	
+	}
+
+	return utentiInConference;
+
+}
+
+function idutente(urlrtmp: string){
+
+	let rex: any = urlrtmp.split('/');
+	let idutenteidentificato: any = rex[rex.length-1]
+
+	return idutenteidentificato;
+ 
+}
 
 //-----------------------------------------------------------------------------------------
 //------------------------- Socket connection ---------------------------------------------
@@ -183,7 +237,7 @@ io.on('connection', function(socket: any){
 	socket.emit('message',{type: 'welcome', data: 'Hello from mediarecorder-to-rtmp server!'});
 	//socket.emit('message','Please set rtmp destination before start streaming.');	
 	socket.emit('message',{type: 'welcome', data: 'Please set rtmp destination before start streaming.'});
-	
+	console.log('qqqqq:');
 	let ffmpeg_process: any;
 	let feedStream: any = false;
 	socket.on('config_rtmpDestination',function(m: any){
@@ -202,9 +256,13 @@ io.on('connection', function(socket: any){
 		//socket.emit('message','rtmp destination set to:'+m);
 		let dataforsocket: string='rtmp destination set to:'+m;
 		socket.emit('message',{type: 'welcome', data: dataforsocket});
+		socket.emit('message', {type: 'userInConference', data: utentiConferenza(idutente(socket._rtmpDestination), 'entrance')});
+		socket.broadcast.emit('message', {type: 'userInConference', data: utentiConferenza(idutente(socket._rtmpDestination), 'entrance')});
+		console.log('9999:');
 	}); 
 	
 	socket.on('config_vcodec',function(m: any){
+		console.log('8888:');
 		if(typeof m != 'string'){
 			//socket.emit('fatal','input codec setup error.');
 			socket.emit('message',{type: 'fatal', data: 'input codec setup error.'});
@@ -220,12 +278,14 @@ io.on('connection', function(socket: any){
 
 	socket.on('start',function(m: any){
 		
-		if(ffmpeg_process || feedStream){			
+		if(ffmpeg_process || feedStream){
+			console.log('7777:');			
 			//socket.emit('fatal','stream already started.');
 			socket.emit('message',{type: 'fatal', data: 'stream already started.'});
 			return;
 		}
 		if(!socket._rtmpDestination){
+			console.log('6666:');
 			//socket.emit('fatal','no destination given.');
 			socket.emit('message',{type: 'fatal', data: 'no destination given.'});
 			return;
@@ -311,6 +371,7 @@ io.on('connection', function(socket: any){
 		}
 
 		ffmpeg_process.stderr.on('data',function(d: any){
+			console.log('5555:');
 			//socket.emit('ffmpeg_stderr','ffmpeg_stderr'+d);
 			let ffmpeg_stderrforsocket = 'ffmpeg_stderr'+d;
 			socket.emit('message',{type: 'info', data: ffmpeg_stderrforsocket});
@@ -337,6 +398,7 @@ io.on('connection', function(socket: any){
 	//---------------------------- fine codice socket start --------------
 
 	socket.on('binarystream',function(m: any){
+		console.log('44444:');
 		if(!feedStream){
 			//socket.emit('fatal','rtmp not set yet.');
 			socket.emit('message',{type: 'fatal', data: 'rtmp not set yet.'});
@@ -350,18 +412,23 @@ io.on('connection', function(socket: any){
 	socket.on('disconnectStream', function () {
 		console.log("streaming  disconnecteddddd!");
 		feedStream=false;
-		if(ffmpeg_process)
-			try{
-				ffmpeg_process.stdin.end();
-				ffmpeg_process.kill('SIGINT');
-				console.log("ffmpeg process ended!");
-			}
-			catch(e){
-				console.warn('killing ffmoeg process attempt failed...');
-			}
+		if(ffmpeg_process){
+			socket.emit('message', {type: 'userInConference', data: utentiConferenza(idutente(socket._rtmpDestination), 'exitUser')});
+			socket.broadcast.emit('message', {type: 'userInConference', data: utentiConferenza(idutente(socket._rtmpDestination), 'exitUser')});
+			ffmpeg_process.stdin.end();
+			ffmpeg_process.kill('SIGINT');
+			console.log("ffmpeg process ended!");
+		}
+		else
+		{
+			socket.emit('message', {type: 'userInConference', data: utentiConferenza(idutente(socket._rtmpDestination), 'exitUser')});
+			socket.broadcast.emit('message', {type: 'userInConference', data: utentiConferenza(idutente(socket._rtmpDestination), 'exitUser')});
+			console.warn('killing ffmoeg process attempt failed...');
+		}
 	});
 
 	socket.on('error',function(e: any){
+		console.log('3333:');
 		console.log('socket.io error:'+e);
 	});
 	
@@ -369,6 +436,7 @@ io.on('connection', function(socket: any){
 });
 
 io.on('error',function(e: any){
+	console.log('222222:');
 	console.log('socket.io error:'+e);
 });
 
@@ -383,6 +451,6 @@ server.listen(port, function(){
 
 process.on('uncaughtException', function(err) {
     // handle the error safely
-    console.log(err)
+    console.log('11111:' + err);
     // Note: after client disconnect, the subprocess will cause an Error EPIPE, which can only be caught this way.
 })
