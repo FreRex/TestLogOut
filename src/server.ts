@@ -86,7 +86,7 @@ if (process.env.NODE_ENV == 'production') {
 }
 else
 {
-  port = 9185;
+  port = 9187;
 }
 
 app.use(express.json());
@@ -347,7 +347,7 @@ io.on('connection', function(socket: any){
 		feedStream(m);
 	});
 
-	socket.on('disconnect', function () {
+	socket.on('disconnectStream', function () {
 		console.log("streaming  disconnecteddddd!");
 		feedStream=false;
 		if(ffmpeg_process)
