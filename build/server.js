@@ -178,7 +178,7 @@ io.on('connection', function (socket) {
         var regexValidator = /^rtmp:\/\/[^\s]*$/; //TODO: should read config
         if (!regexValidator.test(m)) {
             //socket.emit('fatal','rtmp address rejected.');
-            socket.emit('message', { type: 'welcome', data: 'rtmp address rejected.' });
+            socket.emit('message', { type: 'fatal', data: 'rtmp address rejected.' });
             return;
         }
         socket._rtmpDestination = m;
@@ -290,7 +290,7 @@ io.on('connection', function (socket) {
         ffmpeg_process.stderr.on('data', function (d) {
             //socket.emit('ffmpeg_stderr','ffmpeg_stderr'+d);
             let ffmpeg_stderrforsocket = 'ffmpeg_stderr' + d;
-            socket.emit('message', { type: 'fatal', data: ffmpeg_stderrforsocket });
+            socket.emit('message', { type: 'info', data: ffmpeg_stderrforsocket });
         });
         ffmpeg_process.on('error', function (e) {
             console.log('child process error' + e);
