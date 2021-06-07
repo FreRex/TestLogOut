@@ -42,9 +42,6 @@ export class PhotoDetailsComponent implements OnInit {
 
     /* chiamata UPDATE FOTO */
 
-    /*     if (!this.form.valid) {
-      return;
-    } */
     this.mediaService
       .updateFoto(this.foto.idPhoto, this.form.value.nome, this.form.value.note)
       .subscribe(
@@ -74,6 +71,41 @@ export class PhotoDetailsComponent implements OnInit {
           console.log('chiamata update errore:', err);
           this.form.reset();
           this.modalController.dismiss({ message: err.error['text'] }, 'error');
+        }
+      );
+    // this.presentToast('Room Aggiornata', 'secondary');
+  }
+  updateOffDesk() {
+    this.inputArea = false;
+
+    /* chiamata UPDATE FOTO */
+
+    this.mediaService
+      .updateFoto(this.foto.idPhoto, this.form.value.nome, this.form.value.note)
+      .subscribe(
+        /** Il server risponde con 200 */
+
+        (res) => {
+          // non ci sono errori
+          console.log('chiamata update:', res);
+          if (res['affectedRows'] === 1) {
+            const foto = this.mediaService.fotoSetSubject
+              .getValue()
+              .find((ph) => ph.idPhoto === this.foto.idPhoto);
+            foto.nomelemento = this.form.value.nome;
+            foto.noteimg = this.form.value.note;
+            this.form.reset();
+          }
+          // possibili errori
+          else {
+            console.log('chiamata update fallita:', res);
+            this.form.reset();
+          }
+        },
+        /** Il server risponde con un errore */
+        (err) => {
+          console.log('chiamata update errore:', err);
+          this.form.reset();
         }
       );
     // this.presentToast('Room Aggiornata', 'secondary');

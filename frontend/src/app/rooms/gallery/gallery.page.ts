@@ -101,6 +101,7 @@ export class GalleryPage implements OnInit {
     this.modalController
       .create({
         component: PhotoDetailsComponent,
+        cssClass: 'modal-fullscreen',
         componentProps: { foto: singleFoto, roomName: this.roomName },
       })
       .then((modalEl) => {
