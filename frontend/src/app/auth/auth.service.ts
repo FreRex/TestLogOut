@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, OnDestroy } from '@angular/core';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import { Plugins } from '@capacitor/core';
+import { Storage } from '@capacitor/storage';
 import { BehaviorSubject, from, throwError } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
@@ -78,7 +78,7 @@ export class AuthService implements OnDestroy {
   }
 
   autoLogin() {
-    return from(Plugins.Storage.get({ key: 'authData' })).pipe(
+    return from(Storage.get({ key: 'authData' })).pipe(
       map((storedData) => {
         if (!storedData || !storedData.value) {
           return null;
@@ -182,7 +182,7 @@ export class AuthService implements OnDestroy {
     this._user.next(newUser);
 
     // * Salva i parametri dell'utente sul localStorage
-    Plugins.Storage.set({
+    Storage.set({
       key: 'authData',
       value: JSON.stringify({
         idutente: newUser.idutente,
@@ -214,7 +214,7 @@ export class AuthService implements OnDestroy {
       clearTimeout(this.activeLogoutTimer);
     }
     this._user.next(null);
-    Plugins.Storage.remove({ key: 'authData' });
+    Storage.remove({ key: 'authData' });
   }
 
   ngOnDestroy() {

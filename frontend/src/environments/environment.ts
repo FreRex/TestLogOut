@@ -2,10 +2,13 @@
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
+console.log('location.hostname: ', location.hostname);
+
 export const environment = {
   production: false,
-  apiUrl: 'https://www.collaudolive.com:9083',
-  tokenString: 'tokendev',
+  apiUrl: `https://www.collaudolive.com:9187`,
+  urlRTMP: 'rtmp://www.collaudolive.com:1941',
+  urlWSS: 'wss://www.collaudolive.com:8471',
 };
 
 /*
@@ -16,5 +19,3 @@ export const environment = {
  * on performance if an error is thrown.
  */
 // import 'zone.js/dist/zone-error';  // Included with Angular CLI.
-
-// -MVRxOXZxVSdgIFai4Kz

@@ -55,8 +55,9 @@ export class LoginComponent implements OnInit {
           this.router.navigateByUrl('/rooms');
         },
         (err) => {
+          console.log(err);
           loadingEl.dismiss();
-          this.showAlert(err);
+          this.showAlert(err.statusText);
         }
       );
     });
