@@ -12,160 +12,81 @@
 <ion-content>
   <ion-grid>
     <ion-row>
-      <ion-col size="5">
-        <div>
-          <!-- BTN CHE RIMANDA INDIETRO ALL'IGRESSO DELLA CONFERENCE -->
-          <ion-button class="btn-trasparent">
-            <ion-icon slot="start" name="chevron-back-outline"></ion-icon>
-            Indietro
+      <ion-col size-lg="11" offset-lg="0.5">
+        <!-- BTN CHE RIMANDA INDIETRO ALL'IGRESSO DELLA CONFERENCE -->
+        <ion-button class="btn-trasparent">
+          <ion-icon slot="start" name="chevron-back-outline"></ion-icon>
+          Indietro
+        </ion-button>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col size-lg="4" offset-lg="0.5">
+        <div class="conference-title">
+          <div class="title">
+            <ion-text><b>Nome della CONFERENCE</b></ion-text>
+            <ion-text>Mattina</ion-text>
+          </div>
+          <!-- BTN CHE COPIA IL LINK DELLA CONFERENCE -->
+          <ion-button class="button">
+            <ion-icon slot="icon-only" name="share-social"></ion-icon>
           </ion-button>
         </div>
       </ion-col>
     </ion-row>
 
     <ion-row>
-      <ion-col size="5">
-        <ion-card class="cards-container">
-          <ion-card-header class="video-head">
-            <div>
-              <ion-card-subtitle><b>Nome della CONFERENCE</b></ion-card-subtitle>
-              <ion-card-subtitle>Mattina</ion-card-subtitle>
-            </div>
-            <div>
-              <!-- BTN CHE COPIA IL LINK DELLA CONFERENCE -->
-              <ion-button class="btn-trasparent">
-                <ion-icon slot="icon-only" name="share-social"></ion-icon>
-              </ion-button>
-            </div>
-          </ion-card-header>
-
-          <ion-card-content>
-            <!-- QUI DENTRO VA IL VIDEO PLAYER -->
-            <div class="spazio-vuoto-dimensione-fissa">
-              <br /><br /><br /><br />
-              <br /><br /><br /><br />
-              <h1>video</h1>
-            </div>
-            <div class="audio-video-ctrl">
-              <div class="left-ctrl">
-                <ion-button class="btn-trasparent">
-                  <ion-icon
-                    size="small"
-                    slot="icon-only"
-                    src="assets/icons/mockup-icons/cam-off.svg"
-                  ></ion-icon>
-                </ion-button>
-                <ion-button class="btn-trasparent">
-                  <ion-icon
-                    size="small"
-                    slot="icon-only"
-                    src="assets/icons/mockup-icons/mic.svg"
-                  ></ion-icon>
-                </ion-button>
-              </div>
-              <ion-button class="btn-trasparent dots">
-                <ion-icon slot="icon-only" src="assets/icons/mockup-icons/dots.svg"></ion-icon>
-              </ion-button>
-              <ion-button class="btn-trasparent">
-                <ion-icon
-                  size="small"
-                  slot="icon-only"
-                  src="assets/icons/mockup-icons/expand.svg"
-                ></ion-icon>
-              </ion-button>
-            </div>
-            <!-- BOTTONI VIDEO -->
-            <div class="btn-video">
-              <ion-button class="btn-trasparent" shape="round">
-                <ion-icon
-                  slot="icon-only"
-                  src="assets/icons/mockup-icons/smart-glasses.svg"
-                ></ion-icon>
-              </ion-button>
-
-              <div>
-                <ion-button class="btn-trasparent" shape="round">
-                  <ion-icon
-                    size="small"
-                    slot="icon-only"
-                    src="assets/icons/mockup-icons/aperture.svg"
-                  ></ion-icon>
-                </ion-button>
-                <ion-button class="btn-trasparent" shape="round">
-                  <ion-icon slot="icon-only" src="assets/icons/mockup-icons/nota.svg"></ion-icon>
-                </ion-button>
-              </div>
-
-              <ion-button class="btn-trasparent" shape="round">
-                <ion-icon
-                  slot="icon-only"
-                  src="assets/icons/mockup-icons/termina-call.svg"
-                ></ion-icon>
-              </ion-button>
-            </div>
-          </ion-card-content>
-        </ion-card>
+      <ion-col size-lg="4" offset-lg="0.5">
+        <!-- QUI DENTRO VA IL VIDEO PLAYER -->
+        <div class="spazio-vuoto-dimensione-fissa">
+          <app-webcam *ngIf="isStreaming" [rtmpDestination]="rtmpDestination"></app-webcam>
+          <app-player *ngIf="!isStreaming" [flvOrigin]="flvOrigin"></app-player>
+        </div>
+        <app-streaming-bar></app-streaming-bar>
       </ion-col>
 
       <ion-col size="4">
-        <ion-card class="cards-container">
-          <ion-card-header>
-            <ion-card-subtitle class="none"><b>xxxxxxxxxxx</b></ion-card-subtitle>
-            <ion-card-subtitle class="none">xxxxxxxxxxx</ion-card-subtitle>
-          </ion-card-header>
-
-          <ion-card-content>
-            <!-- QUI DENTRO VA LA MAPPA -->
-            <div class="spazio-vuoto-dimensione-fissa">
-              <br /><br /><br />
-              <br /><br /><br /><br /><br />
-              <h1>mappa</h1>
-            </div>
-            <div class="btn-map">
-              <div class="left">
-                <ion-item>
-                  <ion-label position="floating">Campo input da rivedere</ion-label>
-                  <ion-input></ion-input>
-                </ion-item>
-              </div>
-              <div class="right">
-                <ion-button size="small" color="light">
-                  <ion-icon
-                    size="small"
-                    slot="icon-only"
-                    src="assets/icons/mockup-icons/flag.svg"
-                  ></ion-icon>
-                </ion-button>
-                <ion-button class="btn-trasparent">
-                  <ion-icon
-                    size="small"
-                    slot="icon-only"
-                    src="assets/icons/mockup-icons/marker.svg"
-                  ></ion-icon>
-                </ion-button>
-              </div>
-            </div>
-          </ion-card-content>
-        </ion-card>
+        <!-- QUI DENTRO VA LA MAPPA -->
+        <div class="spazio-vuoto-dimensione-fissa">
+          <br /><br /><br />
+          <br /><br /><br /><br /><br />
+          <h1>mappa</h1>
+        </div>
+        <div class="btn-map">
+          <div class="left">
+            <ion-item>
+              <ion-label position="floating">Campo input da rivedere</ion-label>
+              <ion-input></ion-input>
+            </ion-item>
+          </div>
+          <div class="right">
+            <ion-button size="small" color="light">
+              <ion-icon
+                size="small"
+                slot="icon-only"
+                src="assets/icons/mockup-icons/flag.svg"
+              ></ion-icon>
+            </ion-button>
+            <ion-button class="btn-trasparent">
+              <ion-icon
+                size="small"
+                slot="icon-only"
+                src="assets/icons/mockup-icons/marker.svg"
+              ></ion-icon>
+            </ion-button>
+          </div>
+        </div>
       </ion-col>
 
       <ion-col size="3">
-        <ion-card class="cards-container">
-          <ion-card-header>
-            <ion-card-subtitle class="none"><b>xxxxxxxxxxxx</b></ion-card-subtitle>
-            <ion-card-subtitle class="none">xxxxxxxxxxx</ion-card-subtitle>
-          </ion-card-header>
-
-          <ion-card-content>
-            <!-- QUI DENTRO VA LA LISTA PARTECIPANTI con SWITCH su CHAT-->
-            <div class="spazio-vuoto-dimensione-fissa">
-              <br /><br /><br />
-              <br /><br /><br />
-              <br /><br />
-              <h1>lista ut / chat</h1>
-            </div>
-          </ion-card-content>
-        </ion-card>
+        <!-- QUI DENTRO VA LA LISTA PARTECIPANTI con SWITCH su CHAT-->
+        <div class="spazio-vuoto-dimensione-fissa">
+          <br /><br /><br />
+          <br /><br /><br />
+          <br /><br />
+          <h1>lista ut / chat</h1>
+        </div>
       </ion-col>
     </ion-row>
   </ion-grid>

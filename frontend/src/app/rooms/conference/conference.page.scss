@@ -1,12 +1,42 @@
+.btn-trasparent {
+  --color: --var(--ion-color-dark);
+  --background: none;
+}
+
+.conference-title {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-left: 16px;
+  margin-right: 16px;
+  .title {
+    color: --var(--ion-color-dark);
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+  }
+  .button {
+    --background: none;
+    --color: --var(--ion-color-dark);
+    --border-radius: 0;
+    --padding-bottom: 0px;
+    --padding-end: 0px;
+    --padding-top: 0px;
+    --padding-start: 0px;
+    display: block;
+    height: 36px;
+    width: 36px;
+    ion-icon {
+      font-size: 1.3rem;
+    }
+  }
+}
+
 .none {
   --background: none;
   color: transparent;
 }
-.btn-trasparent {
-  color: #383a3e;
-  --background: none;
-  text-transform: lowercase;
-}
+
 .cards-container {
   box-shadow: none !important;
 }
@@ -17,9 +47,9 @@
 
 /* sotto da cancellare una volta sostituite le parti */
 .spazio-vuoto-dimensione-fissa {
-  width: 90%;
-  margin: 0 auto;
   height: 360px;
+  margin-right: 16px;
+  margin-left: 16px;
   background-color: black;
   background-size: cover;
   text-align: center;

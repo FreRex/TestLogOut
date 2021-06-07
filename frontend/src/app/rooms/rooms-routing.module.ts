@@ -13,15 +13,15 @@ const routes: Routes = [
     loadChildren: () => import('./gallery/gallery.module').then((m) => m.GalleryPageModule),
   },
   {
-    path: 'test-stream/:roomId',
-    loadChildren: () =>
-      import('./test-stream/test-stream.module').then((m) => m.TestStreamPageModule),
-  },
-  {
-    path: 'conference',
+    path: 'conference/:roomId',
     loadChildren: () =>
       import('./conference/conference.module').then((m) => m.ConferencePageModule),
   },
+  // {
+  //   path: 'conference',
+  //   loadChildren: () =>
+  //     import('./conference/conference.module').then((m) => m.ConferencePageModule),
+  // },
   // {
   //   path: ':roomId',
   //   loadChildren: () =>
