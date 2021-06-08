@@ -10,21 +10,26 @@ export class TokenInterceptor implements HttpInterceptor {
   constructor(public authService: AuthService) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    return this.authService.currentUser$.pipe(
-      take(1),
-      exhaustMap((user) => {
-        if (!user) {
-          return next.handle(request);
-        }
-        console.log('🐱‍👤 : TokenInterceptor : user.token', user.token);
-        const modifiedRequest = request.clone({
-          setHeaders: {
-            Authorization: `Bearer ${user.token.toString()}`,
-          },
-        });
-        return next.handle(modifiedRequest);
-      })
-    );
+    if (request.url.endsWith('token/') || request.url.endsWith('lgn/')) {
+      console.log('🐱‍👤 : TokenInterceptor : request', request.url);
+      return next.handle(request);
+    } else {
+      return this.authService.currentUser$.pipe(
+        take(1),
+        exhaustMap((user) => {
+          if (!user) {
+            return next.handle(request);
+          }
+          console.log('🐱‍👤 : TokenInterceptor : user.token', user.token);
+          const modifiedRequest = request.clone({
+            setHeaders: {
+              Authorization: `Bearer ${user.token.toString()}`,
+            },
+          });
+          return next.handle(modifiedRequest);
+        })
+      );
+    }
 
     // return next.handle(request).pipe(
     //   map(
