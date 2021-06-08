@@ -1,6 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AppState, Capacitor, Plugins } from '@capacitor/core';
+import { App, AppState } from '@capacitor/app';
+import { Capacitor } from '@capacitor/core';
+import { SplashScreen } from '@capacitor/splash-screen';
 import { Platform } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
@@ -27,14 +29,14 @@ export class AppComponent implements OnInit, OnDestroy {
   initializeApp() {
     this.platform.ready().then(() => {
       if (Capacitor.isPluginAvailable('SplashScreen')) {
-        Plugins.SplashScreen.hide();
+        SplashScreen.hide();
       }
     });
   }
 
   ngOnInit() {
     if (this.platform.is('mobile')) {
-      Plugins.App.addListener('appStateChange', this.checkAuthOnResume.bind(this));
+      App.addListener('appStateChange', this.checkAuthOnResume.bind(this));
     }
     this.authSub = this.authService.userIsAuthenticated.subscribe((isAuth) => {
       if (!isAuth && this.previousAuthState !== isAuth) {
@@ -52,7 +54,7 @@ export class AppComponent implements OnInit, OnDestroy {
     if (this.authSub) {
       this.authSub.unsubscribe();
     }
-    // Plugins.App.removeListener('appStateChange', this.checkAuthOnResume);
+    // App.removeListener('appStateChange', this.checkAuthOnResume);
   }
 
   private checkAuthOnResume(state: AppState) {

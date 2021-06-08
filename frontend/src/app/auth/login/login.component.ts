@@ -30,12 +30,14 @@ export class LoginComponent implements OnInit {
   ngOnInit() {}
 
   showPassword: boolean;
+  formSubmitted: boolean = false;
 
   toggleShowPassword() {
     this.showPassword = !this.showPassword;
   }
 
   authenticate() {
+    this.formSubmitted = true;
     if (!this.form.valid) {
       return;
     }
@@ -55,8 +57,9 @@ export class LoginComponent implements OnInit {
           this.router.navigateByUrl('/rooms');
         },
         (err) => {
+          console.log('🐱‍👤 : LoginComponent : err', err);
           loadingEl.dismiss();
-          this.showAlert(err);
+          this.showAlert(err['message']);
         }
       );
     });

@@ -1,9 +1,9 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, OnDestroy } from '@angular/core';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import { Plugins } from '@capacitor/core';
+import { Storage } from '@capacitor/storage';
 import { BehaviorSubject, from, throwError } from 'rxjs';
-import { catchError, map, tap } from 'rxjs/operators';
+import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 
 import { AuthUser } from './auth-user.model';
@@ -23,34 +23,18 @@ interface TokenPayload {
   providedIn: 'root',
 })
 export class AuthService implements OnDestroy {
-  private helper;
-  loginToken: string = '';
   private activeLogoutTimer;
-  private _user = new BehaviorSubject<AuthUser>(null);
+  private jwtHelper;
 
   constructor(private http: HttpClient) {
-    this.helper = new JwtHelperService();
-  }
-
-  getLoginToken() {
-    return this.http.post(`${environment.apiUrl}/token/`, {}).pipe(
-      catchError((err) => {
-        return throwError(err);
-      }),
-      tap((loginToken) => {
-        if (!loginToken) {
-          throw new Error('Errore server');
-        } else {
-          this.loginToken = loginToken['token'];
-        }
-      })
-    );
+    this.jwtHelper = new JwtHelperService();
   }
 
   /** currentUser DEVE essere un Osservabile perché altrimenti
    * la direttiva *userIsAdmin non funziona correttamente e
    * il template non viene aggiornato in tempo in base al ruolo*/
 
+  private _user = new BehaviorSubject<AuthUser>(null);
   get currentUser$() {
     return this._user.asObservable().pipe(
       // take(1),
@@ -78,7 +62,7 @@ export class AuthService implements OnDestroy {
   }
 
   autoLogin() {
-    return from(Plugins.Storage.get({ key: 'authData' })).pipe(
+    return from(Storage.get({ key: 'authData' })).pipe(
       map((storedData) => {
         if (!storedData || !storedData.value) {
           return null;
@@ -113,32 +97,34 @@ export class AuthService implements OnDestroy {
   }
 
   login(username: string, password: string) {
-    return this.http
-      .post(
-        `${environment.apiUrl}/lgn/`,
-        {
-          usr: username,
-          pwd: password,
+    return this.http.post(`${environment.apiUrl}/token/`, {}).pipe(
+      switchMap((loginToken) => {
+        if (!loginToken) {
+          throw new Error('Errore server');
         }
-        // {
-        //   headers: new HttpHeaders().set(
-        //     'Authorization',
-        //     `Bearer ${this.loginToken}`
-        //   ),
-        // }
-      )
-      .pipe(
-        catchError((err) => {
-          return throwError(err);
-        }),
-        tap((token: string) => {
-          if (!token) {
-            throw new Error('Credenziali errate');
-          } else {
-            this.setUserData(token);
+        console.log('🐱‍👤 : AuthService : loginToken', loginToken);
+        return this.http.post(
+          `${environment.apiUrl}/lgn/`,
+          {
+            usr: username,
+            pwd: password,
+          },
+          {
+            headers: new HttpHeaders().set('Authorization', `Bearer ${loginToken['token']}`),
           }
-        })
-      );
+        );
+      }),
+      catchError((err) => {
+        return throwError(err);
+      }),
+      tap((token: string) => {
+        if (!token) {
+          throw new Error('Credenziali errate');
+        } else {
+          this.setUserData(token);
+        }
+      })
+    );
   }
 
   signup(username: string, password: string) {
@@ -161,9 +147,9 @@ export class AuthService implements OnDestroy {
   }
 
   setUserData(token) {
-    const payload: TokenPayload = this.helper.decodeToken(token['token']);
+    const payload: TokenPayload = this.jwtHelper.decodeToken(token['token']);
     console.log('🐱‍👤 : AuthService : payload', payload);
-    const expDate: Date = this.helper.getTokenExpirationDate(token['token']);
+    const expDate: Date = this.jwtHelper.getTokenExpirationDate(token['token']);
     console.log('🐱‍👤 : AuthService : expDate', expDate);
 
     // * Crea un nuovo utente
@@ -182,7 +168,7 @@ export class AuthService implements OnDestroy {
     this._user.next(newUser);
 
     // * Salva i parametri dell'utente sul localStorage
-    Plugins.Storage.set({
+    Storage.set({
       key: 'authData',
       value: JSON.stringify({
         idutente: newUser.idutente,
@@ -214,7 +200,7 @@ export class AuthService implements OnDestroy {
       clearTimeout(this.activeLogoutTimer);
     }
     this._user.next(null);
-    Plugins.Storage.remove({ key: 'authData' });
+    Storage.remove({ key: 'authData' });
   }
 
   ngOnDestroy() {
