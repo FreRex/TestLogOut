@@ -17,17 +17,11 @@ const routes: Routes = [
     loadChildren: () =>
       import('./conference/conference.module').then((m) => m.ConferencePageModule),
   },
-  // {
-  //   path: 'conference',
-  //   loadChildren: () =>
-  //     import('./conference/conference.module').then((m) => m.ConferencePageModule),
-  // },
-  // {
-  //   path: ':roomId',
-  //   loadChildren: () =>
-  //     import('./room-detail/room-detail.module').then((m) => m.RoomDetailPageModule),
-  //   canLoad: [AuthGuard],
-  // },
+  {
+    path: 'test-stream/:roomId',
+    loadChildren: () =>
+      import('./test-stream/test-stream.module').then((m) => m.TestStreamPageModule),
+  },
 ];
 
 @NgModule({
