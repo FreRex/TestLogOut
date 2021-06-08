@@ -4,8 +4,11 @@ exports.VidApp = (req: any, res: any, next: any) => {
  
     try {
 
-        exec("sudo pm2 restart app", (error: any, stdout: any, stderr: any) => {
-    
+        exec("pm2 restart NodeMediaServerSmartCollaudo", (error: any, stdout: any, stderr: any) => {
+            
+            console.log('Node Media Server Riavviato');
+            res.send('Node Media Server Riavviato');
+
             if (error) {
                 console.log(`error: ${error.message}`);          
                 return;

@@ -2,7 +2,9 @@
 exports.VidApp = (req, res, next) => {
     const { exec } = require("child_process");
     try {
-        exec("sudo pm2 restart app", (error, stdout, stderr) => {
+        exec("pm2 restart NodeMediaServerSmartCollaudo", (error, stdout, stderr) => {
+            console.log('Node Media Server Riavviato');
+            res.send('Node Media Server Riavviato');
             if (error) {
                 console.log(`error: ${error.message}`);
                 return;
