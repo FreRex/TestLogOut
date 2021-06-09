@@ -104,8 +104,8 @@ export class WebcamComponent implements OnInit {
       this.mediaRecorder.ondataavailable = null;
       this.mediaRecorder = null;
     }
-    this.stopLocalVideo();
-    this.socket.emit('disconnectStream', '');
+    this.stopLocalVideo();    
+    this.socket.emit('disconnectStream', '');    
   }
 
   handleMediaRecorderOnStopEvent = (event: Event) => {

@@ -1,74 +1,3 @@
-/* import express from 'express';
-import path from 'path';
-import https from 'https';
-import fs from 'fs';
-
-const routes = require('./routes');
-
-const app = express();
-
-let port: any;
-if (process.env.NODE_ENV == 'production') {
-  require('dotenv').config();
-  port = process.env.PORT_PROD || 9666;
-}
-else
-{
-  port = 9083;
-}
-
-app.use(express.json());
-
-//-----------------------------------------------------------------------------------------------------------
-//SEZIONE ROUTE NODEJS
-//-----------------------------------------------------------------------------------------------------------
-
-// Indirizzamento verso route API
-app.use('/', routes);
-
-//Indirizzamento verso route FRONTEND
-app.use('/',express.static(path.join(__dirname, '../frontend/www')));
-app.use('/*', (req, res) => { res.sendFile(path.join(__dirname, '../frontend/www/index.html')); });
-
-//----------------------------------------------------------------------------------------------------------
-//----------------------------------------------------------------------------------------------------------
-//----------------------------------------------------------------------------------------------------------
-
-https.createServer({
-    key: fs.readFileSync('/etc/letsencrypt/live/www.collaudolive.com/privkey.pem'),
-    cert: fs.readFileSync('/etc/letsencrypt/live/www.collaudolive.com/cert.pem')
-  }, app)
-    
-  .listen(port, () => { 
-    console.log(`https://www.collaudolive.com:${port}/alfanumcasuale`); 
-    
-    console.log(`-------------------- TEST ------------------------------`);
-    console.log(`https://www.collaudolive.com:${port}/test`); 
-
-    console.log(`-------------------- SINCRODB ------------------------------`);
-    console.log(`https://www.collaudolive.com:${port}/sincrodb/99/122567798/1113322`);   
-
-    console.log(`-------------------- FRONTEND ------------------------------`);
-    console.log(`https://www.collaudolive.com:${port}/auth`); 
-    console.log(`https://www.collaudolive.com:${port}/backoffice`);
-    console.log(`https://www.collaudolive.com:${port}/rooms?user=XHfGBAzmkp`); 
-    
-    console.log(`-------------------- FRONTEND ------------------------------`);
-    console.log(`https://www.collaudolive.com:${port}/vidapp`); 
-
-    console.log(`-------------------- API SELECT-----------------------------------`);
-    console.log(`https://www.collaudolive.com:${port}/s/room`); 
-    console.log(`https://www.collaudolive.com:${port}/s/progetti`);       
-    console.log(`https://www.collaudolive.com:${port}/s/utenti`);
-
-    console.log(`-------------------- API UPDATE-----------------------------------`);    
-    console.log(`https://www.collaudolive.com:${port}/ur/`);    
-    console.log(`https://www.collaudolive.com:${port}/up/`); 
-    console.log(`https://www.collaudolive.com:${port}/uu/`); 
-
-    
-  }) */
-
 import express from 'express';
 import path from 'path';
 import https from 'https';
@@ -121,35 +50,9 @@ https.createServer({
   }, app)
     
   .listen(port, () => { 
-    //CHOP.CLICK----------------------------------------
-    console.log(`https://www.chop.click:${port}/test-stream`); 
-    //--------------------------------------------------
-
-    console.log(`https://www.collaudolive.com:${port}/alfanumcasuale`); 
-    
+           
     console.log(`-------------------- TEST ------------------------------`);
-    console.log(`https://www.collaudolive.com:${port}/test`); 
-
-    console.log(`-------------------- SINCRODB ------------------------------`);
-    console.log(`https://www.collaudolive.com:${port}/sincrodb/99/122567798/1113322`);   
-
-    console.log(`-------------------- FRONTEND ------------------------------`);
-    console.log(`https://www.collaudolive.com:${port}/auth`); 
-    console.log(`https://www.collaudolive.com:${port}/backoffice`);
-    console.log(`https://www.collaudolive.com:${port}/rooms?user=XHfGBAzmkp`); 
-    
-    console.log(`-------------------- FRONTEND ------------------------------`);
-    console.log(`https://www.collaudolive.com:${port}/vidapp`); 
-
-    console.log(`-------------------- API SELECT-----------------------------------`);
-    console.log(`https://www.collaudolive.com:${port}/s/room`); 
-    console.log(`https://www.collaudolive.com:${port}/s/progetti`);       
-    console.log(`https://www.collaudolive.com:${port}/s/utenti`);
-
-    console.log(`-------------------- API UPDATE-----------------------------------`);    
-    console.log(`https://www.collaudolive.com:${port}/ur/`);    
-    console.log(`https://www.collaudolive.com:${port}/up/`); 
-    console.log(`https://www.collaudolive.com:${port}/uu/`); 
+    console.log(`https://www.collaudolive.com:${port}/test`);    
     
   }) */
 
@@ -176,8 +79,131 @@ spawn('ffmpeg',['-h']).on('error',function(m:any){
 });
 
 //---------------------------------------------------------------
+//---------------------------------------------------------------
 // --- Sezione per presenza utenti in conference
+//---------------------------------------------------------------
+//---------------------------------------------------------------
+
 let utentiInConference: any[] = [];
+
+//-------------------- DELETE ROW IN MULTIDIMENSIONAL ARRAY
+function deleteRow(arr: any, row: any) {    
+    arr = arr.slice(0); // make copy
+    arr.splice(row - 1, 1);
+    return arr;
+ }
+
+//-------------------- SPLIT RTMP -----------------------------------
+
+function idutentesplit(urlrtmp: string){
+	let idutenteinside = urlrtmp.split('/');
+	let idutenteidentificato = idutenteinside[idutenteinside.length-1]
+	return idutenteidentificato; 
+}
+
+function idroomsplit(urlrtmp: string){
+	let idroominside = urlrtmp.split('/');
+	let idroomidentificata = idroominside[idroominside.length-2]
+	return idroomidentificata; 
+}
+
+//--------------------- CHECK PRESENZA (POSIZIONE) ----------------------------------
+
+function checkPresenzaIdRoom(idroom: number){    
+    let checkPresenzaFinaleIdRoom = -1;   
+    for (let index = 0; index < utentiInConference.length; index++) {
+        if(utentiInConference[index].includes(idroom)){
+            checkPresenzaFinaleIdRoom = index;
+        }          
+    }
+    return checkPresenzaFinaleIdRoom;
+}
+
+function checkPresenzaIdUtente(idroom: number, idutente: string){   
+    let checkPresenzaFinaleIdUtente = -1;
+    let index = checkPresenzaIdRoom(idroom);   
+     
+    if(utentiInConference[index].includes(idutente)>=0){
+        //checkPresenzaFinaleIdUtente = index;
+        checkPresenzaFinaleIdUtente = utentiInConference[index].indexOf(idutente);
+    } 
+   
+    return checkPresenzaFinaleIdUtente;
+}
+
+//-------------------------------------------------------
+
+ function userInConferenceVideo(idroom: any, idutente: string, dataAction: string){    
+    console.log('1');
+    let userInConferenceVideo=utentiInConference;
+    // "idutente" vuole ENTRARE in conference	
+    if(checkPresenzaIdRoom(idroom)>=0){
+		console.log('2');
+        //ELIMINARE ROOM
+        if(dataAction=='exitRoom'){           
+            console.log("Eliminare room dall'array");             
+            console.log("idroom: " + checkPresenzaIdRoom(idroom));            
+            console.table(deleteRow(utentiInConference, checkPresenzaIdRoom(idroom)+1));  
+            userInConferenceVideo = deleteRow(utentiInConference, checkPresenzaIdRoom(idroom)+1);
+        }
+        else
+        {
+		  console.log('3');
+          if(checkPresenzaIdUtente(idroom, idutente)>=0){
+            console.log('Idroom PRESENTE E idutente PRESENTE');
+            
+            //Utente presente, ma dataAction=='exitUser' => bisogna eliminarlo dall'array !
+            if(dataAction=='exitUser'){                
+                //ELIMINARE UTENTE
+                console.log("Eliminare partecipante dall'array");
+			    utentiInConference[checkPresenzaIdRoom(idroom)].splice(checkPresenzaIdUtente(idroom, idutente), 1);  
+                userInConferenceVideo = utentiInConference;              
+            }
+
+          }
+          else
+          //UTENTE NON PRESENTE --> INSERIRE UTENTE NELL'ARRAY ! 
+          {
+            console.log("Utente NON presente inserire utente nell'ARRAY");                      
+            utentiInConference[checkPresenzaIdRoom(idroom)].push(idutente);
+            userInConferenceVideo = utentiInConference;
+          }
+        }
+    }
+    else
+    // INSERIRE ROOM ED UTENTE
+    {
+        console.log("idroom NON PRESENTE e di conseguenza NON presente anche l'idutente => bisogna inserirli entrambi nell'array !");
+        //idroom NON PRESENTE e di conseguenza NON presente anche l'idutente => bisogna inserirli entrambi nell'array !       
+        utentiInConference.push([idroom, idutente]); 
+        userInConferenceVideo = utentiInConference;  
+    }
+
+    return userInConferenceVideo;
+}
+
+
+
+//_______________________________________________________________________________________________________________________
+//_______________________________________________________________________________________________________________________
+//_______________________________________________________________________________________________________________________
+
+//let idroom = idroomsplit(urlrtmp: string);
+//let idutente =  idutentesplit(urlrtmp);
+//let dataAction ='';
+
+//----------------------------------------------------
+
+/* console.log(idroom);
+console.log(idutente);
+console.log(dataAction); */
+/* console.table(utentiInConference);
+utentiInConference = userInConferenceVideo(idroom, idutente, dataAction);
+console.table(utentiInConference); */
+
+
+
+/* let utentiInConference: any[] = [];
 
 function utentiConferenza(idutente: any, dataAction:any){
 	
@@ -226,23 +252,20 @@ function idutente(urlrtmp: string){
 
 	return idutenteidentificato;
  
-}
+} */
 
 //-----------------------------------------------------------------------------------------
 //------------------------- Socket connection ---------------------------------------------
 //-----------------------------------------------------------------------------------------
 
 io.on('connection', function(socket: any){
-	//socket.emit('message','Hello from mediarecorder-to-rtmp server!');
-	socket.emit('message',{type: 'welcome', data: 'Hello from mediarecorder-to-rtmp server!'});
-	//socket.emit('message','Please set rtmp destination before start streaming.');	
+	socket.emit('message',{type: 'welcome', data: 'Hello from mediarecorder-to-rtmp server!'});	
 	socket.emit('message',{type: 'welcome', data: 'Please set rtmp destination before start streaming.'});
-	console.log('qqqqq:');
+
 	let ffmpeg_process: any;
 	let feedStream: any = false;
 	socket.on('config_rtmpDestination',function(m: any){
-		if(typeof m != 'string'){
-			//socket.emit('fatal','rtmp destination setup error.');
+		if(typeof m != 'string'){			
 			socket.emit('message',{type: 'welcome', data: 'rtmp destination setup error.'});
 			return;
 		}
@@ -252,12 +275,13 @@ io.on('connection', function(socket: any){
 			socket.emit('message',{type: 'fatal', data: 'rtmp address rejected.'});
 			return;
 		}
-		socket._rtmpDestination=m;
-		//socket.emit('message','rtmp destination set to:'+m);
+		
+		socket._rtmpDestination=m;		
 		let dataforsocket: string='rtmp destination set to:'+m;
 		socket.emit('message',{type: 'welcome', data: dataforsocket});
-		socket.emit('message', {type: 'userInConference', data: utentiConferenza(idutente(socket._rtmpDestination), 'entrance')});
-		socket.broadcast.emit('message', {type: 'userInConference', data: utentiConferenza(idutente(socket._rtmpDestination), 'entrance')});
+		//socket.emit('message', {type: 'userInConference', data: utentiConferenza(idutente(socket._rtmpDestination), 'entrance')});
+		socket.emit('message', {type: 'userInConference', data: userInConferenceVideo(idroomsplit(socket._rtmpDestination), idutentesplit(socket._rtmpDestination), 'entrance')});		
+		socket.broadcast.emit('message', {type: 'userInConference', data: userInConferenceVideo(idroomsplit(socket._rtmpDestination), idutentesplit(socket._rtmpDestination), 'entrance')});
 		console.log('9999:');
 	}); 
 	
@@ -409,20 +433,42 @@ io.on('connection', function(socket: any){
 		feedStream(m);
 	});
 
-	socket.on('disconnectStream', function () {
-		console.log("streaming  disconnecteddddd!");
+	socket.on('disconnect', function () {
+		console.log("Browser closed --> streaming  disconnected!");
 		feedStream=false;
 		if(ffmpeg_process){
-			socket.emit('message', {type: 'userInConference', data: utentiConferenza(idutente(socket._rtmpDestination), 'exitUser')});
-			socket.broadcast.emit('message', {type: 'userInConference', data: utentiConferenza(idutente(socket._rtmpDestination), 'exitUser')});
+			//socket.emit('message', {type: 'userInConference', data: utentiConferenza(idutente(socket._rtmpDestination), 'exitUser')});
+            socket.emit('message', {type: 'userInConference', data: userInConferenceVideo(idroomsplit(socket._rtmpDestination), idutentesplit(socket._rtmpDestination), 'exitUser')});		   
+			socket.broadcast.emit('message', {type: 'userInConference', data: userInConferenceVideo(idroomsplit(socket._rtmpDestination), idutentesplit(socket._rtmpDestination), 'exitUser')});
 			ffmpeg_process.stdin.end();
 			ffmpeg_process.kill('SIGINT');
 			console.log("ffmpeg process ended!");
 		}
 		else
 		{
-			socket.emit('message', {type: 'userInConference', data: utentiConferenza(idutente(socket._rtmpDestination), 'exitUser')});
-			socket.broadcast.emit('message', {type: 'userInConference', data: utentiConferenza(idutente(socket._rtmpDestination), 'exitUser')});
+			//socket.emit('message', {type: 'userInConference', data: utentiConferenza(idutente(socket._rtmpDestination), 'exitUser')});
+			socket.emit('message', {type: 'userInConference', data: userInConferenceVideo(idroomsplit(socket._rtmpDestination), idutentesplit(socket._rtmpDestination), 'exitUser')});		   
+			socket.broadcast.emit('message', {type: 'userInConference', data: userInConferenceVideo(idroomsplit(socket._rtmpDestination), idutentesplit(socket._rtmpDestination), 'exitUser')});
+			console.warn('killing ffmoeg process attempt failed...');
+		}
+	});
+
+	socket.on('disconnectStream', function () {
+		console.log("Streaming  disconnected!");
+		feedStream=false;
+		if(ffmpeg_process){
+			//socket.emit('message', {type: 'userInConference', data: utentiConferenza(idutente(socket._rtmpDestination), 'exitUser')});
+            socket.emit('message', {type: 'userInConference', data: userInConferenceVideo(idroomsplit(socket._rtmpDestination), idutentesplit(socket._rtmpDestination), 'exitUser')});		   
+			socket.broadcast.emit('message', {type: 'userInConference', data: userInConferenceVideo(idroomsplit(socket._rtmpDestination), idutentesplit(socket._rtmpDestination), 'exitUser')});
+			ffmpeg_process.stdin.end();
+			ffmpeg_process.kill('SIGINT');
+			console.log("ffmpeg process ended!");
+		}
+		else
+		{
+			//socket.emit('message', {type: 'userInConference', data: utentiConferenza(idutente(socket._rtmpDestination), 'exitUser')});
+			socket.emit('message', {type: 'userInConference', data: userInConferenceVideo(idroomsplit(socket._rtmpDestination), idutentesplit(socket._rtmpDestination), 'exitUser')});		   
+			socket.broadcast.emit('message', {type: 'userInConference', data: userInConferenceVideo(idroomsplit(socket._rtmpDestination), idutentesplit(socket._rtmpDestination), 'exitUser')});
 			console.warn('killing ffmoeg process attempt failed...');
 		}
 	});
