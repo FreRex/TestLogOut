@@ -1,18 +1,19 @@
-<video
-  style="background-color: black"
-  #output_video
-  width="320"
-  height="240"
-  [autoplay]="true"
-  playsinline
-></video>
-<div>
-  <ion-button color="tertiary" (click)="startFlvPlayer()">Start Player</ion-button>
-  <ion-button color="primary" (click)="stopFlvPlayer()">Stop Player</ion-button>
-  <!-- <ion-button color="medium" (click)="startLocalVideo()"
-          >Start Local Video</ion-button
-        >
-        <ion-button color="medium" (click)="stopLocalVideo()"
-          >Pause Local Video</ion-button
-        > -->
+<div class="video-container">
+  <div [hidden]="!loading">
+    <img src="assets/icons/mockup-icons/wait.svg" />
+  </div>
+  <video
+    [hidden]="loading"
+    *ngIf="this.streamingService.isStreaming"
+    #local_video
+    [autoplay]="true"
+    [muted]="true"
+  ></video>
+  <video
+    [hidden]="loading"
+    *ngIf="!this.streamingService.isStreaming"
+    #output_video
+    [autoplay]="true"
+    playsinline
+  ></video>
 </div>

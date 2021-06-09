@@ -59,7 +59,7 @@ export class LoginComponent implements OnInit {
         (err) => {
           console.log('🐱‍👤 : LoginComponent : err', err);
           loadingEl.dismiss();
-          this.showAlert(err['message']);
+          this.showAlert(err);
         }
       );
     });

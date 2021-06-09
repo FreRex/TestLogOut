@@ -98,6 +98,9 @@ export class AuthService implements OnDestroy {
 
   login(username: string, password: string) {
     return this.http.post(`${environment.apiUrl}/token/`, {}).pipe(
+      catchError((err) => {
+        return throwError('Errore server');
+      }),
       switchMap((loginToken) => {
         if (!loginToken) {
           throw new Error('Errore server');
@@ -115,7 +118,7 @@ export class AuthService implements OnDestroy {
         );
       }),
       catchError((err) => {
-        return throwError(err);
+        return throwError('Errore server');
       }),
       tap((token: string) => {
         if (!token) {

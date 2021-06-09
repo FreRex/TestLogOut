@@ -1,7 +1,16 @@
 <div class="gray-bar">
   <div>
-    <ion-button class="btn-trasparent">
-      <ion-icon slot="icon-only" src="assets/icons/mockup-icons/cam-off.svg"></ion-icon>
+    <ion-button class="btn-trasparent" (click)="toggleStreaming()">
+      <ion-icon
+        *ngIf="this.streamingService.isStreaming"
+        slot="icon-only"
+        src="assets/icons/mockup-icons/cam-on.svg"
+      ></ion-icon>
+      <ion-icon
+        *ngIf="!this.streamingService.isStreaming"
+        slot="icon-only"
+        src="assets/icons/mockup-icons/cam-off.svg"
+      ></ion-icon>
     </ion-button>
     <ion-button class="btn-trasparent">
       <ion-icon slot="icon-only" src="assets/icons/mockup-icons/mic.svg"></ion-icon>

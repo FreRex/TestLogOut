@@ -1,5 +1,8 @@
-import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Socket } from 'ngx-socket-io';
+import { Subscription } from 'rxjs';
+
+import { StreamingService } from '../streaming.service';
 
 const height = 120;
 const width = 120;
@@ -11,22 +14,39 @@ const audiobitrate = 44100;
   templateUrl: './webcam.component.html',
   styleUrls: ['./webcam.component.scss'],
 })
-export class WebcamComponent implements OnInit {
+export class WebcamComponent implements OnInit, OnDestroy {
+  private sub: Subscription;
+
   @ViewChild('local_video', { static: false }) localVideo: ElementRef;
   @Input() rtmpDestination: string = '';
+
+  private devicePosition: string;
 
   private localStream: MediaStream;
   private mediaRecorder: MediaRecorder;
   private constraints: MediaStreamConstraints;
 
-  constructor(private socket: Socket) {}
+  constructor(private socket: Socket, private streamingService: StreamingService) {}
 
   ngOnInit() {
     this.listaDispositivi();
+    this.sub = this.streamingService.streamingRequested$.subscribe((rtmpDestination) => {
+      if (rtmpDestination !== null) {
+        this.startStreming();
+      } else {
+        this.stopStreaming();
+      }
+    });
   }
 
-  private async requestGetUserMedia(devicePosition): Promise<void> {
-    if (devicePosition == 'fronte') {
+  ngOnDestroy() {
+    if (this.sub) {
+      this.sub.unsubscribe();
+    }
+  }
+
+  private async requestGetUserMedia(): Promise<void> {
+    if (this.devicePosition == 'fronte') {
       this.constraints = {
         audio: { sampleRate: audiobitrate, echoCancellation: true },
         video: {
@@ -35,7 +55,7 @@ export class WebcamComponent implements OnInit {
           frameRate: { ideal: framerate },
         },
       };
-    } else if (devicePosition == 'retro') {
+    } else if (this.devicePosition == 'retro') {
       this.constraints = {
         audio: { sampleRate: audiobitrate, echoCancellation: true },
         video: {
@@ -76,12 +96,12 @@ export class WebcamComponent implements OnInit {
     this.localVideo.nativeElement.srcObject = undefined;
   }
 
-  async startStreming(devicePosition): Promise<void> {
+  async startStreming(): Promise<void> {
     try {
-      this.requestGetUserMedia(devicePosition).then((res) => {
+      this.requestGetUserMedia().then((res) => {
         this.startLocalVideo();
         this.configureMediaRecorder();
-        this.socket.emit('start', 'start');
+        // this.socket.emit('start', 'start');
       });
     } catch (err) {
       this.closeVideoCall();
@@ -105,7 +125,7 @@ export class WebcamComponent implements OnInit {
       this.mediaRecorder = null;
     }
     this.stopLocalVideo();
-    this.socket.emit('disconnectStream', '');
+    // this.socket.emit('disconnectStream', '');
   }
 
   handleMediaRecorderOnStopEvent = (event: Event) => {

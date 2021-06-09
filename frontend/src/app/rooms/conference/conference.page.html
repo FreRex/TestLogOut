@@ -40,8 +40,7 @@
       <ion-col size-lg="4" offset-lg="0.5">
         <!-- QUI DENTRO VA IL VIDEO PLAYER -->
         <div class="spazio-vuoto-dimensione-fissa">
-          <app-webcam *ngIf="isStreaming" [rtmpDestination]="rtmpDestination"></app-webcam>
-          <app-player *ngIf="!isStreaming" [flvOrigin]="flvOrigin"></app-player>
+          <app-player></app-player>
         </div>
         <app-streaming-bar></app-streaming-bar>
       </ion-col>
