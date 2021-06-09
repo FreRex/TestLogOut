@@ -19,7 +19,7 @@
           <ion-button class="btn-trasparent ion-no-padding">
             <ion-icon class="ion-margin" name="map" slot="icon-only"></ion-icon>
           </ion-button>
-          <ion-button class="btn-trasparent ion-no-padding">
+          <ion-button class="btn-trasparent ion-no-padding" (click)="dowloadSinglePhoto()">
             <ion-icon class="ion-margin" name="cloud-download" slot="icon-only"></ion-icon>
           </ion-button>
           <ion-button class="btn-trasparent ion-no-padding" (click)="deleteFoto(foto.idPhoto)">
@@ -60,16 +60,19 @@
       </div>
     </div>
   </div>
+
+  <!-- DESKTOP SOTTO -->
+
   <div class="ion-hide-md-down">
-    <div class="backTitle">
+    <div class="backTitle-desk">
       <ion-button class="btn-trasparent ion-no-padding ion-margin" (click)="closeModal()">
         <ion-icon name="chevron-back-outline" size="large" slot="icon-only" class="ion-margin"></ion-icon>
       </ion-button>
-      <div>
+      <div class="title-desk">
         <b>Galleria</b>
       </div>
     </div>
-
+    <br>
     <ion-grid>
       <ion-row>
         <ion-col size="3" offset="1">
@@ -83,8 +86,8 @@
                 <p>Foto su mappa</p>
               </ion-label>
             </ion-button>
-            <ion-button class="btn-trasparent ion-no-padding">
-              <ion-icon class="ion-margin" name="cloud-download" slot="start"></ion-icon>
+            <ion-button class="btn-trasparent ion-no-padding" (click)="dowloadSinglePhoto()">
+              <ion-icon class="ion-margin" name="cloud-download" slot="start"><a></a></ion-icon>
               <ion-label>
                 <p>Scarica</p>
               </ion-label>
@@ -116,7 +119,7 @@
             </div>
 
             <div *ngIf="inputArea">
-              <ion-icon name="checkmark-sharp" color="dark" class="pen-update-desk" (click)="updateOffDesk()">
+              <ion-icon name="checkmark-sharp" color="dark" class="pen-update-desk" (click)="updateOff()">
               </ion-icon>
               <form [formGroup]="form" class="form-desk ion-padding">
                 <ion-item>

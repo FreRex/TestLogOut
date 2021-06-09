@@ -104,6 +104,17 @@
 }
 /* DESKTOP */
 
+.backTitle-desk {
+  height: 10%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background: var(--ion-color-primary);
+  .title-desk {
+    color: var(--ion-color-light);
+  }
+}
+
 .btns-desk {
   display: flex;
   flex-direction: row;

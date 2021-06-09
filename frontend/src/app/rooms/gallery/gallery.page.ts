@@ -1,6 +1,13 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { IonContent, Platform, ModalController, ToastController } from '@ionic/angular';
+import {
+  IonContent,
+  Platform,
+  ModalController,
+  ToastController,
+  ViewWillEnter,
+  ViewWillLeave,
+} from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Check, Foto, MediaService } from './media.service';
@@ -11,7 +18,7 @@ import { PhotoDetailsComponent } from './photo-details/photo-details.component';
   templateUrl: './gallery.page.html',
   styleUrls: ['./gallery.page.scss'],
 })
-export class GalleryPage implements OnInit {
+export class GalleryPage implements ViewWillEnter, ViewWillLeave {
   galleryType = 'foto';
   roomId: string;
   roomName: string;
@@ -31,14 +38,19 @@ export class GalleryPage implements OnInit {
     public platform: Platform
   ) {}
 
-  ngOnInit() {
-    this.foto$ = this.mediaServ.fotoSet$;
+  ionViewWillEnter() {
     this.activatedRoute.paramMap.subscribe((pM: ParamMap) => {
+      this.foto$ = this.mediaServ.fotoSet$;
       this.roomId = pM.get('id');
       this.roomName = pM.get('proj');
       this.loadFoto();
     });
     this.mediaServ.checkDownload(this.roomName);
+  }
+
+  ionViewWillLeave() {
+    this.mediaServ.fotoSetSubject.next([]);
+    this.pageNum = 1;
   }
 
   loadFoto() {
@@ -110,9 +122,9 @@ export class GalleryPage implements OnInit {
       })
       .then((res) => {
         if (res.role === 'ok') {
-          /*         this.foto.filter(foto => {
-          foto.idPhoto !== singleFoto.idPhoto
-        }) */
+          this.presentToast(`Foto aggiornata`, 'secondary');
+        } else if (res.role === 'error') {
+          this.presentToast(`Aggiornamento fallito, ripetere l'operazione`, 'danger');
         }
       });
   }
