@@ -47,15 +47,20 @@
 
 /* sotto da cancellare una volta sostituite le parti */
 .spazio-vuoto-dimensione-fissa {
-  height: 360px;
+  height: 480px;
   margin-right: 16px;
   margin-left: 16px;
   background-color: black;
-  text-align: center;
-  justify-content: center;
-  align-content: center;
-  text-transform: uppercase;
-  color: aliceblue;
+  div {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-transform: uppercase;
+    color: aliceblue;
+  }
 }
 
 /*  */

@@ -1,10 +1,13 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Storage } from '@capacitor/storage';
 import { NavController } from '@ionic/angular';
-import { from, Subscription } from 'rxjs';
+import { Socket } from 'ngx-socket-io';
+import { from } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
 
+import { PlayerComponent } from './player/player.component';
 import { StreamingService } from './streaming.service';
 
 @Component({
@@ -13,15 +16,19 @@ import { StreamingService } from './streaming.service';
   styleUrls: ['./conference.page.scss'],
 })
 export class ConferencePage implements OnInit, AfterViewInit {
-  private sub: Subscription;
+  @ViewChild(PlayerComponent) private playerComponent: PlayerComponent;
 
   roomId: string = '';
   userId: string = '';
 
+  flvOrigin: string = '';
+  rtmpDestination: string = '';
+
   constructor(
     private activatedRouter: ActivatedRoute,
     private navController: NavController,
-    private streamingService: StreamingService
+    private streamingService: StreamingService,
+    private socket: Socket
   ) {}
 
   ngOnInit() {}
@@ -31,7 +38,7 @@ export class ConferencePage implements OnInit, AfterViewInit {
       .pipe(
         switchMap((paramMap) => {
           if (!paramMap.has('roomId')) {
-            this.navController.navigateBack(['/rooms']);
+            this.navController.navigateBack(['/not-found']);
             return;
           }
           this.roomId = paramMap.get('roomId');
@@ -46,15 +53,69 @@ export class ConferencePage implements OnInit, AfterViewInit {
       )
       .subscribe((userId) => {
         this.userId = userId;
-        this.streamingService.configureSocket(this.roomId, this.userId);
+        this.configureSocket(this.roomId, this.userId);
         console.log('🐱‍👤 : ConferencePage : this.userId', this.userId);
         console.log('🐱‍👤 : ConferencePage : this.roomId', this.roomId);
       });
   }
 
-  ngOnDestroy() {
-    if (this.sub) {
-      this.sub.unsubscribe;
+  // handles messages coming from signalling_server (remote party)
+  public configureSocket(roomId: string, userId: string): void {
+    this.rtmpDestination = `${environment.urlRTMP}/${roomId}/${userId}`;
+    this.flvOrigin = `${environment.urlWSS}/${roomId}/${userId}.flv`;
+
+    this.socket.fromEvent<any>('message').subscribe(
+      (msg) => {
+        switch (msg.type) {
+          case 'welcome':
+            console.log('Welcome! ', msg.data);
+            break;
+          case 'info':
+            console.log('Info: ', msg.data);
+            break;
+          case 'fatal':
+            console.log('Fatal: ', msg.data);
+            break;
+          case 'userInConference':
+            console.log('userInConference: ', msg.data);
+            break;
+          default:
+            console.log('unknown message: ', msg);
+        }
+      },
+      (err) => console.log(err)
+    );
+  }
+
+  public isPlaying: boolean = false;
+  public isStreaming: boolean = false;
+
+  toggleStream() {
+    if (this.isPlaying) {
+      return;
+    }
+    if (this.isStreaming) {
+      this.socket.emit('disconnectStream', '');
+      this.playerComponent.stopStream();
+      this.isStreaming = false;
+    } else {
+      this.socket.emit('config_rtmpDestination', this.rtmpDestination);
+      // this.socket.emit('start', 'start');
+      this.playerComponent.startStream();
+      this.isStreaming = true;
+    }
+  }
+
+  togglePlay() {
+    if (this.isStreaming) {
+      return;
+    }
+    if (this.isPlaying) {
+      this.isPlaying = false;
+      this.playerComponent.stopPlayer();
+    } else {
+      this.isPlaying = true;
+      this.playerComponent.startPlayer(this.flvOrigin);
     }
   }
 }

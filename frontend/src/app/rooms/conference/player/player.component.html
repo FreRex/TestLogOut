@@ -1,19 +1,13 @@
+<!-- <div class="video-container"> -->
+<!-- <div [hidden]="!hidden">
+    <img src="assets/icons/mockup-icons/wait.svg" />
+  </div> -->
+<!-- <video #output_video [autoplay]="true" playsinline></video> -->
+<!-- </div> -->
 <div class="video-container">
-  <div [hidden]="!loading">
+  <div [hidden]="isStreaming || isPlaying">
     <img src="assets/icons/mockup-icons/wait.svg" />
   </div>
-  <video
-    [hidden]="loading"
-    *ngIf="this.streamingService.isStreaming"
-    #local_video
-    [autoplay]="true"
-    [muted]="true"
-  ></video>
-  <video
-    [hidden]="loading"
-    *ngIf="!this.streamingService.isStreaming"
-    #output_video
-    [autoplay]="true"
-    playsinline
-  ></video>
+  <video [hidden]="!isStreaming" #local_video [autoplay]="true" [muted]="true"></video>
+  <video [hidden]="!isPlaying" #output_video [autoplay]="true" playsinline></video>
 </div>

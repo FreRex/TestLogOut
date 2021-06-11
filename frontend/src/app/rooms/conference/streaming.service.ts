@@ -8,12 +8,14 @@ import { environment } from 'src/environments/environment';
 })
 export class StreamingService {
   flvOrigin: string = '';
+  rtmpDestination: string = '';
+
   public isPlaying: boolean = false;
+  public isStreaming: boolean = false;
+
   private playRequestedSource = new Subject<string | null>();
   playRequested$ = this.playRequestedSource.asObservable();
 
-  rtmpDestination: string = '';
-  public isStreaming: boolean = false;
   private streamingRequestedSource = new Subject<string | null>();
   streamingRequested$ = this.streamingRequestedSource.asObservable();
 

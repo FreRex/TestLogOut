@@ -6,7 +6,6 @@ import { IonicModule } from '@ionic/angular';
 import { SharedModule } from '../shared/shared.module';
 import { PlayerComponent } from './conference/player/player.component';
 import { StreamingBarComponent } from './conference/streaming-bar/streaming-bar.component';
-import { WebcamComponent } from './conference/webcam/webcam.component';
 import { RoomsPageRoutingModule } from './rooms-routing.module';
 import { CreateRoomModalComponent } from './rooms-tab/create-room-modal/create-room-modal.component';
 import { EditRoomModalComponent } from './rooms-tab/edit-room-modal/edit-room-modal.component';
@@ -25,10 +24,9 @@ import { RoomsPage } from './rooms.page';
     CreateRoomModalComponent,
     EditRoomModalComponent,
     PlayerComponent,
-    WebcamComponent,
     StreamingBarComponent,
   ],
-  exports: [PlayerComponent, WebcamComponent, StreamingBarComponent],
+  exports: [PlayerComponent, StreamingBarComponent],
   entryComponents: [CreateRoomModalComponent, EditRoomModalComponent],
 })
 export class RoomsPageModule {}
