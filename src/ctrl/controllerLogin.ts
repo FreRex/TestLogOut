@@ -11,11 +11,6 @@ exports.checkLogin = (req: any, res: any, next: any) => {
 
     let usr = req.body.usr;
     let pwd = req.body.pwd;
-
-    console.log(usr);
-    console.log(pwd);
-    console.log(pkproject);
-
     let select: string;
     let datiDb: any;
         
@@ -32,8 +27,7 @@ exports.checkLogin = (req: any, res: any, next: any) => {
     }    
     
     db.query(select, datiDb, function (err: any, result: any, fields: any) {        
-        if(result.length >= 1){
-          console.log('Credenziali presenti.');         
+        if(result.length >= 1){                  
                    
           const jwt = require('.././middleware/jwt'); 
           let token: any = jwt.setToken(usr,pwd,result[0]['idutente'],result[0]['commessa'],result[0]['autorizzazione'],result[0]['idutcas'],);
