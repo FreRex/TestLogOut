@@ -31,4 +31,16 @@ export class StreamingBarComponent implements OnInit {
   stopStreaming() {
     this.streamingService.requestStopStreaming();
   }
+
+  togglePlay() {
+    this.streamingService.requestTogglePlay();
+  }
+
+  startPlay() {
+    this.streamingService.requestStartPlay();
+  }
+
+  stopPlay() {
+    this.streamingService.requestStopPlay();
+  }
 }

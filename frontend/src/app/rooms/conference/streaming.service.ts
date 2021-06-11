@@ -7,11 +7,13 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root',
 })
 export class StreamingService {
-  rtmpDestination: string = '';
   flvOrigin: string = '';
+  public isPlaying: boolean = false;
+  private playRequestedSource = new Subject<string | null>();
+  playRequested$ = this.playRequestedSource.asObservable();
 
+  rtmpDestination: string = '';
   public isStreaming: boolean = false;
-
   private streamingRequestedSource = new Subject<string | null>();
   streamingRequested$ = this.streamingRequestedSource.asObservable();
 
@@ -65,6 +67,24 @@ export class StreamingService {
       this.requestStopStreaming();
     } else {
       this.requestStartStreaming();
+    }
+  }
+
+  requestStartPlay() {
+    this.playRequestedSource.next(this.flvOrigin);
+    this.isPlaying = true;
+  }
+
+  requestStopPlay() {
+    this.playRequestedSource.next(null);
+    this.isPlaying = false;
+  }
+
+  requestTogglePlay() {
+    if (this.isPlaying) {
+      this.requestStopPlay();
+    } else {
+      this.requestStartPlay();
     }
   }
 }

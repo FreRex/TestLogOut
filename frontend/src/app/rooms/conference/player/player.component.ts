@@ -16,7 +16,9 @@ const audiobitrate = 44100;
   styleUrls: ['./player.component.scss'],
 })
 export class PlayerComponent implements OnInit, OnDestroy {
-  private sub: Subscription;
+  private streamingSub: Subscription;
+  private playerSub: Subscription;
+
   public loading = true;
 
   @ViewChild('local_video', { static: false }) localVideo: ElementRef;
@@ -35,34 +37,87 @@ export class PlayerComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.listaDispositivi();
-    this.sub = this.streamingService.streamingRequested$.subscribe((rtmpDestination) => {
+    this.streamingSub = this.streamingService.streamingRequested$.subscribe((rtmpDestination) => {
       if (rtmpDestination !== null) {
         this.requestGetUserMedia().then((res) => {
           this.startLocalVideo();
-          this.configureMediaRecorder();
+          this.startMediaRecorder();
           this.loading = false;
           // this.socket.emit('start', 'start');
         });
       } else {
-        this.stopStreaming();
+        this.stopLocalVideo();
+        this.stopMediaRecorder();
+        this.loading = true;
+      }
+    });
+    this.playerSub = this.streamingService.playRequested$.subscribe((flvOrigin) => {
+      if (flvOrigin !== null) {
+        this.startFlvPlayer(flvOrigin);
+        this.loading = false;
+      } else {
+        this.stopFlvPlayer();
+        this.loading = true;
       }
     });
   }
 
   ngOnDestroy() {
-    if (this.sub) {
-      this.sub.unsubscribe();
+    if (this.streamingSub) {
+      this.streamingSub.unsubscribe();
     }
   }
 
-  /************************* flvPlayer *************************/
+  /************************* MediaRecorder *************************/
+
+  startMediaRecorder() {
+    this.mediaRecorder = new MediaRecorder(this.localStream);
+
+    this.mediaRecorder.onstop = (event: Event) => {
+      console.log('media recorder stopped: ', event);
+    };
+    this.mediaRecorder.onstart = (event: Event) => {
+      console.log('media recorder started: ', event);
+    };
+    this.mediaRecorder.onpause = (event: Event) => {
+      console.log('media recorder paused: ', event);
+    };
+    this.mediaRecorder.onresume = (event: Event) => {
+      console.log('media recorder resumed: ', event);
+    };
+    this.mediaRecorder.onerror = (event: MediaRecorderErrorEvent) => {
+      console.log('error', event.error);
+    };
+    this.mediaRecorder.ondataavailable = (event: BlobEvent) => {
+      console.log('🐱‍👤 : PlayerComponent : event.data', event.data);
+      // this.socket.emit('message', {type: 'binarystream', data: event.data});
+      this.socket.emit('binarystream', event.data);
+    };
+
+    this.mediaRecorder.start(250);
+  }
+
+  stopMediaRecorder(): void {
+    if (this.mediaRecorder) {
+      this.mediaRecorder.stop();
+      this.mediaRecorder.onstop = null;
+      this.mediaRecorder.onstart = null;
+      this.mediaRecorder.onpause = null;
+      this.mediaRecorder.onresume = null;
+      this.mediaRecorder.onerror = null;
+      this.mediaRecorder.ondataavailable = null;
+      this.mediaRecorder = null;
+    }
+  }
+
+  /************************* FlvPlayer *************************/
 
   idVarEglassesInFunction;
   idVarVideoZoomInFunction;
 
   player: FlvJs.Player;
 
-  startFlvPlayer() {
+  startFlvPlayer(flvOrigin: string) {
     if (typeof this.player !== 'undefined') {
       if (this.player != null) {
         this.player.unload();
@@ -74,7 +129,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
     this.player = FlvJs.createPlayer(
       {
         type: 'flv',
-        url: this.flvOrigin,
+        url: flvOrigin,
       },
       {
         enableWorker: false,
@@ -99,7 +154,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
     }
   }
 
-  /************************* webcam *************************/
+  /************************* GetUserMedia *************************/
 
   private async requestGetUserMedia(): Promise<void> {
     if (this.devicePosition == 'fronte') {
@@ -125,19 +180,6 @@ export class PlayerComponent implements OnInit, OnDestroy {
     this.localStream = await navigator.mediaDevices.getUserMedia(this.constraints);
   }
 
-  configureMediaRecorder() {
-    this.mediaRecorder = new MediaRecorder(this.localStream);
-
-    this.mediaRecorder.onstop = this.handleMediaRecorderOnStopEvent;
-    this.mediaRecorder.onstart = this.handleMediaRecorderOnStartEvent;
-    this.mediaRecorder.onpause = this.handleMediaRecorderOnPauseEvent;
-    this.mediaRecorder.onresume = this.handleMediaRecorderOnResumeEvent;
-    this.mediaRecorder.onerror = this.handleMediaRecorderOnErrorEvent;
-    this.mediaRecorder.ondataavailable = this.handleMediaRecorderOnDataAvailableEvent;
-
-    this.mediaRecorder.start(250);
-  }
-
   startLocalVideo(): void {
     this.localStream.getTracks().forEach((track) => {
       track.enabled = true;
@@ -151,55 +193,6 @@ export class PlayerComponent implements OnInit, OnDestroy {
     });
     this.localVideo.nativeElement.srcObject = undefined;
   }
-
-  // async startStreming(): Promise<void> {
-  //   try {
-  //     this.requestGetUserMedia().then((res) => {
-  //       this.startLocalVideo();
-  //       this.configureMediaRecorder();
-  //       // this.socket.emit('start', 'start');
-  //     });
-  //   } catch (err) {
-  //     this.closeVideoCall();
-  //   }
-  //   return null;
-  // }
-
-  private stopStreaming(): void {
-    if (this.mediaRecorder) {
-      this.mediaRecorder.stop();
-      this.mediaRecorder.onstop = null;
-      this.mediaRecorder.onstart = null;
-      this.mediaRecorder.onpause = null;
-      this.mediaRecorder.onresume = null;
-      this.mediaRecorder.onerror = null;
-      this.mediaRecorder.ondataavailable = null;
-      this.mediaRecorder = null;
-    }
-    this.stopLocalVideo();
-    // this.socket.emit('disconnectStream', '');
-  }
-
-  handleMediaRecorderOnStopEvent = (event: Event) => {
-    console.log('media recorder stopped: ', event);
-  };
-  handleMediaRecorderOnStartEvent = (event: Event) => {
-    console.log('media recorder started: ', event);
-  };
-  handleMediaRecorderOnPauseEvent(event: Event) {
-    console.log('media recorder paused: ', event);
-  }
-  handleMediaRecorderOnResumeEvent = (event: Event) => {
-    console.log('media recorder resumed: ', event);
-  };
-  handleMediaRecorderOnErrorEvent = (event: MediaRecorderErrorEvent) => {
-    console.log('error', event.error);
-  };
-  handleMediaRecorderOnDataAvailableEvent = (event: BlobEvent) => {
-    console.log('🐱‍👤 : PlayerComponent : event.data', event.data);
-    // this.socket.emit('message', {type: 'binarystream', data: event.data});
-    this.socket.emit('binarystream', event.data);
-  };
 
   /************************* RetroFrontCam *************************/
 
