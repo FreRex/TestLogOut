@@ -25,9 +25,6 @@ export class StreamingService {
 
   // handles messages coming from signalling_server (remote party)
   public configureSocket(roomId: string, userId: string): void {
-    this.rtmpDestination = `${environment.urlRTMP}/${roomId}/${userId}`;
-    this.flvOrigin = `${environment.urlWSS}/${roomId}/${userId}.flv`;
-
     this.socket.fromEvent<any>('message').subscribe(
       (msg) => {
         switch (msg.type) {
@@ -49,10 +46,12 @@ export class StreamingService {
       },
       (err) => console.log(err)
     );
+    this.rtmpDestination = `${environment.urlRTMP}/${roomId}/${userId}`;
+    this.flvOrigin = `${environment.urlWSS}/${roomId}/${userId}.flv`;
+    this.socket.emit('config_rtmpDestination', this.rtmpDestination);
   }
 
   requestStartStreaming() {
-    this.socket.emit('config_rtmpDestination', this.rtmpDestination);
     this.socket.emit('start', 'start');
     this.streamingRequestedSource.next(this.rtmpDestination);
     this.isStreaming = true;
