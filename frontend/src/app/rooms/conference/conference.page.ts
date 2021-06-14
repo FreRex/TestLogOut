@@ -61,9 +61,6 @@ export class ConferencePage implements OnInit, AfterViewInit {
 
   // handles messages coming from signalling_server (remote party)
   public configureSocket(roomId: string, userId: string): void {
-    this.rtmpDestination = `${environment.urlRTMP}/${roomId}/${userId}`;
-    this.flvOrigin = `${environment.urlWSS}/${roomId}/${userId}.flv`;
-
     this.socket.fromEvent<any>('message').subscribe(
       (msg) => {
         switch (msg.type) {
@@ -85,6 +82,9 @@ export class ConferencePage implements OnInit, AfterViewInit {
       },
       (err) => console.log(err)
     );
+    this.rtmpDestination = `${environment.urlRTMP}/${roomId}/${userId}`;
+    this.flvOrigin = `${environment.urlWSS}/${roomId}/${userId}.flv`;
+    this.socket.emit('config_rtmpDestination', this.rtmpDestination);
   }
 
   public isPlaying: boolean = false;
@@ -99,8 +99,7 @@ export class ConferencePage implements OnInit, AfterViewInit {
       this.playerComponent.stopStream();
       this.isStreaming = false;
     } else {
-      this.socket.emit('config_rtmpDestination', this.rtmpDestination);
-      // this.socket.emit('start', 'start');
+      this.socket.emit('start', 'start');
       this.playerComponent.startStream();
       this.isStreaming = true;
     }
