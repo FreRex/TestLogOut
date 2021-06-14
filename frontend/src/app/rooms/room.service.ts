@@ -72,7 +72,7 @@ export class RoomService {
   selectRoom(roomId: string): Observable<Room> {
     return this.authService.currentUser$.pipe(
       switchMap((user) => {
-        return this.http.get<RoomData>(`${environment.apiUrl}/s/room/${user.idutcas}/${roomId}`);
+        return this.http.get<RoomData>(`${environment.apiUrl}/s/room/0/${roomId}`);
       }),
       map((roomData) => {
         return {

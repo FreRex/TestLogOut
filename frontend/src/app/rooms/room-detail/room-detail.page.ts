@@ -16,14 +16,14 @@ export class RoomDetailPage implements OnInit {
   isLoading = false;
 
   constructor(
-    private activatedRouter: ActivatedRoute,
+    private activatedRoute: ActivatedRoute,
     private roomsService: RoomService,
     private navController: NavController,
     private alertController: AlertController
   ) {}
 
   ngOnInit() {
-    this.activatedRouter.paramMap.subscribe((paramMap) => {
+    this.activatedRoute.paramMap.subscribe((paramMap) => {
       if (!paramMap.has('roomId')) {
         this.navController.navigateBack(['/rooms']);
         return;

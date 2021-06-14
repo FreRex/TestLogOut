@@ -110,6 +110,7 @@ export class PlayerComponent implements OnInit {
         },
       };
     }
+    // apre la camera dell'utente
     this.localStream = await navigator.mediaDevices.getUserMedia(this.constraints);
   }
 
@@ -122,6 +123,8 @@ export class PlayerComponent implements OnInit {
 
   stopLocalVideo() {
     this.localStream.getTracks().forEach((track) => {
+      // chiude la camera dell'utente
+      track.stop();
       track.enabled = false;
     });
     this.localVideo.nativeElement.srcObject = undefined;

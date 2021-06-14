@@ -25,7 +25,7 @@ export class ConferencePage implements OnInit, AfterViewInit {
   rtmpDestination: string = '';
 
   constructor(
-    private activatedRouter: ActivatedRoute,
+    private activatedRoute: ActivatedRoute,
     private navController: NavController,
     private streamingService: StreamingService,
     private socket: Socket
@@ -34,9 +34,11 @@ export class ConferencePage implements OnInit, AfterViewInit {
   ngOnInit() {}
 
   ngAfterViewInit() {
-    this.activatedRouter.paramMap
+    this.activatedRoute.paramMap
       .pipe(
         switchMap((paramMap) => {
+          console.log('🐱‍👤 : ConferencePage : paramMap', paramMap);
+
           if (!paramMap.has('roomId')) {
             this.navController.navigateBack(['/not-found']);
             return;
@@ -81,11 +83,11 @@ export class ConferencePage implements OnInit, AfterViewInit {
             console.log('Frontend lunghezza array: ' + msg.data.length);
             console.log('Frontend room: ' + msg.data[0]);
             console.log('Frontend idutente: ' + msg.data[1].idutente);
-            console.log('Frontend stream: ' + msg.data[1].stream);            
+            console.log('Frontend stream: ' + msg.data[1].stream);
             break;
           default:
-            //console.log('unknown message: ', msg);
-            console.log('unknown message');
+            console.log('unknown message: ', msg);
+          // console.log('unknown message');
         }
       },
       (err) => console.log(err)

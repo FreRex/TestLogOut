@@ -4,19 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { SharedModule } from 'src/app/shared/shared.module';
 
-import { RoomsPageModule } from '../rooms.module';
 import { ConferencePageRoutingModule } from './conference-routing.module';
 import { ConferencePage } from './conference.page';
+import { PlayerComponent } from './player/player.component';
+import { StreamingBarComponent } from './streaming-bar/streaming-bar.component';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    ConferencePageRoutingModule,
-    SharedModule,
-    RoomsPageModule,
-  ],
-  declarations: [ConferencePage],
+  imports: [CommonModule, FormsModule, IonicModule, ConferencePageRoutingModule, SharedModule],
+  declarations: [ConferencePage, PlayerComponent, StreamingBarComponent],
 })
 export class ConferencePageModule {}
