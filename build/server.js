@@ -50,152 +50,6 @@ child_process_1.spawn('ffmpeg', ['-h']).on('error', function (m) {
     console.error("FFMpeg not found in system cli; please install ffmpeg properly or make a softlink to ./!");
     process.exit(-1);
 });
-//---------------------------------------------------------------
-//---------------------------------------------------------------
-// --- Sezione per presenza utenti in conference
-//---------------------------------------------------------------
-//---------------------------------------------------------------
-/*
-
-let utentiInConference: any[] = [];
-
-//--------------------------------------- FUNZIONI PER ARRAY MULTIDIMENSIONALE ---------------------------------------------
-
-//-------------------- SPLIT RTMP -----------------------------------
-
-function idutentesplit(urlrtmp: string){
-    let idutenteinside = urlrtmp.split('/');
-    let idutenteidentificato = idutenteinside[idutenteinside.length-1]
-    return idutenteidentificato;
-}
-
-function idroomsplit(urlrtmp: string){
-    let idroominside = urlrtmp.split('/');
-    let idroomidentificata = idroominside[idroominside.length-2]
-    return idroomidentificata;
-}
-
-//-------------- Funzioni di ricerca -------------------------------
-function checkPresenzaIdRoom(idroom: number){
-    let checkPresenzaFinaleIdRoom = -1;
-    for (let index = 0; index < utentiInConference.length; index++) {
-        if(utentiInConference[index].includes(idroom)){
-            checkPresenzaFinaleIdRoom = index;
-        }
-    }
-    return checkPresenzaFinaleIdRoom;
-}
-
-function checkPresenzaIdUtente(idroom: number, idutente : string){
-    let checkPresenzaFinaleIdUtente = -1;
-    let index = checkPresenzaIdRoom(idroom);
-     
-    if(utentiInConference[index].includes(idutente)>=0){
-        //checkPresenzaFinaleIdUtente = index;
-        checkPresenzaFinaleIdUtente = utentiInConference[index].indexOf(idutente);
-    }
-   
-    return checkPresenzaFinaleIdUtente;
-}
-
-function checkPresenzaSocketid(socketid: string){
-    let checkPresenzaFinaleSocketid: any= -1;
-    for (let y = 0; y < utentiInConference.length; y++) {
-        for (let x = 0; x < utentiInConference[y].length; x++) {
-            if(utentiInConference[y][x].socketid==socketid){
-               checkPresenzaFinaleSocketid = {x,y};
-               console.log('Socketid X e Y: ' + x + '-' + y);
-            }
-        }
-    }
-    return checkPresenzaFinaleSocketid;
-}
-
-//----------------------------- INSERIMENTO ELEMENTO ------------------------------------------
-
-function insertArray(idroom: number, idutente: string, socketid: string){
-   
-    let elemento: any = '';
-
-    // INSERIRE ROOM ED UTENTE
-    if(checkPresenzaIdRoom(idroom)==-1){
-        console.log("idroom NON PRESENTE e di conseguenza NON presente anche l'idutente => bisogna inserirli entrambi nell'array !");
-        //idroom NON PRESENTE e di conseguenza NON presente anche l'idutente => bisogna inserirli entrambi nell'array !
-         //elemento = {'idutente': idutente, 'socketid': socketid, 'stream': false};
-        elemento = {idutente: `${idutente}`, socketid: `${socketid}`, stream: false};
-        utentiInConference.push([Number(idroom), elemento]);
-    }
-    // INSERIRE UTENTE
-    else if(checkPresenzaIdRoom(idroom)>=0 && checkPresenzaIdUtente(idroom, idutente)==-1){
-        //UTENTE NON PRESENTE --> INSERIRE UTENTE NELL'ARRAY !
-       console.log("Utente NON presente inserire utente nell'ARRAY");
-       elemento = {idutente: `${idutente}`, socketid: `${socketid}`, stream: false};
-       utentiInConference[checkPresenzaIdRoom(idroom)].push(elemento);
-    }
-    
-    let userInConferenceVideo = utentiInConference;
-    return userInConferenceVideo;
-}
-
-//----------------------------- ELIMINAZIONE ELEMENTO
-
-function deleteRow(arr: any, row: any) {
-    arr = arr.slice(0); // make copy
-    arr.splice(row - 1, 1);
-    return arr;
- }
-
-
-function deleteUser(socketid: string){
-    
-    let userInConferenceVideo = utentiInConference
-    let socketidCoo=checkPresenzaSocketid(socketid);
-    
-    console.log('Index room del socketid: ' + socketidCoo);
-    console.log("Eliminare partecipante dall'array");
-
-    //Eliminazione oggetto
-    let el = utentiInConference[socketidCoo.y].splice(socketidCoo.x,1);
-    
-    if(utentiInConference[socketidCoo.y].length==1){
-        console.log("Eliminazione Room")
-        userInConferenceVideo=deleteRow(utentiInConference,socketidCoo.y+1);
-    }
-  
-    return userInConferenceVideo;
-}
-//-----------------------------------------------------------------------------------------------------------
-//-----------------------------------------------------------------------------------------------------------
-//-----------------------------------------------------------------------------------------------------------
-
-//-------------------------------------------------------
-
-function userInConferenceVideo(idroom: number, idutente: string, dataAction: string, socketid: string){
-    
-    let userInConferenceVideo=utentiInConference;
-    
-    switch (dataAction) {
-        case 'entrance':
-            //INSERIRE UTENTE E/O ROOM
-            console.table(insertArray(idroom, idutente, socketid));
-        break;
-
-        case 'exitUser':
-            //ELIMINARE UTENTE e/o ROOM
-            userInConferenceVideo = deleteUser(socketid);
-            console.table(userInConferenceVideo);
-        break;
-    
-        default:
-        break;
-    }
-
-    return userInConferenceVideo;
-}
- */
-//_______________________________________________________________________________________________________________________
-//_______________________________________________________________________________________________________________________
-//_______________________________________________________________________________________________________________________
 //-----------------------------------------------------------------------------------------
 //------------------------- Socket connection ---------------------------------------------
 //-----------------------------------------------------------------------------------------
@@ -208,30 +62,37 @@ io.on('connection', function (socket) {
     let feedStream = false;
     // Ricezione tramite socket url_rtmp, socket.id e relativa elaborazione
     socket.on('config_rtmpDestination', function (m) {
-        console.log("ddddddddddd: " + m);
-        //Verifica errori in url_rtmp
+        let socketid = socket.id;
+        let regexValidator = /^rtmp:\/\/[^\s]*$/; //TODO: should read config
         if (typeof m != 'string') {
             socket.emit('message', { type: 'welcome', data: 'rtmp destination setup error.' });
             return;
         }
-        var regexValidator = /^rtmp:\/\/[^\s]*$/; //TODO: should read config
-        if (!regexValidator.test(m)) {
+        else if (!regexValidator.test(m)) {
             //socket.emit('fatal','rtmp address rejected.');
             socket.emit('message', { type: 'fatal', data: 'rtmp address rejected.' });
             return;
         }
-        //--------------------------
-        let socketid = socket.id;
-        socket._rtmpDestination = m;
-        let dataforsocket = 'rtmp destination set to:' + m;
-        console.log(socket._rtmpDestination);
-        //Inserimento in array dati nuovo utente in conference
-        let insertArray = functionListaConference.userInConferenceVideo(Number(functionListaConference.idroomsplit(socket._rtmpDestination)), functionListaConference.idutentesplit(socket._rtmpDestination), 'entrance', socketid);
-        //Invio messaggi di benvenuto 
-        //invio lista utenti presenti in conference
-        socket.emit('message', { type: 'welcome', data: dataforsocket });
-        socket.emit('message', { type: 'userInConference', data: insertArray });
-        socket.broadcast.emit('message', { type: 'userInConference', data: insertArray });
+        else {
+            socket._rtmpDestination = m;
+            let dataforsocket = 'rtmp destination set to:' + m;
+            console.log(socket._rtmpDestination);
+            let numberRoom = functionListaConference.idroomsplit(socket._rtmpDestination);
+            console.log('Tipo di dato11: ' + typeof (numberRoom));
+            let identificativoUtente = functionListaConference.idutentesplit(socket._rtmpDestination);
+            //Inserimento in array generale dei dati del nuovo utente in conference
+            let insertArray = functionListaConference.userInConferenceVideo(Number(numberRoom), identificativoUtente, 'entrance', socketid);
+            //Determinazione singolo array specifico per il nuovo utente			
+            let indexSingleRoom = functionListaConference.checkPresenzaIdRoom(Number(numberRoom));
+            console.log("Index room: " + indexSingleRoom);
+            let insertArraySingleRoom = functionListaConference.utentiInConference[indexSingleRoom];
+            console.log(insertArraySingleRoom);
+            //Invio messaggi di benvenuto 
+            //invio lista utenti presenti in conference
+            socket.emit('message', { type: 'welcome', data: dataforsocket });
+            socket.emit('message', { type: numberRoom, data: insertArraySingleRoom });
+            socket.broadcast.emit('message', { type: numberRoom, data: insertArraySingleRoom });
+        }
     });
     //Configurazione codec
     socket.on('config_vcodec', function (m) {
@@ -371,17 +232,22 @@ io.on('connection', function (socket) {
     //Ricezione segnale di disconnessione per chiusura browser.
     socket.on('disconnect', function (m) {
         let socketid = socket.id;
-        let idroom = m;
+        let socketidCoo = functionListaConference.checkPresenzaSocketid(socketid);
+        let numberRoom = functionListaConference.utentiInConference[socketidCoo.y][0];
+        numberRoom = numberRoom.toString();
+        console.log('Tipo di dato22: ' + typeof (numberRoom));
+        console.table('qwe: ' + numberRoom);
         feedStream = false;
         console.log("Browser closed --> streaming  disconnected ! " + socketid);
         //Eliminazione utente in conference
-        let insertArray = functionListaConference.userInConferenceVideo(idroom, functionListaConference.idutentesplit(socket._rtmpDestination), 'exitUser', socketid);
+        //let insertArray: any = functionListaConference.userInConferenceVideo(idroom, functionListaConference.idutentesplit(socket._rtmpDestination), 'exitUser', socketid);	
+        let arrayUser = functionListaConference.userInConferenceVideo(numberRoom, '', 'exitUser', socketid);
         if (ffmpeg_process) {
             //Eliminazione utente in conference
             //let insertArray: any = functionListaConference.userInConferenceVideo(idroom, functionListaConference.idutentesplit(socket._rtmpDestination), 'exitUser', socketid);	
             //invio lista utenti presenti in conference
-            socket.emit('message', { type: 'userInConference', data: insertArray });
-            socket.broadcast.emit('message', { type: 'userInConference', data: insertArray });
+            socket.emit('message', { type: numberRoom, data: arrayUser });
+            socket.broadcast.emit('message', { type: numberRoom, data: arrayUser });
             ffmpeg_process.stdin.end();
             ffmpeg_process.kill('SIGINT');
             console.log("ffmpeg process ended!");
@@ -390,45 +256,11 @@ io.on('connection', function (socket) {
             //Eliminazione utente in conference
             //let insertArray: any = functionListaConference.userInConferenceVideo(idroom, functionListaConference.idutentesplit(socket._rtmpDestination), 'exitUser', socketid);	
             //invio lista utenti presenti in conference
-            socket.emit('message', { type: 'userInConference', data: insertArray });
-            socket.broadcast.emit('message', { type: 'userInConference', data: insertArray });
+            socket.emit('message', { type: numberRoom, data: arrayUser });
+            socket.broadcast.emit('message', { type: numberRoom, data: arrayUser });
             console.warn('killing ffmpeg process attempt failed...');
         }
     });
-    /* //Ricezione segnale di disconnessione streaming per pulsante stop.
-    socket.on('disconnectStream', function (idroom: any) {
-        
-        let socketid: any=socket.id;
-        console.log("Streaming  disconnected ! " + socketid);
-        feedStream=false;
-        if(ffmpeg_process){
-            
-            //Eliminazione utente in conference
-            let insertArray: any = userInConferenceVideo(idroom, idutentesplit(socket._rtmpDestination), 'exitUser', socketid);
-            
-            //invio lista utenti presenti in conference
-
-            socket.emit('message', {type: 'userInConference', data: insertArray});
-            socket.broadcast.emit('message', {type: 'userInConference', data: insertArray});
-
-            ffmpeg_process.stdin.end();
-            ffmpeg_process.kill('SIGINT');
-            console.log("ffmpeg process ended!");
-        }
-        else
-        {
-            
-            //Eliminazione utente in conference
-            let insertArray: any = userInConferenceVideo(idroom, idutentesplit(socket._rtmpDestination), 'exitUser', socketid);
-            
-            //invio lista utenti presenti in conference
-
-            socket.emit('message', {type: 'userInConference', data: insertArray});
-            socket.broadcast.emit('message', {type: 'userInConference', data: insertArray});
-            
-            console.warn('killing ffmoeg process attempt failed...');
-        }
-    }); */
     socket.on('error', function (e) {
         console.log('socket.io error:' + e);
     });

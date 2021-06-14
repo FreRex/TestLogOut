@@ -73,8 +73,11 @@ export class ConferencePage implements OnInit, AfterViewInit {
           case 'fatal':
             console.log('Fatal: ', msg.data);
             break;
-          case 'userInConference':
+          /* case 'userInConference':
             console.log('userInConference: ', msg.data);
+            break; */
+          case `${this.roomId}`: //FREXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+            console.log('array per idroom: ', msg.data);
             break;
           default:
             console.log('unknown message: ', msg);
