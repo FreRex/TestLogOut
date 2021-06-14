@@ -25,6 +25,10 @@ const routes: Routes = [
     loadChildren: () => import('./admin/admin.module').then((m) => m.AdminPageModule),
     canLoad: [AuthGuard],
   },
+  {
+    path: 'not-found',
+    loadChildren: () => import('./not-found/not-found.module').then( m => m.NotFoundPageModule)
+  },
 ];
 
 @NgModule({

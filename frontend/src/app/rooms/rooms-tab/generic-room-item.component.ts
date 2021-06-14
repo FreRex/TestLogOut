@@ -103,7 +103,7 @@ export class GenericRoomItemComponent implements OnInit {
   enterRoom(room?: Room, slidingItem?: IonItemSliding) {
     if (slidingItem) slidingItem.close();
     if (room) this.room = room;
-    this.router.navigate([`/rooms/test-stream/${this.room.id}`]);
+    this.router.navigate([`/rooms/conference/${this.room.id}`]);
   }
 
   /** Copia il link della ROOM */

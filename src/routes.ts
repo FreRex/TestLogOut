@@ -58,7 +58,7 @@ router.get('/checkdownloadzip/:folderzip/', controllerDownloadZip.CheckDownloadZ
 router.get('/downloadzip/:folderzip/', controllerDownloadZip.DownloadZip);
 
 //Login/usermobile
-router.post('/lgn/', controllerLogin.checkLogin);
+router.post('/lgn/', [mid.checkAuth], controllerLogin.checkLogin);
 router.post('/pltklgn/', [mid.checkAuth], controllerLogin.decodeToken);
 router.post('/checkum/', [mid.checkAuth], controllerLogin.checkUserMobile);
 

@@ -1,74 +1,3 @@
-/* import express from 'express';
-import path from 'path';
-import https from 'https';
-import fs from 'fs';
-
-const routes = require('./routes');
-
-const app = express();
-
-let port: any;
-if (process.env.NODE_ENV == 'production') {
-  require('dotenv').config();
-  port = process.env.PORT_PROD || 9666;
-}
-else
-{
-  port = 9083;
-}
-
-app.use(express.json());
-
-//-----------------------------------------------------------------------------------------------------------
-//SEZIONE ROUTE NODEJS
-//-----------------------------------------------------------------------------------------------------------
-
-// Indirizzamento verso route API
-app.use('/', routes);
-
-//Indirizzamento verso route FRONTEND
-app.use('/',express.static(path.join(__dirname, '../frontend/www')));
-app.use('/*', (req, res) => { res.sendFile(path.join(__dirname, '../frontend/www/index.html')); });
-
-//----------------------------------------------------------------------------------------------------------
-//----------------------------------------------------------------------------------------------------------
-//----------------------------------------------------------------------------------------------------------
-
-https.createServer({
-    key: fs.readFileSync('/etc/letsencrypt/live/www.collaudolive.com/privkey.pem'),
-    cert: fs.readFileSync('/etc/letsencrypt/live/www.collaudolive.com/cert.pem')
-  }, app)
-    
-  .listen(port, () => { 
-    console.log(`https://www.collaudolive.com:${port}/alfanumcasuale`); 
-    
-    console.log(`-------------------- TEST ------------------------------`);
-    console.log(`https://www.collaudolive.com:${port}/test`); 
-
-    console.log(`-------------------- SINCRODB ------------------------------`);
-    console.log(`https://www.collaudolive.com:${port}/sincrodb/99/122567798/1113322`);   
-
-    console.log(`-------------------- FRONTEND ------------------------------`);
-    console.log(`https://www.collaudolive.com:${port}/auth`); 
-    console.log(`https://www.collaudolive.com:${port}/backoffice`);
-    console.log(`https://www.collaudolive.com:${port}/rooms?user=XHfGBAzmkp`); 
-    
-    console.log(`-------------------- FRONTEND ------------------------------`);
-    console.log(`https://www.collaudolive.com:${port}/vidapp`); 
-
-    console.log(`-------------------- API SELECT-----------------------------------`);
-    console.log(`https://www.collaudolive.com:${port}/s/room`); 
-    console.log(`https://www.collaudolive.com:${port}/s/progetti`);       
-    console.log(`https://www.collaudolive.com:${port}/s/utenti`);
-
-    console.log(`-------------------- API UPDATE-----------------------------------`);    
-    console.log(`https://www.collaudolive.com:${port}/ur/`);    
-    console.log(`https://www.collaudolive.com:${port}/up/`); 
-    console.log(`https://www.collaudolive.com:${port}/uu/`); 
-
-    
-  }) */
-
 import express from 'express';
 import path from 'path';
 import https from 'https';
@@ -76,6 +5,7 @@ import fs from 'fs';
 import { spawn } from 'child_process';
 
 const routes = require('./routes');
+const functionListaConference = require('./assets/functionListaConference');
 
 const app = express();
 
@@ -113,51 +43,9 @@ const server: any = require('https').createServer(
 	},
 app);
 
-/* 
-https.createServer({
- 
-    key: fs.readFileSync('/etc/letsencrypt/live/www.chop.click/privkey.pem'),
-    cert: fs.readFileSync('/etc/letsencrypt/live/www.chop.click/cert.pem')
-  }, app)
-    
-  .listen(port, () => { 
-    //CHOP.CLICK----------------------------------------
-    console.log(`https://www.chop.click:${port}/test-stream`); 
-    //--------------------------------------------------
-
-    console.log(`https://www.collaudolive.com:${port}/alfanumcasuale`); 
-    
-    console.log(`-------------------- TEST ------------------------------`);
-    console.log(`https://www.collaudolive.com:${port}/test`); 
-
-    console.log(`-------------------- SINCRODB ------------------------------`);
-    console.log(`https://www.collaudolive.com:${port}/sincrodb/99/122567798/1113322`);   
-
-    console.log(`-------------------- FRONTEND ------------------------------`);
-    console.log(`https://www.collaudolive.com:${port}/auth`); 
-    console.log(`https://www.collaudolive.com:${port}/backoffice`);
-    console.log(`https://www.collaudolive.com:${port}/rooms?user=XHfGBAzmkp`); 
-    
-    console.log(`-------------------- FRONTEND ------------------------------`);
-    console.log(`https://www.collaudolive.com:${port}/vidapp`); 
-
-    console.log(`-------------------- API SELECT-----------------------------------`);
-    console.log(`https://www.collaudolive.com:${port}/s/room`); 
-    console.log(`https://www.collaudolive.com:${port}/s/progetti`);       
-    console.log(`https://www.collaudolive.com:${port}/s/utenti`);
-
-    console.log(`-------------------- API UPDATE-----------------------------------`);    
-    console.log(`https://www.collaudolive.com:${port}/ur/`);    
-    console.log(`https://www.collaudolive.com:${port}/up/`); 
-    console.log(`https://www.collaudolive.com:${port}/uu/`); 
-    
-  }) */
-
-  //-----------------------------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------
-
-//var io = require('socket.io')(server);
+//-----------------------------------------------------------------------------------------------------
 
 const io = require('socket.io')(server, {
     cors: {
@@ -169,129 +57,107 @@ const io = require('socket.io')(server, {
     allowEIO3: true
 });
 
-spawn('ffmpeg',['-h']).on('error',function(m:any){
-	console.log('zzzzz:');
+spawn('ffmpeg',['-h']).on('error',function(m:any){	
 	console.error("FFMpeg not found in system cli; please install ffmpeg properly or make a softlink to ./!");
 	process.exit(-1);
 });
 
-//---------------------------------------------------------------
-// --- Sezione per presenza utenti in conference
-let utentiInConference: any[] = [];
 
-function utentiConferenza(idutente: any, dataAction:any){
-	
-	// "idutente" vuole ENTRARE in conference
-	if((idutente) && dataAction=='entrance'){
-		//Verifica presenza in array "utentiInConference"
-		let verificapsz: Boolean = utentiInConference.includes(idutente);	
-		if(verificapsz==true){				
-			// Utente già presente							
-		}
-		else
-		{
-			// Utente NON presente.
-			//Inserimento utente in array "utentiInConference".
-			utentiInConference.push(idutente);	
-			//console.log(utentiInConference);
-		}
-	}
-
-	// "idutente" vuole USCIRE dalla conference
-	if((idutente) && dataAction=='exitUser'){
-	
-		//Ricerca posizione "idutente" in array "utentiInConference"
-		let pos = utentiInConference.indexOf(idutente);	
-		
-		//Se streamId è presente nell'array allora POSSIAMO effettivamente eliminarlo
-		if(pos!=-1){			
-			//Eliminare "partecipante" dall'array
-			utentiInConference.splice(pos, 1);	
-			//console.log(utentiInConference);						
-		}
-		else
-		{
-			// Utente NON presente.			
-		}	
-	}
-
-	return utentiInConference;
-
-}
-
-function idutente(urlrtmp: string){
-
-	let rex: any = urlrtmp.split('/');
-	let idutenteidentificato: any = rex[rex.length-1]
-
-	return idutenteidentificato;
- 
-}
 
 //-----------------------------------------------------------------------------------------
 //------------------------- Socket connection ---------------------------------------------
 //-----------------------------------------------------------------------------------------
 
+// Connessione socket.io
 io.on('connection', function(socket: any){
-	//socket.emit('message','Hello from mediarecorder-to-rtmp server!');
-	socket.emit('message',{type: 'welcome', data: 'Hello from mediarecorder-to-rtmp server!'});
-	//socket.emit('message','Please set rtmp destination before start streaming.');	
+
+	console.log('socket.id: ' + socket.id)
+
+	socket.emit('message',{type: 'welcome', data: 'Hello from mediarecorder-to-rtmp server!'});	
 	socket.emit('message',{type: 'welcome', data: 'Please set rtmp destination before start streaming.'});
-	console.log('qqqqq:');
+
 	let ffmpeg_process: any;
 	let feedStream: any = false;
+
+	// Ricezione tramite socket url_rtmp, socket.id e relativa elaborazione
 	socket.on('config_rtmpDestination',function(m: any){
-		if(typeof m != 'string'){
-			//socket.emit('fatal','rtmp destination setup error.');
+
+		let socketid: any=socket.id;
+		let regexValidator=/^rtmp:\/\/[^\s]*$/;//TODO: should read config
+		
+		
+		if(typeof m != 'string'){			
 			socket.emit('message',{type: 'welcome', data: 'rtmp destination setup error.'});
 			return;
-		}
-		var regexValidator=/^rtmp:\/\/[^\s]*$/;//TODO: should read config
-		if(!regexValidator.test(m)){
+		} else if(!regexValidator.test(m)){
 			//socket.emit('fatal','rtmp address rejected.');
 			socket.emit('message',{type: 'fatal', data: 'rtmp address rejected.'});
 			return;
+		} 
+		else
+		{		
+			socket._rtmpDestination=m;		
+			let dataforsocket: string='rtmp destination set to:'+m;
+
+			console.log(socket._rtmpDestination);
+
+			let numberRoom = functionListaConference.idroomsplit(socket._rtmpDestination);
+			console.log('Tipo di dato11: ' + typeof(numberRoom));
+			let identificativoUtente = functionListaConference.idutentesplit(socket._rtmpDestination);
+			
+			//Inserimento in array generale dei dati del nuovo utente in conference
+			let insertArray: any = functionListaConference.userInConferenceVideo(Number(numberRoom), identificativoUtente, 'entrance', socketid )
+
+			//Determinazione singolo array specifico per il nuovo utente			
+			let indexSingleRoom: number = functionListaConference.checkPresenzaIdRoom(Number(numberRoom));
+			console.log("Index room: " + indexSingleRoom);
+			let insertArraySingleRoom: string = functionListaConference.utentiInConference[indexSingleRoom];
+			console.log(insertArraySingleRoom);
+
+			//Invio messaggi di benvenuto 
+			//invio lista utenti presenti in conference
+	
+			socket.emit('message',{type: 'welcome', data: dataforsocket});		
+			socket.emit('message', {type: numberRoom, data: insertArraySingleRoom});		
+			socket.broadcast.emit('message', {type: numberRoom, data: insertArraySingleRoom});
+		
 		}
-		socket._rtmpDestination=m;
-		//socket.emit('message','rtmp destination set to:'+m);
-		let dataforsocket: string='rtmp destination set to:'+m;
-		socket.emit('message',{type: 'welcome', data: dataforsocket});
-		socket.emit('message', {type: 'userInConference', data: utentiConferenza(idutente(socket._rtmpDestination), 'entrance')});
-		socket.broadcast.emit('message', {type: 'userInConference', data: utentiConferenza(idutente(socket._rtmpDestination), 'entrance')});
-		console.log('9999:');
+	
 	}); 
 	
+	//Configurazione codec
 	socket.on('config_vcodec',function(m: any){
-		console.log('8888:');
-		if(typeof m != 'string'){
-			//socket.emit('fatal','input codec setup error.');
+		
+		//Verifica errori in codev
+		if(typeof m != 'string'){			
 			socket.emit('message',{type: 'fatal', data: 'input codec setup error.'});
 			return;
 		}
-		if(!/^[0-9a-z]{2,}$/.test(m)){
-			//socket.emit('fatal','input codec contains illegal character?.');
+		if(!/^[0-9a-z]{2,}$/.test(m)){			
 			socket.emit('message',{type: 'fatal', data: 'input codec contains illegal character?.'});
 			return;
 		}//for safety
+		//-----------------------
 		socket._vcodec=m;
+
 	});
 
+	//Ricezione tramite socket.on segnale avvio streaming
 	socket.on('start',function(m: any){
 		
-		if(ffmpeg_process || feedStream){
-			console.log('7777:');			
-			//socket.emit('fatal','stream already started.');
+		//Verifica errori 
+			//- verifica che streaming sia già attivo 
+		if(ffmpeg_process || feedStream){			
 			socket.emit('message',{type: 'fatal', data: 'stream already started.'});
 			return;
 		}
-		if(!socket._rtmpDestination){
-			console.log('6666:');
-			//socket.emit('fatal','no destination given.');
+			//- verifica che non sia presente una url_rtmp
+		if(!socket._rtmpDestination){			
 			socket.emit('message',{type: 'fatal', data: 'no destination given.'});
 			return;
 		}
 		
-		var framerate = socket.handshake.query.framespersecond;
+		//Impostazioni parametri per audio streaming
 		var audioBitrate = parseInt(socket.handshake.query.audioBitrate);
 	    var audioEncoding = "64k";
 		if (audioBitrate ==11025){
@@ -302,6 +168,9 @@ io.on('connection', function(socket: any){
 			audioEncoding = "44k";
 		}
 		console.log(audioEncoding, audioBitrate);
+
+		//Impostazioni parametri per video streaming
+		var framerate = socket.handshake.query.framespersecond;
 		console.log('framerate on node side', framerate);
 		//var ops = [];
 		if (framerate == 1){
@@ -370,16 +239,13 @@ io.on('connection', function(socket: any){
 			//write exception cannot be caught here.	
 		}
 
-		ffmpeg_process.stderr.on('data',function(d: any){
-			console.log('5555:');
-			//socket.emit('ffmpeg_stderr','ffmpeg_stderr'+d);
+		ffmpeg_process.stderr.on('data',function(d: any){			
 			let ffmpeg_stderrforsocket = 'ffmpeg_stderr'+d;
 			socket.emit('message',{type: 'info', data: ffmpeg_stderrforsocket});
 		});
 	
 		ffmpeg_process.on('error',function(e: any){
 			console.log('child process error'+e);
-			//socket.emit('fatal','ffmpeg error!'+e);
 			let ffmpeg_error = 'ffmpeg error!'+e;
 			socket.emit('message',{type: 'fatal', data: ffmpeg_error});
 			feedStream=false;
@@ -387,8 +253,7 @@ io.on('connection', function(socket: any){
 		});
 	
 		ffmpeg_process.on('exit',function(e: any){
-			console.log('child process exit'+e);
-			//socket.emit('fatal','ffmpeg exit!'+e);
+			console.log('child process exit'+e);			
 			let ffmpeg_exit = 'ffmpeg exit!'+e;
 			socket.emit('message',{type: 'fatal', data: ffmpeg_exit});
 			socket.disconnect();
@@ -397,10 +262,8 @@ io.on('connection', function(socket: any){
 
 	//---------------------------- fine codice socket start --------------
 
-	socket.on('binarystream',function(m: any){
-		console.log('44444:');
-		if(!feedStream){
-			//socket.emit('fatal','rtmp not set yet.');
+	socket.on('binarystream',function(m: any){		
+		if(!feedStream){			
 			socket.emit('message',{type: 'fatal', data: 'rtmp not set yet.'});
 			ffmpeg_process.stdin.end();
 			ffmpeg_process.kill('SIGINT');
@@ -409,34 +272,53 @@ io.on('connection', function(socket: any){
 		feedStream(m);
 	});
 
-	socket.on('disconnectStream', function () {
-		console.log("streaming  disconnecteddddd!");
-		feedStream=false;
+	//Ricezione segnale di disconnessione per chiusura browser.
+	socket.on('disconnect', function(m: any) {		
+
+		let socketid: any=socket.id;
+		let socketidCoo=functionListaConference.checkPresenzaSocketid(socketid);
+		let numberRoom=functionListaConference.utentiInConference[socketidCoo.y][0];
+		numberRoom=numberRoom.toString();		
+		
+		feedStream=false;		
+				
+		console.log("Browser closed --> streaming  disconnected ! " + socketid);
+
+		//Eliminazione utente in conference
+		let arrayUser = functionListaConference.userInConferenceVideo(numberRoom, '', 'exitUser', socketid)	
+		
+
 		if(ffmpeg_process){
-			socket.emit('message', {type: 'userInConference', data: utentiConferenza(idutente(socket._rtmpDestination), 'exitUser')});
-			socket.broadcast.emit('message', {type: 'userInConference', data: utentiConferenza(idutente(socket._rtmpDestination), 'exitUser')});
+            
+			//Eliminazione utente in conference			
+
+			socket.emit('message', {type: numberRoom, data: arrayUser});		   
+			socket.broadcast.emit('message', {type: numberRoom, data: arrayUser});		
+			
 			ffmpeg_process.stdin.end();
 			ffmpeg_process.kill('SIGINT');
+
 			console.log("ffmpeg process ended!");
 		}
 		else
 		{
-			socket.emit('message', {type: 'userInConference', data: utentiConferenza(idutente(socket._rtmpDestination), 'exitUser')});
-			socket.broadcast.emit('message', {type: 'userInConference', data: utentiConferenza(idutente(socket._rtmpDestination), 'exitUser')});
-			console.warn('killing ffmoeg process attempt failed...');
+			//Eliminazione utente in conference		
+
+			socket.emit('message', {type: numberRoom, data: arrayUser});		   
+			socket.broadcast.emit('message', {type: numberRoom, data: arrayUser});	
+
+			console.warn('killing ffmpeg process attempt failed...');
 		}
 	});
 
-	socket.on('error',function(e: any){
-		console.log('3333:');
+	socket.on('error',function(e: any){		
 		console.log('socket.io error:'+e);
 	});
 	
 
 });
 
-io.on('error',function(e: any){
-	console.log('222222:');
+io.on('error',function(e: any){	
 	console.log('socket.io error:'+e);
 });
 
@@ -451,6 +333,6 @@ server.listen(port, function(){
 
 process.on('uncaughtException', function(err) {
     // handle the error safely
-    console.log('11111:' + err);
+    console.log('Errore:' + err);
     // Note: after client disconnect, the subprocess will cause an Error EPIPE, which can only be caught this way.
 })

@@ -264,13 +264,13 @@ exports.putUpdateGalleria = (req, res, next) => {
     if (typeof (req.body.id) !== 'undefined' && req.body.id !== null && typeof (req.body.id) === 'number' && req.body.id !== '') {
         id = req.body.id;
         // nomelemento      
-        if (typeof (req.body.nomelemento) !== 'undefined' && req.body.nomelemento !== null && req.body.nomelemento !== '') {
+        if (typeof (req.body.nomelemento) !== 'undefined' && req.body.nomelemento !== null) {
             nomelemento = req.body.nomelemento;
             sql = sql + "nomelemento = ? ";
             parametri.push(nomelemento);
         }
         // noteimg
-        if (typeof (req.body.noteimg) !== 'undefined' && req.body.noteimg !== null && req.body.noteimg !== '') {
+        if (typeof (req.body.noteimg) !== 'undefined' && req.body.noteimg !== null) {
             noteimg = req.body.noteimg;
             parametri.push(noteimg);
             if (sql === '') {
