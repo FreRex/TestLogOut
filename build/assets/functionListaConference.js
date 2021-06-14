@@ -22,7 +22,6 @@ let checkPresenzaIdRoom = function (idroom) {
     }
     return checkPresenzaFinaleIdRoom;
 };
-console.log();
 let checkPresenzaIdUtente = function (idroom, idutente) {
     let checkPresenzaFinaleIdUtente = -1;
     let index = checkPresenzaIdRoom(idroom);
@@ -78,9 +77,14 @@ let deleteUser = function (socketid) {
     console.log("Eliminare partecipante dall'array");
     //Eliminazione oggetto 
     let el = utentiInConference[socketidCoo.y].splice(socketidCoo.x, 1);
+    //Verificare se la room è vuota e nel caso eliminarla
     if (utentiInConference[socketidCoo.y].length == 1) {
         console.log("Eliminazione Room");
         userInConferenceVideo = deleteRow(utentiInConference, socketidCoo.y + 1);
+    }
+    else {
+        //La room non è vuota e si seleziona l'array monodimensionale specifico della stanza
+        userInConferenceVideo = utentiInConference[socketidCoo.y];
     }
     return userInConferenceVideo;
 };

@@ -213,7 +213,6 @@ io.on('connection', function (socket) {
         });
         ffmpeg_process.on('exit', function (e) {
             console.log('child process exit' + e);
-            //socket.emit('fatal','ffmpeg exit!'+e);
             let ffmpeg_exit = 'ffmpeg exit!' + e;
             socket.emit('message', { type: 'fatal', data: ffmpeg_exit });
             socket.disconnect();
@@ -235,17 +234,12 @@ io.on('connection', function (socket) {
         let socketidCoo = functionListaConference.checkPresenzaSocketid(socketid);
         let numberRoom = functionListaConference.utentiInConference[socketidCoo.y][0];
         numberRoom = numberRoom.toString();
-        console.log('Tipo di dato22: ' + typeof (numberRoom));
-        console.table('qwe: ' + numberRoom);
         feedStream = false;
         console.log("Browser closed --> streaming  disconnected ! " + socketid);
         //Eliminazione utente in conference
-        //let insertArray: any = functionListaConference.userInConferenceVideo(idroom, functionListaConference.idutentesplit(socket._rtmpDestination), 'exitUser', socketid);	
         let arrayUser = functionListaConference.userInConferenceVideo(numberRoom, '', 'exitUser', socketid);
         if (ffmpeg_process) {
-            //Eliminazione utente in conference
-            //let insertArray: any = functionListaConference.userInConferenceVideo(idroom, functionListaConference.idutentesplit(socket._rtmpDestination), 'exitUser', socketid);	
-            //invio lista utenti presenti in conference
+            //Eliminazione utente in conference			
             socket.emit('message', { type: numberRoom, data: arrayUser });
             socket.broadcast.emit('message', { type: numberRoom, data: arrayUser });
             ffmpeg_process.stdin.end();
@@ -253,9 +247,7 @@ io.on('connection', function (socket) {
             console.log("ffmpeg process ended!");
         }
         else {
-            //Eliminazione utente in conference
-            //let insertArray: any = functionListaConference.userInConferenceVideo(idroom, functionListaConference.idutentesplit(socket._rtmpDestination), 'exitUser', socketid);	
-            //invio lista utenti presenti in conference
+            //Eliminazione utente in conference		
             socket.emit('message', { type: numberRoom, data: arrayUser });
             socket.broadcast.emit('message', { type: numberRoom, data: arrayUser });
             console.warn('killing ffmpeg process attempt failed...');

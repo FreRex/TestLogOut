@@ -253,8 +253,7 @@ io.on('connection', function(socket: any){
 		});
 	
 		ffmpeg_process.on('exit',function(e: any){
-			console.log('child process exit'+e);
-			//socket.emit('fatal','ffmpeg exit!'+e);
+			console.log('child process exit'+e);			
 			let ffmpeg_exit = 'ffmpeg exit!'+e;
 			socket.emit('message',{type: 'fatal', data: ffmpeg_exit});
 			socket.disconnect();
@@ -279,26 +278,19 @@ io.on('connection', function(socket: any){
 		let socketid: any=socket.id;
 		let socketidCoo=functionListaConference.checkPresenzaSocketid(socketid);
 		let numberRoom=functionListaConference.utentiInConference[socketidCoo.y][0];
-		numberRoom=numberRoom.toString();
-		console.log('Tipo di dato22: ' + typeof(numberRoom));
-		console.table('qwe: ' + numberRoom);
+		numberRoom=numberRoom.toString();		
 		
 		feedStream=false;		
 				
 		console.log("Browser closed --> streaming  disconnected ! " + socketid);
 
 		//Eliminazione utente in conference
-		//let insertArray: any = functionListaConference.userInConferenceVideo(idroom, functionListaConference.idutentesplit(socket._rtmpDestination), 'exitUser', socketid);	
-		let arrayUser = functionListaConference.userInConferenceVideo(numberRoom, '', 'exitUser', socketid)
+		let arrayUser = functionListaConference.userInConferenceVideo(numberRoom, '', 'exitUser', socketid)	
 		
 
 		if(ffmpeg_process){
             
-			//Eliminazione utente in conference
-			//let insertArray: any = functionListaConference.userInConferenceVideo(idroom, functionListaConference.idutentesplit(socket._rtmpDestination), 'exitUser', socketid);	
-			
-			
-			//invio lista utenti presenti in conference
+			//Eliminazione utente in conference			
 
 			socket.emit('message', {type: numberRoom, data: arrayUser});		   
 			socket.broadcast.emit('message', {type: numberRoom, data: arrayUser});		
@@ -310,12 +302,7 @@ io.on('connection', function(socket: any){
 		}
 		else
 		{
-			//Eliminazione utente in conference
-
-			//let insertArray: any = functionListaConference.userInConferenceVideo(idroom, functionListaConference.idutentesplit(socket._rtmpDestination), 'exitUser', socketid);	
-				
-			
-			//invio lista utenti presenti in conference
+			//Eliminazione utente in conference		
 
 			socket.emit('message', {type: numberRoom, data: arrayUser});		   
 			socket.broadcast.emit('message', {type: numberRoom, data: arrayUser});	
