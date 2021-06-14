@@ -59,7 +59,7 @@ export class ConferencePage implements OnInit, AfterViewInit {
       });
   }
 
-  // handles messages coming from signalling_server (remote party)
+// handles messages coming from signalling_server (remote party)
   public configureSocket(roomId: string, userId: string): void {
     this.rtmpDestination = `${environment.urlRTMP}/${roomId}/${userId}`;
     this.flvOrigin = `${environment.urlWSS}/${roomId}/${userId}.flv`;
@@ -76,16 +76,20 @@ export class ConferencePage implements OnInit, AfterViewInit {
           case 'fatal':
             console.log('Fatal: ', msg.data);
             break;
-          case 'userInConference':
+          /* case 'userInConference':
             console.log('userInConference: ', msg.data);
-            break;
+            break; */
+          case `${this.roomId}`: //FREXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              console.log('array per idroom: ', msg.data);
+              break;
           default:
             console.log('unknown message: ', msg);
         }
       },
       (err) => console.log(err)
     );
-  }
+  } 
+ 
 
   public isPlaying: boolean = false;
   public isStreaming: boolean = false;

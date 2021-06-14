@@ -22,6 +22,7 @@ let checkPresenzaIdRoom = function (idroom) {
     }
     return checkPresenzaFinaleIdRoom;
 };
+console.log();
 let checkPresenzaIdUtente = function (idroom, idutente) {
     let checkPresenzaFinaleIdUtente = -1;
     let index = checkPresenzaIdRoom(idroom);
@@ -43,7 +44,7 @@ let checkPresenzaSocketid = function (socketid) {
     }
     return checkPresenzaFinaleSocketid;
 };
-//----------------------------- INSERIMENTO ELEMENTO ------------------------------------------
+//----------------------------- INSERIMENTO ELEMENTO IN MATRICE MULTIDIMENSIONALE ------------------------------------------
 let insertArray = function (idroom, idutente, socketid) {
     let elemento = '';
     // INSERIRE ROOM ED UTENTE
