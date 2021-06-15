@@ -265,8 +265,7 @@ io.on('connection', function(socket: any){
 		});
 	
 		ffmpeg_process.on('exit',function(e: any){
-			console.log('child process exit'+e);
-			//socket.emit('fatal','ffmpeg exit!'+e);
+			console.log('child process exit'+e);			
 			let ffmpeg_exit = 'ffmpeg exit!'+e;
 			socket.emit('message',{type: 'fatal', data: ffmpeg_exit});
 			socket.disconnect();
@@ -298,19 +297,32 @@ io.on('connection', function(socket: any){
 		let socketid: any=socket.id;
 		let socketidCoo=functionListaConference.checkPresenzaSocketid(socketid);
 		let numberRoom=functionListaConference.utentiInConference[socketidCoo.y][0];
+<<<<<<< HEAD
 		numberRoom=numberRoom.toString();
 		console.table('NumberRoom: ' + numberRoom);
+=======
+		numberRoom=numberRoom.toString();		
+>>>>>>> 48abef88a0b6d96f19e171849a8a09d3e671cd22
 		
 		feedStream=false;		
 				
 		console.log("Chiusura stream per il seguente id: " + socketid);
 
 		//Eliminazione utente in conference
+<<<<<<< HEAD
 		let arrayUser = functionListaConference.userInConferenceVideo(numberRoom, '', 'exitUser', socketid)		
 
 		if(ffmpeg_process){
             
 			//invio lista utenti presenti in conference
+=======
+		let arrayUser = functionListaConference.userInConferenceVideo(numberRoom, '', 'exitUser', socketid)	
+		
+
+		if(ffmpeg_process){
+            
+			//Eliminazione utente in conference			
+>>>>>>> 48abef88a0b6d96f19e171849a8a09d3e671cd22
 
 			socket.emit('message', {type: numberRoom, data: arrayUser});		   
 			socket.broadcast.emit('message', {type: numberRoom, data: arrayUser});		
@@ -321,6 +333,7 @@ io.on('connection', function(socket: any){
 			console.log("ffmpeg process ended!");
 		}
 		else
+<<<<<<< HEAD
 		{			
 			//invio lista utenti presenti in conference
 
@@ -362,6 +375,10 @@ io.on('connection', function(socket: any){
 		else
 		{			
 			//invio lista utenti presenti in conference
+=======
+		{
+			//Eliminazione utente in conference		
+>>>>>>> 48abef88a0b6d96f19e171849a8a09d3e671cd22
 
 			socket.emit('message', {type: numberRoom, data: arrayUser});		   
 			socket.broadcast.emit('message', {type: numberRoom, data: arrayUser});	

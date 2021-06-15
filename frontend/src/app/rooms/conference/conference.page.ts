@@ -78,9 +78,14 @@ export class ConferencePage implements OnInit, AfterViewInit {
             break; */
           case `${this.roomId}`: //FREXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
             console.log('array per idroom: ', msg.data);
+            console.log('Frontend lunghezza array: ' + msg.data.length);
+            console.log('Frontend room: ' + msg.data[0]);
+            console.log('Frontend idutente: ' + msg.data[1].idutente);
+            console.log('Frontend stream: ' + msg.data[1].stream);            
             break;
           default:
-            console.log('unknown message: ', msg);
+            //console.log('unknown message: ', msg);
+            console.log('unknown message');
         }
       },
       (err) => console.log(err)

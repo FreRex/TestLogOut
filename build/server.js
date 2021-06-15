@@ -222,7 +222,6 @@ io.on('connection', function (socket) {
         });
         ffmpeg_process.on('exit', function (e) {
             console.log('child process exit' + e);
-            //socket.emit('fatal','ffmpeg exit!'+e);
             let ffmpeg_exit = 'ffmpeg exit!' + e;
             socket.emit('message', { type: 'fatal', data: ffmpeg_exit });
             socket.disconnect();
@@ -274,13 +273,20 @@ io.on('connection', function (socket) {
         let socketidCoo = functionListaConference.checkPresenzaSocketid(socketid);
         let numberRoom = functionListaConference.utentiInConference[socketidCoo.y][0];
         numberRoom = numberRoom.toString();
+<<<<<<< HEAD
         console.table('NumberRoom: ' + numberRoom);
+=======
+>>>>>>> 48abef88a0b6d96f19e171849a8a09d3e671cd22
         feedStream = false;
         console.log("Browser closed --> streaming  disconnected ! " + socketid);
         //Eliminazione utente in conference
         let arrayUser = functionListaConference.userInConferenceVideo(numberRoom, '', 'exitUser', socketid);
         if (ffmpeg_process) {
+<<<<<<< HEAD
             //invio lista utenti presenti in conference
+=======
+            //Eliminazione utente in conference			
+>>>>>>> 48abef88a0b6d96f19e171849a8a09d3e671cd22
             socket.emit('message', { type: numberRoom, data: arrayUser });
             socket.broadcast.emit('message', { type: numberRoom, data: arrayUser });
             ffmpeg_process.stdin.end();
@@ -288,7 +294,11 @@ io.on('connection', function (socket) {
             console.log("ffmpeg process ended!");
         }
         else {
+<<<<<<< HEAD
             //invio lista utenti presenti in conference
+=======
+            //Eliminazione utente in conference		
+>>>>>>> 48abef88a0b6d96f19e171849a8a09d3e671cd22
             socket.emit('message', { type: numberRoom, data: arrayUser });
             socket.broadcast.emit('message', { type: numberRoom, data: arrayUser });
             console.warn('killing ffmpeg process attempt failed...');
