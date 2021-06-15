@@ -16,7 +16,7 @@ if (process.env.NODE_ENV == 'production') {
     port = process.env.PORT_PROD || 9666;
 }
 else {
-    port = 9187;
+    port = 9195;
 }
 app.use(express_1.default.json());
 //-----------------------------------------------------------------------------------------------------------
@@ -78,7 +78,6 @@ io.on('connection', function (socket) {
             let dataforsocket = 'rtmp destination set to:' + m;
             console.log(socket._rtmpDestination);
             let numberRoom = functionListaConference.idroomsplit(socket._rtmpDestination);
-            console.log('Tipo di dato11: ' + typeof (numberRoom));
             let identificativoUtente = functionListaConference.idutentesplit(socket._rtmpDestination);
             //Inserimento in array generale dei dati del nuovo utente in conference
             let insertArray = functionListaConference.userInConferenceVideo(Number(numberRoom), identificativoUtente, 'entrance', socketid);
@@ -111,7 +110,6 @@ io.on('connection', function (socket) {
     //Ricezione tramite socket.on segnale avvio streaming
     socket.on('start', function (m) {
         //Verifica errori 
-        //- verifica che streaming sia già attivo 
         if (ffmpeg_process || feedStream) {
             socket.emit('message', { type: 'fatal', data: 'stream already started.' });
             return;
@@ -120,6 +118,17 @@ io.on('connection', function (socket) {
         if (!socket._rtmpDestination) {
             socket.emit('message', { type: 'fatal', data: 'no destination given.' });
             return;
+        }
+        //- verifica che streaming sia già attivo 
+        if (socket.id) {
+            let socketidCoo = functionListaConference.checkPresenzaSocketid(socket.id);
+            let numberRoom = functionListaConference.utentiInConference[socketidCoo.y][0];
+            numberRoom = numberRoom.toString();
+            console.log("numberoom per update: " + numberRoom);
+            let arrayStream = functionListaConference.updateArray(socket.id);
+            console.log('arrayStream: ' + arrayStream);
+            socket.emit('message', { type: numberRoom, data: arrayStream });
+            socket.broadcast.emit('message', { type: numberRoom, data: arrayStream });
         }
         //Impostazioni parametri per audio streaming
         var audioBitrate = parseInt(socket.handshake.query.audioBitrate);
@@ -228,18 +237,23 @@ io.on('connection', function (socket) {
         }
         feedStream(m);
     });
+    //--- Test per disconnectStream
+    socket.on('disconnectStream', function (m) {
+        console.log('m....' + m);
+    });
     //Ricezione segnale di disconnessione per chiusura browser.
-    socket.on('disconnect', function (m) {
+    socket.on('disconnectStream', function (m) {
         let socketid = socket.id;
         let socketidCoo = functionListaConference.checkPresenzaSocketid(socketid);
         let numberRoom = functionListaConference.utentiInConference[socketidCoo.y][0];
         numberRoom = numberRoom.toString();
+        console.table('NumberRoom: ' + numberRoom);
         feedStream = false;
-        console.log("Browser closed --> streaming  disconnected ! " + socketid);
+        console.log("Chiusura stream per il seguente id: " + socketid);
         //Eliminazione utente in conference
         let arrayUser = functionListaConference.userInConferenceVideo(numberRoom, '', 'exitUser', socketid);
         if (ffmpeg_process) {
-            //Eliminazione utente in conference			
+            //invio lista utenti presenti in conference
             socket.emit('message', { type: numberRoom, data: arrayUser });
             socket.broadcast.emit('message', { type: numberRoom, data: arrayUser });
             ffmpeg_process.stdin.end();
@@ -247,7 +261,44 @@ io.on('connection', function (socket) {
             console.log("ffmpeg process ended!");
         }
         else {
+            //invio lista utenti presenti in conference
+            socket.emit('message', { type: numberRoom, data: arrayUser });
+            socket.broadcast.emit('message', { type: numberRoom, data: arrayUser });
+            console.warn('killing ffmpeg process attempt failed...');
+        }
+    });
+    //Ricezione segnale di disconnessione per chiusura browser.
+    socket.on('disconnect', function (m) {
+        let socketid = socket.id;
+        let socketidCoo = functionListaConference.checkPresenzaSocketid(socketid);
+        let numberRoom = functionListaConference.utentiInConference[socketidCoo.y][0];
+        numberRoom = numberRoom.toString();
+<<<<<<< HEAD
+        console.table('NumberRoom: ' + numberRoom);
+=======
+>>>>>>> 48abef88a0b6d96f19e171849a8a09d3e671cd22
+        feedStream = false;
+        console.log("Browser closed --> streaming  disconnected ! " + socketid);
+        //Eliminazione utente in conference
+        let arrayUser = functionListaConference.userInConferenceVideo(numberRoom, '', 'exitUser', socketid);
+        if (ffmpeg_process) {
+<<<<<<< HEAD
+            //invio lista utenti presenti in conference
+=======
+            //Eliminazione utente in conference			
+>>>>>>> 48abef88a0b6d96f19e171849a8a09d3e671cd22
+            socket.emit('message', { type: numberRoom, data: arrayUser });
+            socket.broadcast.emit('message', { type: numberRoom, data: arrayUser });
+            ffmpeg_process.stdin.end();
+            ffmpeg_process.kill('SIGINT');
+            console.log("ffmpeg process ended!");
+        }
+        else {
+<<<<<<< HEAD
+            //invio lista utenti presenti in conference
+=======
             //Eliminazione utente in conference		
+>>>>>>> 48abef88a0b6d96f19e171849a8a09d3e671cd22
             socket.emit('message', { type: numberRoom, data: arrayUser });
             socket.broadcast.emit('message', { type: numberRoom, data: arrayUser });
             console.warn('killing ffmpeg process attempt failed...');

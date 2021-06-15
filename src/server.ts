@@ -144,6 +144,8 @@ io.on('connection', function(socket: any){
 
 	//Ricezione tramite socket.on segnale avvio streaming
 	socket.on('start',function(m: any){
+
+		
 		
 		//Verifica errori 
 			//- verifica che streaming sia già attivo 
