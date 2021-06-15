@@ -74,7 +74,8 @@ export class RoomService {
     return this.authService.currentUser$.pipe(
       take(1),
       switchMap((user) => {
-        return this.http.get<RoomData>(`${environment.apiUrl}/s/room/${user.idutcas}/${roomId}`);
+        // return this.http.get<RoomData>(`${environment.apiUrl}/s/room/${user.idutcas}/${roomId}`);
+        return this.http.get<RoomData>(`${environment.apiUrl}/s/room/0/${roomId}`);
       }),
       map((roomData) => {
         return {

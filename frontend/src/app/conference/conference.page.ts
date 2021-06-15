@@ -4,7 +4,7 @@ import { Storage } from '@capacitor/storage';
 import { NavController } from '@ionic/angular';
 import { Socket } from 'ngx-socket-io';
 import { from } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 
 import { Room, RoomService } from '../rooms/room.service';
@@ -52,20 +52,21 @@ export class ConferencePage implements OnInit, AfterViewInit {
           if (!storedData || !storedData.value) {
             throw new Error('Unauthenticated');
           }
-          // this.userId = JSON.parse(storedData.value).idutcas;
-          // return this.roomService.selectRoom(this.roomId);
-          return JSON.parse(storedData.value).idutcas;
+          this.userId = JSON.parse(storedData.value).idutcas;
+          return this.roomService.selectRoom(this.roomId);
+          // return JSON.parse(storedData.value).idutcas;
+        }),
+        tap((room) => {
+          if (!room) {
+            throw new Error('Room Not Found');
+          }
+          this.room = room;
+          console.log(this.room);
         })
-        // tap((room) => {
-        //   if (!room) {
-        //     throw new Error('Room Not Found');
-        //   }
-        //   this.room = room;
-        // })
       )
       .subscribe(
-        (res: string) => {
-          this.userId = res;
+        (res) => {
+          // this.userId = res;
           this.configureSocket(this.roomId, this.userId);
           console.log('🐱‍👤 : ConferencePage : this.userId', this.userId);
           console.log('🐱‍👤 : ConferencePage : this.roomId', this.roomId);

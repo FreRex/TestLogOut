@@ -122,6 +122,7 @@ export class PlayerComponent implements OnInit {
       track.enabled = false;
     });
     this.localVideo.nativeElement.srcObject = undefined;
+    this.localStream = null;
   }
 
   /************************* MediaRecorder *************************/

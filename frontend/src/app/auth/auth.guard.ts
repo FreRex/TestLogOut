@@ -52,7 +52,7 @@ export class AuthGuard implements CanLoad, CanActivate {
   }
 
   canActivate(route: ActivatedRouteSnapshot) {
-    console.log('🐱‍👤 : AuthGuard : canActivate : route', route);
+    // console.log('🐱‍👤 : AuthGuard : canActivate : route', route);
     return this.authService.userIsAuthenticated.pipe(
       take(1),
       switchMap((isAuthenticated) => {
@@ -63,8 +63,8 @@ export class AuthGuard implements CanLoad, CanActivate {
         }
       }),
       tap((isAuthenticated) => {
-        console.log('🐱‍👤 : AuthGuard : isAuthenticated', isAuthenticated);
-        console.log('🐱‍👤 : AuthGuard : route.routeConfig.path', route.routeConfig.path);
+        // console.log('🐱‍👤 : AuthGuard : isAuthenticated', isAuthenticated);
+        // console.log('🐱‍👤 : AuthGuard : route.routeConfig.path', route.routeConfig.path);
         if (!isAuthenticated) {
           if (route.routeConfig.path == 'conference') {
             this.router.navigate(['/auth'], {
