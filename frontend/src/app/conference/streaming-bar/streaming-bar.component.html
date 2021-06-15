@@ -2,12 +2,12 @@
   <div>
     <ion-button class="btn-trasparent" (click)="toggleStreaming()">
       <ion-icon
-        *ngIf="this.streamingService.isStreaming"
+        *ngIf="isStreaming"
         slot="icon-only"
         src="assets/icons/mockup-icons/cam-on.svg"
       ></ion-icon>
       <ion-icon
-        *ngIf="!this.streamingService.isStreaming"
+        *ngIf="!isStreaming"
         slot="icon-only"
         src="assets/icons/mockup-icons/cam-off.svg"
       ></ion-icon>

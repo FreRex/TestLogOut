@@ -4,13 +4,17 @@ import { RouterModule, Routes } from '@angular/router';
 import { ConferencePage } from './conference.page';
 
 const routes: Routes = [
-  {
-    path: ':roomId',
-    component: ConferencePage,
-  },
+  // {
+  //   path: ':room',
+  //   component: ConferencePage,
+  // },
+  // {
+  //   path: '',
+  //   redirectTo: '/not-found',
+  // },
   {
     path: '',
-    redirectTo: '/not-found',
+    component: ConferencePage,
   },
 ];
 

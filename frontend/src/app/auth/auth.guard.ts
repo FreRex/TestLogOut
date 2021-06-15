@@ -67,8 +67,14 @@ export class AuthGuard implements CanLoad, CanActivate {
         console.log('🐱‍👤 : AuthGuard : route.routeConfig.path', route.routeConfig.path);
         if (!isAuthenticated) {
           if (route.routeConfig.path == 'conference') {
-            console.log(route.queryParams['room']);
-            this.router.navigate(['/auth'], { queryParams: { room: route.queryParams['room'] } });
+            this.router.navigate(['/auth'], {
+              queryParams: {
+                roomId: route.queryParams['roomId'],
+                session: route.queryParams['session'],
+                project: route.queryParams['project'],
+                creator: route.queryParams['creator'],
+              },
+            });
           } else {
             this.router.navigate(['/auth']);
           }

@@ -101,13 +101,23 @@ export class GenericRoomItemComponent implements OnInit {
   //   link.click();
   //   link.remove();
   // }
+
+  /** Entra nella ROOM */
   enterRoom(room?: Room, slidingItem?: IonItemSliding) {
     if (slidingItem) slidingItem.close();
     if (room) this.room = room;
-    this.router.navigate([`/conference/${this.room.id}`], {
-      queryParams: { room: this.room.id },
+    // this.router.navigate([`/conference/${this.room.id}`], {
+    //   queryParams: { room: this.room.id },
+    // });
+
+    this.router.navigate([`/conference`], {
+      queryParams: {
+        roomId: encodeURIComponent(this.room.id),
+        session: encodeURIComponent(this.room.sessione),
+        project: encodeURIComponent(this.room.progetto),
+        creator: encodeURIComponent(this.room.collaudatore),
+      },
     });
-    // this.navController.navigateForward([`/conference`], { queryParams: { room: this.room.id } });
   }
 
   /** Copia il link della ROOM */

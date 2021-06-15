@@ -39,7 +39,7 @@ export class RoomDetailPage implements OnInit {
           this.alertController
             .create({
               header: 'Errore',
-              message: 'Impossibiile caricare la room',
+              message: 'Impossibile caricare la room',
               buttons: [
                 {
                   text: 'Annulla',

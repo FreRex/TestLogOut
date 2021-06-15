@@ -10,7 +10,10 @@
 </ion-header>
 
 <ion-content>
-  <ion-grid class="ion-margin-horizontal">
+  <div *ngIf="isLoading" class="ion-text-center ion-padding">
+    <ion-spinner></ion-spinner>
+  </div>
+  <ion-grid *ngIf="!isLoading" class="ion-margin-horizontal">
     <ion-row>
       <ion-col size-lg="12">
         <!-- BTN CHE RIMANDA INDIETRO ALL'INGRESSO DELLA CONFERENCE -->
@@ -20,13 +23,12 @@
         </ion-button>
       </ion-col>
     </ion-row>
-
     <ion-row>
       <ion-col size-lg="4.5">
         <div class="conference-title">
           <div class="title">
-            <ion-text><b>Nome della CONFERENCE</b></ion-text>
-            <ion-text>Mattina</ion-text>
+            <ion-text><b>{{room.progetto}}</b></ion-text>
+            <ion-text>{{room.sessione}}</ion-text>
           </div>
           <!-- BTN CHE COPIA IL LINK DELLA CONFERENCE -->
           <ion-button class="button">
@@ -35,7 +37,6 @@
         </div>
       </ion-col>
     </ion-row>
-
     <ion-row>
       <ion-col size-lg="4.5">
         <!-- QUI DENTRO VA IL VIDEO PLAYER -->
@@ -49,10 +50,11 @@
           <div [hidden]="!isStreaming">
             <app-webcam></app-webcam>
           </div> -->
-
           <app-player [isStreaming]="isStreaming" [isPlaying]="isPlaying"></app-player>
         </div>
         <app-streaming-bar
+          [isStreaming]="isStreaming"
+          [isPlaying]="isPlaying"
           (togglePlay)="togglePlay()"
           (toggleStream)="toggleStream()"
         ></app-streaming-bar>
