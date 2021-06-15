@@ -108,11 +108,34 @@ let deleteUser = function (socketid: string){
   
     return userInConferenceVideo; 
 }
+
+//----------------- UPDATE ARRAY -----------------------------------
+
+function updateArray(socketid: string){    
+
+    let socketidCoo=checkPresenzaSocketid(socketid);    
+
+    //Inizializzazione tutti gli stream a false (in pratica si fa uscire l'utente dallo streamming)
+    for (let x = 1; x < utentiInConference[socketidCoo.y].length; x++) {
+        console.log('x :' + x)
+        console.log("wwww: " + utentiInConference[socketidCoo.y][x]['stream']);  
+        utentiInConference[socketidCoo.y][x]['stream'] = false;     
+    } 
+   
+    //aggiorna valore da stream: false a stream: true        
+    utentiInConference[socketidCoo.y][socketidCoo.x]['stream'] = true;
+   
+    return utentiInConference[socketidCoo.y];
+}   
+
+
+
+//------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------
 
-//-------------------------------------------------------
+
 
 let userInConferenceVideo = function (idroom: number, idutente: string, dataAction: string, socketid: string){    
     
@@ -128,7 +151,13 @@ let userInConferenceVideo = function (idroom: number, idutente: string, dataActi
             //ELIMINARE UTENTE e/o ROOM            
 			userInConferenceVideo = deleteUser(socketid);
 			console.table(userInConferenceVideo);
-        break;        
+        break;  
+        
+        case 'updateUserStream':
+            //UPDATE STREAM UTENTE            
+			userInConferenceVideo = updateArray(socketid);
+			console.table(userInConferenceVideo);
+        break;
     
         default:
         break;
@@ -147,5 +176,6 @@ module.exports = {
     insertArray,
     deleteRow,
     deleteUser,
+    updateArray,
     utentiInConference
 }
