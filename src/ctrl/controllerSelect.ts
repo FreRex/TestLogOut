@@ -74,30 +74,34 @@ exports.getSelect = (req: any, res: any, next: any) => {
             //"id" sarebbe "idroom"
             if(idroom==''){ 
                 if (idutcas == '') {
+                    console.log('a');
                     sql= sql + "ORDER BY id DESC";               
                 }
                 else
                 //idutcas != '' ==> utente specifico
                 {
                     //sql= sql + "WHERE utenti.idutcas = '" + idutcas + "' ORDER BY id DESC";
-                    
+                    console.log('b');
                     sql= sql + " WHERE IF((SELECT autorizzazioni FROM `utenti` WHERE `idutcas` = '" + idutcas + "') = 3,";
                     sql= sql + " idcommessa = (SELECT idcommessa FROM `utenti` WHERE `idutcas` = '" + idutcas + "'),";
                     sql= sql + " IF((SELECT autorizzazioni FROM `utenti` WHERE `idutcas` = '" + idutcas + "') = 1,";
                     sql= sql + " utenti.idutcas !='',";
                     sql= sql + " utenti.idutcas = (SELECT idutcas FROM `utenti` WHERE `idutcas` = '" + idutcas + "')))";
                     sql= sql + " ORDER BY id DESC";
+
                 }     
                          
             }
             else
             {
                 if (idutcas == '') {
+                  console.log('c');
                     sql= sql + "WHERE multistreaming.id = " + idroom + " ORDER BY id DESC";               
                 }
                 else
                 {
-                    sql= sql + "WHERE multistreaming.id = " + idroom + " AND utenti.id = " + idutcas + " ORDER BY id DESC"; 
+                  console.log('d');  
+                  sql= sql + "WHERE multistreaming.id = " + idroom + " AND utenti.idutcas = '" + idutcas + "' ORDER BY id DESC"; 
                 }                
             }              
             
@@ -152,7 +156,7 @@ exports.getSelect = (req: any, res: any, next: any) => {
             //sql = 'SELECT collaudolive.id, collaudolive.progettoselezionato, collaudolive.collaudatoreufficio, collaudolive.dataimg, collaudolive.nameimg, collaudolive.latitu, collaudolive.longitu, collaudolive.nomelemento, collaudolive.noteimg, collaudolive.onlynota, TO_BASE64(collaudolive.img) AS foto, multistreaming.progettoselezionato, multistreaming.id FROM collaudolive INNER JOIN multistreaming ON collaudolive.progettoselezionato = multistreaming.progettoselezionato WHERE multistreaming.id = '+ idroom +' ORDER BY collaudolive.id DESC limit '+paginit+',' +numberFotoPage
             sql = 'SELECT multistreaming.id, collaudolive.id AS idPhoto, collaudolive.progettoselezionato, collaudolive.collaudatoreufficio, collaudolive.dataimg, collaudolive.nameimg, collaudolive.latitu, collaudolive.longitu, collaudolive.nomelemento, collaudolive.noteimg, collaudolive.onlynota, collaudolive.img AS foto, multistreaming.progettoselezionato FROM collaudolive INNER JOIN multistreaming ON collaudolive.progettoselezionato = multistreaming.progettoselezionato WHERE multistreaming.id = '+ idroom +' ORDER BY collaudolive.id DESC limit '+paginit+',' +numberFotoPage
             //sql = 'SELECT collaudolive.img AS foto FROM collaudolive INNER JOIN multistreaming ON collaudolive.progettoselezionato = multistreaming.progettoselezionato WHERE multistreaming.id = '+ idroom +' ORDER BY collaudolive.id DESC limit '+paginit+',' +numberFotoPage
-            console.log(sql);
+            
           }        
 
           break;          
@@ -163,6 +167,7 @@ exports.getSelect = (req: any, res: any, next: any) => {
     //-------------------
     // Esecuzione query
     //-------------------
+    console.log(sql);
     db.query(sql, (err: any, rows: any, fields: any) => {
       /* let base64data = Buffer.from(rows[0]['img']).toString('base64'); */
       if(err){
