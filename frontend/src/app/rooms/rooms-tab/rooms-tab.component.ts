@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertController, ModalController, ToastController } from '@ionic/angular';
+import { AlertController, ModalController, NavController, ToastController } from '@ionic/angular';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { distinctUntilChanged, startWith, switchMap } from 'rxjs/operators';
 import { AuthService } from 'src/app/auth/auth.service';
@@ -44,12 +44,21 @@ export class RoomsTabComponent extends GenericRoomItemComponent implements OnIni
 
   constructor(
     public router: Router,
-    public roomService: RoomService,
+    public navController: NavController,
+    public roomsService: RoomService,
     public authService: AuthService,
     public alertController: AlertController,
     public modalController: ModalController,
     public toastController: ToastController
   ) {
-    super(router, roomService, authService, alertController, modalController, toastController);
+    super(
+      router,
+      navController,
+      roomsService,
+      authService,
+      alertController,
+      modalController,
+      toastController
+    );
   }
 }

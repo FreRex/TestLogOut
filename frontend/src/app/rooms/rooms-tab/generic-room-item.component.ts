@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertController, IonItemSliding, ModalController, ToastController } from '@ionic/angular';
+import { AlertController, IonItemSliding, ModalController, NavController, ToastController } from '@ionic/angular';
 import { AuthService } from 'src/app/auth/auth.service';
 import { environment } from 'src/environments/environment';
 
@@ -20,6 +20,7 @@ export class GenericRoomItemComponent implements OnInit {
 
   constructor(
     public router: Router,
+    public navController: NavController,
     public roomService: RoomService,
     public authService: AuthService,
     public alertController: AlertController,
@@ -100,10 +101,23 @@ export class GenericRoomItemComponent implements OnInit {
   //   link.click();
   //   link.remove();
   // }
+
+  /** Entra nella ROOM */
   enterRoom(room?: Room, slidingItem?: IonItemSliding) {
     if (slidingItem) slidingItem.close();
     if (room) this.room = room;
-    this.router.navigate([`/rooms/conference/${this.room.id}`]);
+    // this.router.navigate([`/conference/${this.room.id}`], {
+    //   queryParams: { room: this.room.id },
+    // });
+
+    this.router.navigate([`/conference`], {
+      queryParams: {
+        roomId: encodeURIComponent(this.room.id),
+        session: encodeURIComponent(this.room.sessione),
+        project: encodeURIComponent(this.room.progetto),
+        creator: encodeURIComponent(this.room.collaudatore),
+      },
+    });
   }
 
   /** Copia il link della ROOM */

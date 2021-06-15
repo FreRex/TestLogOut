@@ -15,6 +15,12 @@ const routes: Routes = [
     canLoad: [AuthGuard],
   },
   {
+    path: 'conference',
+    loadChildren: () =>
+      import('./conference/conference.module').then((m) => m.ConferencePageModule),
+    canActivate: [AuthGuard],
+  },
+  {
     path: 'backoffice',
     loadChildren: () =>
       import('./backoffice/backoffice.module').then((m) => m.BackofficePageModule),
@@ -27,7 +33,7 @@ const routes: Routes = [
   },
   {
     path: 'not-found',
-    loadChildren: () => import('./not-found/not-found.module').then( m => m.NotFoundPageModule)
+    loadChildren: () => import('./not-found/not-found.module').then((m) => m.NotFoundPageModule),
   },
 ];
 

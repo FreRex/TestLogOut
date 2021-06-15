@@ -4,8 +4,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 
 import { SharedModule } from '../shared/shared.module';
-import { PlayerComponent } from './conference/player/player.component';
-import { StreamingBarComponent } from './conference/streaming-bar/streaming-bar.component';
 import { RoomsPageRoutingModule } from './rooms-routing.module';
 import { CreateRoomModalComponent } from './rooms-tab/create-room-modal/create-room-modal.component';
 import { EditRoomModalComponent } from './rooms-tab/edit-room-modal/edit-room-modal.component';
@@ -23,10 +21,7 @@ import { RoomsPage } from './rooms.page';
     RoomsListItemComponent,
     CreateRoomModalComponent,
     EditRoomModalComponent,
-    PlayerComponent,
-    StreamingBarComponent,
   ],
-  exports: [PlayerComponent, StreamingBarComponent],
   entryComponents: [CreateRoomModalComponent, EditRoomModalComponent],
 })
 export class RoomsPageModule {}

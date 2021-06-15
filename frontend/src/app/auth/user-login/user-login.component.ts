@@ -7,11 +7,11 @@ import { Observable } from 'rxjs';
 import { AuthService } from '../auth.service';
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss'],
+  selector: 'app-user-login',
+  templateUrl: './user-login.component.html',
+  styleUrls: ['./user-login.component.scss'],
 })
-export class LoginComponent implements OnInit {
+export class UserLoginComponent implements OnInit {
   isLogin: boolean = true;
 
   form: FormGroup = this.fb.group({

@@ -4,11 +4,11 @@ import { Storage } from '@capacitor/storage';
 import { NavController } from '@ionic/angular';
 import { Socket } from 'ngx-socket-io';
 import { from } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { switchMap, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 
+import { Room, RoomService } from '../rooms/room.service';
 import { PlayerComponent } from './player/player.component';
-import { StreamingService } from './streaming.service';
 
 @Component({
   selector: 'app-conference',
@@ -17,6 +17,7 @@ import { StreamingService } from './streaming.service';
 })
 export class ConferencePage implements OnInit, AfterViewInit {
   @ViewChild(PlayerComponent) private playerComponent: PlayerComponent;
+  public room: Room;
 
   roomId: string = '';
   userId: string = '';
@@ -25,39 +26,61 @@ export class ConferencePage implements OnInit, AfterViewInit {
   rtmpDestination: string = '';
 
   constructor(
-    private activatedRouter: ActivatedRoute,
+    private activatedRoute: ActivatedRoute,
     private navController: NavController,
-    private streamingService: StreamingService,
+    private roomService: RoomService,
     private socket: Socket
   ) {}
 
-  ngOnInit() {}
-
-  ngAfterViewInit() {
-    this.activatedRouter.paramMap
+  isLoading: boolean = false;
+  ngOnInit() {
+    this.isLoading = true;
+    this.activatedRoute.queryParams
       .pipe(
-        switchMap((paramMap) => {
-          if (!paramMap.has('roomId')) {
-            this.navController.navigateBack(['/not-found']);
-            return;
+        switchMap((params) => {
+          console.log('🐱‍👤 : ConferencePage : paramMap', params);
+          if (!params || !params['roomId']) {
+            // if (!params.has('roomId')) {
+            // this.navController.navigateBack(['/not-found']);
+            // return;
+            throw new Error('Missing ID');
           }
-          this.roomId = paramMap.get('roomId');
+          this.roomId = params['roomId'];
           return from(Storage.get({ key: 'authData' }));
         }),
-        map((storedData) => {
+        switchMap((storedData) => {
           if (!storedData || !storedData.value) {
-            return null;
+            throw new Error('Unauthenticated');
           }
-          return JSON.parse(storedData.value).idutcas;
+          this.userId = JSON.parse(storedData.value).idutcas;
+          return this.roomService.selectRoom(this.roomId);
+          // return JSON.parse(storedData.value).idutcas;
+        }),
+        tap((room) => {
+          if (!room) {
+            throw new Error('Room Not Found');
+          }
+          this.room = room;
+          console.log(this.room);
         })
       )
-      .subscribe((userId) => {
-        this.userId = userId;
-        this.configureSocket(this.roomId, this.userId);
-        console.log('🐱‍👤 : ConferencePage : this.userId', this.userId);
-        console.log('🐱‍👤 : ConferencePage : this.roomId', this.roomId);
-      });
+      .subscribe(
+        (res) => {
+          // this.userId = res;
+          this.configureSocket(this.roomId, this.userId);
+          console.log('🐱‍👤 : ConferencePage : this.userId', this.userId);
+          console.log('🐱‍👤 : ConferencePage : this.roomId', this.roomId);
+          this.isLoading = false;
+        },
+        (err) => {
+          this.navController.navigateBack(['/not-found']);
+          this.isLoading = false;
+          console.log(err);
+        }
+      );
   }
+
+  ngAfterViewInit() {}
 
   // handles messages coming from signalling_server (remote party)
   public configureSocket(roomId: string, userId: string): void {
@@ -81,11 +104,11 @@ export class ConferencePage implements OnInit, AfterViewInit {
             console.log('Frontend lunghezza array: ' + msg.data.length);
             console.log('Frontend room: ' + msg.data[0]);
             console.log('Frontend idutente: ' + msg.data[1].idutente);
-            console.log('Frontend stream: ' + msg.data[1].stream);            
+            console.log('Frontend stream: ' + msg.data[1].stream);
             break;
           default:
-            //console.log('unknown message: ', msg);
-            console.log('unknown message');
+            console.log('unknown message: ', msg);
+          // console.log('unknown message');
         }
       },
       (err) => console.log(err)

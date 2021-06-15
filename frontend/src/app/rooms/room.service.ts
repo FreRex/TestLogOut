@@ -32,6 +32,7 @@ export interface Room {
   collaudatore: string;
   idcommessa: number;
   commessa: string;
+  sessione: string;
 }
 
 @Injectable({
@@ -71,8 +72,10 @@ export class RoomService {
   /** SELECT singola room */
   selectRoom(roomId: string): Observable<Room> {
     return this.authService.currentUser$.pipe(
+      take(1),
       switchMap((user) => {
-        return this.http.get<RoomData>(`${environment.apiUrl}/s/room/${user.idutcas}/${roomId}`);
+        // return this.http.get<RoomData>(`${environment.apiUrl}/s/room/${user.idutcas}/${roomId}`);
+        return this.http.get<RoomData>(`${environment.apiUrl}/s/room/0/${roomId}`);
       }),
       map((roomData) => {
         return {
@@ -86,6 +89,7 @@ export class RoomService {
           collaudatore: roomData[0].collaudatoreufficio,
           idcommessa: roomData[0].idcommessa,
           commessa: roomData[0].commessa,
+          sessione: 'Mattina',
         };
       })
     );
@@ -121,6 +125,7 @@ export class RoomService {
               collaudatore: roomData[key].collaudatoreufficio,
               idcommessa: roomData[key].idcommessa,
               commessa: roomData[key].commessa,
+              sessione: 'Mattina',
             });
           }
         }
@@ -154,6 +159,7 @@ export class RoomService {
       collaudatore: collaudatore,
       idcommessa: idcommessa,
       commessa: commessa,
+      sessione: 'Mattina',
     };
     // this.rooms è un OSSERVABILE
     // take(1) = dopo la prima emissione dell'Osservabile togli la sottoscrizione
@@ -205,6 +211,7 @@ export class RoomService {
           collaudatore: oldRoom.collaudatore,
           idcommessa: oldRoom.idcommessa,
           commessa: oldRoom.commessa,
+          sessione: 'Mattina',
         };
         return this.http.put(`${environment.apiUrl}/ur`, {
           id: roomId,
