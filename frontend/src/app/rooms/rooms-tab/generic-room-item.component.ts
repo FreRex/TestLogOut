@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Storage } from '@capacitor/storage';
 import { AlertController, IonItemSliding, ModalController, NavController, ToastController } from '@ionic/angular';
 import { AuthService } from 'src/app/auth/auth.service';
 import { environment } from 'src/environments/environment';
@@ -15,7 +16,8 @@ import { EditRoomModalComponent } from './edit-room-modal/edit-room-modal.compon
 export class GenericRoomItemComponent implements OnInit {
   @Input() room: Room;
   isFavourite: boolean;
-  baseUrl = 'https://www.collaudolive.com:9777/glasses/FrontEnd/src/index.php?q=';
+  baseUrl =
+    'https://www.collaudolive.com:9777/glasses/FrontEnd/src/index.php?q=';
   linkProgetto: string;
 
   constructor(
@@ -51,7 +53,11 @@ export class GenericRoomItemComponent implements OnInit {
         if (res.role === 'ok') {
           this.presentToast(res.data['message'], 'secondary');
         } else if (res.role === 'error') {
-          this.presentToast(`Aggiornamento fallito.\n ${res.data['message']}`, 'danger', 5000);
+          this.presentToast(
+            `Aggiornamento fallito.\n ${res.data['message']}`,
+            'danger',
+            5000
+          );
         }
       });
   }
@@ -75,8 +81,39 @@ export class GenericRoomItemComponent implements OnInit {
         if (res.role === 'ok') {
           this.presentToast(res.data['message'], 'secondary');
         } else if (res.role === 'error') {
-          this.presentToast(`Aggiornamento fallito.\n${res.data['message']}`, 'danger', 5000);
+          this.presentToast(
+            `Aggiornamento fallito.\n${res.data['message']}`,
+            'danger',
+            5000
+          );
         }
+      });
+  }
+
+  /** Crea un alert per la cancellazione della ROOM */
+  deleteRoom(room?: Room, slidingItem?: IonItemSliding) {
+    if (slidingItem) slidingItem.close();
+    if (room) this.room = room;
+
+    this.alertController
+      .create({
+        header: 'Sei sicuro?',
+        message: 'Vuoi davvero cancellare il progetto?',
+        buttons: [
+          { text: 'Annulla', role: 'cancel' },
+          {
+            text: 'Elimina',
+            handler: () =>
+              this.roomService
+                .deleteRoom(this.room.id)
+                .subscribe((res) =>
+                  this.presentToast('Room Eliminata', 'secondary')
+                ),
+          },
+        ],
+      })
+      .then((alertEl) => {
+        alertEl.present();
       });
   }
 
@@ -110,14 +147,30 @@ export class GenericRoomItemComponent implements OnInit {
     //   queryParams: { room: this.room.id },
     // });
 
-    this.router.navigate([`/conference`], {
-      queryParams: {
-        roomId: encodeURIComponent(this.room.id),
-        session: encodeURIComponent(this.room.sessione),
-        project: encodeURIComponent(this.room.progetto),
-        creator: encodeURIComponent(this.room.collaudatore),
-      },
+    // this.router.navigate([`/conference`], {
+    //   queryParams: {
+    //     roomId: encodeURIComponent(this.room.id),
+    //     session: encodeURIComponent(this.room.sessione),
+    //     project: encodeURIComponent(this.room.progetto),
+    //     creator: encodeURIComponent(this.room.collaudatore),
+    //   },
+    // });
+
+    /* 
+    * Potrei passare dal servizio
+    * Definire una currentRoom Osservabile
+    * Selezionarla nel momento in cui clicco il pulsante
+    * E recuperarla all'apertura della pagina 
+    ! ATTENZIONE a mantenere tutti i dati sul localStorage???
+    */
+    Storage.set({
+      key: 'roomData',
+      value: JSON.stringify({
+        roomId: this.room.id,
+      }),
     });
+
+    this.router.navigate([`/conference`]);
   }
 
   /** Copia il link della ROOM */
@@ -125,14 +178,40 @@ export class GenericRoomItemComponent implements OnInit {
     if (slidingItem) slidingItem.close();
     if (room) this.room = room;
 
+    const params = new URLSearchParams({
+      roomId: encodeURIComponent(this.room.id),
+      session: encodeURIComponent(this.room.sessione),
+      project: encodeURIComponent(this.room.progetto),
+      creator: encodeURIComponent(this.room.collaudatore),
+    });
+
     document.addEventListener('copy', (e: ClipboardEvent) => {
-      e.clipboardData.setData('text/plain', this.baseUrl + this.room.pk_project);
+      e.clipboardData.setData(
+        'text/plain',
+        `${environment.app}/conference?${params}`
+      );
       e.preventDefault();
       document.removeEventListener('copy', null);
     });
     document.execCommand('copy');
     this.presentToast('Link copiato.', 'secondary');
   }
+
+  // copyLink(room?: Room, slidingItem?: IonItemSliding) {
+  //   if (slidingItem) slidingItem.close();
+  //   if (room) this.room = room;
+
+  //   document.addEventListener('copy', (e: ClipboardEvent) => {
+  //     e.clipboardData.setData(
+  //       'text/plain',
+  //       this.baseUrl + this.room.pk_project
+  //     );
+  //     e.preventDefault();
+  //     document.removeEventListener('copy', null);
+  //   });
+  //   document.execCommand('copy');
+  //   this.presentToast('Link copiato.', 'secondary');
+  // }
 
   /** Avvia il download delle foto della ROOM */
   downloadFoto(room?: Room, slidingItem?: IonItemSliding) {
@@ -145,13 +224,19 @@ export class GenericRoomItemComponent implements OnInit {
         const link = document.createElement('a');
         //link.setAttribute('target', '_blank');
         //link.setAttribute('href', `https://www.collaudolive.com:9083/downloadzip/${nomeProgetto}`);
-        link.setAttribute('href', `${environment.apiUrl}/downloadzip/${nomeProgetto}`);
+        link.setAttribute(
+          'href',
+          `${environment.apiUrl}/downloadzip/${nomeProgetto}`
+        );
         link.setAttribute('download', `${nomeProgetto}.zip`);
         document.body.appendChild(link);
         link.click();
         link.remove();
       } else {
-        this.presentToast(`Non ci sono foto sul progetto ${nomeProgetto}!`, 'danger');
+        this.presentToast(
+          `Non ci sono foto sul progetto ${nomeProgetto}!`,
+          'danger'
+        );
       }
       //window.open(`https://www.collaudolive.com:9083/downloadzip/${nomeProgetto}`)
     });
@@ -187,31 +272,6 @@ export class GenericRoomItemComponent implements OnInit {
     //     }
     //   });
     // })
-  }
-
-  /** Crea un alert per la cancellazione della ROOM */
-  deleteRoom(room?: Room, slidingItem?: IonItemSliding) {
-    if (slidingItem) slidingItem.close();
-    if (room) this.room = room;
-
-    this.alertController
-      .create({
-        header: 'Sei sicuro?',
-        message: 'Vuoi davvero cancellare il progetto?',
-        buttons: [
-          { text: 'Annulla', role: 'cancel' },
-          {
-            text: 'Elimina',
-            handler: () =>
-              this.roomService
-                .deleteRoom(this.room.id)
-                .subscribe((res) => this.presentToast('Room Eliminata', 'secondary')),
-          },
-        ],
-      })
-      .then((alertEl) => {
-        alertEl.present();
-      });
   }
 
   async presentToast(message: string, color?: string, duration?: number) {

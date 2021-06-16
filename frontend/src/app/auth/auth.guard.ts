@@ -9,6 +9,7 @@ import {
   UrlSegment,
   UrlTree,
 } from '@angular/router';
+import { Storage } from '@capacitor/storage';
 import { Observable, of } from 'rxjs';
 import { switchMap, take, tap } from 'rxjs/operators';
 
@@ -32,8 +33,6 @@ export class AuthGuard implements CanLoad, CanActivate {
     | Promise<boolean | UrlTree>
     | boolean
     | UrlTree {
-    // console.log('🐱‍👤 : AuthGuard : canLoad : route', route);
-    // console.log('🐱‍👤 : AuthGuard : canLoad : segments', segments);
     return this.authService.userIsAuthenticated.pipe(
       take(1),
       switchMap((isAuthenticated) => {
@@ -44,7 +43,6 @@ export class AuthGuard implements CanLoad, CanActivate {
         }
       }),
       tap((isAuthenticated) => {
-        // console.log('🐱‍👤 : AuthGuard : isAuthenticated', isAuthenticated);
         if (!isAuthenticated) {
           this.router.navigateByUrl('/auth');
         }
@@ -53,7 +51,6 @@ export class AuthGuard implements CanLoad, CanActivate {
   }
 
   canActivate(route: ActivatedRouteSnapshot) {
-    // console.log('🐱‍👤 : AuthGuard : canActivate : route', route);
     return this.authService.userIsAuthenticated.pipe(
       take(1),
       switchMap((isAuthenticated) => {
@@ -64,21 +61,30 @@ export class AuthGuard implements CanLoad, CanActivate {
         }
       }),
       tap((isAuthenticated) => {
-        // console.log('🐱‍👤 : AuthGuard : isAuthenticated', isAuthenticated);
-        // console.log('🐱‍👤 : AuthGuard : route.routeConfig.path', route.routeConfig.path);
         if (!isAuthenticated) {
           if (route.routeConfig.path == 'conference') {
-            this.router.navigate(['/auth'], {
-              queryParams: {
-                roomId: route.queryParams['roomId'],
-                session: route.queryParams['session'],
-                project: route.queryParams['project'],
-                creator: route.queryParams['creator'],
-              },
+            Storage.set({
+              key: 'roomData',
+              value: JSON.stringify({
+                roomId: decodeURIComponent(route.queryParams['roomId']),
+                session: decodeURIComponent(route.queryParams['session']),
+                project: decodeURIComponent(route.queryParams['project']),
+                creator: decodeURIComponent(route.queryParams['creator']),
+              }),
             });
-          } else {
-            this.router.navigate(['/auth']);
+            // this.router.navigate(['/auth'], {
+            //   queryParams: {
+            //     roomId: route.queryParams['roomId'],
+            //     session: route.queryParams['session'],
+            //     project: route.queryParams['project'],
+            //     creator: route.queryParams['creator'],
+            //   },
+            // });
           }
+          // else {
+          //   this.router.navigate(['/auth']);
+          // }
+          this.router.navigate(['/auth']);
         }
       })
     );

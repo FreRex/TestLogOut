@@ -15,14 +15,8 @@ export class UserLoginComponent implements OnInit {
   @Input() roomId: string;
 
   loginForm: FormGroup = this.fb.group({
-    username: [
-      '',
-      { validators: [Validators.required] /* , updateOn: 'blur' */ },
-    ],
-    password: [
-      '',
-      { validators: [Validators.required] /* , updateOn: 'blur' */ },
-    ],
+    username: ['', { validators: [Validators.required] }],
+    password: ['', { validators: [Validators.required] }],
   });
 
   constructor(
@@ -65,11 +59,14 @@ export class UserLoginComponent implements OnInit {
               this.loginForm.reset();
               loadingEl.dismiss();
               if (this.roomId) {
-                this.router.navigate(['/conference'], {
-                  queryParams: {
-                    roomId: this.roomId,
-                  },
-                });
+                this.router.navigate(
+                  ['/conference']
+                  // , {
+                  //   queryParams: {
+                  //     roomId: this.roomId,
+                  //   },
+                  // }
+                );
               } else {
                 this.router.navigateByUrl('/rooms');
               }

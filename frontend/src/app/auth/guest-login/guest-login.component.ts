@@ -46,11 +46,14 @@ export class GuestLoginComponent implements OnInit {
             (res) => {
               this.guestForm.reset();
               loadingEl.dismiss();
-              this.router.navigate(['/conference'], {
-                queryParams: {
-                  roomId: this.roomId,
-                },
-              });
+              this.router.navigate(
+                ['/conference']
+                // , {
+                //   queryParams: {
+                //     roomId: this.roomId,
+                //   },
+                // }
+              );
             },
             (err) => {
               console.log('🐱‍👤 : LoginComponent : err', err);

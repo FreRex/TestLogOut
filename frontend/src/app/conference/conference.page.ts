@@ -1,12 +1,13 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Storage } from '@capacitor/storage';
 import { NavController } from '@ionic/angular';
 import { Socket } from 'ngx-socket-io';
 import { from } from 'rxjs';
-import { switchMap, tap } from 'rxjs/operators';
+import { switchMap, take, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 
+import { AuthService } from '../auth/auth.service';
 import { Room, RoomService } from '../rooms/room.service';
 import { PlayerComponent } from './player/player.component';
 
@@ -29,53 +30,90 @@ export class ConferencePage implements OnInit, AfterViewInit {
     private activatedRoute: ActivatedRoute,
     private navController: NavController,
     private roomService: RoomService,
-    private socket: Socket
+    private authService: AuthService,
+    private socket: Socket,
+    private router: Router
   ) {}
 
   isLoading: boolean = false;
   ngOnInit() {
+    /*
+    * Rimuove i parametri dalla url 
+    ! Corretto metterlo all'inizio?   
+    */
+    this.activatedRoute.queryParamMap.subscribe((paramMap) => {
+      this.router.navigate([], {
+        replaceUrl: true,
+        relativeTo: this.activatedRoute,
+      });
+    });
+
+    /*
+     * Recupera l'ID della room,
+     * l'utente corrente,
+     * recupera i dati completi della room
+     * e configura il socket
+     */
     this.isLoading = true;
-    this.activatedRoute.queryParams
+    /* 
+    ? Meglio passare i parametri con: 
+    - localStorage, 
+    - queryParams, 
+    - servizio/osservabili o 
+    - NavigationExtras { state }
+    */
+    // this.activatedRoute.queryParams
+    from(Storage.get({ key: 'roomData' }))
       .pipe(
-        switchMap((params) => {
-          console.log('🐱‍👤 : ConferencePage : paramMap', params);
-          if (!params || !params['roomId']) {
-            // if (!params.has('roomId')) {
-            // this.navController.navigateBack(['/not-found']);
-            // return;
-            throw new Error('Missing ID');
+        switchMap(
+          // (params) => {
+          // if (!params || !params['roomId']) {
+          (storedData) => {
+            if (!storedData || !storedData.value) {
+              throw new Error('Missing ID');
+            }
+            // this.roomId = params['roomId'];
+            this.roomId = JSON.parse(storedData.value).roomId;
+            return this.authService.currentUser$;
           }
-          this.roomId = params['roomId'];
-          return from(Storage.get({ key: 'authData' }));
-        }),
-        switchMap((storedData) => {
-          if (!storedData || !storedData.value) {
+        ),
+        take(1),
+        switchMap((user) => {
+          if (!user) {
             throw new Error('Unauthenticated');
           }
-          this.userId = JSON.parse(storedData.value).idutcas;
+          this.userId = user.idutcas;
           return this.roomService.selectRoom(this.roomId);
-          // return JSON.parse(storedData.value).idutcas;
         }),
         tap((room) => {
           if (!room) {
             throw new Error('Room Not Found');
           }
           this.room = room;
+          /* 
+          ? Ha senso mantenere anche i dati della room sul localStorage?
+          ! Potrebbe essere problematico?
+          */
+          Storage.set({
+            key: 'roomData',
+            value: JSON.stringify({
+              roomId: this.room.id,
+              session: this.room.sessione,
+              project: this.room.progetto,
+              creator: this.room.collaudatore,
+            }),
+          });
           console.log(this.room);
         })
       )
       .subscribe(
         (res) => {
-          // this.userId = res;
           this.configureSocket(this.roomId, this.userId);
-          console.log('🐱‍👤 : ConferencePage : this.userId', this.userId);
-          console.log('🐱‍👤 : ConferencePage : this.roomId', this.roomId);
           this.isLoading = false;
         },
         (err) => {
           this.navController.navigateBack(['/not-found']);
           this.isLoading = false;
-          console.log(err);
         }
       );
   }
@@ -96,9 +134,6 @@ export class ConferencePage implements OnInit, AfterViewInit {
           case 'fatal':
             console.log('Fatal: ', msg.data);
             break;
-          /* case 'userInConference':
-            console.log('userInConference: ', msg.data);
-            break; */
           case `${this.roomId}`: //FREXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
             console.log('array per idroom: ', msg.data);
             console.log('Frontend lunghezza array: ' + msg.data.length);
@@ -108,7 +143,6 @@ export class ConferencePage implements OnInit, AfterViewInit {
             break;
           default:
             console.log('unknown message: ', msg);
-          // console.log('unknown message');
         }
       },
       (err) => console.log(err)
