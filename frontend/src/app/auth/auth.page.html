@@ -24,7 +24,10 @@
               <p>Progetto</p>
               <h2>{{roomInfo.project}}</h2>
             </ion-label>
-            <ion-icon slot="end" src="assets/icons/mockup-icons/video-call.svg"></ion-icon>
+            <ion-icon
+              slot="end"
+              src="assets/icons/mockup-icons/video-call.svg"
+            ></ion-icon>
           </ion-item>
           <ion-item lines="none">
             <ion-label>
@@ -40,8 +43,12 @@
           </ion-item>
           <div class="user-guest-login-container">
             <ion-row style="width: 100%">
-              <ion-col><app-user-login></app-user-login></ion-col>
-              <ion-col><app-guest-login></app-guest-login></ion-col>
+              <ion-col
+                ><app-user-login [roomId]="roomInfo.roomId"></app-user-login
+              ></ion-col>
+              <ion-col
+                ><app-guest-login [roomId]="roomInfo.roomId"></app-guest-login
+              ></ion-col>
             </ion-row>
           </div>
         </div>

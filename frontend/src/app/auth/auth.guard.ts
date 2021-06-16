@@ -27,9 +27,13 @@ export class AuthGuard implements CanLoad, CanActivate {
   canLoad(
     route: Route,
     segments: UrlSegment[]
-  ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    console.log('🐱‍👤 : AuthGuard : canLoad : route', route);
-    console.log('🐱‍👤 : AuthGuard : canLoad : segments', segments);
+  ):
+    | Observable<boolean | UrlTree>
+    | Promise<boolean | UrlTree>
+    | boolean
+    | UrlTree {
+    // console.log('🐱‍👤 : AuthGuard : canLoad : route', route);
+    // console.log('🐱‍👤 : AuthGuard : canLoad : segments', segments);
     return this.authService.userIsAuthenticated.pipe(
       take(1),
       switchMap((isAuthenticated) => {
@@ -40,11 +44,8 @@ export class AuthGuard implements CanLoad, CanActivate {
         }
       }),
       tap((isAuthenticated) => {
-        console.log('🐱‍👤 : AuthGuard : isAuthenticated', isAuthenticated);
+        // console.log('🐱‍👤 : AuthGuard : isAuthenticated', isAuthenticated);
         if (!isAuthenticated) {
-          if (segments[0].toString() == 'conference') {
-            this.router.navigateByUrl('/auth');
-          }
           this.router.navigateByUrl('/auth');
         }
       })

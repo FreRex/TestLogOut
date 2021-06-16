@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AlertController, LoadingController } from '@ionic/angular';
@@ -12,11 +12,17 @@ import { AuthService } from '../auth.service';
   styleUrls: ['./user-login.component.scss'],
 })
 export class UserLoginComponent implements OnInit {
-  isLogin: boolean = true;
+  @Input() roomId: string;
 
-  form: FormGroup = this.fb.group({
-    username: ['', { validators: [Validators.required] /* , updateOn: 'blur' */ }],
-    password: ['', { validators: [Validators.required] /* , updateOn: 'blur' */ }],
+  loginForm: FormGroup = this.fb.group({
+    username: [
+      '',
+      { validators: [Validators.required] /* , updateOn: 'blur' */ },
+    ],
+    password: [
+      '',
+      { validators: [Validators.required] /* , updateOn: 'blur' */ },
+    ],
   });
 
   constructor(
@@ -38,31 +44,43 @@ export class UserLoginComponent implements OnInit {
 
   authenticate() {
     this.formSubmitted = true;
-    if (!this.form.valid) {
+    if (!this.loginForm.valid) {
       return;
     }
 
-    this.loadingCtrl.create({ keyboardClose: true, message: 'Logging in..' }).then((loadingEl) => {
-      loadingEl.present();
-      let authObs: Observable<any>;
-      if (this.isLogin) {
-        authObs = this.authService.login(this.form.value.username, this.form.value.password);
-      } else {
-        authObs = this.authService.signup(this.form.value.username, this.form.value.password);
-      }
-      authObs.subscribe(
-        (res) => {
-          this.form.reset();
-          loadingEl.dismiss();
-          this.router.navigateByUrl('/rooms');
-        },
-        (err) => {
-          console.log('🐱‍👤 : LoginComponent : err', err);
-          loadingEl.dismiss();
-          this.showAlert(err);
-        }
-      );
-    });
+    this.loadingCtrl
+      .create({ keyboardClose: true, message: 'Logging in..' })
+      .then((loadingEl) => {
+        loadingEl.present();
+        let authObs: Observable<any>;
+        // if (this.isLogin) {
+        //   authObs = this.authService.login(this.form.value.username, this.form.value.password);
+        // } else {
+        //   authObs = this.authService.signup(this.form.value.username, this.form.value.password);
+        // }
+        this.authService
+          .login(this.loginForm.value.username, this.loginForm.value.password)
+          .subscribe(
+            (res) => {
+              this.loginForm.reset();
+              loadingEl.dismiss();
+              if (this.roomId) {
+                this.router.navigate(['/conference'], {
+                  queryParams: {
+                    roomId: this.roomId,
+                  },
+                });
+              } else {
+                this.router.navigateByUrl('/rooms');
+              }
+            },
+            (err) => {
+              console.log('🐱‍👤 : LoginComponent : err', err);
+              loadingEl.dismiss();
+              this.showAlert(err);
+            }
+          );
+      });
   }
 
   private showAlert(message: string) {
