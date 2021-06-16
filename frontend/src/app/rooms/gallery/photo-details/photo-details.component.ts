@@ -13,6 +13,7 @@ export class PhotoDetailsComponent implements OnInit {
   @Input() roomName: string;
 
   inputArea: boolean = false;
+  mapDisplay: boolean = false;
 
   constructor(
     public modalController: ModalController,
@@ -33,6 +34,16 @@ export class PhotoDetailsComponent implements OnInit {
     nome: [null, [Validators.required]],
     note: [null, [Validators.required]],
   });
+
+  mapActivate() {
+    if (this.mapDisplay == true) {
+      this.mapDisplay = false;
+      console.log('mappa off');
+    } else {
+      this.mapDisplay = true;
+      console.log('mappa on');
+    }
+  }
 
   dowloadSinglePhoto() {
     const link = document.createElement('a');

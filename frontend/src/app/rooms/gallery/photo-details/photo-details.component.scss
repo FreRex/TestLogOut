@@ -154,6 +154,20 @@
   }
 }
 
+.image-map-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  .map {
+    padding-left: 5px;
+    padding-right: 5px;
+    flex: 4;
+  }
+  .image-desk {
+    flex: 3;
+  }
+}
+
 @media only screen and (min-width: 600px) {
   .image {
     width: 50%;
