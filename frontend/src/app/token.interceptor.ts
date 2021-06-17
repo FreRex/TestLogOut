@@ -9,7 +9,10 @@ import { AuthService } from './auth/auth.service';
 export class TokenInterceptor implements HttpInterceptor {
   constructor(public authService: AuthService) {}
 
-  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+  intercept(
+    request: HttpRequest<any>,
+    next: HttpHandler
+  ): Observable<HttpEvent<any>> {
     if (request.url.endsWith('token/') || request.url.endsWith('lgn/')) {
       console.log('🐱‍👤 : TokenInterceptor : request', request.url);
       return next.handle(request);
@@ -20,7 +23,7 @@ export class TokenInterceptor implements HttpInterceptor {
           if (!user) {
             return next.handle(request);
           }
-          console.log('🐱‍👤 : TokenInterceptor : user.token', user.token);
+          // console.log('🐱‍👤 : TokenInterceptor : user.token', user.token);
           const modifiedRequest = request.clone({
             setHeaders: {
               Authorization: `Bearer ${user.token.toString()}`,

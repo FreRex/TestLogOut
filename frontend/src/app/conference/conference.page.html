@@ -27,8 +27,8 @@
       <ion-col size-lg="4.5">
         <div class="conference-title">
           <div class="title">
-            <ion-text><b>{{room.progetto}}</b></ion-text>
-            <ion-text>{{room.sessione}}</ion-text>
+            <ion-text><b>{{room?.progetto}}</b></ion-text>
+            <ion-text>{{room?.sessione}}</ion-text>
           </div>
           <!-- BTN CHE COPIA IL LINK DELLA CONFERENCE -->
           <ion-button class="button">
@@ -50,7 +50,10 @@
           <div [hidden]="!isStreaming">
             <app-webcam></app-webcam>
           </div> -->
-          <app-player [isStreaming]="isStreaming" [isPlaying]="isPlaying"></app-player>
+          <app-player
+            [isStreaming]="isStreaming"
+            [isPlaying]="isPlaying"
+          ></app-player>
         </div>
         <app-streaming-bar
           [isStreaming]="isStreaming"

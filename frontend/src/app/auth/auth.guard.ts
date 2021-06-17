@@ -62,6 +62,7 @@ export class AuthGuard implements CanLoad, CanActivate {
       }),
       tap((isAuthenticated) => {
         if (!isAuthenticated) {
+          // ? CORRETTO fare quest'operazione sulla AuthGuard?
           if (route.routeConfig.path == 'conference') {
             Storage.set({
               key: 'roomData',
@@ -81,9 +82,6 @@ export class AuthGuard implements CanLoad, CanActivate {
             //   },
             // });
           }
-          // else {
-          //   this.router.navigate(['/auth']);
-          // }
           this.router.navigate(['/auth']);
         }
       })

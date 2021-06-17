@@ -1,8 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Storage } from '@capacitor/storage';
 import { AlertController, LoadingController } from '@ionic/angular';
-import { Observable } from 'rxjs';
 
 import { AuthService } from '../auth.service';
 
@@ -46,7 +46,7 @@ export class UserLoginComponent implements OnInit {
       .create({ keyboardClose: true, message: 'Logging in..' })
       .then((loadingEl) => {
         loadingEl.present();
-        let authObs: Observable<any>;
+        // let authObs: Observable<any>;
         // if (this.isLogin) {
         //   authObs = this.authService.login(this.form.value.username, this.form.value.password);
         // } else {
@@ -59,14 +59,9 @@ export class UserLoginComponent implements OnInit {
               this.loginForm.reset();
               loadingEl.dismiss();
               if (this.roomId) {
-                this.router.navigate(
-                  ['/conference']
-                  // , {
-                  //   queryParams: {
-                  //     roomId: this.roomId,
-                  //   },
-                  // }
-                );
+                this.router
+                  .navigate([`/conference/${this.roomId}`])
+                  .then((res) => Storage.remove({ key: 'roomData' }));
               } else {
                 this.router.navigateByUrl('/rooms');
               }

@@ -230,6 +230,7 @@ export class AuthService implements OnDestroy {
     }
     this._user.next(null);
     Storage.remove({ key: 'authData' });
+    Storage.remove({ key: 'roomData' });
   }
 
   autoLogout(duration: number) {

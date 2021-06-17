@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Storage } from '@capacitor/storage';
 import { AlertController, LoadingController } from '@ionic/angular';
 
 import { AuthService } from '../auth.service';
@@ -46,14 +47,9 @@ export class GuestLoginComponent implements OnInit {
             (res) => {
               this.guestForm.reset();
               loadingEl.dismiss();
-              this.router.navigate(
-                ['/conference']
-                // , {
-                //   queryParams: {
-                //     roomId: this.roomId,
-                //   },
-                // }
-              );
+              this.router
+                .navigate([`/conference/${this.roomId}`])
+                .then((res) => Storage.remove({ key: 'roomData' }));
             },
             (err) => {
               console.log('🐱‍👤 : LoginComponent : err', err);

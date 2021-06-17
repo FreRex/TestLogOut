@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Storage } from '@capacitor/storage';
 import { AlertController, IonItemSliding, ModalController, NavController, ToastController } from '@ionic/angular';
 import { AuthService } from 'src/app/auth/auth.service';
 import { environment } from 'src/environments/environment';
@@ -117,36 +116,26 @@ export class GenericRoomItemComponent implements OnInit {
       });
   }
 
-  /** Apre il link della ROOM */
-  // enterRoom(room?: Room, slidingItem?: IonItemSliding) {
-  //   if (slidingItem) slidingItem.close();
-  //   if (room) this.room = room;
-
-  //   this.authService.currentUser$.pipe(take(1)).subscribe((currentUser) => {
-  //     this.linkProgetto =
-  //       this.baseUrl +
-  //       this.room.pk_project +
-  //       (currentUser.autorizzazione === 'admin' ? '&useringresso=admin' : '');
-  //   });
-
-  //   // window.open(this.linkProgetto);
-
-  //   const link = document.createElement('a');
-  //   link.setAttribute('target', '_blank');
-  //   link.setAttribute('href', this.linkProgetto);
-  //   document.body.appendChild(link);
-  //   link.click();
-  //   link.remove();
-  // }
-
   /** Entra nella ROOM */
   enterRoom(room?: Room, slidingItem?: IonItemSliding) {
     if (slidingItem) slidingItem.close();
     if (room) this.room = room;
-    // this.router.navigate([`/conference/${this.room.id}`], {
-    //   queryParams: { room: this.room.id },
-    // });
 
+    // * parametro sulla Url
+    // * funziona tutto correttamente
+    // * posso anche aprire due schede con due room diverse
+    // ! MA
+    // ! i dati sulla url possono essere modificati
+    // ! se li modifico e la room non esite non la carica > error 404
+    // ! se li modifico e la room esite vanno gestite le autorizzazioni
+    // ? criptare il numero della room (codice meno evidente) ?
+    this.router.navigate([`/conference/${this.room.id}`]);
+
+    // * queryParams
+    // * funziona tutto correttamente
+    // * posso anche aprire due schede con due room diverse
+    // ! MA
+    // ! i dati sulla url possono essere modificati
     // this.router.navigate([`/conference`], {
     //   queryParams: {
     //     roomId: encodeURIComponent(this.room.id),
@@ -156,21 +145,31 @@ export class GenericRoomItemComponent implements OnInit {
     //   },
     // });
 
-    /* 
-    * Potrei passare dal servizio
-    * Definire una currentRoom Osservabile
-    * Selezionarla nel momento in cui clicco il pulsante
-    * E recuperarla all'apertura della pagina 
-    ! ATTENZIONE a mantenere tutti i dati sul localStorage???
-    */
-    Storage.set({
-      key: 'roomData',
-      value: JSON.stringify({
-        roomId: this.room.id,
-      }),
-    });
+    // * navigationExtras { state }
+    // * funziona tutto correttamente
+    // * posso anche aprire due schede con due room diverse
+    // ! MA
+    // ! per il link redirect servono i dati sulla url
+    // this.router.navigate([`/conference`], { state: { roomId: this.room.id } });
 
-    this.router.navigate([`/conference`]);
+    // * localStorage
+    // * funziona tutto correttamente
+    // * da capire quando rimuovere i dati
+    // ! MA
+    // ! il localStorage è unico e non potrei aprire due tab
+    // ! con due diverse conference sullo stesso browser
+    // Storage.set({
+    //   key: 'roomData',
+    //   value: JSON.stringify({
+    //     roomId: encodeURIComponent(this.room.id),
+    //   }),
+    // });
+
+    // * servizio e osservabile
+    // ! complicato gestire il reindirizzamento
+    // this.roomService
+    //   .selectRoom(this.room.id)
+    //   .subscribe((room) => this.router.navigate([`/conference`]));
   }
 
   /** Copia il link della ROOM */
@@ -188,7 +187,7 @@ export class GenericRoomItemComponent implements OnInit {
     document.addEventListener('copy', (e: ClipboardEvent) => {
       e.clipboardData.setData(
         'text/plain',
-        `${environment.app}/conference?${params}`
+        `${environment.app}/conference/${this.room.id}?${params}`
       );
       e.preventDefault();
       document.removeEventListener('copy', null);
@@ -196,22 +195,6 @@ export class GenericRoomItemComponent implements OnInit {
     document.execCommand('copy');
     this.presentToast('Link copiato.', 'secondary');
   }
-
-  // copyLink(room?: Room, slidingItem?: IonItemSliding) {
-  //   if (slidingItem) slidingItem.close();
-  //   if (room) this.room = room;
-
-  //   document.addEventListener('copy', (e: ClipboardEvent) => {
-  //     e.clipboardData.setData(
-  //       'text/plain',
-  //       this.baseUrl + this.room.pk_project
-  //     );
-  //     e.preventDefault();
-  //     document.removeEventListener('copy', null);
-  //   });
-  //   document.execCommand('copy');
-  //   this.presentToast('Link copiato.', 'secondary');
-  // }
 
   /** Avvia il download delle foto della ROOM */
   downloadFoto(room?: Room, slidingItem?: IonItemSliding) {
@@ -238,40 +221,7 @@ export class GenericRoomItemComponent implements OnInit {
           'danger'
         );
       }
-      //window.open(`https://www.collaudolive.com:9083/downloadzip/${nomeProgetto}`)
     });
-
-    /** window.open */
-    // const nomeProgetto = this.room.progetto.trim().replace(' ', '');
-    // this.roomService.checkDownload(nomeProgetto).subscribe(
-    //   (value: boolean) => {
-    //     if (value) window.open(`https://www.collaudolive.com:9083/downloadzip/${nomeProgetto}`)
-    //     else this.presentToast(`Non ci sono foto sul progetto ${nomeProgetto}!`, 'danger')
-    //   }
-    // )
-
-    /** Metodo Josuè */
-    // this.toastController.create({
-    //   message: 'Download foto in corso...',
-    //   position: 'bottom',
-    //   cssClass: 'download-toast',
-    //   color: 'secondary'
-    // }).then(toastEl => {
-    //   toastEl.present();
-    // const nomeProgetto = this.room.progetto.trim().replace(' ', '');
-    // this.roomService.downloadFoto(nomeProgetto).subscribe(
-    //   (result: any) => { //when you use stricter type checking
-    //     if (result.type === HttpEventType.DownloadProgress) {
-    //       const percentDone = Math.round(100 * result.loaded / result.total);
-    //       console.log(percentDone);
-    //     }
-    //     if (result.type === HttpEventType.Response) {
-    //       const blob = new Blob([result], { type: 'application/zip' });
-    //       fileSaver.saveAs(blob, `${nomeProgetto}.zip`);
-    //       toastEl.dismiss();
-    //     }
-    //   });
-    // })
   }
 
   async presentToast(message: string, color?: string, duration?: number) {

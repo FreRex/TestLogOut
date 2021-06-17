@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { Storage } from '@capacitor/storage';
+import { ViewWillEnter } from '@ionic/angular';
 import { from } from 'rxjs';
 
 interface RoomInfo {
@@ -15,31 +15,25 @@ interface RoomInfo {
   templateUrl: './auth.page.html',
   styleUrls: ['./auth.page.scss'],
 })
-export class AuthPage implements OnInit {
-  roomInfo: RoomInfo;
+export class AuthPage implements OnInit, ViewWillEnter {
   public directLink: boolean = false;
-  constructor(private activatedRoute: ActivatedRoute) {}
+  public roomInfo: RoomInfo;
+
+  constructor() {}
+
+  ionViewWillEnter() {
+    Storage.remove({ key: 'authData' });
+  }
 
   ngOnInit() {
-    // this.activatedRoute.queryParams
     from(Storage.get({ key: 'roomData' })).subscribe((storedData) => {
       if (!storedData || !storedData.value) {
-        // !params['roomId'] ||
-        // !params['session'] ||
-        // !params['project'] ||
-        // !params['creator']
         this.directLink = false;
         return null;
       }
       this.directLink = true;
       const parsedData = JSON.parse(storedData.value);
       console.log('parsedData', parsedData);
-      // this.roomInfo = {
-      //   roomId: decodeURIComponent(params['roomId']),
-      //   session: decodeURIComponent(params['session']),
-      //   project: decodeURIComponent(params['project']),
-      //   creator: decodeURIComponent(params['creator']),
-      // };
       this.roomInfo = {
         roomId: parsedData.roomId,
         session: parsedData.session,

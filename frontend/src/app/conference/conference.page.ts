@@ -1,10 +1,9 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Storage } from '@capacitor/storage';
 import { NavController } from '@ionic/angular';
 import { Socket } from 'ngx-socket-io';
-import { from } from 'rxjs';
-import { switchMap, take, tap } from 'rxjs/operators';
+import { Observable, Subscription } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 
 import { AuthService } from '../auth/auth.service';
@@ -16,9 +15,12 @@ import { PlayerComponent } from './player/player.component';
   templateUrl: './conference.page.html',
   styleUrls: ['./conference.page.scss'],
 })
-export class ConferencePage implements OnInit, AfterViewInit {
+export class ConferencePage implements OnInit, OnDestroy {
+  private sub: Subscription;
+
   @ViewChild(PlayerComponent) private playerComponent: PlayerComponent;
-  public room: Room;
+  currentRoom$: Observable<Room>;
+  room: Room;
 
   roomId: string = '';
   userId: string = '';
@@ -38,76 +40,38 @@ export class ConferencePage implements OnInit, AfterViewInit {
   isLoading: boolean = false;
   ngOnInit() {
     /*
-    * Rimuove i parametri dalla url 
-    ! Corretto metterlo all'inizio?   
-    */
-    this.activatedRoute.queryParamMap.subscribe((paramMap) => {
-      this.router.navigate([], {
-        replaceUrl: true,
-        relativeTo: this.activatedRoute,
-      });
-    });
-
-    /*
-     * Recupera l'ID della room,
-     * l'utente corrente,
-     * recupera i dati completi della room
-     * e configura il socket
+     * Recupera l'ID della room dall'URL,
+     * l'utente corrente dall'authService,
+     * i dati completi della room dal backend
+     * e configura il socket per la room corrente
      */
     this.isLoading = true;
-    /* 
-    ? Meglio passare i parametri con: 
-    - localStorage, 
-    - queryParams, 
-    - servizio/osservabili o 
-    - NavigationExtras { state }
-    */
-    // this.activatedRoute.queryParams
-    from(Storage.get({ key: 'roomData' }))
+    this.sub = this.activatedRoute.paramMap
       .pipe(
-        switchMap(
-          // (params) => {
-          // if (!params || !params['roomId']) {
-          (storedData) => {
-            if (!storedData || !storedData.value) {
-              throw new Error('Missing ID');
-            }
-            // this.roomId = params['roomId'];
-            this.roomId = JSON.parse(storedData.value).roomId;
-            return this.authService.currentUser$;
+        switchMap((paramMap) => {
+          if (!paramMap.has('roomId')) {
+            throw new Error('Missing Room ID');
           }
-        ),
-        take(1),
+          this.roomId = paramMap.get('roomId');
+          this.router.navigate([], {
+            replaceUrl: true,
+            relativeTo: this.activatedRoute,
+          });
+          console.log('🐱‍👤 : ConferencePage : this.roomId', this.roomId);
+          return this.authService.currentUser$;
+        }),
         switchMap((user) => {
           if (!user) {
             throw new Error('Unauthenticated');
           }
           this.userId = user.idutcas;
-          return this.roomService.selectRoom(this.roomId);
-        }),
-        tap((room) => {
-          if (!room) {
-            throw new Error('Room Not Found');
-          }
-          this.room = room;
-          /* 
-          ? Ha senso mantenere anche i dati della room sul localStorage?
-          ! Potrebbe essere problematico?
-          */
-          Storage.set({
-            key: 'roomData',
-            value: JSON.stringify({
-              roomId: this.room.id,
-              session: this.room.sessione,
-              project: this.room.progetto,
-              creator: this.room.collaudatore,
-            }),
-          });
-          console.log(this.room);
+          console.log('🐱‍👤 : ConferencePage : this.userId', this.userId);
+          return this.roomService.selectRoom(+this.roomId);
         })
       )
       .subscribe(
-        (res) => {
+        (room: Room) => {
+          this.room = room;
           this.configureSocket(this.roomId, this.userId);
           this.isLoading = false;
         },
@@ -118,7 +82,11 @@ export class ConferencePage implements OnInit, AfterViewInit {
       );
   }
 
-  ngAfterViewInit() {}
+  ngOnDestroy() {
+    if (this.sub) {
+      this.sub.unsubscribe();
+    }
+  }
 
   // handles messages coming from signalling_server (remote party)
   public configureSocket(roomId: string, userId: string): void {
