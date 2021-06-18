@@ -17,8 +17,9 @@
         </div>
         <div class="btns">
           <ion-button class="btn-trasparent ion-no-padding">
-            <ion-icon class="ion-margin" name="map" slot="icon-only"></ion-icon>
+            <ion-icon class="ion-margin" name="map" slot="start"></ion-icon>
           </ion-button>
+          <ion-toggle color="success" (click)="mapActivate()"></ion-toggle>
           <ion-button class="btn-trasparent ion-no-padding" (click)="dowloadSinglePhoto()">
             <ion-icon class="ion-margin" name="cloud-download" slot="icon-only"></ion-icon>
           </ion-button>
@@ -28,7 +29,11 @@
         </div>
       </div>
 
-      <div class="image ion-no-padding">
+      <div class="map-mobile" *ngIf="mapDisplay" [@inOutAnimation]>
+        <app-g-maps [lat]="foto.latitu" [lon]="foto.longitu"></app-g-maps>
+      </div>
+
+      <div class="image ion-no-padding" *ngIf="!mapDisplay">
         <img [src]="'data:image/jpeg;base64,'+foto.imageBase64 | safeHtml">
       </div>
 
@@ -78,14 +83,12 @@
         <ion-col size="3" offset="1">
           <div class="title">{{roomName}}</div>
         </ion-col>
-        <ion-col size="7">
+        <ion-button class="btn-trasparent ion-no-padding">
+          <ion-icon class="ion-margin" size="large" name="map" slot="start"></ion-icon>
+        </ion-button>
+        <ion-toggle color="success" (click)="mapActivate()"></ion-toggle>
+        <ion-col size="6">
           <div class="btns-desk ion-text-right">
-            <ion-button class="btn-trasparent ion-no-padding">
-              <ion-icon class="ion-margin" name="map" slot="start"></ion-icon>
-              <ion-label>
-                <p>Foto su mappa</p>
-              </ion-label>
-            </ion-button>
             <ion-button class="btn-trasparent ion-no-padding" (click)="dowloadSinglePhoto()">
               <ion-icon class="ion-margin" name="cloud-download" slot="start"><a></a></ion-icon>
               <ion-label>
@@ -137,10 +140,20 @@
           </div>
         </ion-col>
         <ion-col size="7">
-          <div class="image-desk ion-no-padding">
-            <img [src]="'data:image/jpeg;base64,'+foto.imageBase64 | safeHtml">
+          <div class="image-map-container">
+
+            <div class="map" *ngIf="mapDisplay" [@inOutAnimation]>
+              <app-g-maps [lat]="foto.latitu" [lon]="foto.longitu"></app-g-maps>
+            </div>
+            <div class="image-desk ion-no-padding" *ngIf="!mapDisplay">
+              <img class="imageAnim" [src]="'data:image/jpeg;base64,'+foto.imageBase64 | safeHtml">
+            </div>
+            <div class="image-desk ion-no-padding" *ngIf="mapDisplay" [@inAnimation]>
+              <img class="imageAnim" [src]="'data:image/jpeg;base64,'+foto.imageBase64 | safeHtml">
+            </div>
           </div>
         </ion-col>
+
       </ion-row>
     </ion-grid>
 
