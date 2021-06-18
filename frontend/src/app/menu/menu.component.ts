@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
 
 import { AuthUser } from '../auth/auth-user.model';
+import { Room, RoomService } from '../rooms/room.service';
 
 @Component({
   selector: 'app-menu',
@@ -13,11 +14,17 @@ import { AuthUser } from '../auth/auth-user.model';
 export class MenuComponent implements OnInit {
   public isConference = false;
   public currentUser$: Observable<AuthUser>;
+  public currentRoom$: Observable<Room>;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private roomService: RoomService
+  ) {}
 
   ngOnInit() {
     this.currentUser$ = this.authService.currentUser$;
+    this.currentRoom$ = this.roomService.currentRoom$;
   }
 
   onLogout() {

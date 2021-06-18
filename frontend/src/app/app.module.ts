@@ -9,6 +9,7 @@ import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { MenuComponent } from './menu/menu.component';
 import { SharedModule } from './shared/shared.module';
 import { TokenInterceptor } from './token.interceptor';
 
@@ -29,7 +30,7 @@ const config: SocketIoConfig = {
 };
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, MenuComponent],
   imports: [
     SharedModule,
     BrowserModule,

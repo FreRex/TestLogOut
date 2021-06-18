@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 
-import { MenuComponent } from '../menu/menu.component';
 import { DropdownComponent } from './dropdown/dropdown.component';
 import { GenericListComponent } from './generic-list/generic-list.component';
 import { GenericTableComponent } from './generic-table/generic-table.component';
@@ -23,7 +22,6 @@ import { SyncToastComponent } from './sync-toast/sync-toast.component';
     GenericTableComponent,
     SyncToastComponent,
     SafeHtmlPipe,
-    MenuComponent,
     // RoomsTableItemComponent,
     // RoomsListItemComponent,
     // ProjectsTableItemComponent,
@@ -48,7 +46,6 @@ import { SyncToastComponent } from './sync-toast/sync-toast.component';
     GenericListComponent,
     SyncToastComponent,
     SafeHtmlPipe,
-    MenuComponent,
     // RoomsTableItemComponent,
     // RoomsListItemComponent,
     // ProjectsTableItemComponent,

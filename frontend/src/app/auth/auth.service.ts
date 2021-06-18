@@ -51,7 +51,7 @@ export class AuthService implements OnDestroy {
   get userIsAuthenticated() {
     return this._user.asObservable().pipe(
       map((user) => {
-        console.log('🐱‍👤 : AuthService : user', user);
+        // console.log('🐱‍👤 : AuthService : user', user);
         if (user) {
           // ritorna vero se esiste, falso se non esiste
           return !!user.token; // --> !! forza una conversione a Boolean del token

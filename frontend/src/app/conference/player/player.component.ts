@@ -106,7 +106,9 @@ export class PlayerComponent implements OnInit {
         },
       };
     }
-    this.localStream = await navigator.mediaDevices.getUserMedia(this.constraints);
+    this.localStream = await navigator.mediaDevices.getUserMedia(
+      this.constraints
+    );
   }
 
   startLocalVideo(): void {
@@ -146,7 +148,7 @@ export class PlayerComponent implements OnInit {
       console.log('error', event.error);
     };
     this.mediaRecorder.ondataavailable = (event: BlobEvent) => {
-      console.log('🐱‍👤 : PlayerComponent : event.data', event.data);
+      // console.log('🐱‍👤 : PlayerComponent : event.data', event.data);
       // this.socket.emit('message', {type: 'binarystream', data: event.data});
       this.socket.emit('binarystream', event.data);
     };
@@ -180,7 +182,9 @@ export class PlayerComponent implements OnInit {
       await navigator.mediaDevices
         .enumerateDevices()
         .then(function (devices) {
-          const videoDevices = devices.filter((device) => device.kind === 'videoinput');
+          const videoDevices = devices.filter(
+            (device) => device.kind === 'videoinput'
+          );
           videoDevices.forEach(function (devices) {
             //Check retro cam
             if (

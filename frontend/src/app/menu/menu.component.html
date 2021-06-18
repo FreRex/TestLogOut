@@ -12,14 +12,14 @@
   </ion-header>
   <ion-content>
     <div class="container">
-      <div class="app-menu">
+      <div *ngIf="currentRoom$ | async" class="app-menu">
         <ion-menu-toggle auto-hide="false">
-          <ion-item lines="none" button="true" routerLink="rooms">
+          <ion-item lines="none" button="true" routerLink="/rooms">
             <ion-text>Rooms</ion-text>
           </ion-item>
         </ion-menu-toggle>
         <ion-menu-toggle auto-hide="false" *userIsAdmin>
-          <ion-item lines="none" button="true" routerLink="admin">
+          <ion-item lines="none" button="true" routerLink="/admin">
             <ion-text>Admin Backoffice</ion-text>
           </ion-item>
         </ion-menu-toggle>
