@@ -110,22 +110,27 @@ io.on('connection', function (socket) {
         socket._vcodec = m;
     });
     socket.on('start', function (m) {
-        //Distruggi tutti i processi ffmpeg
-        exec("killall ffmpeg", (error, stdout, stderr) => {
-            if (stdout) {
-                console.log(`stdout: ${stdout.message}`);
-                return;
-            }
-            if (error) {
-                console.log(`error: ${error.message}`);
-                return;
-            }
-            if (stderr) {
-                console.log(`stderr: ${stderr.message}`);
-                return;
-            }
-            socket.broadcast.emit('message', { type: 'stopWebCam', data: 'dati da eleborare' });
-        });
+        if (socket.id) {
+            let socketidCoo = functionListaConference.checkPresenzaSocketid(socket.id);
+            let numberRoom = functionListaConference.utentiInConference[socketidCoo.y][0];
+            numberRoom = numberRoom.toString();
+            //Distruggi tutti i processi ffmpeg
+            exec("killall ffmpeg", (error, stdout, stderr) => {
+                if (stdout) {
+                    console.log(`stdout: ${stdout.message}`);
+                    return;
+                }
+                if (error) {
+                    console.log(`error: ${error.message}`);
+                    return;
+                }
+                if (stderr) {
+                    console.log(`stderr: ${stderr.message}`);
+                    return;
+                }
+                socket.broadcast.emit('message', { type: 'stopWebCam', data: numberRoom });
+            });
+        }
         //Verifica errori 
         if (ffmpeg_process || feedStream) {
             /*

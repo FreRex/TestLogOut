@@ -143,24 +143,32 @@ io.on('connection', function(socket: any){
 
 	});
 
-	socket.on('start',function(m: any){		
+	socket.on('start',function(m: any){	
+		
+		if(socket.id){
+			
+			let socketidCoo=functionListaConference.checkPresenzaSocketid(socket.id);
+            let numberRoom: string = functionListaConference.utentiInConference[socketidCoo.y][0];
+			numberRoom=numberRoom.toString();
 
-		//Distruggi tutti i processi ffmpeg
-		exec("killall ffmpeg", (error: any, stdout: any, stderr: any) => {
-			if (stdout) {
-				console.log(`stdout: ${stdout.message}`);				
-				return;
-			}
-			if (error) {
-				console.log(`error: ${error.message}`);				
-				return;
-			}
-			if (stderr) {
-				console.log(`stderr: ${stderr.message}`);
-				return;
-			}
-			socket.broadcast.emit('message',{type: 'stopWebCam', data: 'dati da eleborare'});
-		});
+			//Distruggi tutti i processi ffmpeg
+			exec("killall ffmpeg", (error: any, stdout: any, stderr: any) => {
+				if (stdout) {
+					console.log(`stdout: ${stdout.message}`);				
+					return;
+				}
+				if (error) {
+					console.log(`error: ${error.message}`);				
+					return;
+				}
+				if (stderr) {
+					console.log(`stderr: ${stderr.message}`);
+					return;
+				}
+				socket.broadcast.emit('message',{type: 'stopWebCam', data: numberRoom});
+			});
+
+		}
 		
 		
 		//Verifica errori 
