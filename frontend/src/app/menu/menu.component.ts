@@ -12,13 +12,12 @@ import { Room, RoomService } from '../rooms/room.service';
   styleUrls: ['./menu.component.scss'],
 })
 export class MenuComponent implements OnInit {
-  public isConference = false;
   public currentUser$: Observable<AuthUser>;
   public currentRoom$: Observable<Room>;
 
   constructor(
-    private authService: AuthService,
     private router: Router,
+    private authService: AuthService,
     private roomService: RoomService
   ) {}
 

@@ -1,0 +1,25 @@
+ion-item {
+  align-content: center;
+  .user-avatar {
+    height: 48px;
+    width: 48px;
+    display: flex;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    padding: 5px;
+    background-color: #bee6ee;
+    border: 2px solid var(--ion-color-primary);
+    margin-right: 10px;
+    text-align: center;
+    ion-text {
+      text-align: center;
+      font-weight: bold;
+      font-size: 1.4rem;
+    }
+  }
+  ion-icon {
+    font-size: 1.7rem;
+    fill: var(--ion-color-primary);
+  }
+}
