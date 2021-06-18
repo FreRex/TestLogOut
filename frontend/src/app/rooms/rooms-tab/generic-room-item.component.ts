@@ -129,6 +129,7 @@ export class GenericRoomItemComponent implements OnInit {
     // ! se li modifico e la room non esite non la carica > error 404
     // ! se li modifico e la room esite vanno gestite le autorizzazioni
     // ? criptare il numero della room (codice meno evidente) ?
+    // ? https://www.npmjs.com/package/uuid ?
     this.router.navigate([`/conference/${this.room.id}`]);
 
     // * queryParams

@@ -51,6 +51,7 @@ export class AuthService implements OnDestroy {
   get userIsAuthenticated() {
     return this._user.asObservable().pipe(
       map((user) => {
+        console.log('🐱‍👤 : AuthService : user', user);
         if (user) {
           // ritorna vero se esiste, falso se non esiste
           return !!user.token; // --> !! forza una conversione a Boolean del token
@@ -85,7 +86,7 @@ export class AuthService implements OnDestroy {
         if (!loginToken) {
           throw new Error('Errore server');
         }
-        console.log('🐱‍👤 : AuthService : loginToken', loginToken);
+        // console.log('🐱‍👤 : AuthService : loginToken', loginToken);
         return this.http.post(
           `${environment.apiUrl}/lgn/`,
           {
@@ -129,7 +130,7 @@ export class AuthService implements OnDestroy {
           parsedData.idutcas,
           parsedData.username,
           parsedData.idcommessa,
-          'parsedData.commessa',
+          parsedData.idcommessa, // TODO: parsedData.commessa
           parsedData.autorizzazione,
           parsedData.token,
           expirationTime
@@ -174,9 +175,9 @@ export class AuthService implements OnDestroy {
     cognome?: string
   ) {
     const payload: TokenPayload = this.jwtHelper.decodeToken(token);
-    console.log('🐱‍👤 : AuthService : payload', payload);
+    // console.log('🐱‍👤 : AuthService : payload', payload);
     const expDate: Date = this.jwtHelper.getTokenExpirationDate(token);
-    console.log('🐱‍👤 : AuthService : expDate', expDate);
+    // console.log('🐱‍👤 : AuthService : expDate', expDate);
 
     // * Crea un nuovo utente
     const newUser = isGuest
@@ -185,7 +186,7 @@ export class AuthService implements OnDestroy {
           'guest',
           nome.trim().replace(' ', '').toLowerCase().slice(0, 1) +
             cognome.trim().replace(' ', '').toLowerCase(),
-          'guest', // TODO: payload['idcommessa]
+          'guest', // TODO: payload.idcommessa
           'guest',
           'guest',
           token,

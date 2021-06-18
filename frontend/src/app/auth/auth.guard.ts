@@ -43,6 +43,7 @@ export class AuthGuard implements CanLoad, CanActivate {
         }
       }),
       tap((isAuthenticated) => {
+        console.log('🐱‍👤 : AuthGuard : isAuthenticated', isAuthenticated);
         if (!isAuthenticated) {
           this.router.navigateByUrl('/auth');
         }
@@ -61,9 +62,10 @@ export class AuthGuard implements CanLoad, CanActivate {
         }
       }),
       tap((isAuthenticated) => {
+        console.log('🐱‍👤 : AuthGuard : isAuthenticated', isAuthenticated);
         if (!isAuthenticated) {
           // ? CORRETTO fare quest'operazione sulla AuthGuard?
-          if (route.routeConfig.path == 'conference') {
+          if (route.routeConfig.path == 'conference' && route.queryParams) {
             Storage.set({
               key: 'roomData',
               value: JSON.stringify({

@@ -14,7 +14,7 @@ export class TokenInterceptor implements HttpInterceptor {
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
     if (request.url.endsWith('token/') || request.url.endsWith('lgn/')) {
-      console.log('🐱‍👤 : TokenInterceptor : request', request.url);
+      // console.log('🐱‍👤 : TokenInterceptor : request', request.url);
       return next.handle(request);
     } else {
       return this.authService.currentUser$.pipe(

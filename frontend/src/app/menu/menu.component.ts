@@ -1,34 +1,24 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
+
+import { AuthUser } from '../auth/auth-user.model';
 
 @Component({
   selector: 'app-menu',
   templateUrl: './menu.component.html',
   styleUrls: ['./menu.component.scss'],
 })
-export class MenuComponent implements OnInit /* , OnDestroy */ {
+export class MenuComponent implements OnInit {
+  public isConference = false;
+  public currentUser$: Observable<AuthUser>;
+
   constructor(private authService: AuthService, private router: Router) {}
-  // private previousAuthState = false;
 
   ngOnInit() {
-    // this.authService.userIsAuthenticated
-    //   .pipe(
-    //     shareReplay({ refCount: true, bufferSize: 1 }),
-    //     takeUntil(this.destroy$)
-    //   )
-    //   .subscribe((isAuth) => {
-    //     if (!isAuth && this.previousAuthState !== isAuth) {
-    //       this.router.navigateByUrl('/auth');
-    //     }
-    //     this.previousAuthState = isAuth;
-    //   });
+    this.currentUser$ = this.authService.currentUser$;
   }
-
-  // destroy$ = new Subject();
-  // ngOnDestroy() {
-  //   this.destroy$.next();
-  // }
 
   onLogout() {
     this.authService.logout();

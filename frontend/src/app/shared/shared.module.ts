@@ -3,14 +3,15 @@ import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 
+import { MenuComponent } from '../menu/menu.component';
 import { DropdownComponent } from './dropdown/dropdown.component';
 import { GenericListComponent } from './generic-list/generic-list.component';
 import { GenericTableComponent } from './generic-table/generic-table.component';
 import { HasRoleDirective } from './has-role.directive';
 import { ObsWithStatusPipe } from './obs-with-status.pipe';
 import { OrderByButtonComponent } from './order-by-button/order-by-button.component';
-import { SyncToastComponent } from './sync-toast/sync-toast.component';
 import { SafeHtmlPipe } from './safe-html.pipe';
+import { SyncToastComponent } from './sync-toast/sync-toast.component';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { SafeHtmlPipe } from './safe-html.pipe';
     GenericTableComponent,
     SyncToastComponent,
     SafeHtmlPipe,
+    MenuComponent,
     // RoomsTableItemComponent,
     // RoomsListItemComponent,
     // ProjectsTableItemComponent,
@@ -46,6 +48,7 @@ import { SafeHtmlPipe } from './safe-html.pipe';
     GenericListComponent,
     SyncToastComponent,
     SafeHtmlPipe,
+    MenuComponent,
     // RoomsTableItemComponent,
     // RoomsListItemComponent,
     // ProjectsTableItemComponent,
