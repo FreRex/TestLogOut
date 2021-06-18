@@ -1,16 +1,18 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import {
   IonContent,
-  Platform,
   ModalController,
+  NavController,
+  Platform,
   ToastController,
   ViewWillEnter,
   ViewWillLeave,
 } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { Check, Foto, MediaService } from './media.service';
+
+import { Foto, MediaService } from './media.service';
 import { PhotoDetailsComponent } from './photo-details/photo-details.component';
 
 @Component({
@@ -33,6 +35,7 @@ export class GalleryPage implements ViewWillEnter, ViewWillLeave {
     private mediaServ: MediaService,
     private activatedRoute: ActivatedRoute,
     private toastController: ToastController,
+    private navController: NavController,
     public router: Router,
     public modalController: ModalController,
     public platform: Platform
@@ -89,7 +92,8 @@ export class GalleryPage implements ViewWillEnter, ViewWillLeave {
   }
 
   toRoomPage() {
-    this.router.navigate([`/rooms`]);
+    this.navController.back();
+    // this.router.navigate([`/rooms`]);
   }
 
   downloadFoto() {
@@ -98,13 +102,19 @@ export class GalleryPage implements ViewWillEnter, ViewWillLeave {
       if (value) {
         const link = document.createElement('a');
 
-        link.setAttribute('href', `${environment.apiUrl}/downloadzip/${nomeProgetto}`);
+        link.setAttribute(
+          'href',
+          `${environment.apiUrl}/downloadzip/${nomeProgetto}`
+        );
         link.setAttribute('download', `${nomeProgetto}.zip`);
         document.body.appendChild(link);
         link.click();
         link.remove();
       } else {
-        this.presentToast(`Non ci sono foto sul progetto ${nomeProgetto}!`, 'danger');
+        this.presentToast(
+          `Non ci sono foto sul progetto ${nomeProgetto}!`,
+          'danger'
+        );
       }
     });
   }
@@ -124,7 +134,10 @@ export class GalleryPage implements ViewWillEnter, ViewWillLeave {
         if (res.role === 'ok') {
           this.presentToast(`Foto aggiornata`, 'secondary');
         } else if (res.role === 'error') {
-          this.presentToast(`Aggiornamento fallito, ripetere l'operazione`, 'danger');
+          this.presentToast(
+            `Aggiornamento fallito, ripetere l'operazione`,
+            'danger'
+          );
         }
       });
   }

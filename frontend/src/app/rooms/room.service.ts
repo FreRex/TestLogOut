@@ -108,6 +108,10 @@ export class RoomService {
     );
   }
 
+  deselectRoom() {
+    this.currentRoomSubject.next(null);
+  }
+
   /** SELECT rooms */
   loadRooms(): Observable<Room[]> {
     return this.authService.currentUser$.pipe(

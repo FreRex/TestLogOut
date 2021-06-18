@@ -66,6 +66,11 @@ export class AuthGuard implements CanLoad, CanActivate {
         if (!isAuthenticated) {
           // ? CORRETTO fare quest'operazione sulla AuthGuard?
           if (route.routeConfig.path == 'conference' && route.queryParams) {
+            console.log(
+              '🐱‍👤 : AuthGuard : route.queryParams',
+              route.queryParams
+            );
+
             Storage.set({
               key: 'roomData',
               value: JSON.stringify({

@@ -1,13 +1,14 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NavController } from '@ionic/angular';
+import { NavController, ViewDidLeave } from '@ionic/angular';
 import { Socket } from 'ngx-socket-io';
-import { Observable, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 
 import { AuthService } from '../auth/auth.service';
 import { Room, RoomService } from '../rooms/room.service';
+import { RoomUser } from './conference.service';
 import { PlayerComponent } from './player/player.component';
 
 @Component({
@@ -15,12 +16,13 @@ import { PlayerComponent } from './player/player.component';
   templateUrl: './conference.page.html',
   styleUrls: ['./conference.page.scss'],
 })
-export class ConferencePage implements OnInit, OnDestroy {
+export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
   private sub: Subscription;
 
   @ViewChild(PlayerComponent) private playerComponent: PlayerComponent;
-  currentRoom$: Observable<Room>;
-  room: Room;
+  // currentRoom$: Observable<Room>;
+  public room: Room;
+  public usersInRoom: RoomUser[];
 
   roomId: string = '';
   userId: string = '';
@@ -82,6 +84,10 @@ export class ConferencePage implements OnInit, OnDestroy {
       );
   }
 
+  ionViewDidLeave() {
+    this.roomService.deselectRoom();
+  }
+
   ngOnDestroy() {
     if (this.sub) {
       this.sub.unsubscribe();
@@ -108,6 +114,20 @@ export class ConferencePage implements OnInit, OnDestroy {
             console.log('Frontend room: ' + msg.data[0]);
             console.log('Frontend idutente: ' + msg.data[1].idutente);
             console.log('Frontend stream: ' + msg.data[1].stream);
+            // for (let i = 1; i < msg.data.lenght; i++) {}
+            // this.usersInRoom = msg.data.slice(1);
+            this.usersInRoom = [];
+            for (const userData of msg.data.slice(1)) {
+              this.usersInRoom.push({
+                idutente: userData['idutente'],
+                iniziali:
+                  userData['idutente'].charAt(0) +
+                  userData['socketid'].charAt(0),
+                socketid: userData['socketid'],
+                // stream: userData['stream'], // TODO
+                stream: true,
+              });
+            }
             break;
           case 'stopWebCam':
             console.log('stopWebCam: ', msg.data);

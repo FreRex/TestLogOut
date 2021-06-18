@@ -111,10 +111,8 @@
 
       <ion-col size="3">
         <!-- QUI DENTRO VA LA LISTA PARTECIPANTI con SWITCH su CHAT-->
-        <div class="spazio-vuoto-dimensione-fissa">
-          <div>
-            <h1>lista ut / chat</h1>
-          </div>
+        <div>
+          <app-users-list [usersInRoom]="usersInRoom"></app-users-list>
         </div>
       </ion-col>
     </ion-row>
