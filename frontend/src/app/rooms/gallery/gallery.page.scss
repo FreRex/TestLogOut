@@ -32,11 +32,47 @@
 .foto-thumbnail-mobile {
   --size: 120px;
   margin: 0 auto;
+  position: relative;
 }
 .foto-thumbnail-desktop {
   --size: 230px;
   margin: 40px auto;
+  position: relative;
 }
+.note-yes {
+  background-color: var(--ion-color-light-shade);
+  border-radius: 50%;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  bottom: 0;
+  right: 0;
+  height: 20px;
+  width: 20px;
+  transform: translate(-10%, -10%);
+  .note-ico {
+    width: 50%;
+    height: 50%;
+  }
+}
+/* .note-yes-desk{
+  background-color: var(--ion-color-light-shade);
+  border-radius: 50%;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  bottom: 0;
+  right: 0;
+  height: 20px;
+  width: 20px;
+  transform: translate(-25px, -50px);
+  .note-ico{
+    width: 50%;
+    height: 50%;
+  }
+} */
 .icons {
   display: flex;
   flex-direction: row;

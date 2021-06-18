@@ -13,6 +13,8 @@ import { MenuComponent } from './menu/menu.component';
 import { SharedModule } from './shared/shared.module';
 import { TokenInterceptor } from './token.interceptor';
 
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 const config: SocketIoConfig = {
   url: `${environment.apiUrl}`, // id="socket.io_address" value="/"
   options: {
@@ -34,6 +36,7 @@ const config: SocketIoConfig = {
   imports: [
     SharedModule,
     BrowserModule,
+    BrowserAnimationsModule,
     AppRoutingModule,
     HttpClientModule,
     IonicModule.forRoot(),

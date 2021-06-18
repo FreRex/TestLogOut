@@ -4,6 +4,7 @@ import { AlertController, ModalController, NavController, ToastController } from
 import { AuthService } from 'src/app/auth/auth.service';
 import { RoomService } from 'src/app/rooms/room.service';
 import { GenericRoomItemComponent } from 'src/app/rooms/rooms-tab/generic-room-item.component';
+import { MediaService } from '../../gallery/media.service';
 
 @Component({
   selector: 'app-rooms-list-item',

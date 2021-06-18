@@ -1,6 +1,13 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { IonContent, Platform, ModalController, ToastController } from '@ionic/angular';
+import {
+  IonContent,
+  Platform,
+  ModalController,
+  ToastController,
+  ViewWillEnter,
+  ViewWillLeave,
+} from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Check, Foto, MediaService } from './media.service';
@@ -11,16 +18,14 @@ import { PhotoDetailsComponent } from './photo-details/photo-details.component';
   templateUrl: './gallery.page.html',
   styleUrls: ['./gallery.page.scss'],
 })
-
-export class GalleryPage implements OnInit {
+export class GalleryPage implements ViewWillEnter, ViewWillLeave {
   galleryType = 'foto';
   roomId: string;
   roomName: string;
-  /* public foto:Foto[] = []; */
-  public pageNum: number = 1;
+  pageNum: number = 1;
   backToTop: boolean = false;
 
-  foto$: Observable<Foto[]>
+  foto$: Observable<Foto[]>;
 
   @ViewChild(IonContent) content: IonContent;
 
@@ -31,12 +36,11 @@ export class GalleryPage implements OnInit {
     public router: Router,
     public modalController: ModalController,
     public platform: Platform
-
   ) {}
 
-  ngOnInit() {
-    this.foto$ = this.mediaServ.fotoSet$;
+  ionViewWillEnter() {
     this.activatedRoute.paramMap.subscribe((pM: ParamMap) => {
+      this.foto$ = this.mediaServ.fotoSet$;
       this.roomId = pM.get('id');
       this.roomName = pM.get('proj');
       this.loadFoto();
@@ -44,42 +48,44 @@ export class GalleryPage implements OnInit {
     this.mediaServ.checkDownload(this.roomName);
   }
 
-  loadFoto(){
-    this.mediaServ.loadMedia(this.roomId, this.pageNum).subscribe(
-      (res:Foto[]) => {
-        if (res.length == 0 ){
-          this.presentToast('Non ci sono Foto')
-        }else{
-          /* this.foto.push(...res)  */
-          
-        }
-      },
-      err =>console.log('errore', err),
-      () => console.log('complete')
-    ); 
+  ionViewWillLeave() {
+    this.mediaServ.fotoSetSubject.next([]);
+    this.pageNum = 1;
   }
 
+  loadFoto() {
+    this.mediaServ.loadMedia(this.roomId, this.pageNum).subscribe(
+      (res: Foto[]) => {
+        if (res.length == 0) {
+          this.presentToast('Non ci sono Foto');
+        } else {
+          /* this.foto.push(...res)  */
+        }
+      },
+      (err) => console.log('errore', err),
+      () => console.log('complete')
+    );
+  }
 
-  loadMoreFoto(event){
+  loadMoreFoto(event) {
     this.pageNum++;
-    this.mediaServ.loadMedia(this.roomId, this.pageNum)
-    .subscribe(
-      (res:Foto[]) => {
-        if (res.length == 0 ){
-          if (event){
+    this.mediaServ.loadMedia(this.roomId, this.pageNum).subscribe(
+      (res: Foto[]) => {
+        if (res.length == 0) {
+          if (event) {
             event.target.complete();
             event.target.disable = true;
           }
-        }else{
+        } else {
           /* this.foto.push(...res)  */
-          if (event){
+          if (event) {
             event.target.complete();
           }
         }
       },
-      err =>console.log('errore', err),
+      (err) => console.log('errore', err),
       () => console.log('complete')
-    );      
+    );
   }
 
   toRoomPage() {
@@ -103,25 +109,24 @@ export class GalleryPage implements OnInit {
     });
   }
 
-  editFoto(singleFoto:Foto) {
-
-    this.modalController.create({
-      component: PhotoDetailsComponent,
-      componentProps: { foto: singleFoto , roomName: this.roomName},
-    })
-    .then((modalEl) =>{
-      modalEl.present();
-      return modalEl.onDidDismiss();
-    }).then(res => {
-      if (res.role === 'ok'){
-/*         this.foto.filter(foto => {
-          foto.idPhoto !== singleFoto.idPhoto
-        }) */
-      }
-    })
-    
-    
-    
+  editFoto(singleFoto: Foto) {
+    this.modalController
+      .create({
+        component: PhotoDetailsComponent,
+        cssClass: 'modal-fullscreen',
+        componentProps: { foto: singleFoto, roomName: this.roomName },
+      })
+      .then((modalEl) => {
+        modalEl.present();
+        return modalEl.onDidDismiss();
+      })
+      .then((res) => {
+        if (res.role === 'ok') {
+          this.presentToast(`Foto aggiornata`, 'secondary');
+        } else if (res.role === 'error') {
+          this.presentToast(`Aggiornamento fallito, ripetere l'operazione`, 'danger');
+        }
+      });
   }
 
   async presentToast(message: string, color?: string, duration?: number) {
@@ -136,12 +141,12 @@ export class GalleryPage implements OnInit {
 
   getScrollPos(pos: number) {
     if (pos > this.platform.height()) {
-         this.backToTop = true;
+      this.backToTop = true;
     } else {
-         this.backToTop = false;
+      this.backToTop = false;
     }
-}
-gotToTop() {
-  this.content.scrollToTop(1000);
-}
+  }
+  gotToTop() {
+    this.content.scrollToTop(1000);
+  }
 }

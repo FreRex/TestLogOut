@@ -63,7 +63,7 @@ io.on('connection', function (socket) {
     // Ricezione tramite socket url_rtmp, socket.id e relativa elaborazione
     socket.on('config_rtmpDestination', function (m) {
         let socketid = socket.id;
-        let regexValidator = /^rtmp:\/\/[^\s]*$/; //TODO: should read config
+        let regexValidator = /^rtmp:\/\/[^\s]*$/; //TODO: should read config		
         if (typeof m != 'string') {
             socket.emit('message', { type: 'welcome', data: 'rtmp destination setup error.' });
             return;
@@ -74,6 +74,7 @@ io.on('connection', function (socket) {
             return;
         }
         else {
+            //Test x verifica start streaming
             socket._rtmpDestination = m;
             let dataforsocket = 'rtmp destination set to:' + m;
             console.log(socket._rtmpDestination);
@@ -107,12 +108,18 @@ io.on('connection', function (socket) {
         //-----------------------
         socket._vcodec = m;
     });
-    //Ricezione tramite socket.on segnale avvio streaming
     socket.on('start', function (m) {
+        //Distruggi tutti i processi ffmpeg
+        //killall ffmpeg
+        console.log(ffmpeg_process.killall);
         //Verifica errori 
         if (ffmpeg_process || feedStream) {
-            socket.emit('message', { type: 'fatal', data: 'stream already started.' });
-            return;
+            /*
+           //socket.emit('message',{type: 'fatal', data: 'stream already started.'});
+           socket.emit('message',{type: 'info', data: 'stream already started.'});
+           return; */
+            ffmpeg_process = false;
+            feedStream = false;
         }
         //- verifica che non sia presente una url_rtmp
         if (!socket._rtmpDestination) {
@@ -125,8 +132,8 @@ io.on('connection', function (socket) {
             let numberRoom = functionListaConference.utentiInConference[socketidCoo.y][0];
             numberRoom = numberRoom.toString();
             console.log("numberoom per update: " + numberRoom);
-            let arrayStream = functionListaConference.updateArray(socket.id);
-            console.log('arrayStream: ' + arrayStream);
+            let arrayStream = functionListaConference.updateStreamTrue(socket.id);
+            console.log(arrayStream);
             socket.emit('message', { type: numberRoom, data: arrayStream });
             socket.broadcast.emit('message', { type: numberRoom, data: arrayStream });
         }
@@ -160,46 +167,48 @@ io.on('connection', function (socket) {
                 '-f', 'flv', socket._rtmpDestination
             ];
         }
-        else if (framerate == 15) {
-            var ops = [
-                '-i', '-',
-                '-c:v', 'libx264', '-preset', 'ultrafast', '-tune', 'zerolatency',
-                '-max_muxing_queue_size', '1000',
-                '-bufsize', '5000',
-                '-r', '15', '-g', '30', '-keyint_min', '30',
-                '-x264opts', 'keyint=30', '-crf', '25', '-pix_fmt', 'yuv420p',
-                '-profile:v', 'baseline', '-level', '3',
-                '-c:a', 'aac', '-b:a', audioEncoding, '-ar', audioBitrate,
-                '-f', 'flv', socket._rtmpDestination
-            ];
-        }
         else {
-            var ops = [
-                '-i', '-',
-                //'-c', 'copy', 
-                '-c:v', 'libx264', '-preset', 'ultrafast', '-tune', 'zerolatency',
-                '-c:a', 'aac', '-ar', audioBitrate, '-b:a', audioEncoding,
-                //'-max_muxing_queue_size', '4000', 
-                //'-y', //force to overwrite
-                //'-use_wallclock_as_timestamps', '1', // used for audio sync
-                //'-async', '1', // used for audio sync
-                //'-filter_complex', 'aresample=44100', // resample audio to 44100Hz, needed if input is not 44100
-                //'-strict', 'experimental', 
-                '-bufsize', '5000',
-                '-f', 'flv', socket._rtmpDestination
-                /*. original params
-                '-i','-',
-                '-c:v', 'libx264', '-preset', 'veryfast', '-tune', 'zerolatency',  // video codec config: low latency, adaptive bitrate
-                '-c:a', 'aac', '-ar', '44100', '-b:a', '64k', // audio codec config: sampling frequency (11025, 22050, 44100), bitrate 64 kbits
-                '-y', //force to overwrite
-                '-use_wallclock_as_timestamps', '1', // used for audio sync
-                '-async', '1', // used for audio sync
-                //'-filter_complex', 'aresample=44100', // resample audio to 44100Hz, needed if input is not 44100
-                //'-strict', 'experimental',
-                '-bufsize', '1000',
-                '-f', 'flv', socket._rtmpDestination
-                */
-            ];
+            if (framerate == 15) {
+                var ops = [
+                    '-i', '-',
+                    '-c:v', 'libx264', '-preset', 'ultrafast', '-tune', 'zerolatency',
+                    '-max_muxing_queue_size', '1000',
+                    '-bufsize', '5000',
+                    '-r', '15', '-g', '30', '-keyint_min', '30',
+                    '-x264opts', 'keyint=30', '-crf', '25', '-pix_fmt', 'yuv420p',
+                    '-profile:v', 'baseline', '-level', '3',
+                    '-c:a', 'aac', '-b:a', audioEncoding, '-ar', audioBitrate,
+                    '-f', 'flv', socket._rtmpDestination
+                ];
+            }
+            else {
+                var ops = [
+                    '-i', '-',
+                    //'-c', 'copy', 
+                    '-c:v', 'libx264', '-preset', 'ultrafast', '-tune', 'zerolatency',
+                    '-c:a', 'aac', '-ar', audioBitrate, '-b:a', audioEncoding,
+                    //'-max_muxing_queue_size', '4000', 
+                    //'-y', //force to overwrite
+                    //'-use_wallclock_as_timestamps', '1', // used for audio sync
+                    //'-async', '1', // used for audio sync
+                    //'-filter_complex', 'aresample=44100', // resample audio to 44100Hz, needed if input is not 44100
+                    //'-strict', 'experimental', 
+                    '-bufsize', '5000',
+                    '-f', 'flv', socket._rtmpDestination
+                    /*. original params
+                    '-i','-',
+                    '-c:v', 'libx264', '-preset', 'veryfast', '-tune', 'zerolatency',  // video codec config: low latency, adaptive bitrate
+                    '-c:a', 'aac', '-ar', '44100', '-b:a', '64k', // audio codec config: sampling frequency (11025, 22050, 44100), bitrate 64 kbits
+                    '-y', //force to overwrite
+                    '-use_wallclock_as_timestamps', '1', // used for audio sync
+                    '-async', '1', // used for audio sync
+                    //'-filter_complex', 'aresample=44100', // resample audio to 44100Hz, needed if input is not 44100
+                    //'-strict', 'experimental',
+                    '-bufsize', '1000',
+                    '-f', 'flv', socket._rtmpDestination
+                    */
+                ];
+            }
         }
         console.log("ops", ops);
         console.log(socket._rtmpDestination);
@@ -210,7 +219,7 @@ io.on('connection', function (socket) {
             //write exception cannot be caught here.	
         };
         ffmpeg_process.stderr.on('data', function (d) {
-            let ffmpeg_stderrforsocket = 'ffmpeg_stderr' + d;
+            let ffmpeg_stderrforsocket = 'ffmpeg_stderr ' + d;
             socket.emit('message', { type: 'info', data: ffmpeg_stderrforsocket });
         });
         ffmpeg_process.on('error', function (e) {
@@ -223,12 +232,13 @@ io.on('connection', function (socket) {
         ffmpeg_process.on('exit', function (e) {
             console.log('child process exit ' + e);
             //socket.emit('fatal','ffmpeg exit!'+e);
-            let ffmpeg_exit = 'ffmpeg exit! ' + e;
+            let ffmpeg_exit = 'ffmpeg exit  ! ' + e;
             socket.emit('message', { type: 'fatal', data: ffmpeg_exit });
-            socket.disconnect();
+            //socket.disconnect();
         });
     });
     //---------------------------- fine codice socket start --------------
+    //--------------------------------------------------------------------
     socket.on('binarystream', function (m) {
         if (!feedStream) {
             socket.emit('message', { type: 'fatal', data: 'rtmp not set yet.' });
@@ -244,18 +254,21 @@ io.on('connection', function (socket) {
         let socketidCoo = functionListaConference.checkPresenzaSocketid(socketid);
         let numberRoom = functionListaConference.utentiInConference[socketidCoo.y][0];
         numberRoom = numberRoom.toString();
-        console.table('NumberRoom: ' + numberRoom);
-        feedStream = false;
+        console.log('----------------------------------------');
         console.log("Chiusura stream per il seguente id: " + socketid);
-        //Eliminazione utente in conference
-        let arrayUser = functionListaConference.userInConferenceVideo(numberRoom, '', 'exitUser', socketid);
+        console.table('NumberRoom: ' + numberRoom);
+        //feedStream=false;			
+        //Update stream da true a false
+        let arrayUser = functionListaConference.updateStreamFalse(socketid);
+        //Verifica
         if (ffmpeg_process) {
+            //Processo di chiusura da pulsante
+            ffmpeg_process.stdin.end();
+            ffmpeg_process.kill('SIGINT');
+            console.log("ffmpeg process ended ! DA DISCONNECTSTREAM");
             //invio lista utenti presenti in conference
             socket.emit('message', { type: numberRoom, data: arrayUser });
             socket.broadcast.emit('message', { type: numberRoom, data: arrayUser });
-            ffmpeg_process.stdin.end();
-            ffmpeg_process.kill('SIGINT');
-            console.log("ffmpeg process ended!");
         }
         else {
             //invio lista utenti presenti in conference
@@ -263,6 +276,8 @@ io.on('connection', function (socket) {
             socket.broadcast.emit('message', { type: numberRoom, data: arrayUser });
             console.warn('killing ffmpeg process attempt failed...');
         }
+        console.log('----------------------------------------');
+        console.log('----------------------------------------');
     });
     //Ricezione segnale di disconnessione per chiusura browser.
     socket.on('disconnect', function (m) {
@@ -281,7 +296,7 @@ io.on('connection', function (socket) {
             socket.broadcast.emit('message', { type: numberRoom, data: arrayUser });
             ffmpeg_process.stdin.end();
             ffmpeg_process.kill('SIGINT');
-            console.log("ffmpeg process ended!");
+            console.log("ffmpeg process ended ! da DISCONNECT");
         }
         else {
             //invio lista utenti presenti in conference
@@ -305,6 +320,6 @@ server.listen(port, function () {
 });
 process.on('uncaughtException', function (err) {
     // handle the error safely
-    console.log('Errore:' + err);
+    console.log('Errore :' + err);
     // Note: after client disconnect, the subprocess will cause an Error EPIPE, which can only be caught this way.
 });
