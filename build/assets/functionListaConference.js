@@ -22,15 +22,36 @@ let checkPresenzaIdRoom = function (idroom) {
     }
     return checkPresenzaFinaleIdRoom;
 };
-let checkPresenzaIdUtente = function (idroom, idutente) {
+/* let checkPresenzaIdUtente = function (idroom: number, idutente : string){
+    console.log('idroom: ' + idroom);
+    console.log('idutente: ' + idutente);
     let checkPresenzaFinaleIdUtente = -1;
     let index = checkPresenzaIdRoom(idroom);
-    if (utentiInConference[index].includes(idutente) >= 0) {
+    console.log('index: ' + index)
+    console.log(utentiInConference[index])
+    console.log(utentiInConference[index].includes(idutente))
+    if(utentiInConference[index].indexOf(idutente)>=0){
+        console.log('jjjjjjjjjjjjjjjjjjjjjj')
         //checkPresenzaFinaleIdUtente = index;
         checkPresenzaFinaleIdUtente = utentiInConference[index].indexOf(idutente);
     }
+    else
+    {
+        console.log('HHHHHHHHHHHHHHHHHHHHH')
+    }
+   
     return checkPresenzaFinaleIdUtente;
-};
+} */
+function checkPresenzaIdUtente(idroom, idutente) {
+    let checkPresenzaFinaleIdUtente = false;
+    let index = checkPresenzaIdRoom(idroom);
+    for (let x = 0; x < utentiInConference[index].length; x++) {
+        if (utentiInConference[index][x].idutente == idutente) {
+            checkPresenzaFinaleIdUtente = true;
+        }
+    }
+    return checkPresenzaFinaleIdUtente;
+}
 let checkPresenzaSocketid = function (socketid) {
     let checkPresenzaFinaleSocketid = -1;
     for (let y = 0; y < utentiInConference.length; y++) {
@@ -55,11 +76,16 @@ let insertArray = function (idroom, idutente, socketid) {
         utentiInConference.push([Number(idroom), elemento]);
     }
     // INSERIRE UTENTE 
-    else if (checkPresenzaIdRoom(idroom) >= 0 && checkPresenzaIdUtente(idroom, idutente) == -1) {
-        //UTENTE NON PRESENTE --> INSERIRE UTENTE NELL'ARRAY !          
-        console.log("Utente NON presente inserire utente nell'ARRAY");
-        elemento = { idutente: `${idutente}`, socketid: `${socketid}`, stream: false };
-        utentiInConference[checkPresenzaIdRoom(idroom)].push(elemento);
+    else {
+        console.log('11111');
+        console.log('aaaa: ' + checkPresenzaIdUtente(idroom, idutente));
+        console.log('22222');
+        if (checkPresenzaIdRoom(idroom) >= 0 && (!checkPresenzaIdUtente(idroom, idutente))) {
+            //UTENTE NON PRESENTE --> INSERIRE UTENTE NELL'ARRAY !          
+            console.log("Utente NON presente inserire utente nell'ARRAY");
+            elemento = { idutente: `${idutente}`, socketid: `${socketid}`, stream: false };
+            utentiInConference[checkPresenzaIdRoom(idroom)].push(elemento);
+        }
     }
     let userInConferenceVideo = utentiInConference;
     return userInConferenceVideo;
@@ -88,8 +114,13 @@ let deleteUser = function (socketid) {
     }
     return userInConferenceVideo;
 };
-//----------------- UPDATE ARRAY -----------------------------------
-function updateArray(socketid) {
+//----------------- UPDATE STREAM FALSE/TRUE -----------------------------------
+function updateStreamFalse(socketid) {
+    let socketidCoo = checkPresenzaSocketid(socketid);
+    utentiInConference[socketidCoo.y][socketidCoo.x]['stream'] = false;
+    return utentiInConference[socketidCoo.y];
+}
+function updateStreamTrue(socketid) {
     let socketidCoo = checkPresenzaSocketid(socketid);
     //Inizializzazione tutti gli stream a false (in pratica si fa uscire l'utente dallo streamming)
     for (let x = 1; x < utentiInConference[socketidCoo.y].length; x++) {
@@ -101,6 +132,22 @@ function updateArray(socketid) {
     utentiInConference[socketidCoo.y][socketidCoo.x]['stream'] = true;
     return utentiInConference[socketidCoo.y];
 }
+/* function updateArray(socketid){
+
+    let socketidCoo=checkPresenzaSocketid(socketid);
+
+    //Inizializzazione tutti gli stream a false (in pratica si fa uscire l'utente dallo streamming)
+    for (let x = 1; x < utentiInConference[socketidCoo.y].length; x++) {
+        console.log('x :' + x)
+        console.log("wwww: " + utentiInConference[socketidCoo.y][x]['stream']);
+        utentiInConference[socketidCoo.y][x]['stream'] = false;
+    }
+   
+    //aggiorna valore da stream: false a stream: true
+    utentiInConference[socketidCoo.y][socketidCoo.x]['stream'] = true;
+   
+    return utentiInConference[socketidCoo.y];
+} */
 //------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------
@@ -117,11 +164,11 @@ let userInConferenceVideo = function (idroom, idutente, dataAction, socketid) {
             userInConferenceVideo = deleteUser(socketid);
             console.table(userInConferenceVideo);
             break;
-        case 'updateUserStream':
-            //UPDATE STREAM UTENTE            
+        /* case 'updateUserStream':
+            //UPDATE STREAM UTENTE
             userInConferenceVideo = updateArray(socketid);
             console.table(userInConferenceVideo);
-            break;
+        break; */
         default:
             break;
     }
@@ -137,6 +184,7 @@ module.exports = {
     insertArray,
     deleteRow,
     deleteUser,
-    updateArray,
+    updateStreamFalse,
+    updateStreamTrue,
     utentiInConference
 };

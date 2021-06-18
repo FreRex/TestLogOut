@@ -24,14 +24,6 @@ exports.getSelect = (req, res, next) => {
     else {
         idroom = '';
     }
-    /*  //if (typeof(req.params.id) !== 'undefined' && Number.isInteger(id) && (req.params.id)!= 0 && (req.params.id)!='') {
-     if (typeof(req.params.idroom) !== 'undefined' && validator.isNumeric(req.params.idroom) && (req.params.idroom)!= 0 && (req.params.idroom)!='') {
-         id = req.params.idroom;
-     }
-     else
-     {
-         id = '';
-     }  */
     if (typeof (req.params.pagGall) !== 'undefined' && validator.isNumeric(req.params.pagGall) && (req.params.pagGall) != 0 && (req.params.pagGall) != '') {
         pagGall = req.params.pagGall;
     }
@@ -57,14 +49,11 @@ exports.getSelect = (req, res, next) => {
             //"id" sarebbe "idroom"
             if (idroom == '') {
                 if (idutcas == '') {
-                    console.log('a');
                     sql = sql + "ORDER BY id DESC";
                 }
                 else 
                 //idutcas != '' ==> utente specifico
                 {
-                    //sql= sql + "WHERE utenti.idutcas = '" + idutcas + "' ORDER BY id DESC";
-                    console.log('b');
                     sql = sql + " WHERE IF((SELECT autorizzazioni FROM `utenti` WHERE `idutcas` = '" + idutcas + "') = 3,";
                     sql = sql + " idcommessa = (SELECT idcommessa FROM `utenti` WHERE `idutcas` = '" + idutcas + "'),";
                     sql = sql + " IF((SELECT autorizzazioni FROM `utenti` WHERE `idutcas` = '" + idutcas + "') = 1,";
@@ -75,22 +64,18 @@ exports.getSelect = (req, res, next) => {
             }
             else {
                 if (idutcas == '') {
-                    console.log('c');
                     sql = sql + "WHERE multistreaming.id = " + idroom + " ORDER BY id DESC";
                 }
                 else {
-                    console.log('d');
                     sql = sql + "WHERE multistreaming.id = " + idroom + " AND utenti.idutcas = '" + idutcas + "' ORDER BY id DESC";
                 }
             }
             break;
         case "utenti":
-            //sql='SELECT * FROM utenti ORDER BY id DESC';   
             sql = 'SELECT utenti.id, utenti.idutcas, utenti.DataCreazione, utenti.collaudatoreufficio, utenti.username, utenti.password, utenti.autorizzazioni, utenti.idcommessa AS idcommessa, commesse.denominazione AS commessa ';
             sql = sql + 'FROM utenti INNER JOIN commesse ON commesse.id = utenti.idcommessa   ORDER BY `id` DESC';
             break;
         case "progetti":
-            //sql='SELECT rappre_prog_gisfo.id AS idprogetto, rappre_prog_gisfo.DataSincro AS datasincro, utenti.collaudatoreufficio, rappre_prog_gisfo.pk_proj AS pk_proj, rappre_prog_gisfo.nome AS nome, rappre_prog_gisfo.nodi_fisici AS nodi_fisici, rappre_prog_gisfo.nodi_ottici AS nodi_ottici, rappre_prog_gisfo.tratte AS tratte, rappre_prog_gisfo.conn_edif_opta AS conn_edif_opta, rappre_prog_gisfo.long_centro_map AS long_centro_map, rappre_prog_gisfo.lat_centro_map AS lat_centro_map, utenti.id AS idutente FROM `rappre_prog_gisfo` INNER JOIN utenti ON utenti.id = rappre_prog_gisfo.idutente ORDER BY rappre_prog_gisfo.id DESC ';   
             sql = 'SELECT rappre_prog_gisfo.id AS idprogetto, rappre_prog_gisfo.DataSincro AS datasincro, rappre_prog_gisfo.DataLastSincro AS DataLastSincro, utenti.collaudatoreufficio, rappre_prog_gisfo.pk_proj AS pk_proj, rappre_prog_gisfo.nome AS nome, rappre_prog_gisfo.nodi_fisici AS nodi_fisici, rappre_prog_gisfo.nodi_ottici AS nodi_ottici, rappre_prog_gisfo.tratte AS tratte, rappre_prog_gisfo.conn_edif_opta AS conn_edif_opta, rappre_prog_gisfo.long_centro_map AS long_centro_map, rappre_prog_gisfo.lat_centro_map AS lat_centro_map, utenti.id AS idutente, commesse.id AS idcommessa, commesse.denominazione AS commessa';
             sql = sql + ' FROM `rappre_prog_gisfo` INNER JOIN utenti ON utenti.id = rappre_prog_gisfo.idutente INNER JOIN `commesse` ON utenti.idcommessa = commesse.id ORDER BY `idprogetto` DESC';
             break;
@@ -124,8 +109,7 @@ exports.getSelect = (req, res, next) => {
     //----------------------------------
     //-------------------
     // Esecuzione query
-    //-------------------
-    console.log(sql);
+    //-------------------    
     db.query(sql, (err, rows, fields) => {
         /* let base64data = Buffer.from(rows[0]['img']).toString('base64'); */
         if (err) {
