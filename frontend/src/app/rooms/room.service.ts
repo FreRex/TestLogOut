@@ -32,6 +32,7 @@ export interface Room {
   collaudatore: string;
   idcommessa: number;
   commessa: string;
+  sessione: string;
 }
 
 @Injectable({
@@ -42,6 +43,9 @@ export class RoomService {
 
   private roomsSubject = new BehaviorSubject<Room[]>([]); // <-- "roomsSubject" può emettere eventi perchè è un BehaviourSubject
   rooms$: Observable<Room[]> = this.roomsSubject.asObservable(); // <-- "rooms$" NON può emettere eventi, ma può essere sottoscritto, perchè è un Observable
+
+  private currentRoomSubject = new BehaviorSubject<Room>(null); // <-- "roomsSubject" può emettere eventi perchè è un BehaviourSubject
+  currentRoom$: Observable<Room> = this.currentRoomSubject.asObservable(); // <-- "rooms$" NON può emettere eventi, ma può essere sottoscritto, perchè è un Observable
 
   getRoom(roomId: number): Observable<Room> {
     return this.rooms$.pipe(
@@ -61,18 +65,28 @@ export class RoomService {
           (room) =>
             room.usermobile.toLowerCase().includes(query.toLowerCase()) ||
             room.commessa.toLowerCase().includes(query.toLowerCase()) ||
-            room.progetto.toString().toLowerCase().includes(query.toLowerCase()) ||
-            room.collaudatore.toString().toLowerCase().includes(query.toLowerCase())
+            room.progetto
+              .toString()
+              .toLowerCase()
+              .includes(query.toLowerCase()) ||
+            room.collaudatore
+              .toString()
+              .toLowerCase()
+              .includes(query.toLowerCase())
         )
       )
     );
   }
 
   /** SELECT singola room */
-  selectRoom(roomId: string): Observable<Room> {
+  selectRoom(roomId: number): Observable<Room> {
     return this.authService.currentUser$.pipe(
+      take(1),
       switchMap((user) => {
-        return this.http.get<RoomData>(`${environment.apiUrl}/s/room/${user.idutcas}/${roomId}`);
+        // return this.http.get<RoomData>(`${environment.apiUrl}/s/room/${user.idutcas}/${roomId}`);
+        return this.http.get<RoomData>(
+          `${environment.apiUrl}/s/room/0/${roomId}`
+        );
       }),
       map((roomData) => {
         return {
@@ -86,8 +100,11 @@ export class RoomService {
           collaudatore: roomData[0].collaudatoreufficio,
           idcommessa: roomData[0].idcommessa,
           commessa: roomData[0].commessa,
+          sessione: 'Mattina',
         };
-      })
+      }),
+      // <-- emette il nuovo array come valore del BehaviourSubject _rooms
+      tap((room: Room) => this.currentRoomSubject.next(room))
     );
   }
 
@@ -121,6 +138,7 @@ export class RoomService {
               collaudatore: roomData[key].collaudatoreufficio,
               idcommessa: roomData[key].idcommessa,
               commessa: roomData[key].commessa,
+              sessione: 'Mattina',
             });
           }
         }
@@ -154,6 +172,7 @@ export class RoomService {
       collaudatore: collaudatore,
       idcommessa: idcommessa,
       commessa: commessa,
+      sessione: 'Mattina',
     };
     // this.rooms è un OSSERVABILE
     // take(1) = dopo la prima emissione dell'Osservabile togli la sottoscrizione
@@ -205,6 +224,7 @@ export class RoomService {
           collaudatore: oldRoom.collaudatore,
           idcommessa: oldRoom.idcommessa,
           commessa: oldRoom.commessa,
+          sessione: 'Mattina',
         };
         return this.http.put(`${environment.apiUrl}/ur`, {
           id: roomId,
@@ -244,7 +264,9 @@ export class RoomService {
   }
 
   checkDownload(nomeProgetto: string) {
-    return this.http.get(`${environment.apiUrl}/checkdownloadzip/${nomeProgetto}`);
+    return this.http.get(
+      `${environment.apiUrl}/checkdownloadzip/${nomeProgetto}`
+    );
   }
 
   downloadFoto(nomeProgetto: string) {

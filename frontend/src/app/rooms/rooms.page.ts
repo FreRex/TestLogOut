@@ -16,7 +16,7 @@ import { RoomService } from './room.service';
 })
 export class RoomsPage implements ViewWillEnter {
   constructor(
-    public route: ActivatedRoute,
+    public activatedRoute: ActivatedRoute,
     public authService: AuthService,
     public roomService: RoomService,
     public userService: UserService,
@@ -57,7 +57,7 @@ export class RoomsPage implements ViewWillEnter {
     //         ),
     //         switchMap(({ reqUsers, reqCommissions, reqProjects }) => {
     //           users = reqUsers;
-    //           return this.route.queryParams;
+    //           return this.activatedRoute.queryParams;
     //         }),
     //         switchMap((params) => {
     //           let codiceUtente;

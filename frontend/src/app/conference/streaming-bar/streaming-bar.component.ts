@@ -1,20 +1,21 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
-import { StreamingService } from '../streaming.service';
-
 @Component({
   selector: 'app-streaming-bar',
   templateUrl: './streaming-bar.component.html',
   styleUrls: ['./streaming-bar.component.scss'],
 })
 export class StreamingBarComponent implements OnInit {
+  @Input() isStreaming: boolean = false;
+  @Input() isPlaying: boolean = true;
+
   @Input() roomId: string = '';
   @Input() userId: string = '';
 
   @Output() toggleStream = new EventEmitter<any>();
   @Output() togglePlay = new EventEmitter<any>();
 
-  constructor(public streamingService: StreamingService) {}
+  constructor() {}
 
   ngOnInit() {}
 
@@ -28,24 +29,8 @@ export class StreamingBarComponent implements OnInit {
     this.toggleStream.emit();
   }
 
-  startStreaming() {
-    this.streamingService.requestStartStreaming();
-  }
-
-  stopStreaming() {
-    this.streamingService.requestStopStreaming();
-  }
-
   togglePlaying() {
     // this.streamingService.requestTogglePlay();
     this.togglePlay.emit();
-  }
-
-  startPlaying() {
-    this.streamingService.requestStartPlay();
-  }
-
-  stopPlaying() {
-    this.streamingService.requestStopPlay();
   }
 }

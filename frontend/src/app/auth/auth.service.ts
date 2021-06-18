@@ -61,6 +61,58 @@ export class AuthService implements OnDestroy {
     );
   }
 
+  loginGuest(nome: string, cognome: string) {
+    return this.http.post(`${environment.apiUrl}/token/`, {}).pipe(
+      catchError((err) => {
+        return throwError('Errore server');
+      }),
+      tap((tokenData: string) => {
+        if (!tokenData || !tokenData['token']) {
+          throw new Error('Errore server');
+        } else {
+          this.setUserData(tokenData['token'], true, nome, cognome);
+        }
+      })
+    );
+  }
+
+  login(username: string, password: string) {
+    return this.http.post(`${environment.apiUrl}/token/`, {}).pipe(
+      catchError((err) => {
+        return throwError('Errore server');
+      }),
+      switchMap((loginToken) => {
+        if (!loginToken) {
+          throw new Error('Errore server');
+        }
+        console.log('🐱‍👤 : AuthService : loginToken', loginToken);
+        return this.http.post(
+          `${environment.apiUrl}/lgn/`,
+          {
+            usr: username,
+            pwd: password,
+          },
+          {
+            headers: new HttpHeaders().set(
+              'Authorization',
+              `Bearer ${loginToken['token']}`
+            ),
+          }
+        );
+      }),
+      catchError((err) => {
+        return throwError('Errore server');
+      }),
+      tap((tokenData: string) => {
+        if (!tokenData || !tokenData['token']) {
+          throw new Error('Credenziali errate');
+        } else {
+          this.setUserData(tokenData['token'], false);
+        }
+      })
+    );
+  }
+
   autoLogin() {
     return from(Storage.get({ key: 'authData' })).pipe(
       map((storedData) => {
@@ -96,76 +148,59 @@ export class AuthService implements OnDestroy {
     );
   }
 
-  login(username: string, password: string) {
-    return this.http.post(`${environment.apiUrl}/token/`, {}).pipe(
-      catchError((err) => {
-        return throwError('Errore server');
-      }),
-      switchMap((loginToken) => {
-        if (!loginToken) {
-          throw new Error('Errore server');
-        }
-        console.log('🐱‍👤 : AuthService : loginToken', loginToken);
-        return this.http.post(
-          `${environment.apiUrl}/lgn/`,
-          {
-            usr: username,
-            pwd: password,
-          },
-          {
-            headers: new HttpHeaders().set('Authorization', `Bearer ${loginToken['token']}`),
-          }
-        );
-      }),
-      catchError((err) => {
-        return throwError('Errore server');
-      }),
-      tap((token: string) => {
-        if (!token) {
-          throw new Error('Credenziali errate');
-        } else {
-          this.setUserData(token);
-        }
-      })
-    );
-  }
+  // signup(username: string, password: string) {
+  //   return this.http
+  //     .post(`${environment.apiUrl}/signup/`, {
+  //       usr: username,
+  //       pwd: password,
+  //     })
+  //     .pipe(
+  //       catchError((err) => {
+  //         return throwError(err);
+  //       }),
+  //       tap((token: string) => {
+  //         if (!token) {
+  //           throw new Error('Credenziali errate');
+  //         }
+  //         this.setUserData(token);
+  //       })
+  //     );
+  // }
 
-  signup(username: string, password: string) {
-    return this.http
-      .post(`${environment.apiUrl}/signup/`, {
-        usr: username,
-        pwd: password,
-      })
-      .pipe(
-        catchError((err) => {
-          return throwError(err);
-        }),
-        tap((token: string) => {
-          if (!token) {
-            throw new Error('Credenziali errate');
-          }
-          this.setUserData(token);
-        })
-      );
-  }
-
-  setUserData(token) {
-    const payload: TokenPayload = this.jwtHelper.decodeToken(token['token']);
+  setUserData(
+    token: string,
+    isGuest: boolean,
+    nome?: string,
+    cognome?: string
+  ) {
+    const payload: TokenPayload = this.jwtHelper.decodeToken(token);
     console.log('🐱‍👤 : AuthService : payload', payload);
-    const expDate: Date = this.jwtHelper.getTokenExpirationDate(token['token']);
+    const expDate: Date = this.jwtHelper.getTokenExpirationDate(token);
     console.log('🐱‍👤 : AuthService : expDate', expDate);
 
     // * Crea un nuovo utente
-    const newUser = new AuthUser(
-      payload.idutente,
-      payload.idutcas,
-      payload.username,
-      payload.commessa, // TODO: payload['idcommessa]
-      'payload.commessa',
-      payload.autorizzazione,
-      token['token'],
-      expDate
-    );
+    const newUser = isGuest
+      ? new AuthUser(
+          'guest',
+          'guest',
+          nome.trim().replace(' ', '').toLowerCase().slice(0, 1) +
+            cognome.trim().replace(' ', '').toLowerCase(),
+          'guest', // TODO: payload['idcommessa]
+          'guest',
+          'guest',
+          token,
+          expDate
+        )
+      : new AuthUser(
+          payload.idutente,
+          payload.idutcas,
+          payload.username,
+          payload.commessa, // TODO: payload.idcommessa
+          payload.commessa,
+          payload.autorizzazione,
+          token,
+          expDate
+        );
 
     // * Produce un nuovo utente sull'osservabile
     this._user.next(newUser);
@@ -177,8 +212,8 @@ export class AuthService implements OnDestroy {
         idutente: newUser.idutente,
         idutcas: newUser.idutcas,
         username: newUser.username,
-        idcommessa: newUser.idcommessa, // TODO: payload['idcommessa]
-        commessa: 'newUser.commessa',
+        idcommessa: newUser.idcommessa,
+        commessa: newUser.idcommessa, // TODO: newUser.commessa
         autorizzazione: newUser.autorizzazione,
         token: newUser.token,
         tokenExpirationDate: newUser.tokenExpirationDate.toISOString(),
@@ -189,6 +224,15 @@ export class AuthService implements OnDestroy {
     this.autoLogout(newUser.tokenDuration);
   }
 
+  logout() {
+    if (this.activeLogoutTimer) {
+      clearTimeout(this.activeLogoutTimer);
+    }
+    this._user.next(null);
+    Storage.remove({ key: 'authData' });
+    Storage.remove({ key: 'roomData' });
+  }
+
   autoLogout(duration: number) {
     if (this.activeLogoutTimer) {
       clearTimeout(this.activeLogoutTimer);
@@ -196,14 +240,6 @@ export class AuthService implements OnDestroy {
     this.activeLogoutTimer = setTimeout(() => {
       this.logout();
     }, duration);
-  }
-
-  logout() {
-    if (this.activeLogoutTimer) {
-      clearTimeout(this.activeLogoutTimer);
-    }
-    this._user.next(null);
-    Storage.remove({ key: 'authData' });
   }
 
   ngOnDestroy() {

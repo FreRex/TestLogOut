@@ -5,10 +5,11 @@ import { IonicModule } from '@ionic/angular';
 
 import { AuthPageRoutingModule } from './auth-routing.module';
 import { AuthPage } from './auth.page';
-import { LoginComponent } from './login/login.component';
+import { GuestLoginComponent } from './guest-login/guest-login.component';
+import { UserLoginComponent } from './user-login/user-login.component';
 
 @NgModule({
   imports: [CommonModule, ReactiveFormsModule, IonicModule, AuthPageRoutingModule],
-  declarations: [AuthPage, LoginComponent],
+  declarations: [AuthPage, UserLoginComponent, GuestLoginComponent],
 })
 export class AuthPageModule {}

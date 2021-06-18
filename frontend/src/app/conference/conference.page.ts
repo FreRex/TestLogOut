@@ -1,22 +1,26 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Storage } from '@capacitor/storage';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NavController } from '@ionic/angular';
 import { Socket } from 'ngx-socket-io';
-import { from } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { Observable, Subscription } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 
+import { AuthService } from '../auth/auth.service';
+import { Room, RoomService } from '../rooms/room.service';
 import { PlayerComponent } from './player/player.component';
-import { StreamingService } from './streaming.service';
 
 @Component({
   selector: 'app-conference',
   templateUrl: './conference.page.html',
   styleUrls: ['./conference.page.scss'],
 })
-export class ConferencePage implements OnInit, AfterViewInit {
+export class ConferencePage implements OnInit, OnDestroy {
+  private sub: Subscription;
+
   @ViewChild(PlayerComponent) private playerComponent: PlayerComponent;
+  currentRoom$: Observable<Room>;
+  room: Room;
 
   roomId: string = '';
   userId: string = '';
@@ -25,38 +29,63 @@ export class ConferencePage implements OnInit, AfterViewInit {
   rtmpDestination: string = '';
 
   constructor(
-    private activatedRouter: ActivatedRoute,
+    private activatedRoute: ActivatedRoute,
     private navController: NavController,
-    private streamingService: StreamingService,
-    private socket: Socket
+    private roomService: RoomService,
+    private authService: AuthService,
+    private socket: Socket,
+    private router: Router
   ) {}
 
-  ngOnInit() {}
-
-  ngAfterViewInit() {
-    this.activatedRouter.paramMap
+  isLoading: boolean = false;
+  ngOnInit() {
+    /*
+     * Recupera l'ID della room dall'URL,
+     * l'utente corrente dall'authService,
+     * i dati completi della room dal backend
+     * e configura il socket per la room corrente
+     */
+    this.isLoading = true;
+    this.sub = this.activatedRoute.paramMap
       .pipe(
         switchMap((paramMap) => {
           if (!paramMap.has('roomId')) {
-            this.navController.navigateBack(['/not-found']);
-            return;
+            throw new Error('Missing Room ID');
           }
           this.roomId = paramMap.get('roomId');
-          return from(Storage.get({ key: 'authData' }));
+          this.router.navigate([], {
+            replaceUrl: true,
+            relativeTo: this.activatedRoute,
+          });
+          console.log('🐱‍👤 : ConferencePage : this.roomId', this.roomId);
+          return this.authService.currentUser$;
         }),
-        map((storedData) => {
-          if (!storedData || !storedData.value) {
-            return null;
+        switchMap((user) => {
+          if (!user) {
+            throw new Error('Unauthenticated');
           }
-          return JSON.parse(storedData.value).idutcas;
+          this.userId = user.idutcas;
+          console.log('🐱‍👤 : ConferencePage : this.userId', this.userId);
+          return this.roomService.selectRoom(+this.roomId);
         })
       )
-      .subscribe((userId) => {
-        this.userId = userId;
-        this.configureSocket(this.roomId, this.userId);
-        console.log('🐱‍👤 : ConferencePage : this.userId', this.userId);
-        console.log('🐱‍👤 : ConferencePage : this.roomId', this.roomId);
-      });
+      .subscribe(
+        (room: Room) => {
+          this.room = room;
+          this.configureSocket(this.roomId, this.userId);
+          this.isLoading = false;
+        },
+        (err) => {
+          this.navController.navigateBack(['/not-found']);
+          this.isLoading = false;
+        }
+      );
+  }
+
+  ngOnDestroy() {
+    if (this.sub) {
+      this.sub.unsubscribe();
+    }
   }
 
   // handles messages coming from signalling_server (remote party)
@@ -73,19 +102,15 @@ export class ConferencePage implements OnInit, AfterViewInit {
           case 'fatal':
             console.log('Fatal: ', msg.data);
             break;
-          /* case 'userInConference':
-            console.log('userInConference: ', msg.data);
-            break; */
           case `${this.roomId}`: //FREXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
             console.log('array per idroom: ', msg.data);
             console.log('Frontend lunghezza array: ' + msg.data.length);
             console.log('Frontend room: ' + msg.data[0]);
             console.log('Frontend idutente: ' + msg.data[1].idutente);
-            console.log('Frontend stream: ' + msg.data[1].stream);            
+            console.log('Frontend stream: ' + msg.data[1].stream);
             break;
           default:
-            //console.log('unknown message: ', msg);
-            console.log('unknown message');
+            console.log('unknown message: ', msg);
         }
       },
       (err) => console.log(err)

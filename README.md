@@ -2,11 +2,11 @@
 
 ## Socket.IO in Angular
 
-🔗 https://www.digitalocean.com/community/tutorials/angular-socket-io
+🔗 [How To Create a Real-Time App with Socket.IO, Angular, and Node.js](https://www.digitalocean.com/community/tutorials/angular-socket-io)
 
-🔗 https://deepinder.me/creating-a-real-time-app-with-angular-8-and-socket-io-with-nodejs/
+🔗 [Creating a Real time chat app with Angular and Socket.io with NodeJS](https://deepinder.me/creating-a-real-time-app-with-angular-8-and-socket-io-with-nodejs/)
 
-🔗 https://medium.com/@deguzmanbrianfrancis/setting-up-and-creating-a-chat-app-with-angular-socket-io-3-0-and-express-70c69b8031f6
+🔗 [Setting up and creating a chat app with Angular, Socket.IO 3.0, and Express](https://medium.com/@deguzmanbrianfrancis/setting-up-and-creating-a-chat-app-with-angular-socket-io-3-0-and-express-70c69b8031f6)
 
 Install [ngx-socket-io](https://www.npmjs.com/package/ngx-socket-io), an Angular wrapper over socket.io client libraries and/or [socket-io.client](https://www.npmjs.com/package/socket.io-client), the code for the client-side implementation of socket.io.
 
@@ -97,6 +97,25 @@ export class AppModule {}
     "allowedCommonJsDependencies": ["socket.io-client"],
   }
 }
+```
+
+---
+
+## MediaDevices
+
+🔗 [MediaDevices.getUserMedia()](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia)
+
+🔗 [MediaStreamTrack.stop()](https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack/stop)
+
+```ts
+navigator.mediaDevices
+  .getUserMedia(constraints)
+  .then((stream) => {
+    /* use the stream */
+  })
+  .catch((err) => {
+    /* handle the error */
+  });
 ```
 
 ---

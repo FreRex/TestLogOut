@@ -2,8 +2,6 @@ import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import FlvJs from 'flv.js';
 import { Socket } from 'ngx-socket-io';
 
-import { StreamingService } from '../streaming.service';
-
 const height = 120;
 const width = 120;
 const framerate = 15;
@@ -21,31 +19,29 @@ export class PlayerComponent implements OnInit {
   @Input() isStreaming: boolean = false;
   @Input() isPlaying: boolean = true;
 
-  public loading = true;
   private devicePosition: string = 'fronte';
 
   private localStream: MediaStream;
   private mediaRecorder: MediaRecorder;
   private constraints: MediaStreamConstraints;
 
-  constructor(private socket: Socket, public streamingService: StreamingService) {}
+  constructor(private socket: Socket) {}
 
   ngOnInit() {
     this.listaDispositivi();
   }
 
   startStream() {
+    // apre la camera dell'utente
     this.requestGetUserMedia().then((res) => {
       this.startLocalVideo();
       this.startMediaRecorder();
-      this.loading = false;
-      this.socket.emit('start', 'start');
     });
   }
   stopStream() {
+    // chiude la camera dell'utente
     this.stopLocalVideo();
     this.stopMediaRecorder();
-    this.loading = true;
   }
 
   /************************* FlvPlayer *************************/
@@ -122,9 +118,11 @@ export class PlayerComponent implements OnInit {
 
   stopLocalVideo() {
     this.localStream.getTracks().forEach((track) => {
+      track.stop();
       track.enabled = false;
     });
     this.localVideo.nativeElement.srcObject = undefined;
+    this.localStream = null;
   }
 
   /************************* MediaRecorder *************************/

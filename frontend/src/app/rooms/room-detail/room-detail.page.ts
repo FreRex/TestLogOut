@@ -16,45 +16,47 @@ export class RoomDetailPage implements OnInit {
   isLoading = false;
 
   constructor(
-    private activatedRouter: ActivatedRoute,
+    private activatedRoute: ActivatedRoute,
     private roomsService: RoomService,
     private navController: NavController,
     private alertController: AlertController
   ) {}
 
   ngOnInit() {
-    this.activatedRouter.paramMap.subscribe((paramMap) => {
+    this.activatedRoute.paramMap.subscribe((paramMap) => {
       if (!paramMap.has('roomId')) {
         this.navController.navigateBack(['/rooms']);
         return;
       }
       // mi sottoscrivo all'osservabile "getRoom()" che restituisce una singola room per ID
       this.isLoading = true;
-      this.sub = this.roomsService.selectRoom(paramMap.get('roomId')).subscribe(
-        (room: Room) => {
-          this.room = room;
-          this.isLoading = false;
-        },
-        (error) => {
-          this.alertController
-            .create({
-              header: 'Errore',
-              message: 'Impossibiile caricare la room',
-              buttons: [
-                {
-                  text: 'Annulla',
-                  handler: () => {
-                    this.navController.navigateBack(['/rooms']);
-                    // this.router.navigate(['/rooms']);
+      this.sub = this.roomsService
+        .selectRoom(+paramMap.get('roomId'))
+        .subscribe(
+          (room: Room) => {
+            this.room = room;
+            this.isLoading = false;
+          },
+          (error) => {
+            this.alertController
+              .create({
+                header: 'Errore',
+                message: 'Impossibile caricare la room',
+                buttons: [
+                  {
+                    text: 'Annulla',
+                    handler: () => {
+                      this.navController.navigateBack(['/rooms']);
+                      // this.router.navigate(['/rooms']);
+                    },
                   },
-                },
-              ],
-            })
-            .then((alertEl) => {
-              alertEl.present();
-            });
-        }
-      );
+                ],
+              })
+              .then((alertEl) => {
+                alertEl.present();
+              });
+          }
+        );
     });
   }
 }

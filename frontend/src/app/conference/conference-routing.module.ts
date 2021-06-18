@@ -1,13 +1,23 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 
 import { ConferencePage } from './conference.page';
 
 const routes: Routes = [
+  // * se uso i parametri della url
   {
-    path: '',
+    path: ':roomId',
     component: ConferencePage,
   },
+  {
+    path: '',
+    redirectTo: '/not-found',
+  },
+  // * se uso i queryParams
+  // {
+  //   path: '',
+  //   component: ConferencePage,
+  // },
 ];
 
 @NgModule({
