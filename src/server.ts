@@ -283,6 +283,7 @@ io.on('connection', function(socket: any){
 	
 		ffmpeg_process=spawn('ffmpeg', ops);
 		console.log("ffmpeg spawned");
+		console.log("ffmpeg_process.pid: " +ffmpeg_process.pid)
 
 		feedStream=function(data: any){	
 		ffmpeg_process.stdin.write(data);
