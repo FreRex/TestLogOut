@@ -9,6 +9,7 @@ const fs_1 = __importDefault(require("fs"));
 const child_process_1 = require("child_process");
 const routes = require('./routes');
 const functionListaConference = require('./assets/functionListaConference');
+const { exec } = require("child_process");
 const app = express_1.default();
 let port;
 if (process.env.NODE_ENV == 'production') {
@@ -110,8 +111,21 @@ io.on('connection', function (socket) {
     });
     socket.on('start', function (m) {
         //Distruggi tutti i processi ffmpeg
-        //killall ffmpeg
-        console.log(ffmpeg_process.killall);
+        exec("killall ffmpeg", (error, stdout, stderr) => {
+            if (stdout) {
+                console.log(`stdout: ${stdout.message}`);
+                return;
+            }
+            if (error) {
+                console.log(`error: ${error.message}`);
+                return;
+            }
+            if (stderr) {
+                console.log(`stderr: ${stderr.message}`);
+                return;
+            }
+            socket.broadcast.emit('message', { type: 'stopWebCam', data: 'dati da eleborare' });
+        });
         //Verifica errori 
         if (ffmpeg_process || feedStream) {
             /*
