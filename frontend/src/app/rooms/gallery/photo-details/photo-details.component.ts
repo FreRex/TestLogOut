@@ -2,11 +2,31 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AlertController, ModalController, ToastController } from '@ionic/angular';
 import { Foto, MediaService } from '../media.service';
+import { trigger, state, style, animate, transition } from '@angular/animations';
+import { delay } from 'rxjs/operators';
 
 @Component({
   selector: 'app-photo-details',
   templateUrl: './photo-details.component.html',
   styleUrls: ['./photo-details.component.scss'],
+  animations: [
+    trigger('inOutAnimation', [
+      transition(':enter', [
+        style({ transform: 'rotateY(-90deg)', opacity: 0 }),
+        animate('.5s ease-in', style({ transform: 'rotateY(0deg)', opacity: 1 })),
+      ]),
+      transition(':leave', [
+        style({ transform: 'scale(1)', opacity: 1 }),
+        animate('.5s ease-out', style({ transform: 'scale(0.1)', opacity: 0 })),
+      ]),
+    ]),
+    trigger('inAnimation', [
+      transition(':enter', [
+        style({ transform: 'rotateY(90deg)', opacity: 0.5 }),
+        animate('.5s .5s ease-in', style({ transform: 'rotateY(0deg)', opacity: 1 })),
+      ]),
+    ]),
+  ],
 })
 export class PhotoDetailsComponent implements OnInit {
   @Input() foto: Foto;
@@ -36,13 +56,7 @@ export class PhotoDetailsComponent implements OnInit {
   });
 
   mapActivate() {
-    if (this.mapDisplay == true) {
-      this.mapDisplay = false;
-      console.log('mappa off');
-    } else {
-      this.mapDisplay = true;
-      console.log('mappa on');
-    }
+    this.mapDisplay = !this.mapDisplay;
   }
 
   dowloadSinglePhoto() {
