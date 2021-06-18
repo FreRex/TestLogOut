@@ -111,10 +111,12 @@ export class ConferencePage implements OnInit, OnDestroy {
             break;
           case 'stopWebCam':
             console.log('stopWebCam: ', msg.data);
-            if (this.isStreaming) {
-              // this.socket.emit('disconnectStream', '');
-              this.playerComponent.stopStream();
-              this.isStreaming = false;
+            if (msg.data == this.room.id) {
+              if (this.isStreaming) {
+                // this.socket.emit('disconnectStream', '');
+                this.playerComponent.stopStream();
+                this.isStreaming = false;
+              }
             }
             break;
           default:
