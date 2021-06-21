@@ -49,7 +49,7 @@ let checkPresenzaIdRoom = function (idroom: number){
     return checkPresenzaFinaleIdUtente;
 } */
 
-function checkPresenzaIdUtente(idroom: number, idutente : string){    
+let checkPresenzaIdUtente = function (idroom: number, idutente : string){    
     let checkPresenzaFinaleIdUtente = false;
     let index = checkPresenzaIdRoom(idroom);
           

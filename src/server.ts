@@ -388,8 +388,11 @@ io.on('connection', function(socket: any){
 		feedStream(m);
 	});
         
-	//Ricezione segnale di disconnessione per chiusura browser.
-	socket.on('disconnectStream', function(m: any) {		
+	//Ricezione segnale per click pulsnate "stop stream"
+	socket.on('disconnectStream', function(m: any) {
+		
+		//PULSANTE STOP STREAM PREMUTO
+		console.log('PULSANTE STOP STREAM PREMUTO')
 		
 		let socketid: any=socket.id;
 		let socketidCoo=functionListaConference.checkPresenzaSocketid(socketid);
@@ -405,29 +408,24 @@ io.on('connection', function(socket: any){
 		//Update stream da true a false
 		let arrayUser = functionListaConference.updateStreamFalse(socketid);		
 
-		//Verifica
-		
+		//Verifica		
 		if(ffmpeg_process){
-
-			//Processo di chiusura da pulsante
+			
 			ffmpeg_process.stdin.end();
 			ffmpeg_process.kill('SIGINT');
-			console.log("ffmpeg process ended ! DA DISCONNECTSTREAM");
+			console.log("ffmpeg process ended ! (CHIUSURA STREAMING DA DISCONNECTSTREAM");
             
 			//invio lista utenti presenti in conference
-
 			socket.emit('message', {type: numberRoom, data: arrayUser});		   
 			socket.broadcast.emit('message', {type: numberRoom, data: arrayUser});			
-			
 		}
 		else
 		{			
+			console.warn('killing ffmpeg process attempt failed...(DA DISCONNECTSTREAM")');
+
 			//invio lista utenti presenti in conference
-
 			socket.emit('message', {type: numberRoom, data: arrayUser});		   
-			socket.broadcast.emit('message', {type: numberRoom, data: arrayUser});	
-
-			console.warn('killing ffmpeg process attempt failed...');
+			socket.broadcast.emit('message', {type: numberRoom, data: arrayUser});			
 		}
 
 		console.log('----------------------------------------')
@@ -460,7 +458,7 @@ io.on('connection', function(socket: any){
 			ffmpeg_process.stdin.end();
 			ffmpeg_process.kill('SIGINT');
 
-			console.log("ffmpeg process ended ! da DISCONNECT");
+			console.log("ffmpeg process ended ! (DISCONNECT DA CHIUSURA BROWSER)");
 		}
 		else
 		{			
@@ -469,8 +467,10 @@ io.on('connection', function(socket: any){
 			socket.emit('message', {type: numberRoom, data: arrayUser});		   
 			socket.broadcast.emit('message', {type: numberRoom, data: arrayUser});	
 
-			console.warn('killing ffmpeg process attempt failed...');
+			console.warn('killing ffmpeg process attempt failed... (DISCONNECT DA CHIUSURA BROWSER)');
 		}
+
+				
 	});
 
 	socket.on('error',function(e: any){		
