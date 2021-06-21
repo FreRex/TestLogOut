@@ -128,6 +128,8 @@ export class AuthService implements OnDestroy {
         const user = new AuthUser(
           parsedData.idutente,
           parsedData.idutcas,
+          'Nome Cognome', // TODO: recuperare nome da backend
+          // 'Cognome', // TODO: recuperare cognome da backend
           parsedData.username,
           parsedData.idcommessa,
           parsedData.idcommessa, // TODO: parsedData.commessa
@@ -182,10 +184,11 @@ export class AuthService implements OnDestroy {
     // * Crea un nuovo utente
     const newUser = isGuest
       ? new AuthUser(
-          'guest',
-          'guest',
-          nome.trim().replace(' ', '').toLowerCase().slice(0, 1) +
-            cognome.trim().replace(' ', '').toLowerCase(),
+          `guest`,
+          `guest_${this.randomId(8)}`,
+          `${nome} ${cognome}`,
+          // cognome,
+          `guest`,
           'guest', // TODO: payload.idcommessa
           'guest',
           'guest',
@@ -195,6 +198,8 @@ export class AuthService implements OnDestroy {
       : new AuthUser(
           payload.idutente,
           payload.idutcas,
+          'Nome Cognome', // TODO: recuperare nome da backend
+          // 'Cognome', // TODO: recuperare cognome da backend
           payload.username,
           payload.commessa, // TODO: payload.idcommessa
           payload.commessa,
@@ -247,5 +252,18 @@ export class AuthService implements OnDestroy {
     if (this.activeLogoutTimer) {
       clearTimeout(this.activeLogoutTimer);
     }
+  }
+
+  randomId(length: number): string {
+    var length = 12;
+    var result = '';
+    var characters =
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+    for (var i = 0; i < length; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    console.log('🐱‍👤 : AuthService : result', result);
+    return result;
   }
 }

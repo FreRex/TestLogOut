@@ -2,7 +2,8 @@ export class AuthUser {
   constructor(
     public idutente: string,
     public idutcas: string,
-    // TODO aggiungere nome e cognome
+    public nome: string, // nome e cognome
+    // public cognome: string,
     public username: string,
     public idcommessa: string,
     // TODO recuperare commessa dal backend
