@@ -8,7 +8,7 @@ import { environment } from 'src/environments/environment';
 
 import { AuthService } from '../auth/auth.service';
 import { Room, RoomService } from '../rooms/room.service';
-import { RoomUser } from './conference.service';
+import { ConferenceService, RoomUser } from './conference.service';
 import { PlayerComponent } from './player/player.component';
 
 @Component({
@@ -35,6 +35,7 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
     private navController: NavController,
     private roomService: RoomService,
     private authService: AuthService,
+    private conferenceService: ConferenceService,
     private socket: Socket,
     private router: Router
   ) {}
@@ -67,6 +68,9 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
             throw new Error('Unauthenticated');
           }
           this.userId = user.idutcas;
+          // if (this.userId == 'guest') {
+          //   this.userId += this.conferenceService.randomId(8);
+          // }
           console.log('🐱‍👤 : ConferencePage : this.userId', this.userId);
           return this.roomService.selectRoom(+this.roomId);
         })
@@ -110,28 +114,44 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
             break;
           case `${this.roomId}`: //FREXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
             console.log('array per idroom: ', msg.data);
-            console.log('Frontend lunghezza array: ' + msg.data.length);
-            console.log('Frontend room: ' + msg.data[0]);
-            console.log('Frontend idutente: ' + msg.data[1].idutente);
-            console.log('Frontend stream: ' + msg.data[1].stream);
+            // console.log('Frontend lunghezza array: ' + msg.data.length);
+            // console.log('Frontend room: ' + msg.data[0]);
+            // console.log('Frontend idutente: ' + msg.data[1].idutente);
+            // console.log('Frontend stream: ' + msg.data[1].stream);
             // for (let i = 1; i < msg.data.lenght; i++) {}
             // this.usersInRoom = msg.data.slice(1);
             this.usersInRoom = [];
             for (const userData of msg.data.slice(1)) {
-              this.usersInRoom.push({
+              let newUser = {
                 idutente: userData['idutente'],
+                nome: 'Nome Cognome', // TODO: recuperare nome da backend
                 iniziali:
                   userData['idutente'].charAt(0) +
                   userData['socketid'].charAt(0),
                 socketid: userData['socketid'],
-                // stream: userData['stream'], // TODO
-                stream: true,
-              });
+                stream: userData['stream'], // TODO
+              };
+              if (newUser.stream) {
+                // if (newUser.idutente != this.userId) {
+                this.flvOrigin = `${environment.urlWSS}/${this.roomId}/${newUser.idutente}.flv`;
+                if (!this.isPlaying && !this.isStreaming) {
+                  this.isPlaying = true;
+                  this.playerComponent.startPlayer(this.flvOrigin);
+                }
+                // }
+                this.usersInRoom.unshift(newUser);
+              } else {
+                if (this.isPlaying && !this.isStreaming) {
+                  this.isPlaying = false;
+                  this.playerComponent.stopPlayer();
+                }
+                this.usersInRoom.push(newUser);
+              }
             }
             break;
           case 'stopWebCam':
             console.log('stopWebCam: ', msg.data);
-            if (msg.data == this.room.id) {
+            if (msg.data == this.roomId) {
               if (this.isStreaming) {
                 // this.socket.emit('disconnectStream', '');
                 this.playerComponent.stopStream();
@@ -146,7 +166,7 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
       (err) => console.log(err)
     );
     this.rtmpDestination = `${environment.urlRTMP}/${roomId}/${userId}`;
-    this.flvOrigin = `${environment.urlWSS}/${roomId}/${userId}.flv`;
+    // this.flvOrigin = `${environment.urlWSS}/${roomId}/${userId}.flv`;
     this.socket.emit('config_rtmpDestination', this.rtmpDestination);
   }
 
@@ -155,7 +175,7 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
 
   toggleStream() {
     if (this.isPlaying) {
-      return;
+      this.togglePlay();
     }
     if (this.isStreaming) {
       this.socket.emit('disconnectStream', '');
@@ -170,7 +190,7 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
 
   togglePlay() {
     if (this.isStreaming) {
-      return;
+      this.toggleStream;
     }
     if (this.isPlaying) {
       this.isPlaying = false;
