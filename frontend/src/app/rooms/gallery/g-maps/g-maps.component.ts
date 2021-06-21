@@ -8,6 +8,7 @@ import { Component, Input, OnInit } from '@angular/core';
 export class GMapsComponent implements OnInit {
   @Input() lat: string;
   @Input() lon: string;
+  @Input() nome: string;
 
   constructor() {}
 

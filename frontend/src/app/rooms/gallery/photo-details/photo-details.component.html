@@ -30,7 +30,7 @@
       </div>
 
       <div class="map-mobile" *ngIf="mapDisplay" [@inOutAnimation]>
-        <app-g-maps [lat]="foto.latitu" [lon]="foto.longitu"></app-g-maps>
+        <app-g-maps [lat]="foto.latitu" [lon]="foto.longitu" [nome]="foto.nomelemento"></app-g-maps>
       </div>
 
       <div class="image ion-no-padding" *ngIf="!mapDisplay">
@@ -143,7 +143,7 @@
           <div class="image-map-container">
 
             <div class="map" *ngIf="mapDisplay" [@inOutAnimation]>
-              <app-g-maps [lat]="foto.latitu" [lon]="foto.longitu"></app-g-maps>
+              <app-g-maps [lat]="foto.latitu" [lon]="foto.longitu" [nome]="foto.nomelemento"></app-g-maps>
             </div>
             <div class="image-desk ion-no-padding" *ngIf="!mapDisplay">
               <img class="imageAnim" [src]="'data:image/jpeg;base64,'+foto.imageBase64 | safeHtml">
