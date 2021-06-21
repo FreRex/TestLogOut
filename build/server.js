@@ -17,7 +17,7 @@ if (process.env.NODE_ENV == 'production') {
     port = process.env.PORT_PROD || 9666;
 }
 else {
-    port = 9187;
+    port = 9411;
 }
 app.use(express_1.default.json());
 //-----------------------------------------------------------------------------------------------------------
@@ -56,7 +56,7 @@ child_process_1.spawn('ffmpeg', ['-h']).on('error', function (m) {
 //-----------------------------------------------------------------------------------------
 // Connessione socket.io
 io.on('connection', function (socket) {
-    console.log('socket.id: ' + socket.id);
+    //console.log('socket.id: ' + socket.id)
     socket.emit('message', { type: 'welcome', data: 'Hello from mediarecorder-to-rtmp server!' });
     socket.emit('message', { type: 'welcome', data: 'Please set rtmp destination before start streaming.' });
     let ffmpeg_process;
@@ -78,7 +78,7 @@ io.on('connection', function (socket) {
             //Test x verifica start streaming
             socket._rtmpDestination = m;
             let dataforsocket = 'rtmp destination set to:' + m;
-            console.log(socket._rtmpDestination);
+            //console.log(socket._rtmpDestination);
             let numberRoom = functionListaConference.idroomsplit(socket._rtmpDestination);
             let identificativoUtente = functionListaConference.idutentesplit(socket._rtmpDestination);
             //Inserimento in array generale dei dati del nuovo utente in conference
@@ -110,12 +110,20 @@ io.on('connection', function (socket) {
         socket._vcodec = m;
     });
     socket.on('start', function (m) {
-        if (socket.id) {
-            let socketidCoo = functionListaConference.checkPresenzaSocketid(socket.id);
-            let numberRoom = functionListaConference.utentiInConference[socketidCoo.y][0];
-            numberRoom = numberRoom.toString();
-            //Distruggi tutti i processi ffmpeg
-            exec("killall ffmpeg", (error, stdout, stderr) => {
+        //Al premere del pulsante start-streaming:
+        // 1) identificare l'array per la room specifica
+        let elementoCoordinate = functionListaConference.checkPresenzaSocketid(socket.id);
+        let arrayRoom = functionListaConference.utentiInConference[elementoCoordinate.y];
+        console.log('arrayRoom: ' + arrayRoom);
+        if (functionListaConference.checkpidstream(arrayRoom) != 0) {
+            console.log('pidstream: ' + functionListaConference.checkpidstream(arrayRoom));
+            // 1) killare il processo:
+            let pidstreamKill = 0;
+            pidstreamKill = functionListaConference.checkpidstream(arrayRoom);
+            console.log('pidstreamKill: ' + pidstreamKill);
+            //Distruggi il processo ffmpeg
+            let numberRoom = functionListaConference.idroomsplit(socket._rtmpDestination);
+            exec("kill -9 " + pidstreamKill, (error, stdout, stderr) => {
                 if (stdout) {
                     console.log(`stdout: ${stdout.message}`);
                     return;
@@ -130,13 +138,52 @@ io.on('connection', function (socket) {
                 }
                 socket.broadcast.emit('message', { type: 'stopWebCam', data: numberRoom });
             });
+            //Aggiornare a 0 (zero) pidstream dell'elemento specifico nell'arrayRoom
+            /* functionListaConference.updatePidStream(socket.id, 0);
+            console.log('AGGIORNAMENTO A ZERO (0) pidstream: ' + arrayRoom); */
+        }
+        else {
+            console.log('pid == false !!!!!');
+        }
+        /* if(checkPresenzaPidstream(socket.id)!=-1){
+            let pidstream = checkPresenzaPidstream(socket.id)[y][x];
+            //Distruggi il processo ffmpeg
+            exec("kill -9 `${pidstream}`", (error: any, stdout: any, stderr: any) => {
+                if (stdout) {
+                    console.log(`stdout: ${stdout.message}`);
+                    return;
+                }
+                if (error) {
+                    console.log(`error: ${error.message}`);
+                    return;
+                }
+                if (stderr) {
+                    console.log(`stderr: ${stderr.message}`);
+                    return;
+                }
+                socket.broadcast.emit('message',{type: 'stopWebCam', data: numberRoom});
+            });
+
+        }
+        else
+        {
+
+        } */
+        /* console.log('ffmpeg_process.pid: ' + pidstream)
+        let arrayUpdatePid: string = functionListaConference.updatePidStream(socket.id, pidstream);
+        let socketidCoo=functionListaConference.checkPresenzaSocketid(socket.id);
+        let arrayForThisRoom: string = functionListaConference.utentiInConference[socketidCoo.y][socketidCoo.x];
+        console.log('arryaForThisRoom: ' + arrayForThisRoom) */
+        // 2) cercare nell'array del punto "1" il campo pidStream != 0
+        // 2a) nel caso pidStream !=0 => killarlo con "kill -9 'pidstream'"
+        // 2b) nel caso pidStream ==0 => allora salvare pidStraem = ffmpeg_process.pid nell'array della room per l'utente specifico
+        if (socket.id) {
+            let socketidCoo = functionListaConference.checkPresenzaSocketid(socket.id);
+            let numberRoom = functionListaConference.utentiInConference[socketidCoo.y][0];
+            numberRoom = numberRoom.toString();
         }
         //Verifica errori 
         if (ffmpeg_process || feedStream) {
-            /*
-           //socket.emit('message',{type: 'fatal', data: 'stream already started.'});
-           socket.emit('message',{type: 'info', data: 'stream already started.'});
-           return; */
             ffmpeg_process = false;
             feedStream = false;
         }
@@ -144,17 +191,6 @@ io.on('connection', function (socket) {
         if (!socket._rtmpDestination) {
             socket.emit('message', { type: 'fatal', data: 'no destination given.' });
             return;
-        }
-        //- verifica che streaming sia già attivo 
-        if (socket.id) {
-            let socketidCoo = functionListaConference.checkPresenzaSocketid(socket.id);
-            let numberRoom = functionListaConference.utentiInConference[socketidCoo.y][0];
-            numberRoom = numberRoom.toString();
-            console.log("numberoom per update: " + numberRoom);
-            let arrayStream = functionListaConference.updateStreamTrue(socket.id);
-            console.log(arrayStream);
-            socket.emit('message', { type: numberRoom, data: arrayStream });
-            socket.broadcast.emit('message', { type: numberRoom, data: arrayStream });
         }
         //Impostazioni parametri per audio streaming
         var audioBitrate = parseInt(socket.handshake.query.audioBitrate);
@@ -233,9 +269,26 @@ io.on('connection', function (socket) {
         console.log(socket._rtmpDestination);
         ffmpeg_process = child_process_1.spawn('ffmpeg', ops);
         console.log("ffmpeg spawned");
+        console.log("ffmpeg_process.pid: " + ffmpeg_process.pid);
+        //- Rendere "false" tutti gli "stream" e true quello specifico, aggiornare il valore di "pidstream" 
+        if (socket.id) {
+            let socketidCoo = functionListaConference.checkPresenzaSocketid(socket.id);
+            let numberRoom = functionListaConference.utentiInConference[socketidCoo.y][0];
+            numberRoom = numberRoom.toString();
+            console.log("numberoom per update: " + numberRoom);
+            let arrayStream = functionListaConference.updateStream(socket.id, ffmpeg_process.pid);
+            console.log(arrayStream);
+            socket.emit('message', { type: numberRoom, data: arrayStream });
+            socket.broadcast.emit('message', { type: numberRoom, data: arrayStream });
+        }
+        /* // Update "pidstream" dell'elemento dell'array room specifica
+        let arrayUpdatePid: string = functionListaConference.updatePidStream(socket.id, ffmpeg_process.pid);
+        let socketidCoo=functionListaConference.checkPresenzaSocketid(socket.id);
+        let arrayForThisRoom: string = functionListaConference.utentiInConference[socketidCoo.y][socketidCoo.x];
+        //console.log('arryaForThisRoom: ' + arrayForThisRoom)
+        console.log('AGGIORNAMENTO CON IL NUOVO PIDSTREAM: ' + arrayRoom); */
         feedStream = function (data) {
             ffmpeg_process.stdin.write(data);
-            //write exception cannot be caught here.	
         };
         ffmpeg_process.stderr.on('data', function (d) {
             let ffmpeg_stderrforsocket = 'ffmpeg_stderr ' + d;

@@ -58,11 +58,20 @@ let checkPresenzaSocketid = function (socketid) {
         for (let x = 0; x < utentiInConference[y].length; x++) {
             if (utentiInConference[y][x].socketid == socketid) {
                 checkPresenzaFinaleSocketid = { x, y };
-                console.log('Socketid X e Y: ' + x + '-' + y);
+                //console.log('Socketid X e Y: ' + x + '-' + y);       
             }
         }
     }
     return checkPresenzaFinaleSocketid;
+};
+let checkpidstream = function (arrayRoom) {
+    let pidstream = 0;
+    for (let x = 1; x < arrayRoom.length; x++) {
+        if (arrayRoom[x].pidstream != 0) {
+            pidstream = arrayRoom[x].pidstream;
+        }
+    }
+    return pidstream;
 };
 //----------------------------- INSERIMENTO ELEMENTO IN MATRICE MULTIDIMENSIONALE ------------------------------------------
 let insertArray = function (idroom, idutente, socketid) {
@@ -72,18 +81,15 @@ let insertArray = function (idroom, idutente, socketid) {
         console.log("idroom NON PRESENTE e di conseguenza NON presente anche l'idutente => bisogna inserirli entrambi nell'array !");
         //idroom NON PRESENTE e di conseguenza NON presente anche l'idutente => bisogna inserirli entrambi nell'array !  
         //elemento = {'idutente': idutente, 'socketid': socketid, 'stream': false};  
-        elemento = { idutente: `${idutente}`, socketid: `${socketid}`, stream: false };
+        elemento = { idutente: `${idutente}`, socketid: `${socketid}`, stream: false, pidstream: 0 };
         utentiInConference.push([Number(idroom), elemento]);
     }
     // INSERIRE UTENTE 
     else {
-        console.log('11111');
-        console.log('aaaa: ' + checkPresenzaIdUtente(idroom, idutente));
-        console.log('22222');
         if (checkPresenzaIdRoom(idroom) >= 0 && (!checkPresenzaIdUtente(idroom, idutente))) {
             //UTENTE NON PRESENTE --> INSERIRE UTENTE NELL'ARRAY !          
             console.log("Utente NON presente inserire utente nell'ARRAY");
-            elemento = { idutente: `${idutente}`, socketid: `${socketid}`, stream: false };
+            elemento = { idutente: `${idutente}`, socketid: `${socketid}`, stream: false, pidstream: 0 };
             utentiInConference[checkPresenzaIdRoom(idroom)].push(elemento);
         }
     }
@@ -115,21 +121,28 @@ let deleteUser = function (socketid) {
     return userInConferenceVideo;
 };
 //----------------- UPDATE STREAM FALSE/TRUE -----------------------------------
+function updatePidStream(socketid, pidstream) {
+    let socketidCoo = checkPresenzaSocketid(socketid);
+    utentiInConference[socketidCoo.y][socketidCoo.x]['pidstream'] = pidstream;
+    return utentiInConference[socketidCoo.y];
+}
 function updateStreamFalse(socketid) {
     let socketidCoo = checkPresenzaSocketid(socketid);
     utentiInConference[socketidCoo.y][socketidCoo.x]['stream'] = false;
     return utentiInConference[socketidCoo.y];
 }
-function updateStreamTrue(socketid) {
+function updateStream(socketid, pidstream) {
     let socketidCoo = checkPresenzaSocketid(socketid);
     //Inizializzazione tutti gli stream a false (in pratica si fa uscire l'utente dallo streamming)
     for (let x = 1; x < utentiInConference[socketidCoo.y].length; x++) {
-        console.log('x :' + x);
-        console.log("wwww: " + utentiInConference[socketidCoo.y][x]['stream']);
+        /* console.log('x :' + x)
+        console.log("wwww: " + utentiInConference[socketidCoo.y][x]['stream']);  */
         utentiInConference[socketidCoo.y][x]['stream'] = false;
+        utentiInConference[socketidCoo.y][x]['pidstream'] = 0;
     }
     //aggiorna valore da stream: false a stream: true        
     utentiInConference[socketidCoo.y][socketidCoo.x]['stream'] = true;
+    utentiInConference[socketidCoo.y][socketidCoo.x]['pidstream'] = pidstream;
     return utentiInConference[socketidCoo.y];
 }
 /* function updateArray(socketid){
@@ -181,10 +194,12 @@ module.exports = {
     checkPresenzaIdRoom,
     checkPresenzaIdUtente,
     checkPresenzaSocketid,
+    checkpidstream,
     insertArray,
     deleteRow,
     deleteUser,
+    updatePidStream,
     updateStreamFalse,
-    updateStreamTrue,
+    updateStream,
     utentiInConference
 };
