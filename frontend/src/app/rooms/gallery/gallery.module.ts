@@ -18,7 +18,9 @@ import { AgmCoreModule } from '@agm/core';
     GalleryPageRoutingModule,
     SharedModule,
 
-    AgmCoreModule.forRoot({ apiKey: 'AIzaSyAfSMp-syOQXDlulMxr14XIV4-hgOt2DRc%27' }),
+    AgmCoreModule.forRoot({
+      apiKey: 'AIzaSyD0ul1SQNeSObb95SpgUTqIJ80sZBgeCjg',
+    }),
   ],
   declarations: [GalleryPage, PhotoDetailsComponent, GMapsComponent],
   entryComponents: [PhotoDetailsComponent],
