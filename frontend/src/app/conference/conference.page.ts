@@ -2,8 +2,15 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NavController, ViewDidLeave } from '@ionic/angular';
 import { Socket } from 'ngx-socket-io';
-import { Subscription } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { of, Subscription, timer } from 'rxjs';
+import {
+  delay,
+  delayWhen,
+  map,
+  retryWhen,
+  switchMap,
+  tap,
+} from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 
 import { AuthService } from '../auth/auth.service';
@@ -68,9 +75,6 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
             throw new Error('Unauthenticated');
           }
           this.userId = user.idutcas;
-          // if (this.userId == 'guest') {
-          //   this.userId += this.conferenceService.randomId(8);
-          // }
           console.log('🐱‍👤 : ConferencePage : this.userId', this.userId);
           return this.roomService.selectRoom(+this.roomId);
         })
@@ -78,7 +82,7 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
       .subscribe(
         (room: Room) => {
           this.room = room;
-          this.configureSocket(this.roomId, this.userId);
+          this.configureSocket();
           this.isLoading = false;
         },
         (err) => {
@@ -99,13 +103,82 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
   }
 
   // handles messages coming from signalling_server (remote party)
-  public configureSocket(roomId: string, userId: string): void {
+  public configureSocket(): void {
+    this.socket.emit('first_idroom', this.roomId);
+
+    this.socket
+      .fromEvent<any>('lista_utenti')
+      .pipe(
+        switchMap((utentiInConference) => {
+          console.log('🐱‍👤 : utentiInConference', utentiInConference);
+          if (!utentiInConference) {
+            if (this.userId.includes('guest')) {
+              this.userId = `guest_${Math.floor(Math.random() * 2)}`;
+            }
+            return of(utentiInConference);
+          }
+          return of(utentiInConference.slice(1)).pipe(
+            map((users) => {
+              if (this.userId.includes('guest')) {
+                // this.userId = `guest_${this.conferenceService.randomId(12)}`;
+                this.userId = `guest_${Math.floor(Math.random() * 2)}`;
+                console.log('🐱‍👤 : NEW userID', this.userId);
+                for (let user of users) {
+                  if (user['idutente'] == this.userId) {
+                    throw this.userId;
+                  }
+                }
+              }
+              return this.userId;
+            }),
+            retryWhen((errors) =>
+              errors.pipe(tap((u) => console.log(`User ${u} already exist!`)))
+            ),
+            tap((u) => {
+              console.log(`Correct UserID: ${u}`);
+            })
+          );
+        })
+      )
+      .subscribe(
+        (res) => {
+          console.log('🐱‍👤 : subscribe : res', res);
+          this.rtmpDestination = `${environment.urlRTMP}/${this.roomId}/${this.userId}`;
+          this.socket.emit('config_rtmpDestination', this.rtmpDestination);
+        },
+        (err) => {
+          console.log('🐱‍👤 : subscribe : err', err);
+        }
+      );
+
     this.socket.fromEvent<any>('message').subscribe(
       (msg) => {
         switch (msg.type) {
           case 'welcome':
             console.log('Welcome! ', msg.data);
             break;
+          // case 'lista_utenti':
+          //   console.log(
+          //     '🐱‍👤 : ConferencePage : lista_utenti',
+          //     msg.data.slice(1)
+          //   );
+          //   // if (this.userId == 'guest') {
+          //   //   // TODO
+          //   //   // this.generateRandomUniqueId(msg.data.slice(1)).then(console.log);
+          //   // }
+
+          //   // if (this.userId == 'guest') {
+          //   //   do {
+          //   //     this.userId += '1';
+          //   //     console.log(
+          //   //       '🐱‍👤 : ConferencePage : newRandomId',
+          //   //       this.userId
+          //   //     );
+          //   //   } while (this.idAlreadyExist(this.userId, msg.data.slice(1)));
+          //   // }
+          //   // this.rtmpDestination = `${environment.urlRTMP}/${this.roomId}/${this.userId}`;
+          //   // this.socket.emit('config_rtmpDestination', this.rtmpDestination);
+          //   break;
           case 'info':
             console.log('Info: ', msg.data);
             break;
@@ -114,12 +187,6 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
             break;
           case `${this.roomId}`: //FREXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
             console.log('array per idroom: ', msg.data);
-            // console.log('Frontend lunghezza array: ' + msg.data.length);
-            // console.log('Frontend room: ' + msg.data[0]);
-            // console.log('Frontend idutente: ' + msg.data[1].idutente);
-            // console.log('Frontend stream: ' + msg.data[1].stream);
-            // for (let i = 1; i < msg.data.lenght; i++) {}
-            // this.usersInRoom = msg.data.slice(1);
             this.usersInRoom = [];
             for (const userData of msg.data.slice(1)) {
               let newUser = {
@@ -165,9 +232,6 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
       },
       (err) => console.log(err)
     );
-    this.rtmpDestination = `${environment.urlRTMP}/${roomId}/${userId}`;
-    // this.flvOrigin = `${environment.urlWSS}/${roomId}/${userId}.flv`;
-    this.socket.emit('config_rtmpDestination', this.rtmpDestination);
   }
 
   public isPlaying: boolean = false;
@@ -199,5 +263,21 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
       this.isPlaying = true;
       this.playerComponent.startPlayer(this.flvOrigin);
     }
+  }
+
+  async generateRandomUniqueId(usersArray: RoomUser[]): Promise<string> {
+    let randomId = 'guest';
+    do {
+      randomId += '1';
+      console.log('🐱‍👤 : ConferencePage : newRandomId', randomId);
+    } while (
+      () => {
+        for (const user of usersArray) {
+          console.log('🐱‍👤 : ConferencePage : user', user);
+          return user.idutente == randomId;
+        }
+      }
+    );
+    return randomId;
   }
 }

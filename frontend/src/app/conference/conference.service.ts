@@ -67,7 +67,6 @@ export class ConferenceService {
   }
 
   randomId(length: number): string {
-    var length = 12;
     var result = '';
     var characters =
       'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';

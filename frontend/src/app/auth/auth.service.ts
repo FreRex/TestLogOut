@@ -77,6 +77,7 @@ export class AuthService implements OnDestroy {
     );
   }
 
+  updateGuest() {}
   login(username: string, password: string) {
     return this.http.post(`${environment.apiUrl}/token/`, {}).pipe(
       catchError((err) => {
@@ -185,7 +186,7 @@ export class AuthService implements OnDestroy {
     const newUser = isGuest
       ? new AuthUser(
           `guest`,
-          `guest_${this.randomId(8)}`,
+          `guest`,
           `${nome} ${cognome}`,
           // cognome,
           `guest`,
