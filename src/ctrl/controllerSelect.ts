@@ -94,10 +94,20 @@ exports.getSelect = (req: any, res: any, next: any) => {
            
         break;  
 
-        case "utenti":           
-          sql='SELECT utenti.id, utenti.idutcas, utenti.DataCreazione, utenti.collaudatoreufficio, utenti.username, utenti.password, utenti.autorizzazioni, utenti.idcommessa AS idcommessa, commesse.denominazione AS commessa ';       
-          sql = sql + 'FROM utenti INNER JOIN commesse ON commesse.id = utenti.idcommessa   ORDER BY `id` DESC'; 
+        case "utenti":   
         
+          if(idutcas==''){
+            sql='SELECT utenti.id, utenti.idutcas, utenti.DataCreazione, utenti.collaudatoreufficio, utenti.username, utenti.password, utenti.autorizzazioni, utenti.idcommessa AS idcommessa, commesse.denominazione AS commessa ';       
+            sql = sql + 'FROM utenti INNER JOIN commesse ON commesse.id = utenti.idcommessa   ORDER BY `id` DESC'; 
+          }
+          else
+          {
+            sql='SELECT utenti.id, utenti.idutcas, utenti.DataCreazione, utenti.collaudatoreufficio, utenti.username, utenti.password, utenti.autorizzazioni, utenti.idcommessa AS idcommessa, commesse.denominazione AS commessa ';       
+            sql = sql + 'FROM utenti INNER JOIN commesse ON commesse.id = utenti.idcommessa ';
+            sql = sql + 'WHERE utenti.idutcas = "'+ idutcas +'"'; 
+            console.log(sql);
+          }
+
         break;
 
         case "progetti":

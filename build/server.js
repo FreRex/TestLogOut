@@ -61,7 +61,6 @@ io.on('connection', function (socket) {
     socket.emit('message', { type: 'welcome', data: 'Please set rtmp destination before start streaming.' });
     socket.on('first_idroom', function (first_idroom) {
         let indexSingleRoom = functionListaConference.checkPresenzaIdRoom(Number(first_idroom));
-        //socket.emit('message',{type: 'lista_utenti', data: functionListaConference.utentiInConference[indexSingleRoom]})
         socket.emit('lista_utenti', functionListaConference.utentiInConference[indexSingleRoom]);
     });
     let ffmpeg_process;
@@ -70,24 +69,27 @@ io.on('connection', function (socket) {
     socket.on('config_rtmpDestination', function (m) {
         let socketid = socket.id;
         let regexValidator = /^rtmp:\/\/[^\s]*$/; //TODO: should read config		
-        if (typeof m != 'string') {
+        if (typeof m.rtmp != 'string') {
             socket.emit('message', { type: 'welcome', data: 'rtmp destination setup error.' });
             return;
         }
-        else if (!regexValidator.test(m)) {
+        else if (!regexValidator.test(m.rtmp)) {
             //socket.emit('fatal','rtmp address rejected.');
             socket.emit('message', { type: 'fatal', data: 'rtmp address rejected.' });
             return;
         }
         else {
             //Test x verifica start streaming
-            socket._rtmpDestination = m;
-            let dataforsocket = 'rtmp destination set to:' + m;
+            socket._rtmpDestination = m.rtmp;
+            let nomeUtente = m.nome;
+            console.log('m.rtmp: ' + m.rtmp);
+            console.log('m.nome: ' + m.nome);
+            let dataforsocket = 'rtmp destination set to: ' + m.rtmp;
             //console.log(socket._rtmpDestination);
             let numberRoom = functionListaConference.idroomsplit(socket._rtmpDestination);
             let identificativoUtente = functionListaConference.idutentesplit(socket._rtmpDestination);
             //Inserimento in array generale dei dati del nuovo utente in conference
-            let insertArray = functionListaConference.userInConferenceVideo(Number(numberRoom), identificativoUtente, 'entrance', socketid);
+            let insertArray = functionListaConference.userInConferenceVideo(Number(numberRoom), identificativoUtente, 'entrance', socketid, nomeUtente);
             //Determinazione singolo array specifico per il nuovo utente			
             let indexSingleRoom = functionListaConference.checkPresenzaIdRoom(Number(numberRoom));
             console.log("Index room: " + indexSingleRoom);
