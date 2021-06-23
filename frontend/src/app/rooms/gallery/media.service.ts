@@ -31,7 +31,7 @@ export interface Check {
 })
 export class MediaService {
   fotoData: Foto;
-  numberOfFotoXPage: string = '10';
+  numberOfFotoXPage: string = '14';
 
   public fotoSetSubject = new BehaviorSubject<Foto[]>([]);
   fotoSet$: Observable<Foto[]> = this.fotoSetSubject.asObservable();
@@ -89,7 +89,9 @@ export class MediaService {
   }
 
   checkDownload(nomeProgetto: string) {
-    return this.http.get(`${environment.apiUrl}/checkdownloadzip/${nomeProgetto}`);
+    return this.http.get(
+      `${environment.apiUrl}/checkdownloadzip/${nomeProgetto}`
+    );
   }
 
   downloadFoto(nomeProgetto: string) {
