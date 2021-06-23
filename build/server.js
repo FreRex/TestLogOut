@@ -61,7 +61,8 @@ io.on('connection', function (socket) {
     socket.emit('message', { type: 'welcome', data: 'Please set rtmp destination before start streaming.' });
     socket.on('first_idroom', function (first_idroom) {
         let indexSingleRoom = functionListaConference.checkPresenzaIdRoom(Number(first_idroom));
-        socket.emit('message', { type: 'lista_utenti', data: functionListaConference.utentiInConference[indexSingleRoom] });
+        //socket.emit('message',{type: 'lista_utenti', data: functionListaConference.utentiInConference[indexSingleRoom]})
+        socket.emit('lista_utenti', functionListaConference.utentiInConference[indexSingleRoom]);
     });
     let ffmpeg_process;
     let feedStream = false;

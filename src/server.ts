@@ -82,7 +82,8 @@ io.on('connection', function(socket: any){
 
 		let indexSingleRoom = functionListaConference.checkPresenzaIdRoom(Number(first_idroom));
 
-		socket.emit('message',{type: 'lista_utenti', data: functionListaConference.utentiInConference[indexSingleRoom]})
+		//socket.emit('message',{type: 'lista_utenti', data: functionListaConference.utentiInConference[indexSingleRoom]})
+		socket.emit('lista_utenti', functionListaConference.utentiInConference[indexSingleRoom]);
 
 	});
 
