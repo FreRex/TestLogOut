@@ -1,3 +1,4 @@
+import { animate, style, transition, trigger } from '@angular/animations';
 import { Component, ViewChild } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import {
@@ -19,6 +20,18 @@ import { PhotoDetailsComponent } from './photo-details/photo-details.component';
   selector: 'app-gallery',
   templateUrl: './gallery.page.html',
   styleUrls: ['./gallery.page.scss'],
+  animations: [
+    trigger('inOutAnimation', [
+      transition(':enter', [
+        style({ transform: 'scale(.1)', opacity: 0 }),
+        animate('.5s ease-in', style({ transform: 'scale(1)', opacity: 1 })),
+      ]),
+      transition(':leave', [
+        style({ transform: 'scale(1)', opacity: 1 }),
+        animate('.5s ease-out', style({ transform: 'scale(0.1)', opacity: 0 })),
+      ]),
+    ]),
+  ],
 })
 export class GalleryPage implements ViewWillEnter, ViewWillLeave {
   galleryType = 'foto';
@@ -26,6 +39,7 @@ export class GalleryPage implements ViewWillEnter, ViewWillLeave {
   roomName: string;
   pageNum: number = 1;
   backToTop: boolean = false;
+  load: boolean = true;
 
   foto$: Observable<Foto[]>;
 
@@ -59,6 +73,7 @@ export class GalleryPage implements ViewWillEnter, ViewWillLeave {
   loadFoto() {
     this.mediaServ.loadMedia(this.roomId, this.pageNum).subscribe(
       (res: Foto[]) => {
+        this.load = false;
         if (res.length == 0) {
           this.presentToast('Non ci sono Foto');
         } else {
