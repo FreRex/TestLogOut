@@ -59,6 +59,10 @@ io.on('connection', function (socket) {
     //console.log('socket.id: ' + socket.id)
     socket.emit('message', { type: 'welcome', data: 'Hello from mediarecorder-to-rtmp server!' });
     socket.emit('message', { type: 'welcome', data: 'Please set rtmp destination before start streaming.' });
+    socket.on('first_idroom', function (first_idroom) {
+        let indexSingleRoom = functionListaConference.checkPresenzaIdRoom(Number(first_idroom));
+        socket.emit('message', { type: 'lista_utenti', data: functionListaConference.utentiInConference[indexSingleRoom] });
+    });
     let ffmpeg_process;
     let feedStream = false;
     // Ricezione tramite socket url_rtmp, socket.id e relativa elaborazione
@@ -320,8 +324,10 @@ io.on('connection', function (socket) {
         }
         feedStream(m);
     });
-    //Ricezione segnale di disconnessione per chiusura browser.
+    //Ricezione segnale per click pulsnate "stop stream"
     socket.on('disconnectStream', function (m) {
+        //PULSANTE STOP STREAM PREMUTO
+        console.log('PULSANTE STOP STREAM PREMUTO');
         let socketid = socket.id;
         let socketidCoo = functionListaConference.checkPresenzaSocketid(socketid);
         let numberRoom = functionListaConference.utentiInConference[socketidCoo.y][0];
@@ -332,21 +338,20 @@ io.on('connection', function (socket) {
         //feedStream=false;			
         //Update stream da true a false
         let arrayUser = functionListaConference.updateStreamFalse(socketid);
-        //Verifica
+        //Verifica		
         if (ffmpeg_process) {
-            //Processo di chiusura da pulsante
             ffmpeg_process.stdin.end();
             ffmpeg_process.kill('SIGINT');
-            console.log("ffmpeg process ended ! DA DISCONNECTSTREAM");
+            console.log("ffmpeg process ended ! (CHIUSURA STREAMING DA DISCONNECTSTREAM");
             //invio lista utenti presenti in conference
             socket.emit('message', { type: numberRoom, data: arrayUser });
             socket.broadcast.emit('message', { type: numberRoom, data: arrayUser });
         }
         else {
+            console.warn('killing ffmpeg process attempt failed...(DA DISCONNECTSTREAM")');
             //invio lista utenti presenti in conference
             socket.emit('message', { type: numberRoom, data: arrayUser });
             socket.broadcast.emit('message', { type: numberRoom, data: arrayUser });
-            console.warn('killing ffmpeg process attempt failed...');
         }
         console.log('----------------------------------------');
         console.log('----------------------------------------');
@@ -368,13 +373,13 @@ io.on('connection', function (socket) {
             socket.broadcast.emit('message', { type: numberRoom, data: arrayUser });
             ffmpeg_process.stdin.end();
             ffmpeg_process.kill('SIGINT');
-            console.log("ffmpeg process ended ! da DISCONNECT");
+            console.log("ffmpeg process ended ! (DISCONNECT DA CHIUSURA BROWSER)");
         }
         else {
             //invio lista utenti presenti in conference
             socket.emit('message', { type: numberRoom, data: arrayUser });
             socket.broadcast.emit('message', { type: numberRoom, data: arrayUser });
-            console.warn('killing ffmpeg process attempt failed...');
+            console.warn('killing ffmpeg process attempt failed... (DISCONNECT DA CHIUSURA BROWSER)');
         }
     });
     socket.on('error', function (e) {

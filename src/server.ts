@@ -78,6 +78,14 @@ io.on('connection', function(socket: any){
 	socket.emit('message',{type: 'welcome', data: 'Hello from mediarecorder-to-rtmp server!'});	
 	socket.emit('message',{type: 'welcome', data: 'Please set rtmp destination before start streaming.'});
 
+	socket.on('first_idroom',function(first_idroom: any){
+
+		let indexSingleRoom = functionListaConference.checkPresenzaIdRoom(Number(first_idroom));
+
+		socket.emit('message',{type: 'lista_utenti', data: functionListaConference.utentiInConference[indexSingleRoom]})
+
+	});
+
 	let ffmpeg_process: any;
 	let feedStream: any = false;	
 	

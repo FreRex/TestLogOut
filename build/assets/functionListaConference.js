@@ -22,27 +22,7 @@ let checkPresenzaIdRoom = function (idroom) {
     }
     return checkPresenzaFinaleIdRoom;
 };
-/* let checkPresenzaIdUtente = function (idroom: number, idutente : string){
-    console.log('idroom: ' + idroom);
-    console.log('idutente: ' + idutente);
-    let checkPresenzaFinaleIdUtente = -1;
-    let index = checkPresenzaIdRoom(idroom);
-    console.log('index: ' + index)
-    console.log(utentiInConference[index])
-    console.log(utentiInConference[index].includes(idutente))
-    if(utentiInConference[index].indexOf(idutente)>=0){
-        console.log('jjjjjjjjjjjjjjjjjjjjjj')
-        //checkPresenzaFinaleIdUtente = index;
-        checkPresenzaFinaleIdUtente = utentiInConference[index].indexOf(idutente);
-    }
-    else
-    {
-        console.log('HHHHHHHHHHHHHHHHHHHHH')
-    }
-   
-    return checkPresenzaFinaleIdUtente;
-} */
-function checkPresenzaIdUtente(idroom, idutente) {
+let checkPresenzaIdUtente = function (idroom, idutente) {
     let checkPresenzaFinaleIdUtente = false;
     let index = checkPresenzaIdRoom(idroom);
     for (let x = 0; x < utentiInConference[index].length; x++) {
@@ -51,7 +31,7 @@ function checkPresenzaIdUtente(idroom, idutente) {
         }
     }
     return checkPresenzaFinaleIdUtente;
-}
+};
 let checkPresenzaSocketid = function (socketid) {
     let checkPresenzaFinaleSocketid = -1;
     for (let y = 0; y < utentiInConference.length; y++) {
