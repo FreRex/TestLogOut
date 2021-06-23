@@ -2,16 +2,20 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NavController, ViewDidLeave } from '@ionic/angular';
 import { Socket } from 'ngx-socket-io';
-import { of, Subscription, timer } from 'rxjs';
+import { from, of, Subscription, timer } from 'rxjs';
+import { Storage } from '@capacitor/storage';
+
 import {
   delay,
   delayWhen,
   map,
   retryWhen,
   switchMap,
+  take,
   tap,
 } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
+import { AuthUser } from '../auth/auth-user.model';
 
 import { AuthService } from '../auth/auth.service';
 import { Room, RoomService } from '../rooms/room.service';
@@ -29,10 +33,11 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
   @ViewChild(PlayerComponent) private playerComponent: PlayerComponent;
   // currentRoom$: Observable<Room>;
   public room: Room;
+  public user: AuthUser;
   public usersInRoom: RoomUser[];
 
-  roomId: string = '';
-  userId: string = '';
+  // roomId: string = '';
+  // userId: string = '';
 
   flvOrigin: string = '';
   rtmpDestination: string = '';
@@ -62,26 +67,34 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
           if (!paramMap.has('roomId')) {
             throw new Error('Missing Room ID');
           }
-          this.roomId = paramMap.get('roomId');
+          let roomId = paramMap.get('roomId');
           this.router.navigate([], {
             replaceUrl: true,
             relativeTo: this.activatedRoute,
           });
-          console.log('🐱‍👤 : ConferencePage : this.roomId', this.roomId);
-          return this.authService.currentUser$;
+          console.log('🐱‍👤 : roomId', roomId);
+          return this.roomService.selectRoom(+roomId);
+          // return this.authService.currentUser$;
         }),
-        switchMap((user) => {
-          if (!user) {
-            throw new Error('Unauthenticated');
+        switchMap((room: Room) => {
+          if (!room) {
+            throw new Error('Room Not Found');
           }
-          this.userId = user.idutcas;
-          console.log('🐱‍👤 : ConferencePage : this.userId', this.userId);
-          return this.roomService.selectRoom(+this.roomId);
-        })
+          this.room = room;
+          console.log('🐱‍👤 : this.room.id', this.room.id);
+          // this.userId = user.idutcas;
+          // return this.roomService.selectRoom(+this.roomId);
+          return this.authService.currentUser$;
+          // return from(Storage.get({ key: 'authData' }));
+        }),
+        take(1)
       )
       .subscribe(
-        (room: Room) => {
-          this.room = room;
+        (user: AuthUser) => {
+          this.user = user;
+          // this.userId = user.idutcas;
+          console.log('🐱‍👤 : this.user.idutcas', this.user.idutcas);
+          // this.room = room;
           this.configureSocket();
           this.isLoading = false;
         },
@@ -104,46 +117,66 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
 
   // handles messages coming from signalling_server (remote party)
   public configureSocket(): void {
-    this.socket.emit('first_idroom', this.roomId);
+    this.socket.emit('first_idroom', this.room.id);
 
+    let userId = this.user.idutcas;
     this.socket
       .fromEvent<any>('lista_utenti')
       .pipe(
         switchMap((utentiInConference) => {
           console.log('🐱‍👤 : utentiInConference', utentiInConference);
-          if (!utentiInConference) {
-            if (this.userId.includes('guest')) {
-              this.userId = `guest_${Math.floor(Math.random() * 2)}`;
-            }
-            return of(utentiInConference);
-          }
-          return of(utentiInConference.slice(1)).pipe(
-            map((users) => {
-              if (this.userId.includes('guest')) {
-                // this.userId = `guest_${this.conferenceService.randomId(12)}`;
-                this.userId = `guest_${Math.floor(Math.random() * 2)}`;
-                console.log('🐱‍👤 : NEW userID', this.userId);
-                for (let user of users) {
-                  if (user['idutente'] == this.userId) {
-                    throw this.userId;
+          if (userId == 'guest') {
+            if (!utentiInConference) {
+              userId = `guest_${Math.floor(Math.random() * 3)}`;
+              return of(userId);
+            } else {
+              return of(utentiInConference.slice(1)).pipe(
+                map((users) => {
+                  // userId = `guest_${this.conferenceService.randomId(12)}`;
+                  userId = `guest_${Math.floor(Math.random() * 3)}`;
+                  console.log('🐱‍👤 : NEW userId', userId);
+                  for (let user of users) {
+                    if (user['idutente'] == userId) {
+                      throw userId;
+                    }
                   }
-                }
-              }
-              return this.userId;
-            }),
-            retryWhen((errors) =>
-              errors.pipe(tap((u) => console.log(`User ${u} already exist!`)))
-            ),
-            tap((u) => {
-              console.log(`Correct UserID: ${u}`);
-            })
-          );
+                  return userId;
+                }),
+                retryWhen((errors) =>
+                  errors.pipe(
+                    tap((id) => console.log(`User ${id} already exist!`))
+                  )
+                )
+              );
+            }
+          } else {
+            return of(this.user.idutcas);
+          }
+        }),
+        tap((id) => {
+          console.log('✔ : Correct ID', id);
+          if (id !== this.user.idutcas) {
+            console.log('❓ : id !== this.user.idutcas', id);
+            this.authService.updateGuest(
+              new AuthUser(
+                this.user.idutente,
+                id,
+                this.user.nome,
+                this.user.username,
+                this.user.idcommessa,
+                this.user.commessa,
+                this.user.autorizzazione,
+                this.user.token,
+                this.user.tokenExpirationDate
+              )
+            );
+          }
         })
       )
       .subscribe(
-        (res) => {
-          console.log('🐱‍👤 : subscribe : res', res);
-          this.rtmpDestination = `${environment.urlRTMP}/${this.roomId}/${this.userId}`;
+        (userId) => {
+          console.log('🐱‍👤 : subscribe : res', userId);
+          this.rtmpDestination = `${environment.urlRTMP}/${this.room.id}/${userId}`;
           this.socket.emit('config_rtmpDestination', this.rtmpDestination);
         },
         (err) => {
@@ -185,7 +218,7 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
           case 'fatal':
             console.log('Fatal: ', msg.data);
             break;
-          case `${this.roomId}`: //FREXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+          case `${this.room.id}`: //FREXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
             console.log('array per idroom: ', msg.data);
             this.usersInRoom = [];
             for (const userData of msg.data.slice(1)) {
@@ -200,7 +233,7 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
               };
               if (newUser.stream) {
                 // if (newUser.idutente != this.userId) {
-                this.flvOrigin = `${environment.urlWSS}/${this.roomId}/${newUser.idutente}.flv`;
+                this.flvOrigin = `${environment.urlWSS}/${this.room.id}/${newUser.idutente}.flv`;
                 if (!this.isPlaying && !this.isStreaming) {
                   this.isPlaying = true;
                   this.playerComponent.startPlayer(this.flvOrigin);
@@ -218,7 +251,7 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
             break;
           case 'stopWebCam':
             console.log('stopWebCam: ', msg.data);
-            if (msg.data == this.roomId) {
+            if (msg.data == this.room.id) {
               if (this.isStreaming) {
                 // this.socket.emit('disconnectStream', '');
                 this.playerComponent.stopStream();

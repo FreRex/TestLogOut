@@ -3,7 +3,7 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { Storage } from '@capacitor/storage';
 import { BehaviorSubject, from, throwError } from 'rxjs';
-import { catchError, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, map, switchMap, take, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 
 import { AuthUser } from './auth-user.model';
@@ -77,7 +77,30 @@ export class AuthService implements OnDestroy {
     );
   }
 
-  updateGuest() {}
+  updateGuest(newGuest: AuthUser) {
+    console.log('🐱‍👤 : AuthService : guestId', newGuest);
+    // * Produce un nuovo utente sull'osservabile
+    this._user.next(newGuest);
+
+    // * Salva i parametri dell'utente sul localStorage
+    Storage.set({
+      key: 'authData',
+      value: JSON.stringify({
+        idutente: newGuest.idutente,
+        idutcas: newGuest.idutcas,
+        username: newGuest.username,
+        idcommessa: newGuest.idcommessa,
+        commessa: newGuest.idcommessa,
+        autorizzazione: newGuest.autorizzazione,
+        token: newGuest.token,
+        tokenExpirationDate: newGuest.tokenExpirationDate.toISOString(),
+      }),
+    });
+
+    // * Imposta un nuovo timer per l'autologout
+    this.autoLogout(newGuest.tokenDuration);
+  }
+
   login(username: string, password: string) {
     return this.http.post(`${environment.apiUrl}/token/`, {}).pipe(
       catchError((err) => {
