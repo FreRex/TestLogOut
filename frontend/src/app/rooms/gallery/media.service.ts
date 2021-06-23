@@ -31,7 +31,7 @@ export interface Check {
 })
 export class MediaService {
   fotoData: Foto;
-  numberOfFotoXPage: string = '14';
+  numberOfFotoXPage: string = '12';
 
   public fotoSetSubject = new BehaviorSubject<Foto[]>([]);
   fotoSet$: Observable<Foto[]> = this.fotoSetSubject.asObservable();
