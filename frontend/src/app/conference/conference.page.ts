@@ -124,17 +124,18 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
       .fromEvent<any>('lista_utenti')
       .pipe(
         switchMap((utentiInConference) => {
-          console.log('🐱‍👤 : utentiInConference', utentiInConference);
+          console.log('🐱‍👤 : utentiInConference:', utentiInConference);
           if (userId == 'guest') {
             if (!utentiInConference) {
-              userId = `guest_${Math.floor(Math.random() * 3)}`;
+              userId = `guest_${this.conferenceService.randomId(12)}`;
+              // userId = `guest_${Math.floor(Math.random() * 3)}`;
               return of(userId);
             } else {
               return of(utentiInConference.slice(1)).pipe(
                 map((users) => {
-                  // userId = `guest_${this.conferenceService.randomId(12)}`;
-                  userId = `guest_${Math.floor(Math.random() * 3)}`;
-                  console.log('🐱‍👤 : NEW userId', userId);
+                  userId = `guest_${this.conferenceService.randomId(12)}`;
+                  // userId = `guest_${Math.floor(Math.random() * 3)}`;
+                  console.log('🐱‍👤 : NEW userId:', userId);
                   for (let user of users) {
                     if (user['idutente'] == userId) {
                       throw userId;
@@ -154,9 +155,10 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
           }
         }),
         tap((id) => {
-          console.log('✔ : Correct ID', id);
+          console.log('✔ : Correct ID:', id);
           if (id !== this.user.idutcas) {
-            console.log('❓ : id !== this.user.idutcas', id);
+            console.log('❓ : Should update user?', id !== this.user.idutcas);
+            // TODO: potrei mandargli anche solo l'id e usare un osservabile come avevo fatto prima
             this.authService.updateGuest(
               new AuthUser(
                 this.user.idutente,
@@ -176,8 +178,12 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
       .subscribe(
         (userId) => {
           console.log('🐱‍👤 : subscribe : res', userId);
+          console.log('🐱‍👤 : this.user: ', this.user.nome);
           this.rtmpDestination = `${environment.urlRTMP}/${this.room.id}/${userId}`;
-          this.socket.emit('config_rtmpDestination', this.rtmpDestination);
+          this.socket.emit('config_rtmpDestination', {
+            rtmp: this.rtmpDestination,
+            nome: this.user.nome,
+          });
         },
         (err) => {
           console.log('🐱‍👤 : subscribe : err', err);
@@ -190,28 +196,6 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
           case 'welcome':
             console.log('Welcome! ', msg.data);
             break;
-          // case 'lista_utenti':
-          //   console.log(
-          //     '🐱‍👤 : ConferencePage : lista_utenti',
-          //     msg.data.slice(1)
-          //   );
-          //   // if (this.userId == 'guest') {
-          //   //   // TODO
-          //   //   // this.generateRandomUniqueId(msg.data.slice(1)).then(console.log);
-          //   // }
-
-          //   // if (this.userId == 'guest') {
-          //   //   do {
-          //   //     this.userId += '1';
-          //   //     console.log(
-          //   //       '🐱‍👤 : ConferencePage : newRandomId',
-          //   //       this.userId
-          //   //     );
-          //   //   } while (this.idAlreadyExist(this.userId, msg.data.slice(1)));
-          //   // }
-          //   // this.rtmpDestination = `${environment.urlRTMP}/${this.roomId}/${this.userId}`;
-          //   // this.socket.emit('config_rtmpDestination', this.rtmpDestination);
-          //   break;
           case 'info':
             console.log('Info: ', msg.data);
             break;
@@ -224,7 +208,7 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
             for (const userData of msg.data.slice(1)) {
               let newUser = {
                 idutente: userData['idutente'],
-                nome: 'Nome Cognome', // TODO: recuperare nome da backend
+                nome: userData['nome'], // TODO: recuperare nome da backend
                 iniziali:
                   userData['idutente'].charAt(0) +
                   userData['socketid'].charAt(0),

@@ -78,7 +78,7 @@ export class AuthService implements OnDestroy {
   }
 
   updateGuest(newGuest: AuthUser) {
-    console.log('🐱‍👤 : AuthService : guestId', newGuest);
+    console.log('🐱‍👤 : AuthService : newGuest', newGuest);
     // * Produce un nuovo utente sull'osservabile
     this._user.next(newGuest);
 
@@ -88,6 +88,7 @@ export class AuthService implements OnDestroy {
       value: JSON.stringify({
         idutente: newGuest.idutente,
         idutcas: newGuest.idutcas,
+        nome: newGuest.nome,
         username: newGuest.username,
         idcommessa: newGuest.idcommessa,
         commessa: newGuest.idcommessa,
@@ -153,7 +154,6 @@ export class AuthService implements OnDestroy {
           parsedData.idutente,
           parsedData.idutcas,
           'Nome Cognome', // TODO: recuperare nome da backend
-          // 'Cognome', // TODO: recuperare cognome da backend
           parsedData.username,
           parsedData.idcommessa,
           parsedData.idcommessa, // TODO: parsedData.commessa
@@ -211,7 +211,6 @@ export class AuthService implements OnDestroy {
           `guest`,
           `guest`,
           `${nome} ${cognome}`,
-          // cognome,
           `guest`,
           'guest', // TODO: payload.idcommessa
           'guest',
@@ -223,7 +222,6 @@ export class AuthService implements OnDestroy {
           payload.idutente,
           payload.idutcas,
           'Nome Cognome', // TODO: recuperare nome da backend
-          // 'Cognome', // TODO: recuperare cognome da backend
           payload.username,
           payload.commessa, // TODO: payload.idcommessa
           payload.commessa,
@@ -241,6 +239,7 @@ export class AuthService implements OnDestroy {
       value: JSON.stringify({
         idutente: newUser.idutente,
         idutcas: newUser.idutcas,
+        nome: newUser.nome,
         username: newUser.username,
         idcommessa: newUser.idcommessa,
         commessa: newUser.idcommessa, // TODO: newUser.commessa
