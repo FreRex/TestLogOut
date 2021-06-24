@@ -1,6 +1,11 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NavController, ViewDidLeave } from '@ionic/angular';
+import {
+  NavController,
+  PopoverController,
+  ToastController,
+  ViewDidLeave,
+} from '@ionic/angular';
 import { Socket } from 'ngx-socket-io';
 import { iif, Observable, of, Subscription } from 'rxjs';
 import { map, retryWhen, switchMap, take, tap } from 'rxjs/operators';
@@ -8,6 +13,7 @@ import { environment } from 'src/environments/environment';
 
 import { AuthUser } from '../auth/auth-user.model';
 import { AuthService } from '../auth/auth.service';
+import { RoomItemService } from '../rooms/room-item.service';
 import { Room, RoomService } from '../rooms/room.service';
 import { RoomUser } from './conference.service';
 import { PlayerComponent } from './player/player.component';
@@ -36,6 +42,7 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
     private navController: NavController,
     private roomService: RoomService,
     private authService: AuthService,
+    private roomItemService: RoomItemService,
     private socket: Socket,
     private router: Router
   ) {}
@@ -274,5 +281,8 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
     }
     console.log('🐱‍👤 generateRandomId : result', result);
     return result;
+  }
+  copyLink() {
+    this.roomItemService.copyLink(this.room);
   }
 }

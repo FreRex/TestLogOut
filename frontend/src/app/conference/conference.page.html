@@ -44,7 +44,7 @@
             <ion-text>{{room?.sessione}}</ion-text>
           </div>
           <!-- BTN CHE COPIA IL LINK DELLA CONFERENCE -->
-          <ion-button class="button">
+          <ion-button class="button" (click)="copyLink()">
             <ion-icon slot="icon-only" name="share-social"></ion-icon>
           </ion-button>
         </div>
