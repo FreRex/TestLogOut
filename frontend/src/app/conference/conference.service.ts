@@ -9,7 +9,7 @@ import { Room, RoomData } from '../rooms/room.service';
 
 export interface RoomUser {
   idutente: string;
-  nome: string;
+  nomecognome: string;
   iniziali: string;
   socketid: string;
   stream: boolean;

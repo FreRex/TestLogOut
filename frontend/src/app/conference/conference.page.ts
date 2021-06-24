@@ -163,7 +163,7 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
               new AuthUser(
                 this.user.idutente,
                 id,
-                this.user.nome,
+                this.user.nomecognome,
                 this.user.username,
                 this.user.idcommessa,
                 this.user.commessa,
@@ -178,11 +178,11 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
       .subscribe(
         (userId) => {
           console.log('🐱‍👤 : subscribe : res', userId);
-          console.log('🐱‍👤 : this.user: ', this.user.nome);
+          console.log('🐱‍👤 : this.user: ', this.user.nomecognome);
           this.rtmpDestination = `${environment.urlRTMP}/${this.room.id}/${userId}`;
           this.socket.emit('config_rtmpDestination', {
             rtmp: this.rtmpDestination,
-            nome: this.user.nome,
+            nome: this.user.nomecognome,
           });
         },
         (err) => {
@@ -208,12 +208,12 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
             for (const userData of msg.data.slice(1)) {
               let newUser = {
                 idutente: userData['idutente'],
-                nome: userData['nome'], // TODO: recuperare nome da backend
+                nomecognome: userData['nome'],
                 iniziali:
                   userData['idutente'].charAt(0) +
                   userData['socketid'].charAt(0),
                 socketid: userData['socketid'],
-                stream: userData['stream'], // TODO
+                stream: userData['stream'],
               };
               if (newUser.stream) {
                 // if (newUser.idutente != this.userId) {

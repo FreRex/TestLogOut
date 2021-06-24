@@ -49,9 +49,9 @@
         <div>
           <ion-item lines="none">
             <div>
-              <h2>{{ (currentUser$ | async)?.nome }}</h2>
+              <h2>{{ (currentUser$ | async)?.nomecognome }}</h2>
               <p>Username: {{ (currentUser$ | async)?.username }}</p>
-              <p>Commessa: {{ (currentUser$ | async)?.idcommessa }}</p>
+              <p>Commessa: {{ (currentUser$ | async)?.commessa }}</p>
               <p>
                 Autorizzazione: {{ (currentUser$ | async)?.autorizzazione }}
               </p>

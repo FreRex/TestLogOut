@@ -51,9 +51,18 @@ export class UserService {
       map((users) =>
         users.filter(
           (user) =>
-            user.collaudatoreufficio.toString().toLowerCase().includes(query.toLowerCase()) ||
-            user.commessa.toString().toLowerCase().includes(query.toLowerCase()) ||
-            user.username.toString().toLowerCase().includes(query.toLowerCase()) ||
+            user.collaudatoreufficio
+              .toString()
+              .toLowerCase()
+              .includes(query.toLowerCase()) ||
+            user.commessa
+              .toString()
+              .toLowerCase()
+              .includes(query.toLowerCase()) ||
+            user.username
+              .toString()
+              .toLowerCase()
+              .includes(query.toLowerCase()) ||
             user.id.toString().toLowerCase().includes(query.toLowerCase())
         )
       )

@@ -11,8 +11,9 @@ import { AuthUser } from './auth-user.model';
 interface TokenPayload {
   idutente: string;
   idutcas: string;
+  nomecognome: string;
   username: string;
-  // idcommessa: string;
+  idcommessa: string;
   commessa: string;
   autorizzazione: string;
   exp: number;
@@ -88,10 +89,10 @@ export class AuthService implements OnDestroy {
       value: JSON.stringify({
         idutente: newGuest.idutente,
         idutcas: newGuest.idutcas,
-        nome: newGuest.nome,
+        nomecognome: newGuest.nomecognome,
         username: newGuest.username,
         idcommessa: newGuest.idcommessa,
-        commessa: newGuest.idcommessa,
+        commessa: newGuest.commessa,
         autorizzazione: newGuest.autorizzazione,
         token: newGuest.token,
         tokenExpirationDate: newGuest.tokenExpirationDate.toISOString(),
@@ -153,10 +154,10 @@ export class AuthService implements OnDestroy {
         const user = new AuthUser(
           parsedData.idutente,
           parsedData.idutcas,
-          'Nome Cognome', // TODO: recuperare nome da backend
+          parsedData.nomecognome,
           parsedData.username,
           parsedData.idcommessa,
-          parsedData.idcommessa, // TODO: parsedData.commessa
+          parsedData.commessa,
           parsedData.autorizzazione,
           parsedData.token,
           expirationTime
@@ -174,25 +175,6 @@ export class AuthService implements OnDestroy {
       })
     );
   }
-
-  // signup(username: string, password: string) {
-  //   return this.http
-  //     .post(`${environment.apiUrl}/signup/`, {
-  //       usr: username,
-  //       pwd: password,
-  //     })
-  //     .pipe(
-  //       catchError((err) => {
-  //         return throwError(err);
-  //       }),
-  //       tap((token: string) => {
-  //         if (!token) {
-  //           throw new Error('Credenziali errate');
-  //         }
-  //         this.setUserData(token);
-  //       })
-  //     );
-  // }
 
   setUserData(
     token: string,
@@ -212,7 +194,7 @@ export class AuthService implements OnDestroy {
           `guest`,
           `${nome} ${cognome}`,
           `guest`,
-          'guest', // TODO: payload.idcommessa
+          'guest',
           'guest',
           'guest',
           token,
@@ -221,9 +203,9 @@ export class AuthService implements OnDestroy {
       : new AuthUser(
           payload.idutente,
           payload.idutcas,
-          'Nome Cognome', // TODO: recuperare nome da backend
+          payload.nomecognome,
           payload.username,
-          payload.commessa, // TODO: payload.idcommessa
+          payload.idcommessa,
           payload.commessa,
           payload.autorizzazione,
           token,
@@ -239,10 +221,10 @@ export class AuthService implements OnDestroy {
       value: JSON.stringify({
         idutente: newUser.idutente,
         idutcas: newUser.idutcas,
-        nome: newUser.nome,
+        nomecognome: newUser.nomecognome,
         username: newUser.username,
         idcommessa: newUser.idcommessa,
-        commessa: newUser.idcommessa, // TODO: newUser.commessa
+        commessa: newUser.commessa,
         autorizzazione: newUser.autorizzazione,
         token: newUser.token,
         tokenExpirationDate: newUser.tokenExpirationDate.toISOString(),
@@ -277,16 +259,35 @@ export class AuthService implements OnDestroy {
     }
   }
 
-  randomId(length: number): string {
-    var length = 12;
-    var result = '';
-    var characters =
-      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    var charactersLength = characters.length;
-    for (var i = 0; i < length; i++) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-    }
-    console.log('🐱‍👤 : AuthService : result', result);
-    return result;
-  }
+  // randomId(length: number): string {
+  //   var length = 12;
+  //   var result = '';
+  //   var characters =
+  //     'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  //   var charactersLength = characters.length;
+  //   for (var i = 0; i < length; i++) {
+  //     result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  //   }
+  //   console.log('🐱‍👤 : AuthService : result', result);
+  //   return result;
+  // }
+
+  // signup(username: string, password: string) {
+  //   return this.http
+  //     .post(`${environment.apiUrl}/signup/`, {
+  //       usr: username,
+  //       pwd: password,
+  //     })
+  //     .pipe(
+  //       catchError((err) => {
+  //         return throwError(err);
+  //       }),
+  //       tap((token: string) => {
+  //         if (!token) {
+  //           throw new Error('Credenziali errate');
+  //         }
+  //         this.setUserData(token);
+  //       })
+  //     );
+  // }
 }
