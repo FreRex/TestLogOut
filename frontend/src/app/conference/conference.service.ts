@@ -1,11 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { map, switchMap, take, tap } from 'rxjs/operators';
-import { environment } from 'src/environments/environment';
 
 import { AuthService } from '../auth/auth.service';
-import { Room, RoomData } from '../rooms/room.service';
+import { Room } from '../rooms/room.service';
 
 export interface RoomUser {
   idutente: string;

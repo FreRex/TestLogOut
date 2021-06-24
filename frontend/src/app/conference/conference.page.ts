@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NavController, ViewDidLeave } from '@ionic/angular';
 import { Socket } from 'ngx-socket-io';
-import { from, of, Subscription, timer } from 'rxjs';
+import { from, iif, Observable, of, Subscription, timer } from 'rxjs';
 import { Storage } from '@capacitor/storage';
 
 import {
@@ -119,41 +119,17 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
   public configureSocket(): void {
     this.socket.emit('first_idroom', this.room.id);
 
-    let userId = this.user.idutcas;
+    // let userId = this.user.idutcas;
     this.socket
       .fromEvent<any>('lista_utenti')
       .pipe(
-        switchMap((utentiInConference) => {
-          console.log('🐱‍👤 : utentiInConference:', utentiInConference);
-          if (userId == 'guest') {
-            if (!utentiInConference) {
-              userId = `guest_${this.conferenceService.randomId(12)}`;
-              // userId = `guest_${Math.floor(Math.random() * 3)}`;
-              return of(userId);
-            } else {
-              return of(utentiInConference.slice(1)).pipe(
-                map((users) => {
-                  userId = `guest_${this.conferenceService.randomId(12)}`;
-                  // userId = `guest_${Math.floor(Math.random() * 3)}`;
-                  console.log('🐱‍👤 : NEW userId:', userId);
-                  for (let user of users) {
-                    if (user['idutente'] == userId) {
-                      throw userId;
-                    }
-                  }
-                  return userId;
-                }),
-                retryWhen((errors) =>
-                  errors.pipe(
-                    tap((id) => console.log(`User ${id} already exist!`))
-                  )
-                )
-              );
-            }
-          } else {
-            return of(this.user.idutcas);
-          }
-        }),
+        switchMap((utentiInConference) =>
+          iif(
+            () => this.user.idutcas !== 'guest',
+            of(this.user.idutcas),
+            this.checkIdGuest(utentiInConference, this.user.idutcas)
+          )
+        ),
         tap((id) => {
           console.log('✔ : Correct ID:', id);
           if (id !== this.user.idutcas) {
@@ -282,19 +258,43 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
     }
   }
 
-  async generateRandomUniqueId(usersArray: RoomUser[]): Promise<string> {
-    let randomId = 'guest';
-    do {
-      randomId += '1';
-      console.log('🐱‍👤 : ConferencePage : newRandomId', randomId);
-    } while (
-      () => {
-        for (const user of usersArray) {
-          console.log('🐱‍👤 : ConferencePage : user', user);
-          return user.idutente == randomId;
-        }
-      }
+  checkIdGuest(utentiInConference: any, userId: string): Observable<string> {
+    return of(utentiInConference).pipe(
+      switchMap((utentiInConference) =>
+        iif(
+          () => !utentiInConference,
+          of(`guest_${this.conferenceService.randomId(12)}`),
+          of(utentiInConference.slice(1)).pipe(
+            map((users) => {
+              // userId = `guest_${Math.floor(Math.random() * 2)}`;
+              userId = `guest_${this.conferenceService.randomId(12)}`;
+              console.log('🐱‍👤 : NEW userId:', userId);
+              for (let user of users) {
+                if (user['idutente'] == userId) {
+                  throw userId;
+                }
+              }
+              return userId;
+            }),
+            retryWhen((errors) =>
+              errors.pipe(tap((id) => console.log(`User ${id} already exist!`)))
+            )
+          )
+        )
+      )
     );
-    return randomId;
+  }
+
+  generateRandomId(length: number): string {
+    var result = '';
+    var characters =
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    for (var i = 0; i < length; i++) {
+      result += characters.charAt(
+        Math.floor(Math.random() * characters.length)
+      );
+    }
+    console.log('🐱‍👤 : AuthService : result', result);
+    return result;
   }
 }
