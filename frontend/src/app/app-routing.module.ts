@@ -44,6 +44,10 @@ const routes: Routes = [
       import('./not-found/not-found.module').then((m) => m.NotFoundPageModule),
     canLoad: [AuthGuard],
   },
+  {
+    path: 'test-map',
+    loadChildren: () => import('./test-map/test-map.module').then( m => m.TestMapPageModule)
+  },
 ];
 
 @NgModule({
