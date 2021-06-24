@@ -78,29 +78,50 @@ export class AuthService implements OnDestroy {
     );
   }
 
-  updateGuest(newGuest: AuthUser) {
-    console.log('🐱‍👤 : AuthService : newGuest', newGuest);
-    // * Produce un nuovo utente sull'osservabile
-    this._user.next(newGuest);
+  updateGuest(newId: string) {
+    return this.currentUser$.pipe(
+      take(1),
+      map((user) => {
+        console.log('🐱‍👤 : AuthService : newId', newId);
 
-    // * Salva i parametri dell'utente sul localStorage
-    Storage.set({
-      key: 'authData',
-      value: JSON.stringify({
-        idutente: newGuest.idutente,
-        idutcas: newGuest.idutcas,
-        nomecognome: newGuest.nomecognome,
-        username: newGuest.username,
-        idcommessa: newGuest.idcommessa,
-        commessa: newGuest.commessa,
-        autorizzazione: newGuest.autorizzazione,
-        token: newGuest.token,
-        tokenExpirationDate: newGuest.tokenExpirationDate.toISOString(),
-      }),
-    });
+        // * Crea un nuovo utente
+        const newUser = new AuthUser(
+          user.idutente,
+          newId,
+          user.nomecognome,
+          user.username,
+          user.idcommessa,
+          user.commessa,
+          user.autorizzazione,
+          user.token,
+          user.tokenExpirationDate
+        );
 
-    // * Imposta un nuovo timer per l'autologout
-    this.autoLogout(newGuest.tokenDuration);
+        // * Produce un nuovo utente sull'osservabile
+        this._user.next(newUser);
+
+        // * Salva i parametri dell'utente sul localStorage
+        Storage.set({
+          key: 'authData',
+          value: JSON.stringify({
+            idutente: newUser.idutente,
+            idutcas: newId,
+            nomecognome: newUser.nomecognome,
+            username: newUser.username,
+            idcommessa: newUser.idcommessa,
+            commessa: newUser.commessa,
+            autorizzazione: newUser.autorizzazione,
+            token: newUser.token,
+            tokenExpirationDate: newUser.tokenExpirationDate.toISOString(),
+          }),
+        });
+
+        // * Imposta un nuovo timer per l'autologout
+        this.autoLogout(newUser.tokenDuration);
+
+        return newUser;
+      })
+    );
   }
 
   login(username: string, password: string) {

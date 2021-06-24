@@ -130,32 +130,20 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
             this.checkIdGuest(utentiInConference, this.user.idutcas)
           )
         ),
-        tap((id) => {
-          console.log('✔ : Correct ID:', id);
-          if (id !== this.user.idutcas) {
-            console.log('❓ : Should update user?', id !== this.user.idutcas);
-            // TODO: potrei mandargli anche solo l'id e usare un osservabile come avevo fatto prima
-            this.authService.updateGuest(
-              new AuthUser(
-                this.user.idutente,
-                id,
-                this.user.nomecognome,
-                this.user.username,
-                this.user.idcommessa,
-                this.user.commessa,
-                this.user.autorizzazione,
-                this.user.token,
-                this.user.tokenExpirationDate
-              )
-            );
-          }
-        })
+        switchMap((userId: string) =>
+          iif(
+            () => userId !== this.user.idutcas,
+            this.authService.updateGuest(userId),
+            of(this.user)
+          )
+        )
       )
       .subscribe(
-        (userId) => {
-          console.log('🐱‍👤 : subscribe : res', userId);
-          console.log('🐱‍👤 : this.user: ', this.user.nomecognome);
-          this.rtmpDestination = `${environment.urlRTMP}/${this.room.id}/${userId}`;
+        (user: AuthUser) => {
+          this.user = user;
+          console.log('🐱‍👤 : this.user.idutcas', this.user.idutcas);
+          console.log('🐱‍👤 : this.user.nomecognome: ', this.user.nomecognome);
+          this.rtmpDestination = `${environment.urlRTMP}/${this.room.id}/${this.user.idutcas}`;
           this.socket.emit('config_rtmpDestination', {
             rtmp: this.rtmpDestination,
             nome: this.user.nomecognome,
@@ -260,14 +248,16 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
 
   checkIdGuest(utentiInConference: any, userId: string): Observable<string> {
     return of(utentiInConference).pipe(
-      switchMap((utentiInConference) =>
-        iif(
-          () => !utentiInConference,
-          of(`guest_${this.conferenceService.randomId(12)}`),
-          of(utentiInConference.slice(1)).pipe(
+      switchMap((utentiInConference) => {
+        if (!utentiInConference) {
+          userId = `guest_${this.conferenceService.randomId(12)}`;
+          // userId = `guest_${Math.floor(Math.random() * 3)}`;
+          return of(userId);
+        } else {
+          return of(utentiInConference.slice(1)).pipe(
             map((users) => {
-              // userId = `guest_${Math.floor(Math.random() * 2)}`;
               userId = `guest_${this.conferenceService.randomId(12)}`;
+              // userId = `guest_${Math.floor(Math.random() * 3)}`;
               console.log('🐱‍👤 : NEW userId:', userId);
               for (let user of users) {
                 if (user['idutente'] == userId) {
@@ -279,9 +269,9 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
             retryWhen((errors) =>
               errors.pipe(tap((id) => console.log(`User ${id} already exist!`)))
             )
-          )
-        )
-      )
+          );
+        }
+      })
     );
   }
 
@@ -294,7 +284,7 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
         Math.floor(Math.random() * characters.length)
       );
     }
-    console.log('🐱‍👤 : AuthService : result', result);
+    console.log('🐱‍👤 generateRandomId : result', result);
     return result;
   }
 }
