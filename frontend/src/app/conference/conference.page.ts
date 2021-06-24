@@ -2,24 +2,14 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NavController, ViewDidLeave } from '@ionic/angular';
 import { Socket } from 'ngx-socket-io';
-import { from, iif, Observable, of, Subscription, timer } from 'rxjs';
-import { Storage } from '@capacitor/storage';
-
-import {
-  delay,
-  delayWhen,
-  map,
-  retryWhen,
-  switchMap,
-  take,
-  tap,
-} from 'rxjs/operators';
+import { iif, Observable, of, Subscription } from 'rxjs';
+import { map, retryWhen, switchMap, take, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { AuthUser } from '../auth/auth-user.model';
 
+import { AuthUser } from '../auth/auth-user.model';
 import { AuthService } from '../auth/auth.service';
 import { Room, RoomService } from '../rooms/room.service';
-import { ConferenceService, RoomUser } from './conference.service';
+import { RoomUser } from './conference.service';
 import { PlayerComponent } from './player/player.component';
 
 @Component({
@@ -31,7 +21,6 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
   private sub: Subscription;
 
   @ViewChild(PlayerComponent) private playerComponent: PlayerComponent;
-  // currentRoom$: Observable<Room>;
   public room: Room;
   public user: AuthUser;
   public usersInRoom: RoomUser[];
@@ -47,7 +36,6 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
     private navController: NavController,
     private roomService: RoomService,
     private authService: AuthService,
-    private conferenceService: ConferenceService,
     private socket: Socket,
     private router: Router
   ) {}
@@ -250,13 +238,13 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
     return of(utentiInConference).pipe(
       switchMap((utentiInConference) => {
         if (!utentiInConference) {
-          userId = `guest_${this.conferenceService.randomId(12)}`;
+          userId = `guest_${this.generateRandomId(12)}`;
           // userId = `guest_${Math.floor(Math.random() * 3)}`;
           return of(userId);
         } else {
           return of(utentiInConference.slice(1)).pipe(
             map((users) => {
-              userId = `guest_${this.conferenceService.randomId(12)}`;
+              userId = `guest_${this.generateRandomId(12)}`;
               // userId = `guest_${Math.floor(Math.random() * 3)}`;
               console.log('🐱‍👤 : NEW userId:', userId);
               for (let user of users) {

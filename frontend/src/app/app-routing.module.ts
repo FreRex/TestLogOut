@@ -24,14 +24,14 @@ const routes: Routes = [
       ),
     canActivate: [AuthGuard],
   },
-  {
-    path: 'backoffice',
-    loadChildren: () =>
-      import('./backoffice/backoffice.module').then(
-        (m) => m.BackofficePageModule
-      ),
-    canLoad: [AuthGuard],
-  },
+  // {
+  //   path: 'backoffice',
+  //   loadChildren: () =>
+  //     import('./backoffice/backoffice.module').then(
+  //       (m) => m.BackofficePageModule
+  //     ),
+  //   canLoad: [AuthGuard],
+  // },
   {
     path: 'admin',
     loadChildren: () =>
