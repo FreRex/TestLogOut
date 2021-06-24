@@ -66,7 +66,7 @@ let checkpidstream = function (arrayRoom: any){
 
 //----------------------------- INSERIMENTO ELEMENTO IN MATRICE MULTIDIMENSIONALE ------------------------------------------
 
-let insertArray = function (idroom: number, idutente: string, socketid: string){
+let insertArray = function (idroom: number, idutente: string, socketid: string, nomeUtente: string){
    
 	let elemento: any = '';
 
@@ -75,7 +75,7 @@ let insertArray = function (idroom: number, idutente: string, socketid: string){
         console.log("idroom NON PRESENTE e di conseguenza NON presente anche l'idutente => bisogna inserirli entrambi nell'array !");
         //idroom NON PRESENTE e di conseguenza NON presente anche l'idutente => bisogna inserirli entrambi nell'array !  
 		 //elemento = {'idutente': idutente, 'socketid': socketid, 'stream': false};  
-		elemento = {idutente: `${idutente}`, socketid: `${socketid}`, stream: false, pidstream: 0};
+		elemento = {idutente: `${idutente}`, nome: `${nomeUtente}`, socketid: `${socketid}`, stream: false, pidstream: 0};
         utentiInConference.push([Number(idroom), elemento]);		
     }
 	// INSERIRE UTENTE 
@@ -84,7 +84,7 @@ let insertArray = function (idroom: number, idutente: string, socketid: string){
       if( checkPresenzaIdRoom(idroom)>=0 && (!checkPresenzaIdUtente(idroom, idutente)) ){            
 		//UTENTE NON PRESENTE --> INSERIRE UTENTE NELL'ARRAY !          
          console.log("Utente NON presente inserire utente nell'ARRAY"); 
-	     elemento = {idutente: `${idutente}`, socketid: `${socketid}`, stream: false, pidstream: 0};                    
+	     elemento = {idutente: `${idutente}`, nome: `${nomeUtente}`, socketid: `${socketid}`, stream: false, pidstream: 0};                    
          utentiInConference[checkPresenzaIdRoom(idroom)].push(elemento);
       }	   
     }   
@@ -160,24 +160,6 @@ function updateStream(socketid: string, pidstream: string){
     return utentiInConference[socketidCoo.y];
 }   
 
-/* function updateArray(socketid){    
-
-    let socketidCoo=checkPresenzaSocketid(socketid);    
-
-    //Inizializzazione tutti gli stream a false (in pratica si fa uscire l'utente dallo streamming)
-    for (let x = 1; x < utentiInConference[socketidCoo.y].length; x++) {
-        console.log('x :' + x)
-        console.log("wwww: " + utentiInConference[socketidCoo.y][x]['stream']);  
-        utentiInConference[socketidCoo.y][x]['stream'] = false;     
-    } 
-   
-    //aggiorna valore da stream: false a stream: true        
-    utentiInConference[socketidCoo.y][socketidCoo.x]['stream'] = true;
-   
-    return utentiInConference[socketidCoo.y];
-} */
-
-
 
 //------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------
@@ -186,14 +168,14 @@ function updateStream(socketid: string, pidstream: string){
 
 
 
-let userInConferenceVideo = function (idroom: number, idutente: string, dataAction: string, socketid: string){    
+let userInConferenceVideo = function (idroom: number, idutente: string, dataAction: string, socketid: string, nomeUtente: string){    
     
     let userInConferenceVideo=utentiInConference;
     
     switch (dataAction) {
         case 'entrance':
             //INSERIRE UTENTE E/O ROOM
-            console.table(insertArray(idroom, idutente, socketid));           
+            console.table(insertArray(idroom, idutente, socketid, nomeUtente));           
         break;
 
         case 'exitUser':
