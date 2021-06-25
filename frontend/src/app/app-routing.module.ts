@@ -46,7 +46,8 @@ const routes: Routes = [
   },
   {
     path: 'test-map',
-    loadChildren: () => import('./test-map/test-map.module').then( m => m.TestMapPageModule)
+    loadChildren: () =>
+      import('./test-map/test-map.module').then((m) => m.TestMapPageModule),
   },
 ];
 

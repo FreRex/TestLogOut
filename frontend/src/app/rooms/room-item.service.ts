@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Injectable, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import {
   AlertController,
@@ -10,15 +10,15 @@ import {
 import { AuthService } from 'src/app/auth/auth.service';
 import { environment } from 'src/environments/environment';
 
-import { Room, RoomService } from '../room.service';
-import { CreateRoomModalComponent } from './create-room-modal/create-room-modal.component';
-import { EditRoomModalComponent } from './edit-room-modal/edit-room-modal.component';
+import { Room, RoomService } from './room.service';
+import { CreateRoomModalComponent } from './rooms-tab/create-room-modal/create-room-modal.component';
+import { EditRoomModalComponent } from './rooms-tab/edit-room-modal/edit-room-modal.component';
 
-@Component({
-  selector: 'app-generic-room-item',
-  template: ``,
+// TODOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO???
+@Injectable({
+  providedIn: 'root',
 })
-export class GenericRoomItemComponent implements OnInit {
+export class RoomItemService implements OnInit {
   @Input() room: Room;
   isFavourite: boolean;
   baseUrl =

@@ -1,25 +1,21 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NavController, ViewDidLeave } from '@ionic/angular';
-import { Socket } from 'ngx-socket-io';
-import { from, of, Subscription, timer } from 'rxjs';
-import { Storage } from '@capacitor/storage';
-
 import {
-  delay,
-  delayWhen,
-  map,
-  retryWhen,
-  switchMap,
-  take,
-  tap,
-} from 'rxjs/operators';
+  NavController,
+  PopoverController,
+  ToastController,
+  ViewDidLeave,
+} from '@ionic/angular';
+import { Socket } from 'ngx-socket-io';
+import { iif, Observable, of, Subscription } from 'rxjs';
+import { map, retryWhen, switchMap, take, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { AuthUser } from '../auth/auth-user.model';
 
+import { AuthUser } from '../auth/auth-user.model';
 import { AuthService } from '../auth/auth.service';
+import { RoomItemService } from '../rooms/room-item.service';
 import { Room, RoomService } from '../rooms/room.service';
-import { ConferenceService, RoomUser } from './conference.service';
+import { RoomUser } from './conference.service';
 import { PlayerComponent } from './player/player.component';
 
 @Component({
@@ -31,7 +27,6 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
   private sub: Subscription;
 
   @ViewChild(PlayerComponent) private playerComponent: PlayerComponent;
-  // currentRoom$: Observable<Room>;
   public room: Room;
   public user: AuthUser;
   public usersInRoom: RoomUser[];
@@ -47,7 +42,7 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
     private navController: NavController,
     private roomService: RoomService,
     private authService: AuthService,
-    private conferenceService: ConferenceService,
+    private roomItemService: RoomItemService,
     private socket: Socket,
     private router: Router
   ) {}
@@ -72,7 +67,7 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
             replaceUrl: true,
             relativeTo: this.activatedRoute,
           });
-          console.log('🐱‍👤 : roomId', roomId);
+          console.log('roomId', roomId);
           return this.roomService.selectRoom(+roomId);
           // return this.authService.currentUser$;
         }),
@@ -81,7 +76,7 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
             throw new Error('Room Not Found');
           }
           this.room = room;
-          console.log('🐱‍👤 : this.room.id', this.room.id);
+          console.log('this.room.id', this.room.id);
           // this.userId = user.idutcas;
           // return this.roomService.selectRoom(+this.roomId);
           return this.authService.currentUser$;
@@ -93,7 +88,7 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
         (user: AuthUser) => {
           this.user = user;
           // this.userId = user.idutcas;
-          console.log('🐱‍👤 : this.user.idutcas', this.user.idutcas);
+          console.log('this.user.idutcas', this.user.idutcas);
           // this.room = room;
           this.configureSocket();
           this.isLoading = false;
@@ -119,76 +114,62 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
   public configureSocket(): void {
     this.socket.emit('first_idroom', this.room.id);
 
-    let userId = this.user.idutcas;
+    // let userId = this.user.idutcas;
     this.socket
       .fromEvent<any>('lista_utenti')
       .pipe(
-        switchMap((utentiInConference) => {
-          console.log('🐱‍👤 : utentiInConference:', utentiInConference);
-          if (userId == 'guest') {
-            if (!utentiInConference) {
-              userId = `guest_${this.conferenceService.randomId(12)}`;
-              // userId = `guest_${Math.floor(Math.random() * 3)}`;
-              return of(userId);
-            } else {
-              return of(utentiInConference.slice(1)).pipe(
-                map((users) => {
-                  userId = `guest_${this.conferenceService.randomId(12)}`;
-                  // userId = `guest_${Math.floor(Math.random() * 3)}`;
-                  console.log('🐱‍👤 : NEW userId:', userId);
-                  for (let user of users) {
-                    if (user['idutente'] == userId) {
-                      throw userId;
-                    }
-                  }
-                  return userId;
-                }),
-                retryWhen((errors) =>
-                  errors.pipe(
-                    tap((id) => console.log(`User ${id} already exist!`))
-                  )
-                )
-              );
-            }
-          } else {
-            return of(this.user.idutcas);
-          }
-        }),
-        tap((id) => {
-          console.log('✔ : Correct ID:', id);
-          if (id !== this.user.idutcas) {
-            console.log('❓ : Should update user?', id !== this.user.idutcas);
-            // TODO: potrei mandargli anche solo l'id e usare un osservabile come avevo fatto prima
-            this.authService.updateGuest(
-              new AuthUser(
-                this.user.idutente,
-                id,
-                this.user.nome,
-                this.user.username,
-                this.user.idcommessa,
-                this.user.commessa,
-                this.user.autorizzazione,
-                this.user.token,
-                this.user.tokenExpirationDate
-              )
-            );
-          }
-        })
+        switchMap((utentiInConference) =>
+          iif(
+            () => this.user.idutcas !== 'guest',
+            of(this.user.idutcas),
+            this.checkIdGuest(utentiInConference, this.user.idutcas)
+          )
+        ),
+        switchMap((userId: string) =>
+          iif(
+            () => userId !== this.user.idutcas,
+            this.authService.updateGuest(userId),
+            of(this.user)
+          )
+        )
       )
       .subscribe(
-        (userId) => {
-          console.log('🐱‍👤 : subscribe : res', userId);
-          console.log('🐱‍👤 : this.user: ', this.user.nome);
-          this.rtmpDestination = `${environment.urlRTMP}/${this.room.id}/${userId}`;
+        (user: AuthUser) => {
+          this.user = user;
+          console.log('this.user.idutcas', this.user.idutcas);
+          console.log('this.user.nomecognome: ', this.user.nomecognome);
+          this.rtmpDestination = `${environment.urlRTMP}/${this.room.id}/${this.user.idutcas}`;
           this.socket.emit('config_rtmpDestination', {
             rtmp: this.rtmpDestination,
-            nome: this.user.nome,
+            nome: this.user.nomecognome,
           });
         },
         (err) => {
-          console.log('🐱‍👤 : subscribe : err', err);
+          console.log('subscribe : err', err);
         }
       );
+
+    this.socket
+      .fromEvent<any>('stopWebCam')
+      .pipe(
+        map((data) => {
+          if (data.numberRoom == this.room.id) {
+            // if (data.idutcas !== this.user.idutcas) {
+            if (this.isStreaming) {
+              // this.socket.emit('disconnectStream', '');
+              this.playerComponent.stopStream();
+              this.isStreaming = false;
+              // }
+              this.flvOrigin = `${environment.urlWSS}/${this.room.id}/${data.idutcas}.flv`;
+              if (!this.isPlaying) {
+                this.playerComponent.startPlayer(this.flvOrigin);
+                this.isPlaying = true;
+              }
+            }
+          }
+        })
+      )
+      .subscribe();
 
     this.socket.fromEvent<any>('message').subscribe(
       (msg) => {
@@ -208,40 +189,44 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
             for (const userData of msg.data.slice(1)) {
               let newUser = {
                 idutente: userData['idutente'],
-                nome: userData['nome'], // TODO: recuperare nome da backend
+                nomecognome: userData['nome'],
                 iniziali:
                   userData['idutente'].charAt(0) +
                   userData['socketid'].charAt(0),
                 socketid: userData['socketid'],
-                stream: userData['stream'], // TODO
+                stream: userData['stream'],
               };
               if (newUser.stream) {
-                // if (newUser.idutente != this.userId) {
-                this.flvOrigin = `${environment.urlWSS}/${this.room.id}/${newUser.idutente}.flv`;
-                if (!this.isPlaying && !this.isStreaming) {
-                  this.isPlaying = true;
-                  this.playerComponent.startPlayer(this.flvOrigin);
-                }
+                // if (newUser.idutente != this.user.idutcas) {
+                //   if (this.isStreaming) {
+                //     this.playerComponent.stopStream();
+                //     this.isStreaming = false;
+                //   }
+                // this.flvOrigin = `${environment.urlWSS}/${this.room.id}/${newUser.idutente}.flv`;
+                //   if (!this.isPlaying) {
+                //     this.playerComponent.startPlayer(this.flvOrigin);
+                //     this.isPlaying = true;
+                //   }
                 // }
                 this.usersInRoom.unshift(newUser);
               } else {
-                if (this.isPlaying && !this.isStreaming) {
-                  this.isPlaying = false;
-                  this.playerComponent.stopPlayer();
-                }
+                // if (this.isPlaying) {
+                //   this.playerComponent.stopPlayer();
+                //   this.isPlaying = false;
+                // }
                 this.usersInRoom.push(newUser);
               }
             }
             break;
           case 'stopWebCam':
             console.log('stopWebCam: ', msg.data);
-            if (msg.data == this.room.id) {
-              if (this.isStreaming) {
-                // this.socket.emit('disconnectStream', '');
-                this.playerComponent.stopStream();
-                this.isStreaming = false;
-              }
-            }
+            // if (msg.data == this.room.id) {
+            //   if (this.isStreaming) {
+            //     // this.socket.emit('disconnectStream', '');
+            //     this.playerComponent.stopStream();
+            //     this.isStreaming = false;
+            //   }
+            // }
             break;
           default:
             console.log('unknown message: ', msg);
@@ -255,24 +240,24 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
   public isStreaming: boolean = false;
 
   toggleStream() {
-    if (this.isPlaying) {
-      this.togglePlay();
-    }
+    // if (this.isPlaying) {
+    //   this.togglePlay();
+    // }
     if (this.isStreaming) {
       this.socket.emit('disconnectStream', '');
       this.playerComponent.stopStream();
       this.isStreaming = false;
     } else {
-      this.socket.emit('start', 'start');
+      this.socket.emit('start', { idutcas: this.user.idutcas });
       this.playerComponent.startStream();
       this.isStreaming = true;
     }
   }
 
   togglePlay() {
-    if (this.isStreaming) {
-      this.toggleStream;
-    }
+    // if (this.isStreaming) {
+    //   this.toggleStream;
+    // }
     if (this.isPlaying) {
       this.isPlaying = false;
       this.playerComponent.stopPlayer();
@@ -282,19 +267,48 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
     }
   }
 
-  async generateRandomUniqueId(usersArray: RoomUser[]): Promise<string> {
-    let randomId = 'guest';
-    do {
-      randomId += '1';
-      console.log('🐱‍👤 : ConferencePage : newRandomId', randomId);
-    } while (
-      () => {
-        for (const user of usersArray) {
-          console.log('🐱‍👤 : ConferencePage : user', user);
-          return user.idutente == randomId;
+  checkIdGuest(utentiInConference: any, userId: string): Observable<string> {
+    return of(utentiInConference).pipe(
+      switchMap((utentiInConference) => {
+        if (!utentiInConference) {
+          userId = `guest_${this.generateRandomId(12)}`;
+          // userId = `guest_${Math.floor(Math.random() * 3)}`;
+          return of(userId);
+        } else {
+          return of(utentiInConference.slice(1)).pipe(
+            map((users) => {
+              userId = `guest_${this.generateRandomId(12)}`;
+              // userId = `guest_${Math.floor(Math.random() * 3)}`;
+              console.log('🐱‍👤 : NEW userId:', userId);
+              for (let user of users) {
+                if (user['idutente'] == userId) {
+                  throw userId;
+                }
+              }
+              return userId;
+            }),
+            retryWhen((errors) =>
+              errors.pipe(tap((id) => console.log(`User ${id} already exist!`)))
+            )
+          );
         }
-      }
+      })
     );
-    return randomId;
+  }
+
+  generateRandomId(length: number): string {
+    var result = '';
+    var characters =
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    for (var i = 0; i < length; i++) {
+      result += characters.charAt(
+        Math.floor(Math.random() * characters.length)
+      );
+    }
+    console.log('🐱‍👤 generateRandomId : result', result);
+    return result;
+  }
+  copyLink() {
+    this.roomItemService.copyLink(this.room);
   }
 }
