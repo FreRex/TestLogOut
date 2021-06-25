@@ -17,22 +17,29 @@ exports.checkLogin = (req: any, res: any, next: any) => {
     const db = require('../conf/db'); 
 
     if(pkproject==0){
-      select = "SELECT id AS idutente, idcommessa AS commessa, autorizzazioni AS autorizzazione, utenti.idutcas AS idutcas FROM utenti WHERE username = ? AND password = ?";
+      select = "SELECT utenti.id AS idutente, utenti.idcommessa AS idcommessa, commesse.denominazione AS commessanome, utenti.autorizzazioni AS autorizzazione, utenti.idutcas AS idutcas, utenti.collaudatoreufficio AS nomecognome ";
+      select = select + "FROM utenti "
+      select = select + "INNER JOIN commesse ON commesse.id = utenti.idcommessa "
+      select = select + "WHERE username = ? AND password = ?"
+      console.log(select)
       datiDb = [usr, pwd];
+      console.log("1111");
     }
     else
     {
-      select = "SELECT utenti.id AS idutente, utenti.idcommessa AS commessa, utenti.autorizzazioni AS autorizzazione, utenti.username, utenti.password, multistreaming.collaudatoreufficio, multistreaming.cod, utenti.idutcas AS idutcas FROM utenti INNER JOIN multistreaming ON multistreaming.collaudatoreufficio = utenti.id WHERE utenti.username = ? AND utenti.password = ? AND multistreaming.cod = ?";
+      select = "SELECT utenti.id AS idutente, utenti.idcommessa AS idcommessa, utenti.autorizzazioni AS autorizzazione, utenti.username, utenti.password, multistreaming.collaudatoreufficio, multistreaming.cod, utenti.idutcas AS idutcas, utenti.collaudatoreufficio AS nomecognome, commesse.denominazione AS commessanome, commesse.id FROM utenti INNER JOIN multistreaming ON multistreaming.collaudatoreufficio = utenti.id INNER JOIN commesse ON commesse.id = utenti.idcommessa WHERE utenti.username = ? AND utenti.password = ? AND multistreaming.cod = ?";
       datiDb = [usr, pwd, pkproject];
+      console.log("2222");
     }    
     
     db.query(select, datiDb, function (err: any, result: any, fields: any) {        
         if(result.length >= 1){                  
                    
           const jwt = require('.././middleware/jwt'); 
-          let token: any = jwt.setToken(usr,pwd,result[0]['idutente'],result[0]['commessa'],result[0]['autorizzazione'],result[0]['idutcas'],);
+          let token: any = jwt.setToken(usr,pwd,result[0]['idutente'],result[0]['idcommessa'],result[0]['autorizzazione'],result[0]['idutcas'],result[0]['nomecognome'],result[0]['commessanome'],);
           let payload = jwt.getPayload(token);
-          
+          console.log('idcommessa: ' + result[0]['idcommessa']);
+          console.log('commessanome: ' + result[0]['commessanome']);
           if(pkproject==0){
             res.json(
               {
