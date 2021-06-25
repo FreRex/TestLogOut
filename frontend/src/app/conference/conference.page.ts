@@ -67,7 +67,7 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
             replaceUrl: true,
             relativeTo: this.activatedRoute,
           });
-          console.log('🐱‍👤 : roomId', roomId);
+          console.log('roomId', roomId);
           return this.roomService.selectRoom(+roomId);
           // return this.authService.currentUser$;
         }),
@@ -76,7 +76,7 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
             throw new Error('Room Not Found');
           }
           this.room = room;
-          console.log('🐱‍👤 : this.room.id', this.room.id);
+          console.log('this.room.id', this.room.id);
           // this.userId = user.idutcas;
           // return this.roomService.selectRoom(+this.roomId);
           return this.authService.currentUser$;
@@ -88,7 +88,7 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
         (user: AuthUser) => {
           this.user = user;
           // this.userId = user.idutcas;
-          console.log('🐱‍👤 : this.user.idutcas', this.user.idutcas);
+          console.log('this.user.idutcas', this.user.idutcas);
           // this.room = room;
           this.configureSocket();
           this.isLoading = false;
@@ -136,8 +136,8 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
       .subscribe(
         (user: AuthUser) => {
           this.user = user;
-          console.log('🐱‍👤 : this.user.idutcas', this.user.idutcas);
-          console.log('🐱‍👤 : this.user.nomecognome: ', this.user.nomecognome);
+          console.log('this.user.idutcas', this.user.idutcas);
+          console.log('this.user.nomecognome: ', this.user.nomecognome);
           this.rtmpDestination = `${environment.urlRTMP}/${this.room.id}/${this.user.idutcas}`;
           this.socket.emit('config_rtmpDestination', {
             rtmp: this.rtmpDestination,
@@ -145,9 +145,31 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
           });
         },
         (err) => {
-          console.log('🐱‍👤 : subscribe : err', err);
+          console.log('subscribe : err', err);
         }
       );
+
+    this.socket
+      .fromEvent<any>('stopWebCam')
+      .pipe(
+        map((data) => {
+          if (data.numberRoom == this.room.id) {
+            // if (data.idutcas !== this.user.idutcas) {
+            if (this.isStreaming) {
+              // this.socket.emit('disconnectStream', '');
+              this.playerComponent.stopStream();
+              this.isStreaming = false;
+              // }
+              this.flvOrigin = `${environment.urlWSS}/${this.room.id}/${data.idutcas}.flv`;
+              if (!this.isPlaying) {
+                this.playerComponent.startPlayer(this.flvOrigin);
+                this.isPlaying = true;
+              }
+            }
+          }
+        })
+      )
+      .subscribe();
 
     this.socket.fromEvent<any>('message').subscribe(
       (msg) => {
@@ -175,32 +197,36 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
                 stream: userData['stream'],
               };
               if (newUser.stream) {
-                // if (newUser.idutente != this.userId) {
-                this.flvOrigin = `${environment.urlWSS}/${this.room.id}/${newUser.idutente}.flv`;
-                if (!this.isPlaying && !this.isStreaming) {
-                  this.isPlaying = true;
-                  this.playerComponent.startPlayer(this.flvOrigin);
-                }
+                // if (newUser.idutente != this.user.idutcas) {
+                //   if (this.isStreaming) {
+                //     this.playerComponent.stopStream();
+                //     this.isStreaming = false;
+                //   }
+                // this.flvOrigin = `${environment.urlWSS}/${this.room.id}/${newUser.idutente}.flv`;
+                //   if (!this.isPlaying) {
+                //     this.playerComponent.startPlayer(this.flvOrigin);
+                //     this.isPlaying = true;
+                //   }
                 // }
                 this.usersInRoom.unshift(newUser);
               } else {
-                if (this.isPlaying && !this.isStreaming) {
-                  this.isPlaying = false;
-                  this.playerComponent.stopPlayer();
-                }
+                // if (this.isPlaying) {
+                //   this.playerComponent.stopPlayer();
+                //   this.isPlaying = false;
+                // }
                 this.usersInRoom.push(newUser);
               }
             }
             break;
           case 'stopWebCam':
             console.log('stopWebCam: ', msg.data);
-            if (msg.data == this.room.id) {
-              if (this.isStreaming) {
-                // this.socket.emit('disconnectStream', '');
-                this.playerComponent.stopStream();
-                this.isStreaming = false;
-              }
-            }
+            // if (msg.data == this.room.id) {
+            //   if (this.isStreaming) {
+            //     // this.socket.emit('disconnectStream', '');
+            //     this.playerComponent.stopStream();
+            //     this.isStreaming = false;
+            //   }
+            // }
             break;
           default:
             console.log('unknown message: ', msg);
@@ -214,24 +240,24 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
   public isStreaming: boolean = false;
 
   toggleStream() {
-    if (this.isPlaying) {
-      this.togglePlay();
-    }
+    // if (this.isPlaying) {
+    //   this.togglePlay();
+    // }
     if (this.isStreaming) {
       this.socket.emit('disconnectStream', '');
       this.playerComponent.stopStream();
       this.isStreaming = false;
     } else {
-      this.socket.emit('start', 'start');
+      this.socket.emit('start', { idutcas: this.user.idutcas });
       this.playerComponent.startStream();
       this.isStreaming = true;
     }
   }
 
   togglePlay() {
-    if (this.isStreaming) {
-      this.toggleStream;
-    }
+    // if (this.isStreaming) {
+    //   this.toggleStream;
+    // }
     if (this.isPlaying) {
       this.isPlaying = false;
       this.playerComponent.stopPlayer();

@@ -2,10 +2,17 @@ import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import FlvJs from 'flv.js';
 import { Socket } from 'ngx-socket-io';
 
-const height = 120;
-const width = 120;
-const framerate = 15;
-const audiobitrate = 44100;
+const MIN_WIDTH = 320;
+const MIN_HEIGHT = 180;
+
+const IDEAL_WIDTH = 640;
+const IDEAL_HEIGHT = 360;
+
+const MAX_WIDTH = 1920;
+const MAX_HEIGHT = 1080;
+
+const VIDEO_FRAMERATE = 15;
+const AUDIO_BITRATE = 44100;
 
 @Component({
   selector: 'app-player',
@@ -33,10 +40,14 @@ export class PlayerComponent implements OnInit {
 
   startStream() {
     // apre la camera dell'utente
-    this.requestGetUserMedia().then((res) => {
-      this.startLocalVideo();
-      this.startMediaRecorder();
-    });
+    this.requestGetUserMedia()
+      .then((res) => {
+        this.startLocalVideo();
+        this.startMediaRecorder();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
   stopStream() {
     // chiude la camera dell'utente
@@ -50,7 +61,6 @@ export class PlayerComponent implements OnInit {
   idVarVideoZoomInFunction;
 
   player: FlvJs.Player;
-
   startPlayer(flvOrigin: string) {
     if (this.player) {
       this.stopPlayer();
@@ -88,20 +98,20 @@ export class PlayerComponent implements OnInit {
   private async requestGetUserMedia(): Promise<void> {
     if (this.devicePosition == 'fronte') {
       this.constraints = {
-        audio: { sampleRate: audiobitrate, echoCancellation: true },
+        audio: { sampleRate: AUDIO_BITRATE, echoCancellation: true },
         video: {
-          width: { min: 320, ideal: width, max: 1920 },
-          height: { min: 180, ideal: height, max: 1080 },
-          frameRate: { ideal: framerate },
+          width: { min: MIN_WIDTH, ideal: IDEAL_WIDTH, max: MAX_WIDTH },
+          height: { min: MIN_HEIGHT, ideal: IDEAL_HEIGHT, max: MAX_HEIGHT },
+          frameRate: { ideal: VIDEO_FRAMERATE },
         },
       };
     } else if (this.devicePosition == 'retro') {
       this.constraints = {
-        audio: { sampleRate: audiobitrate, echoCancellation: true },
+        audio: { sampleRate: AUDIO_BITRATE, echoCancellation: true },
         video: {
-          width: { min: 320, ideal: width, max: 1920 },
-          height: { min: 180, ideal: height, max: 1080 },
-          frameRate: { ideal: framerate },
+          width: { min: MIN_WIDTH, ideal: IDEAL_WIDTH, max: MAX_WIDTH },
+          height: { min: MIN_HEIGHT, ideal: IDEAL_HEIGHT, max: MAX_HEIGHT },
+          frameRate: { ideal: VIDEO_FRAMERATE },
           facingMode: { exact: 'environment' },
         },
       };

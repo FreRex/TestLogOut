@@ -24,14 +24,14 @@ const routes: Routes = [
       ),
     canActivate: [AuthGuard],
   },
-  // {
-  //   path: 'backoffice',
-  //   loadChildren: () =>
-  //     import('./backoffice/backoffice.module').then(
-  //       (m) => m.BackofficePageModule
-  //     ),
-  //   canLoad: [AuthGuard],
-  // },
+  {
+    path: 'backoffice',
+    loadChildren: () =>
+      import('./backoffice/backoffice.module').then(
+        (m) => m.BackofficePageModule
+      ),
+    canLoad: [AuthGuard],
+  },
   {
     path: 'admin',
     loadChildren: () =>
@@ -46,7 +46,8 @@ const routes: Routes = [
   },
   {
     path: 'test-map',
-    loadChildren: () => import('./test-map/test-map.module').then( m => m.TestMapPageModule)
+    loadChildren: () =>
+      import('./test-map/test-map.module').then((m) => m.TestMapPageModule),
   },
 ];
 
