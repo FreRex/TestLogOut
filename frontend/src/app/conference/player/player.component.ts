@@ -49,6 +49,7 @@ export class PlayerComponent implements OnInit {
         console.log(err);
       });
   }
+
   stopStream() {
     // chiude la camera dell'utente
     this.stopLocalVideo();

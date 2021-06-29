@@ -155,12 +155,16 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
         map((data) => {
           console.log('🐱‍👤 : stopWebCam', data);
           if (data.numberRoom == this.room.id) {
-            // if (data.idutcas !== this.user.idutcas) {
-            if (this.isStreaming) {
-              // this.socket.emit('disconnectStream', '');
-              this.playerComponent.stopStream();
-              this.isStreaming = false;
-              // }
+            if (data.idutente !== this.user.idutcas) {
+              if (this.isStreaming) {
+                // this.socket.emit('disconnectStream', '');
+                this.playerComponent.stopStream();
+                this.isStreaming = false;
+              }
+              if (this.isPlaying) {
+                this.playerComponent.stopPlayer();
+                this.isPlaying = false;
+              }
             }
           }
         })
