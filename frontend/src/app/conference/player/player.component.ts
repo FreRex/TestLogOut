@@ -130,7 +130,7 @@ export class PlayerComponent implements OnInit {
 
   stopLocalVideo() {
     this.localStream.getTracks().forEach((track) => {
-      track.stop();
+      track.stop(); // senza track.stop() non si chiude la telecamera
       track.enabled = false;
     });
     this.localVideo.nativeElement.srcObject = undefined;

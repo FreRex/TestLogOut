@@ -153,6 +153,7 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
       .fromEvent<any>('stopWebCam')
       .pipe(
         map((data) => {
+          console.log('🐱‍👤 : stopWebCam', data);
           if (data.numberRoom == this.room.id) {
             // if (data.idutcas !== this.user.idutcas) {
             if (this.isStreaming) {
@@ -160,10 +161,40 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
               this.playerComponent.stopStream();
               this.isStreaming = false;
               // }
-              this.flvOrigin = `${environment.urlWSS}/${this.room.id}/${data.idutcas}.flv`;
+            }
+          }
+        })
+      )
+      .subscribe();
+
+    this.socket
+      .fromEvent<any>('startPlayer')
+      .pipe(
+        map((data) => {
+          console.log('🐱‍👤 : startPlayer', data);
+          if (data.numberRoom == this.room.id) {
+            if (data.idutente !== this.user.idutcas) {
+              this.flvOrigin = `${environment.urlWSS}/${this.room.id}/${data.idutente}.flv`;
               if (!this.isPlaying) {
                 this.playerComponent.startPlayer(this.flvOrigin);
                 this.isPlaying = true;
+              }
+            }
+          }
+        })
+      )
+      .subscribe();
+
+    this.socket
+      .fromEvent<any>('stopPlayer')
+      .pipe(
+        map((data) => {
+          console.log('🐱‍👤 : stopPlayer', data);
+          if (data.numberRoom == this.room.id) {
+            if (data.idutente !== this.user.idutcas) {
+              if (this.isPlaying) {
+                this.playerComponent.stopPlayer();
+                this.isPlaying = false;
               }
             }
           }
@@ -197,23 +228,8 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
                 stream: userData['stream'],
               };
               if (newUser.stream) {
-                // if (newUser.idutente != this.user.idutcas) {
-                //   if (this.isStreaming) {
-                //     this.playerComponent.stopStream();
-                //     this.isStreaming = false;
-                //   }
-                // this.flvOrigin = `${environment.urlWSS}/${this.room.id}/${newUser.idutente}.flv`;
-                //   if (!this.isPlaying) {
-                //     this.playerComponent.startPlayer(this.flvOrigin);
-                //     this.isPlaying = true;
-                //   }
-                // }
                 this.usersInRoom.unshift(newUser);
               } else {
-                // if (this.isPlaying) {
-                //   this.playerComponent.stopPlayer();
-                //   this.isPlaying = false;
-                // }
                 this.usersInRoom.push(newUser);
               }
             }
@@ -248,7 +264,7 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
       this.playerComponent.stopStream();
       this.isStreaming = false;
     } else {
-      this.socket.emit('start', { idutcas: this.user.idutcas });
+      this.socket.emit('start', { idutente: this.user.idutcas });
       this.playerComponent.startStream();
       this.isStreaming = true;
     }
