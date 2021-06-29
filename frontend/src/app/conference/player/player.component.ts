@@ -1,6 +1,7 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import FlvJs from 'flv.js';
 import { Socket } from 'ngx-socket-io';
+import { environment } from 'src/environments/environment';
 
 const MIN_WIDTH = 320;
 const MIN_HEIGHT = 180;
@@ -62,10 +63,11 @@ export class PlayerComponent implements OnInit {
   idVarVideoZoomInFunction;
 
   player: FlvJs.Player;
-  startPlayer(flvOrigin: string) {
+  startPlayer(roomId: number, streamId: string) {
     if (this.player) {
       this.stopPlayer();
     }
+    let flvOrigin = `${environment.urlWSS}/${roomId}/${streamId}.flv`;
     this.player = FlvJs.createPlayer(
       {
         type: 'flv',

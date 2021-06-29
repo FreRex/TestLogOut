@@ -30,12 +30,13 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
   public room: Room;
   public user: AuthUser;
   public usersInRoom: RoomUser[];
+  public streamingUser: RoomUser = null;
 
   // roomId: string = '';
   // userId: string = '';
 
-  flvOrigin: string = '';
-  rtmpDestination: string = '';
+  // flvOrigin: string = '';
+  // rtmpDestination: string = '';
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -118,6 +119,17 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
     this.socket
       .fromEvent<any>('lista_utenti')
       .pipe(
+        tap((utentiInConference) => {
+          utentiInConference.slice(1).forEach((user) => {
+            if (user.stream == true) {
+              this.streamingUser = user;
+              console.log(
+                '🐱‍👤 : streamingUserId',
+                this.streamingUser.idutente
+              );
+            }
+          });
+        }),
         switchMap((utentiInConference) =>
           iif(
             () => this.user.idutcas !== 'guest',
@@ -138,11 +150,19 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
           this.user = user;
           console.log('this.user.idutcas', this.user.idutcas);
           console.log('this.user.nomecognome: ', this.user.nomecognome);
-          this.rtmpDestination = `${environment.urlRTMP}/${this.room.id}/${this.user.idutcas}`;
+
           this.socket.emit('config_rtmpDestination', {
-            rtmp: this.rtmpDestination,
+            rtmp: `${environment.urlRTMP}/${this.room.id}/${this.user.idutcas}`,
             nome: this.user.nomecognome,
           });
+
+          if (this.streamingUser && !this.isPlaying) {
+            this.playerComponent.startPlayer(
+              this.room.id,
+              this.streamingUser.idutente
+            );
+            this.isPlaying = true;
+          }
         },
         (err) => {
           console.log('subscribe : err', err);
@@ -178,9 +198,9 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
           console.log('🐱‍👤 : startPlayer', data);
           if (data.numberRoom == this.room.id) {
             if (data.idutente !== this.user.idutcas) {
-              this.flvOrigin = `${environment.urlWSS}/${this.room.id}/${data.idutente}.flv`;
+              // this.flvOrigin = `${environment.urlWSS}/${this.room.id}/${data.idutente}.flv`;
               if (!this.isPlaying) {
-                this.playerComponent.startPlayer(this.flvOrigin);
+                this.playerComponent.startPlayer(this.room.id, data.idutente);
                 this.isPlaying = true;
               }
             }
@@ -221,22 +241,14 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
           case `${this.room.id}`: //FREXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
             console.log('array per idroom: ', msg.data);
             this.usersInRoom = [];
-            for (const userData of msg.data.slice(1)) {
-              let newUser = {
-                idutente: userData['idutente'],
-                nomecognome: userData['nome'],
-                iniziali:
-                  userData['idutente'].charAt(0) +
-                  userData['socketid'].charAt(0),
-                socketid: userData['socketid'],
-                stream: userData['stream'],
-              };
-              if (newUser.stream) {
-                this.usersInRoom.unshift(newUser);
+            msg.data.slice(1).forEach((user) => {
+              if (user.stream) {
+                this.streamingUser = user;
+                this.usersInRoom.unshift(user);
               } else {
-                this.usersInRoom.push(newUser);
+                this.usersInRoom.push(user);
               }
-            }
+            });
             break;
           case 'stopWebCam':
             console.log('stopWebCam: ', msg.data);
@@ -282,8 +294,16 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
       this.isPlaying = false;
       this.playerComponent.stopPlayer();
     } else {
-      this.isPlaying = true;
-      this.playerComponent.startPlayer(this.flvOrigin);
+      if (this.room && this.streamingUser) {
+        this.isPlaying = true;
+        this.playerComponent.startPlayer(
+          this.room.id,
+          this.streamingUser.idutente
+        );
+      } else {
+        // TODO: gestire l'errore in modo visibile anche per l'utente
+        console.log('ERRORE: impossibile avviare il player');
+      }
     }
   }
 

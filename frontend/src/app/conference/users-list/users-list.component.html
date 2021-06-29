@@ -1,11 +1,13 @@
 <ion-list>
   <ion-item *ngFor="let user of usersInRoom">
     <div class="user-avatar">
-      <ion-text>{{ user.iniziali | uppercase }}</ion-text>
+      <ion-text>{{
+        user.nome.charAt(0) + user.idutente.charAt(0) | uppercase
+      }}</ion-text>
     </div>
     <ion-label>
       <h3>
-        <b>{{ user.nomecognome }}</b>
+        <b>{{ user.nome }}</b>
       </h3>
       <p>{{ user.idutente }}</p>
     </ion-label>

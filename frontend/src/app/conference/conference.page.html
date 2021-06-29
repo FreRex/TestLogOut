@@ -54,15 +54,15 @@
       <ion-col size-lg="4.5">
         <!-- QUI DENTRO VA IL VIDEO PLAYER -->
         <div class="spazio-vuoto-dimensione-fissa">
-          <!-- <div [hidden]="isStreaming || isPlaying">
-            <img src="assets/icons/mockup-icons/wait.svg" />
-          </div>
-          <div [hidden]="!isPlaying">
-            <app-player></app-player>
-          </div>
-          <div [hidden]="!isStreaming">
-            <app-webcam></app-webcam>
-          </div> -->
+          <span *ngIf="streamingUser" class="label">
+            <ion-text *ngIf="streamingUser.idutente == user.idutcas">
+              stai trasmettendo
+              <ion-icon name="ellipse" color="primary"></ion-icon>
+            </ion-text>
+            <ion-text *ngIf="streamingUser.idutente != user.idutcas">
+              {{streamingUser.nome}}
+            </ion-text></span
+          >
           <app-player
             [isStreaming]="isStreaming"
             [isPlaying]="isPlaying"
