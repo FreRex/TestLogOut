@@ -117,8 +117,6 @@ io.on('connection', function (socket) {
         socket._vcodec = m;
     });
     socket.on('start', function (m) {
-        console.log('mmmm:' + m);
-        console.log('m.idutcas:' + m.idutcas);
         //Al premere del pulsante start-streaming:
         // 1) identificare l'array per la room specifica
         let elementoCoordinate = functionListaConference.checkPresenzaSocketid(socket.id);
@@ -146,7 +144,7 @@ io.on('connection', function (socket) {
                     return;
                 }
                 //socket.broadcast.emit('message',{type: 'stopWebCam', data: numberRoom});
-                socket.broadcast.emit('stopWebCam', { numberRoom: numberRoom, idutente: m.idutcas });
+                socket.broadcast.emit('stopWebCam', { numberRoom: numberRoom, idutente: m.idutente });
             });
         }
         else {
@@ -250,11 +248,15 @@ io.on('connection', function (socket) {
             let socketidCoo = functionListaConference.checkPresenzaSocketid(socket.id);
             let numberRoom = functionListaConference.utentiInConference[socketidCoo.y][0];
             numberRoom = numberRoom.toString();
-            console.log("numberoom per update: " + numberRoom);
             let arrayStream = functionListaConference.updateStream(socket.id, ffmpeg_process.pid);
             console.log(arrayStream);
             socket.emit('message', { type: numberRoom, data: arrayStream });
             socket.broadcast.emit('message', { type: numberRoom, data: arrayStream });
+            let idutente = functionListaConference.utentiInConference[socketidCoo.y][1]['idutente'];
+            idutente = idutente.toString();
+            console.log("idutenteeeeeeeeee: " + idutente);
+            socket.emit('startPlayer', { numberRoom: numberRoom, idutente: idutente });
+            socket.broadcast.emit('startPlayer', { numberRoom: numberRoom, idutente: idutente });
         }
         /* // Update "pidstream" dell'elemento dell'array room specifica
         let arrayUpdatePid: string = functionListaConference.updatePidStream(socket.id, ffmpeg_process.pid);

@@ -17,22 +17,17 @@ exports.checkLogin = (req, res, next) => {
         select = select + "FROM utenti ";
         select = select + "INNER JOIN commesse ON commesse.id = utenti.idcommessa ";
         select = select + "WHERE username = ? AND password = ?";
-        console.log(select);
         datiDb = [usr, pwd];
-        console.log("1111");
     }
     else {
         select = "SELECT utenti.id AS idutente, utenti.idcommessa AS idcommessa, utenti.autorizzazioni AS autorizzazione, utenti.username, utenti.password, multistreaming.collaudatoreufficio, multistreaming.cod, utenti.idutcas AS idutcas, utenti.collaudatoreufficio AS nomecognome, commesse.denominazione AS commessanome, commesse.id FROM utenti INNER JOIN multistreaming ON multistreaming.collaudatoreufficio = utenti.id INNER JOIN commesse ON commesse.id = utenti.idcommessa WHERE utenti.username = ? AND utenti.password = ? AND multistreaming.cod = ?";
         datiDb = [usr, pwd, pkproject];
-        console.log("2222");
     }
     db.query(select, datiDb, function (err, result, fields) {
         if (result.length >= 1) {
             const jwt = require('.././middleware/jwt');
             let token = jwt.setToken(usr, pwd, result[0]['idutente'], result[0]['idcommessa'], result[0]['autorizzazione'], result[0]['idutcas'], result[0]['nomecognome'], result[0]['commessanome']);
             let payload = jwt.getPayload(token);
-            console.log('idcommessa: ' + result[0]['idcommessa']);
-            console.log('commessanome: ' + result[0]['commessanome']);
             if (pkproject == 0) {
                 res.json({
                     token: token

@@ -248,7 +248,7 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
       this.playerComponent.stopStream();
       this.isStreaming = false;
     } else {
-      this.socket.emit('start', { idutcas: this.user.idutcas });
+      this.socket.emit('start', { idutente: this.user.idutcas });
       this.playerComponent.startStream();
       this.isStreaming = true;
     }

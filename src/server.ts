@@ -186,7 +186,7 @@ io.on('connection', function(socket: any){
 					return;
 				}
 				//socket.broadcast.emit('message',{type: 'stopWebCam', data: numberRoom});
-				socket.broadcast.emit('stopWebCam',{numberRoom: numberRoom, idutente: m.idutcas});
+				socket.broadcast.emit('stopWebCam',{numberRoom: numberRoom, idutente: m.idutente});
 			});
 			
 		}
@@ -303,22 +303,22 @@ io.on('connection', function(socket: any){
 			
 			let socketidCoo=functionListaConference.checkPresenzaSocketid(socket.id);
             let numberRoom: string = functionListaConference.utentiInConference[socketidCoo.y][0];
-			numberRoom=numberRoom.toString();
-			console.log("numberoom per update: " + numberRoom);
+			numberRoom=numberRoom.toString();			
 			
 			let arrayStream: string = functionListaConference.updateStream(socket.id, ffmpeg_process.pid);			
 			console.log(arrayStream);
+			
 			socket.emit('message', {type: numberRoom, data: arrayStream});		
-			socket.broadcast.emit('message', {type: numberRoom, data: arrayStream});		
+			socket.broadcast.emit('message', {type: numberRoom, data: arrayStream});
+
+			let idutente: string = functionListaConference.utentiInConference[socketidCoo.y][1]['idutente'];
+			idutente=idutente.toString();
+			console.log("idutenteeeeeeeeee: " + idutente);
+
+			socket.emit('startPlayer',{numberRoom: numberRoom, idutente: idutente});			
+			socket.broadcast.emit('startPlayer',{numberRoom: numberRoom, idutente: idutente});
 
 		}
-
-		/* // Update "pidstream" dell'elemento dell'array room specifica
-		let arrayUpdatePid: string = functionListaConference.updatePidStream(socket.id, ffmpeg_process.pid);
-		let socketidCoo=functionListaConference.checkPresenzaSocketid(socket.id);
-        let arrayForThisRoom: string = functionListaConference.utentiInConference[socketidCoo.y][socketidCoo.x];
-		//console.log('arryaForThisRoom: ' + arrayForThisRoom)
-		console.log('AGGIORNAMENTO CON IL NUOVO PIDSTREAM: ' + arrayRoom); */
 
 		feedStream=function(data: any){	
 			ffmpeg_process.stdin.write(data);
