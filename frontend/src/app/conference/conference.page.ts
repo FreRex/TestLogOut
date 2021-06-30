@@ -120,15 +120,13 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
       .fromEvent<any>('lista_utenti')
       .pipe(
         tap((utentiInConference) => {
-          utentiInConference.slice(1).forEach((user) => {
-            if (user.stream == true) {
-              this.streamingUser = user;
-              console.log(
-                '🐱‍👤 : streamingUserId',
-                this.streamingUser.idutente
-              );
-            }
-          });
+          if (utentiInConference) {
+            utentiInConference.slice(1).forEach((user) => {
+              if (user.stream == true) {
+                this.streamingUser = user;
+              }
+            });
+          }
         }),
         switchMap((utentiInConference) =>
           iif(
@@ -169,63 +167,6 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
         }
       );
 
-    this.socket
-      .fromEvent<any>('stopWebCam')
-      .pipe(
-        map((data) => {
-          console.log('🐱‍👤 : stopWebCam', data);
-          if (data.numberRoom == this.room.id) {
-            if (data.idutente !== this.user.idutcas) {
-              if (this.isStreaming) {
-                // this.socket.emit('disconnectStream', '');
-                this.playerComponent.stopStream();
-                this.isStreaming = false;
-              }
-              if (this.isPlaying) {
-                this.playerComponent.stopPlayer();
-                this.isPlaying = false;
-              }
-            }
-          }
-        })
-      )
-      .subscribe();
-
-    this.socket
-      .fromEvent<any>('startPlayer')
-      .pipe(
-        map((data) => {
-          console.log('🐱‍👤 : startPlayer', data);
-          if (data.numberRoom == this.room.id) {
-            if (data.idutente !== this.user.idutcas) {
-              // this.flvOrigin = `${environment.urlWSS}/${this.room.id}/${data.idutente}.flv`;
-              if (!this.isPlaying) {
-                this.playerComponent.startPlayer(this.room.id, data.idutente);
-                this.isPlaying = true;
-              }
-            }
-          }
-        })
-      )
-      .subscribe();
-
-    this.socket
-      .fromEvent<any>('stopPlayer')
-      .pipe(
-        map((data) => {
-          console.log('🐱‍👤 : stopPlayer', data);
-          if (data.numberRoom == this.room.id) {
-            if (data.idutente !== this.user.idutcas) {
-              if (this.isPlaying) {
-                this.playerComponent.stopPlayer();
-                this.isPlaying = false;
-              }
-            }
-          }
-        })
-      )
-      .subscribe();
-
     this.socket.fromEvent<any>('message').subscribe(
       (msg) => {
         switch (msg.type) {
@@ -239,7 +180,7 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
             console.log('Fatal: ', msg.data);
             break;
           case `${this.room.id}`: //FREXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-            console.log('array per idroom: ', msg.data);
+            console.log('array per idroom: ', msg);
             this.usersInRoom = [];
             msg.data.slice(1).forEach((user) => {
               if (user.stream) {
@@ -250,17 +191,26 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
               }
             });
             break;
-          case 'stopWebCam':
-            console.log('stopWebCam: ', msg.data);
+          case 'stopWebCam': // TODO: cambiare in stopWebCam_${this.room.id}
+            console.log('🐱‍👤 : stopWebCam', msg);
             // if (msg.data == this.room.id) {
-            //   if (this.isStreaming) {
-            //     // this.socket.emit('disconnectStream', '');
-            //     this.playerComponent.stopStream();
-            //     this.isStreaming = false;
-            //   }
+            if (this.isStreaming) {
+              // this.socket.emit('disconnectStream', '');
+              this.playerComponent.stopStream();
+              this.isStreaming = false;
+            }
             // }
             break;
-          
+          case `startWebCam_${this.room.id}`: // TODO: cambiare in startPlayer_${this.room.id}
+            console.log('🐱‍👤 : startPlayer', msg);
+            if (!this.isPlaying) {
+              this.playerComponent.startPlayer(
+                this.room.id,
+                this.streamingUser.idutente
+              );
+              this.isPlaying = true;
+            }
+            break;
           default:
             console.log('unknown message: ', msg);
         }
@@ -273,9 +223,10 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
   public isStreaming: boolean = false;
 
   toggleStream() {
-    // if (this.isPlaying) {
-    //   this.togglePlay();
-    // }
+    if (this.isPlaying) {
+      this.playerComponent.stopPlayer(); // await stopPlayer.then(startStream....)
+      this.isPlaying = false;
+    }
     if (this.isStreaming) {
       this.socket.emit('disconnectStream', '');
       this.playerComponent.stopStream();
