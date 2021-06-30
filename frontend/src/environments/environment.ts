@@ -7,7 +7,7 @@ console.log('location.hostname: ', location.hostname);
 export const environment = {
   production: false,
   app: `http://localhost:8100`,
-  apiUrl: `https://www.collaudolive.com:9419`,
+  apiUrl: `https://www.collaudolive.com:9516`,
   urlRTMP: 'rtmp://www.collaudolive.com:1941',
   urlWSS: 'wss://www.collaudolive.com:8471',
 };

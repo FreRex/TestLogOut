@@ -215,34 +215,43 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
                 socketid: userData['socketid'],
                 stream: userData['stream'], // TODO
               };
-              if (newUser.stream) {
+              if (newUser.stream) {                
                 // if (newUser.idutente != this.userId) {
-                this.flvOrigin = `${environment.urlWSS}/${this.room.id}/${newUser.idutente}.flv`;
-                if (!this.isPlaying && !this.isStreaming) {
+                this.flvOrigin = `${environment.urlWSS}/${this.room.id}/${newUser.idutente}.flv`;       
+                if (!this.isPlaying && !this.isStreaming) {                
                   this.isPlaying = true;
-                  this.playerComponent.startPlayer(this.flvOrigin);
+                  this.playerComponent.startPlayer(this.flvOrigin);                  
                 }
                 // }
                 this.usersInRoom.unshift(newUser);
               } else {
                 if (this.isPlaying && !this.isStreaming) {
                   this.isPlaying = false;
-                  this.playerComponent.stopPlayer();
-                }
-                this.usersInRoom.push(newUser);
+                  this.playerComponent.stopPlayer();                  
+                }                
+                this.usersInRoom.push(newUser);                
               }
             }
             break;
-          case 'stopWebCam':
-            console.log('stopWebCam: ', msg.data);
+          case 'stopWebCam':            
             if (msg.data == this.room.id) {
+              console.log('msg.data == this.room.id');
               if (this.isStreaming) {
+                console.log('this.isStreaming');
                 // this.socket.emit('disconnectStream', '');
-                this.playerComponent.stopStream();
-                this.isStreaming = false;
+                this.playerComponent.stopStream();               
+                this.isStreaming = false;                
               }
             }
             break;
+
+          case `startWebCam_${this.room.id}`:
+
+            this.isPlaying = true;
+            this.playerComponent.startPlayer(this.flvOrigin);
+
+          break;
+
           default:
             console.log('unknown message: ', msg);
         }

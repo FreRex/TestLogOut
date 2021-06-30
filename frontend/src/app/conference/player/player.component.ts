@@ -75,11 +75,12 @@ export class PlayerComponent implements OnInit {
 
   stopPlayer() {
     if (this.player) {
+      console.log('stop player')
       this.player.pause();
       this.player.unload();
       this.player.detachMediaElement();
       this.player.destroy();
-      this.player = null;
+      this.player = null;      
     }
   }
 

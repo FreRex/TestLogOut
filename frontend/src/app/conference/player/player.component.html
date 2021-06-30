@@ -8,6 +8,6 @@
   <div [hidden]="isStreaming || isPlaying">
     <img src="assets/icons/mockup-icons/wait.svg" />
   </div>
-  <video [hidden]="!isStreaming" #local_video [autoplay]="true" [muted]="true"></video>
-  <video [hidden]="!isPlaying" #output_video [autoplay]="true" playsinline></video>
+  <video class="videoElementBase" [hidden]="!isStreaming" #local_video [autoplay]="true" [muted]="true"></video>
+  <video class="videoElementBase" [hidden]="!isPlaying" #output_video [autoplay]="true" [muted]="true" playsinline></video>
 </div>
