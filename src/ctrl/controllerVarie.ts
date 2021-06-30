@@ -69,7 +69,11 @@ exports.mappaProgetto = (req: any, res: any, next: any) => {
 
   if (typeof(req.params.idroom) !== 'undefined' && validator.isNumeric(req.params.idroom) && (req.params.idroom)!= 0 && (req.params.idroom)!='') {
     let idroom = req.params.idroom;      
-    let sql: string = "SELECT * FROM rappre_prog_gisfo WHERE id = ?";
+    //let sql: string = "SELECT * FROM rappre_prog_gisfo WHERE id = ?";
+    let sql: string = "SELECT multistreaming.id, multistreaming.progettoselezionato, rappre_prog_gisfo.nome, rappre_prog_gisfo.nodi_fisici AS nodifisici, rappre_prog_gisfo.nodi_ottici AS nodiottici, rappre_prog_gisfo.tratte AS tratte, rappre_prog_gisfo.conn_edif_opta AS edifopta, rappre_prog_gisfo.lat_centro_map AS latcentromap, rappre_prog_gisfo.long_centro_map AS longcentrmap, multistreaming.progettoselezionato AS nome "
+    sql = sql + "FROM rappre_prog_gisfo "
+    sql = sql + "INNER JOIN multistreaming ON multistreaming.progettoselezionato = rappre_prog_gisfo.nome "
+    sql = sql + "WHERE multistreaming.id = ? "
     let datiDb: any = [idroom];
     esecuzioneQuery(sql,datiDb);  
   }
