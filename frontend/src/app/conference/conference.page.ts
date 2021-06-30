@@ -1,11 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import {
-  NavController,
-  PopoverController,
-  ToastController,
-  ViewDidLeave,
-} from '@ionic/angular';
+import { NavController, ViewDidLeave } from '@ionic/angular';
 import { Socket } from 'ngx-socket-io';
 import { iif, Observable, of, Subscription } from 'rxjs';
 import { map, retryWhen, switchMap, take, tap } from 'rxjs/operators';
@@ -240,6 +235,7 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
       this.socket.emit('disconnectStream', '');
       this.playerComponent.stopStream();
       this.isStreaming = false;
+      this.streamingUser = null;
     } else {
       this.socket.emit('start', { idutente: this.user.idutcas });
       this.playerComponent.startStream();

@@ -6,6 +6,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
 
 import { ConferencePageRoutingModule } from './conference-routing.module';
 import { ConferencePage } from './conference.page';
+import { MapComponent } from './map/map.component';
 import { PlayerComponent } from './player/player.component';
 import { StreamingBarComponent } from './streaming-bar/streaming-bar.component';
 import { UsersListComponent } from './users-list/users-list.component';
@@ -23,6 +24,7 @@ import { UsersListComponent } from './users-list/users-list.component';
     PlayerComponent,
     StreamingBarComponent,
     UsersListComponent,
+    MapComponent,
   ],
 })
 export class ConferencePageModule {}

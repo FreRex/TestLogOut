@@ -18,15 +18,15 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 const config: SocketIoConfig = {
   url: `${environment.apiUrl}`, // id="socket.io_address" value="/"
   options: {
-    secure: true,
+    // secure: 'true',
     reconnection: true,
     reconnectionDelay: 1000,
     timeout: 15000,
-    pingTimeout: 15000,
-    pingInterval: 45000,
+    // pingTimeout: 15000,
+    // pingInterval: 45000,
     query: {
-      framespersecond: 15,
-      audioBitrate: 44100,
+      framespersecond: '15',
+      audioBitrate: '44100',
     },
   },
 };
