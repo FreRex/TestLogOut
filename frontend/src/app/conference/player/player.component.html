@@ -9,15 +9,18 @@
     <img src="assets/icons/mockup-icons/wait.svg" />
   </div>
   <video
+    class="videoElementBase"
     [hidden]="!isStreaming"
     #local_video
     [autoplay]="true"
     [muted]="true"
   ></video>
   <video
+    class="videoElementBase"
     [hidden]="!isPlaying"
     #output_video
     [autoplay]="true"
+    [muted]="true"
     playsinline
   ></video>
 </div>
