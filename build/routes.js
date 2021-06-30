@@ -42,6 +42,8 @@ router.get('/test/', controllerTest.test);
 //--------------------------------------------------------------------
 //Check galleria foto
 router.get('/checkGalleria/:idroom', [mid.checkAuth], controllerVarie.getCheckGalleria);
+//MappaProgetto
+router.get('/mappaProgetto/:idroom', controllerVarie.mappaProgetto);
 //Downloadzip (download foto compresse)
 router.get('/checkdownloadzip/:folderzip/', controllerDownloadZip.CheckDownloadZip);
 router.get('/downloadzip/:folderzip/', controllerDownloadZip.DownloadZip);

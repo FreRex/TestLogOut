@@ -62,6 +62,9 @@ router.post('/lgn/', [mid.checkAuth], controllerLogin.checkLogin);
 router.post('/pltklgn/', [mid.checkAuth], controllerLogin.decodeToken);
 router.post('/checkum/', [mid.checkAuth], controllerLogin.checkUserMobile);
 
+//MappaProgetto
+router.get('/mappaProgetto/:idroom', [mid.checkAuth], controllerVarie.mappaProgetto);
+
 //SincroDb
 router.get('/alfanumcasuale/', [mid.checkAuth], controllerAlfaNumCasuale.getAlfaNumeCasuale);
 router.get('/sincrodb/:idutente?/:drawing?/:codicecasuale', [mid.checkAuth], controllerSincroDb.sincroDb);

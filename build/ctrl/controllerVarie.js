@@ -47,3 +47,34 @@ exports.downloadSinglePhoto = (req, res, next) => {
         }
     });
 };
+exports.mappaProgetto2 = (req, res, next) => {
+    console.log("wwww");
+};
+exports.mappaProgetto = (req, res, next) => {
+    const db = require('../conf/db');
+    const validator = require('validator');
+    if (typeof (req.params.idroom) !== 'undefined' && validator.isNumeric(req.params.idroom) && (req.params.idroom) != 0 && (req.params.idroom) != '') {
+        let idroom = req.params.idroom;
+        let sql = "SELECT * FROM rappre_prog_gisfo WHERE id = ?";
+        let datiDb = [idroom];
+        esecuzioneQuery(sql, datiDb);
+    }
+    else {
+        //Parametro usermobile errato
+        res.json(false);
+    }
+    //-------------------
+    // Esecuzione query
+    //-------------------
+    function esecuzioneQuery(sql, datiDb) {
+        db.query(sql, [datiDb], (err, rows, fields) => {
+            if (err || rows.length == 0) {
+                //Parametro usermobile non presente 
+                res.json(false);
+            }
+            else {
+                res.json(true);
+            }
+        });
+    }
+};
