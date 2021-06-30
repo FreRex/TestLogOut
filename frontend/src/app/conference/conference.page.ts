@@ -250,17 +250,25 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
               }
             });
             break;
-          case 'stopWebCam':
-            console.log('stopWebCam: ', msg.data);
-            // if (msg.data == this.room.id) {
-            //   if (this.isStreaming) {
-            //     // this.socket.emit('disconnectStream', '');
-            //     this.playerComponent.stopStream();
-            //     this.isStreaming = false;
-            //   }
-            // }
+          case 'stopWebCam':            
+            if (msg.data == this.room.id) {
+              console.log('msg.data == this.room.id');
+              if (this.isStreaming) {
+                console.log('this.isStreaming');
+                // this.socket.emit('disconnectStream', '');
+                this.playerComponent.stopStream();               
+                this.isStreaming = false;                
+              }
+            }
             break;
-          
+
+          case `startWebCam_${this.room.id}`:
+
+            this.isPlaying = true;
+            this.playerComponent.startPlayer(this.flvOrigin);
+
+          break;
+
           default:
             console.log('unknown message: ', msg);
         }

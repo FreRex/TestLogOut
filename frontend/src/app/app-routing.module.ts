@@ -49,6 +49,10 @@ const routes: Routes = [
     loadChildren: () =>
       import('./test-map/test-map.module').then((m) => m.TestMapPageModule),
   },
+  {
+    path: 'test-audiortc',
+    loadChildren: () => import('./test-audiortc/test-audiortc.module').then( m => m.TestAudiortcPageModule)
+  },
 ];
 
 @NgModule({
