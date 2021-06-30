@@ -47,9 +47,6 @@ exports.downloadSinglePhoto = (req, res, next) => {
         }
     });
 };
-exports.mappaProgetto2 = (req, res, next) => {
-    console.log("wwww");
-};
 exports.mappaProgetto = (req, res, next) => {
     const db = require('../conf/db');
     const validator = require('validator');
@@ -61,7 +58,7 @@ exports.mappaProgetto = (req, res, next) => {
     }
     else {
         //Parametro usermobile errato
-        res.json(false);
+        res.json("Parametro non corretto. (non numero o 'undefined' o uguale a zero o vuoto");
     }
     //-------------------
     // Esecuzione query
@@ -69,11 +66,11 @@ exports.mappaProgetto = (req, res, next) => {
     function esecuzioneQuery(sql, datiDb) {
         db.query(sql, [datiDb], (err, rows, fields) => {
             if (err || rows.length == 0) {
-                //Parametro usermobile non presente 
-                res.json(false);
+                //Parametro idroom non presente 
+                res.json("Parametro errato: idroom non presente");
             }
             else {
-                res.json(true);
+                res.json(rows);
             }
         });
     }

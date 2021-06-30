@@ -201,14 +201,23 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
             }
             // }
             break;
-          case `startWebCam_${this.room.id}`: // TODO: cambiare in startPlayer_${this.room.id}
+          case `startPlayer_${this.room.id}`: // TODO: cambiare in startPlayer_${this.room.id}
             console.log('🐱‍👤 : startPlayer', msg);
-            if (!this.isPlaying) {
+            //if (!this.isPlaying) {
               this.playerComponent.startPlayer(
                 this.room.id,
                 this.streamingUser.idutente
               );
               this.isPlaying = true;
+            //}
+            break;
+
+          case `stopPlayer_${this.room.id}`: 
+            console.log('🐱‍👤 : stopPlayer_', msg);
+            if (this.isPlaying) {
+              this.playerComponent.stopPlayer();
+              this.isPlaying = false;
+              this.streamingUser = null;
             }
             break;
           default:

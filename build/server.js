@@ -17,7 +17,7 @@ if (process.env.NODE_ENV == 'production') {
     port = process.env.PORT_PROD || 9666;
 }
 else {
-    port = 9516;
+    port = 9187;
 }
 app.use(express_1.default.json());
 //-----------------------------------------------------------------------------------------------------------
@@ -246,7 +246,7 @@ io.on('connection', function (socket) {
             socket.emit('message', { type: numberRoom, data: arrayStream });
             socket.broadcast.emit('message', { type: numberRoom, data: arrayStream });
             //Riavvio player (start.player)
-            socket.broadcast.emit('message', { type: 'startWebCam_' + numberRoom, data: arrayStream });
+            socket.broadcast.emit('message', { type: 'startPlayer_' + numberRoom, data: arrayStream });
         }
         feedStream = function (data) {
             ffmpeg_process.stdin.write(data);
@@ -312,6 +312,7 @@ io.on('connection', function (socket) {
             socket.emit('message', { type: numberRoom, data: arrayUser });
             socket.broadcast.emit('message', { type: numberRoom, data: arrayUser });
         }
+        socket.broadcast.emit('message', { type: 'stopPlayer_' + numberRoom, data: arrayUser });
         console.log('----------------------------------------');
         console.log('----------------------------------------');
     });
