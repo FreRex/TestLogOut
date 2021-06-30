@@ -27,7 +27,7 @@ export class PlayerComponent implements OnInit {
   @Input() isStreaming: boolean = false;
   @Input() isPlaying: boolean = true;
 
-  private devicePosition: string = 'fronte';
+  // private devicePosition: string = 'fronte';
 
   private localStream: MediaStream;
   private mediaRecorder: MediaRecorder;
@@ -36,7 +36,10 @@ export class PlayerComponent implements OnInit {
   constructor(private socket: Socket) {}
 
   ngOnInit() {
-    this.listaDispositivi();
+    this.listaDispositivi().then((constraints: MediaStreamConstraints) => {
+      this.constraints = constraints;
+      console.log('🐱‍👤 : this.constraints', this.constraints);
+    });
   }
 
   startStream() {
@@ -88,38 +91,38 @@ export class PlayerComponent implements OnInit {
 
   stopPlayer() {
     if (this.player) {
-      console.log('stop player')
+      console.log('stop player');
       this.player.pause();
       this.player.unload();
       this.player.detachMediaElement();
       this.player.destroy();
-      this.player = null;      
+      this.player = null;
     }
   }
 
   /************************* GetUserMedia *************************/
 
   private async requestGetUserMedia(): Promise<void> {
-    if (this.devicePosition == 'fronte') {
-      this.constraints = {
-        audio: { sampleRate: AUDIO_BITRATE, echoCancellation: true },
-        video: {
-          width: { min: MIN_WIDTH, ideal: IDEAL_WIDTH, max: MAX_WIDTH },
-          height: { min: MIN_HEIGHT, ideal: IDEAL_HEIGHT, max: MAX_HEIGHT },
-          frameRate: { ideal: VIDEO_FRAMERATE },
-        },
-      };
-    } else if (this.devicePosition == 'retro') {
-      this.constraints = {
-        audio: { sampleRate: AUDIO_BITRATE, echoCancellation: true },
-        video: {
-          width: { min: MIN_WIDTH, ideal: IDEAL_WIDTH, max: MAX_WIDTH },
-          height: { min: MIN_HEIGHT, ideal: IDEAL_HEIGHT, max: MAX_HEIGHT },
-          frameRate: { ideal: VIDEO_FRAMERATE },
-          facingMode: { exact: 'environment' },
-        },
-      };
-    }
+    // if (this.devicePosition == 'fronte') {
+    //   this.constraints = {
+    //     audio: { sampleRate: AUDIO_BITRATE, echoCancellation: true },
+    //     video: {
+    //       width: { min: MIN_WIDTH, ideal: IDEAL_WIDTH, max: MAX_WIDTH },
+    //       height: { min: MIN_HEIGHT, ideal: IDEAL_HEIGHT, max: MAX_HEIGHT },
+    //       frameRate: { ideal: VIDEO_FRAMERATE },
+    //     },
+    //   };
+    // } else if (this.devicePosition == 'retro') {
+    //   this.constraints = {
+    //     audio: { sampleRate: AUDIO_BITRATE, echoCancellation: true },
+    //     video: {
+    //       width: { min: MIN_WIDTH, ideal: IDEAL_WIDTH, max: MAX_WIDTH },
+    //       height: { min: MIN_HEIGHT, ideal: IDEAL_HEIGHT, max: MAX_HEIGHT },
+    //       frameRate: { ideal: VIDEO_FRAMERATE },
+    //       facingMode: { exact: 'environment' },
+    //     },
+    //   };
+    // }
     this.localStream = await navigator.mediaDevices.getUserMedia(
       this.constraints
     );
@@ -185,9 +188,10 @@ export class PlayerComponent implements OnInit {
 
   /************************* RetroFrontCam *************************/
 
-  checkRetroCam = false;
+  // checkRetroCam = false;
 
   async listaDispositivi() {
+    let constraints: MediaStreamConstraints;
     if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
       console.log('enumerateDevices() not supported.');
       return;
@@ -207,7 +211,35 @@ export class PlayerComponent implements OnInit {
                 navigator.userAgent
               )
             ) {
-              this.checkRetroCam = true;
+              // this.checkRetroCam = true;
+              constraints = {
+                audio: { sampleRate: AUDIO_BITRATE, echoCancellation: true },
+                video: {
+                  width: { min: MIN_WIDTH, ideal: IDEAL_WIDTH, max: MAX_WIDTH },
+                  height: {
+                    min: MIN_HEIGHT,
+                    ideal: IDEAL_HEIGHT,
+                    max: MAX_HEIGHT,
+                  },
+                  frameRate: { ideal: VIDEO_FRAMERATE },
+                  facingMode: { exact: 'environment' },
+                },
+              };
+            } else {
+              // this.checkRetroCam = false;
+              constraints = {
+                audio: { sampleRate: AUDIO_BITRATE, echoCancellation: true },
+                video: {
+                  width: { min: MIN_WIDTH, ideal: IDEAL_WIDTH, max: MAX_WIDTH },
+                  height: {
+                    min: MIN_HEIGHT,
+                    ideal: IDEAL_HEIGHT,
+                    max: MAX_HEIGHT,
+                  },
+                  frameRate: { ideal: VIDEO_FRAMERATE },
+                  facingMode: { exact: 'user' },
+                },
+              };
             }
           });
         })
@@ -215,7 +247,6 @@ export class PlayerComponent implements OnInit {
           console.log(err.name + ': ' + err.message);
         });
     }
-    console.log('retroCam:' + this.checkRetroCam);
-    return this.checkRetroCam;
+    return constraints;
   }
 }
