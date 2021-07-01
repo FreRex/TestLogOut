@@ -30,14 +30,10 @@
           <ion-icon slot="start" name="chevron-back-sharp"></ion-icon>
           <ion-text>Lista Room</ion-text>
         </ion-item>
-        <!-- <ion-button class="item-button" button="true">
-          <ion-icon slot="start" name="chevron-back-sharp"></ion-icon>
-          <ion-text>Lista Room</ion-text>
-        </ion-button> -->
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col size-lg="4.5">
+      <ion-col size-lg="4.5" size-xs="12">
         <div class="conference-title">
           <div class="title">
             <ion-text><b>{{room?.progetto}}</b></ion-text>
@@ -51,7 +47,7 @@
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col size-lg="4.5">
+      <ion-col size-lg="4.5" size-xs="12">
         <!-- QUI DENTRO VA IL VIDEO PLAYER -->
         <div class="spazio-vuoto-dimensione-fissa">
           <span *ngIf="streamingUser" class="label">
@@ -76,7 +72,7 @@
         ></app-streaming-bar>
       </ion-col>
 
-      <ion-col size="4.5">
+      <ion-col size-lg="4.5" size-xs="12">
         <!-- QUI DENTRO VA LA MAPPA -->
         <div class="spazio-vuoto-dimensione-fissa">
           <app-map [roomId]="room?.id"></app-map>
@@ -107,7 +103,7 @@
         </div>
       </ion-col>
 
-      <ion-col size="3">
+      <ion-col size-lg="3" size-xs="12">
         <!-- QUI DENTRO VA LA LISTA PARTECIPANTI con SWITCH su CHAT-->
         <div>
           <app-users-list [usersInRoom]="usersInRoom"></app-users-list>
