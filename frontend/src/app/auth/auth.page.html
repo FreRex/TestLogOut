@@ -21,26 +21,33 @@
         <div *ngIf="directLink" class="room-details-container">
           <ion-item lines="none">
             <ion-label>
-              <p>Progetto</p>
-              <h2>{{roomInfo.project}}</h2>
+              <h1>Conference Room #{{roomInfo.roomId}}</h1>
             </ion-label>
             <ion-icon
+              color="primary"
               slot="end"
               src="assets/icons/mockup-icons/video-call.svg"
             ></ion-icon>
           </ion-item>
-          <ion-item lines="none">
+          <ion-item *ngIf="roomInfo.project" lines="none">
+            <ion-label>
+              <p>Progetto</p>
+              <h2>{{roomInfo.project}}</h2>
+            </ion-label>
+          </ion-item>
+          <ion-item *ngIf="roomInfo.session" lines="none">
             <ion-label>
               <p>Sessione</p>
               <h2>{{roomInfo.session}}</h2>
             </ion-label>
           </ion-item>
-          <ion-item lines="none">
+          <ion-item *ngIf="roomInfo.creator" lines="none">
             <ion-label>
               <p>Organizzatore</p>
               <h2>{{roomInfo.creator}}</h2>
             </ion-label>
           </ion-item>
+
           <div class="user-guest-login-container">
             <ion-row style="width: 100%">
               <ion-col

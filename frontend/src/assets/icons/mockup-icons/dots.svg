@@ -1,1 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><defs><style>.a{fill:#acafb1;}.b{fill:none;}</style></defs><path class="a" d="M-449,13V10h3v3Zm-6,0V10h3v3Zm-6,0V10h3v3Zm-6,0V10h3v3Z" transform="translate(480.5 13.4)"/><rect class="b" width="48" height="48"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+  <defs>
+    <style>.a{fill:#acafb1;}.b{fill:none;}</style>
+  </defs>
+  <path class="a" d="M-449,13V10h3v3Zm-6,0V10h3v3Zm-6,0V10h3v3Zm-6,0V10h3v3Z" transform="translate(480.5 13.4)"/>
+  <rect class="b" width="48" height="48"/>
+</svg>

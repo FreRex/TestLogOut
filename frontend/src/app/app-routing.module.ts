@@ -22,7 +22,8 @@ const routes: Routes = [
       import('./conference/conference.module').then(
         (m) => m.ConferencePageModule
       ),
-    canActivate: [AuthGuard],
+    // canActivate: [AuthGuard],
+    canLoad: [AuthGuard],
   },
   {
     path: 'backoffice',
@@ -51,7 +52,10 @@ const routes: Routes = [
   },
   {
     path: 'test-audiortc',
-    loadChildren: () => import('./test-audiortc/test-audiortc.module').then( m => m.TestAudiortcPageModule)
+    loadChildren: () =>
+      import('./test-audiortc/test-audiortc.module').then(
+        (m) => m.TestAudiortcPageModule
+      ),
   },
 ];
 

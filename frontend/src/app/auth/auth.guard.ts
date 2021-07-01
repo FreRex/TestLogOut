@@ -44,13 +44,34 @@ export class AuthGuard implements CanLoad, CanActivate {
       }),
       tap((isAuthenticated) => {
         console.log('🐱‍👤 : AuthGuard : isAuthenticated', isAuthenticated);
+        console.log('🐱‍👤 : segments', segments);
+        console.log('🐱‍👤 : queryParams', location.search.substring(1));
+
         if (!isAuthenticated) {
+          if (segments[0].path == 'conference' && segments[1]) {
+            let roomData;
+            let roomDataString = `"roomId":"${segments[1].path}"`;
+            if (location.search.substring(1) != '') {
+              let query = decodeURI(location.search.substring(1));
+              roomDataString += `,"${query
+                .replace(/&/g, '","')
+                .replace(/=/g, '":"')}"`;
+            }
+            roomData = JSON.parse('{' + roomDataString + '}', (key, value) => {
+              return key === '' ? value : decodeURIComponent(value);
+            });
+            Storage.set({
+              key: 'roomData',
+              value: JSON.stringify(roomData),
+            });
+          }
           this.router.navigateByUrl('/auth');
         }
       })
     );
   }
 
+  // OLD: non viene più usato
   canActivate(route: ActivatedRouteSnapshot) {
     return this.authService.userIsAuthenticated.pipe(
       take(1),
@@ -65,16 +86,14 @@ export class AuthGuard implements CanLoad, CanActivate {
         console.log('🐱‍👤 : AuthGuard : isAuthenticated', isAuthenticated);
         if (!isAuthenticated) {
           // ? CORRETTO fare quest'operazione sulla AuthGuard?
+          console.log(route.children[0].params);
+          console.log(route.queryParams);
           if (route.routeConfig.path == 'conference' && route.queryParams) {
-            console.log(
-              '🐱‍👤 : AuthGuard : route.queryParams',
-              route.queryParams
-            );
-
+            console.log(route.queryParams);
             Storage.set({
               key: 'roomData',
               value: JSON.stringify({
-                roomId: decodeURIComponent(route.queryParams['roomId']),
+                roomId: route.children[0].params['roomId'],
                 session: decodeURIComponent(route.queryParams['session']),
                 project: decodeURIComponent(route.queryParams['project']),
                 creator: decodeURIComponent(route.queryParams['creator']),
