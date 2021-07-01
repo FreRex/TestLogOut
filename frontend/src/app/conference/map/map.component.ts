@@ -34,7 +34,7 @@ export class MapComponent implements OnInit {
               new TileLayer({
                 // title: 'Google Streets',
                 // type: 'base',
-                visible: true,
+                visible: false,
                 source: new XYZ({
                   url: 'http://mt1.googleapis.com/vt?x={x}&y={y}&z={z}',
                 }),
@@ -42,7 +42,7 @@ export class MapComponent implements OnInit {
               new TileLayer({
                 // title: 'Open Street Map',
                 // type: 'base',
-                visible: false,
+                visible: true,
                 source: new OSM(),
               }),
               new TileLayer({
