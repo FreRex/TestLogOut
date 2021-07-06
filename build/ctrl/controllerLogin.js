@@ -16,7 +16,7 @@ exports.checkLogin = (req, res, next) => {
         select = "SELECT utenti.id AS idutente, utenti.idcommessa AS idcommessa, commesse.denominazione AS commessanome, utenti.autorizzazioni AS autorizzazione, utenti.idutcas AS idutcas, utenti.collaudatoreufficio AS nomecognome ";
         select = select + "FROM utenti ";
         select = select + "INNER JOIN commesse ON commesse.id = utenti.idcommessa ";
-        select = select + "WHERE username = ? AND password = ?";
+        select = select + "WHERE (BINARY username = ?) AND (BINARY password = ?) ";
         datiDb = [usr, pwd];
     }
     else {

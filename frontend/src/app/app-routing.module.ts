@@ -57,6 +57,10 @@ const routes: Routes = [
         (m) => m.TestAudiortcPageModule
       ),
   },
+  {
+    path: 'test-gps',
+    loadChildren: () => import('./test-gps/test-gps.module').then( m => m.TestGpsPageModule)
+  },
 ];
 
 @NgModule({
