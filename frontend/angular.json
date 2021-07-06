@@ -34,7 +34,10 @@
               "src/manifest.webmanifest"
             ],
             "styles": ["src/theme/variables.scss", "src/global.scss"],
-            "scripts": [],
+            "scripts": [
+              "src/assets/js/webrtc_adaptor.js",
+              "node_modules/webrtc-adapter/out/adapter.js"
+            ],
             "aot": false,
             "vendorChunk": true,
             "extractLicenses": false,
@@ -76,6 +79,7 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+
           "options": {
             "browserTarget": "app:build"
           },
