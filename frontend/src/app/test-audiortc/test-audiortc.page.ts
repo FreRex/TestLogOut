@@ -13,7 +13,13 @@ export class TestAudiortcPage implements OnInit {
   constructor(private route: ActivatedRoute) {}
 
   private webRTCInstance: any;
-  pc_config = null;
+  pc_config = {
+    iceServers: [
+      {
+        urls: 'stun:stun1.l.google.com:19302',
+      },
+    ],
+  };
   sdpConstraints = {
     OfferToReceiveAudio: false,
     // OfferToReceiveVideo: false,
@@ -36,7 +42,7 @@ export class TestAudiortcPage implements OnInit {
   ngOnInit() {
     let nome = Math.round(Math.random() * 100);
     let cognome = Math.round(Math.random() * 100);
-    let usermobile = 'usermobile-test-audio';
+    let usermobile = 'test1';
     this.streamId = nome + '-' + cognome;
 
     this.roomName = usermobile;
@@ -117,7 +123,7 @@ export class TestAudiortcPage implements OnInit {
 
   leaveRoom() {
     this.webRTCInstance.leaveFromRoom(this.roomName);
-    // this.webRTCInstance.muteLocalMic();
+    this.webRTCInstance.muteLocalMic();
     // this.webRTCInstance.turnOffLocalCamera();
 
     // ! Da Implementare
@@ -130,10 +136,13 @@ export class TestAudiortcPage implements OnInit {
 
   publish(streamName, token) {
     this.publishStreamId = streamName;
+    console.log('🐱‍👤 : this.publishStreamId', this.publishStreamId);
+    console.log('🐱‍👤 : streamName', streamName);
     this.webRTCInstance.publish(streamName, token);
   }
 
   streamInformation(obj) {
+    console.log('🐱‍👤 : obj', obj);
     this.webRTCInstance.play(obj.streamId, this.token, this.roomName);
   }
 
@@ -187,10 +196,12 @@ export class TestAudiortcPage implements OnInit {
 
   startAnimation() {
     let state = this.webRTCInstance.signallingState(this.publishStreamId);
+    console.log('🐱‍👤 : state', state);
     if (state != null && state != 'closed') {
       let iceState = this.webRTCInstance.iceConnectionState(
         this.publishStreamId
       );
+      console.log('🐱‍👤 : iceState', iceState);
       if (
         iceState != null &&
         iceState != 'failed' &&
@@ -225,6 +236,7 @@ export class TestAudiortcPage implements OnInit {
           // ! } else {
           // !   this.publish(obj.streamId, this.token);
           // ! }
+          console.log('🐱‍👤 : obj.streamId', obj.streamId);
           this.publish(obj.streamId, this.token);
           if (obj.streams != null) {
             obj.streams.forEach((item) => {
@@ -244,7 +256,7 @@ export class TestAudiortcPage implements OnInit {
           // ! join_publish_button.disabled = true;
           // ! stop_publish_button.disabled = false;
           console.log('publish started to room: ' + this.roomName);
-          this.startAnimation();
+          // this.startAnimation();
         } else if (info == 'publish_finished') {
           // * stream is being finished
           // ! join_publish_button.disabled = false;

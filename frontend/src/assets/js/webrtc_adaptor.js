@@ -577,8 +577,8 @@ function WebRTCAdaptor(initialValues) {
       room: roomName,
     };
     // !!! Aggiunta Elia
-    thiz.localStream.getVideoTracks()[0].stop();
-    thiz.localStream.getAudioTracks()[0].stop();
+    // thiz.localStream.getVideoTracks()[0].stop();
+    // thiz.localStream.getAudioTracks()[0].stop();
 
     console.log('leave request is sent for ' + roomName);
 
@@ -1035,6 +1035,13 @@ function WebRTCAdaptor(initialValues) {
         thiz.onTrack(event, closedStreamId);
       };
 
+      console.log('🐱‍👤 : dataChannelMode', dataChannelMode);
+      console.log('🐱‍👤 : thiz.localStream', thiz.localStream);
+      console.log(
+        '🐱‍👤 : thiz.remotePeerConnection',
+        thiz.remotePeerConnection
+      );
+
       if (dataChannelMode == 'publish') {
         //open data channel if it's publish mode peer connection
         const dataChannelOptions = {
@@ -1082,19 +1089,19 @@ function WebRTCAdaptor(initialValues) {
           thiz.callback('ice_connection_state_changed', obj);
 
           // !!! Commentato da Elia
-          if (!thiz.isPlayMode) {
-            if (
-              thiz.remotePeerConnection[streamId].iceConnectionState ==
-              'connected'
-            ) {
-              thiz
-                .changeBandwidth(thiz.bandwidth, streamId)
-                .then(() => {
-                  console.log('Bandwidth is changed to ' + thiz.bandwidth);
-                })
-                .catch((e) => console.error(e));
-            }
-          }
+          // if (!thiz.isPlayMode) {
+          //   if (
+          //     thiz.remotePeerConnection[streamId].iceConnectionState ==
+          //     'connected'
+          //   ) {
+          //     thiz
+          //       .changeBandwidth(thiz.bandwidth, streamId)
+          //       .then(() => {
+          //         console.log('Bandwidth is changed to ' + thiz.bandwidth);
+          //       })
+          //       .catch((e) => console.error(e));
+          //   }
+          // }
         };
     }
   };
@@ -1139,7 +1146,7 @@ function WebRTCAdaptor(initialValues) {
     thiz.remotePeerConnection[streamId]
       .setLocalDescription(configuration)
       .then(function (responose) {
-        console.debug(
+        console.log(
           'Set local description successfully for stream Id ' + streamId
         );
 
@@ -1400,6 +1407,7 @@ function WebRTCAdaptor(initialValues) {
       'setParameters' in window.RTCRtpSender.prototype
     ) {
       const senders = thiz.remotePeerConnection[streamId].getSenders();
+      console.log('🐱‍👤 : senders', senders);
 
       for (let i = 0; i < senders.length; i++) {
         if (senders[i].track != null && senders[i].track.kind == 'video') {
@@ -1408,6 +1416,7 @@ function WebRTCAdaptor(initialValues) {
         }
       }
     }
+    console.log('🐱‍👤 : videoSender', videoSender);
     return videoSender;
   };
 

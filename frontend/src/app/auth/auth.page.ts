@@ -23,7 +23,7 @@ export class AuthPage implements OnInit, ViewWillEnter {
   constructor() {}
 
   ionViewWillEnter() {
-    Storage.remove({ key: 'authData' });
+    // Storage.remove({ key: 'authData' });
   }
 
   ngOnInit() {
