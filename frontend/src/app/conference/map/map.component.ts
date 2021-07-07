@@ -9,6 +9,10 @@ import OSM from 'ol/source/OSM';
 import TileWMS from 'ol/source/TileWMS';
 import XYZ from 'ol/source/XYZ';
 import View from 'ol/View';
+
+import * as olCoordinate from 'ol/coordinate';
+import { defaults as defaultControls } from 'ol/control';
+import MousePosition from 'ol/control/MousePosition';
 import { MapData, MapService } from './map.service';
 
 @Component({
@@ -22,10 +26,18 @@ export class MapComponent implements OnInit {
   constructor(private mapService: MapService) {}
 
   ngOnInit() {
+    var mousePosition = new MousePosition({
+      coordinateFormat: olCoordinate.createStringXY(7),
+      projection: 'EPSG:4326',
+      target: document.getElementById('mouse-position'),
+      undefinedHTML: '&nbsp;',
+    });
+
     this.mapService.fetchMap(this.roomId).subscribe((map: Map) => {
       console.log('🐱‍👤 : mapData', map);
 
       new Map({
+        controls: defaultControls().extend([mousePosition]),
         target: 'map',
         layers: [
           new LayerGroup({
@@ -34,7 +46,7 @@ export class MapComponent implements OnInit {
               new TileLayer({
                 // title: 'Google Streets',
                 // type: 'base',
-                visible: false,
+                visible: true,
                 source: new XYZ({
                   url: 'http://mt1.googleapis.com/vt?x={x}&y={y}&z={z}',
                 }),
@@ -42,7 +54,7 @@ export class MapComponent implements OnInit {
               new TileLayer({
                 // title: 'Open Street Map',
                 // type: 'base',
-                visible: true,
+                visible: false,
                 source: new OSM(),
               }),
               new TileLayer({
@@ -102,13 +114,16 @@ export class MapComponent implements OnInit {
 
       // LayerSwitcher (legenda)
       /* 
-      let layerSwitcher = new LayerSwitcher({
-      reverse: true,
-      groupSelectStyle: 'group'
-    });
-    Map.addControl(layerSwitcher); 
-    */
+        let layerSwitcher = new LayerSwitcher({
+          reverse: true,
+          groupSelectStyle: 'group'
+        });
+        Map.addControl(layerSwitcher); 
+        */
       //Map.addLayer(new LayerSwitcher({ reverse: false }));
     });
   }
+}
+function createStringXY(arg0: number) {
+  throw new Error('Function not implemented.');
 }
