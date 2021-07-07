@@ -131,6 +131,7 @@ function WebRTCAdaptor(initialValues) {
     }
   }
 
+  // ! MARTINA: non ho localVideo e remoteVideo se SOLO AUDIO
   thiz.localVideo = document.getElementById(thiz.localVideoId);
   thiz.remoteVideo = document.getElementById(thiz.remoteVideoId);
 
@@ -166,6 +167,7 @@ function WebRTCAdaptor(initialValues) {
     audioStream,
     onEndedCallback
   ) {
+    console.log('🐱‍👤 : setDesktopwithCameraSource');
     thiz.desktopStream = stream;
 
     navigator.mediaDevices
@@ -251,6 +253,7 @@ function WebRTCAdaptor(initialValues) {
     stream,
     streamId
   ) {
+    console.log('🐱‍👤 : prepareStreamTracks');
     //this trick, getting audio and video separately, make us add or remove tracks on the fly
     var audioTrack = stream.getAudioTracks();
     if (audioTrack.length > 0) {
@@ -303,6 +306,7 @@ function WebRTCAdaptor(initialValues) {
    * Get user media
    */
   this.getUserMedia = function (mediaConstraints, audioConstraint, streamId) {
+    console.log('🐱‍👤 : getUserMedia');
     // Check Media Constraint video value screen or screen + camera
     if (thiz.publishMode == 'screen+camera' || thiz.publishMode == 'screen') {
       navigator.mediaDevices
@@ -358,6 +362,10 @@ function WebRTCAdaptor(initialValues) {
    * Open media stream, it may be screen, camera or audio
    */
   this.openStream = function (mediaConstraints) {
+    console.log(
+      '🐱‍👤 : this.openStream -> mediaConstraints',
+      mediaConstraints
+    );
     thiz.mediaConstraints = mediaConstraints;
     var audioConstraint = false;
     if (
@@ -379,6 +387,7 @@ function WebRTCAdaptor(initialValues) {
    * Closes stream, if you want to stop peer connection, call stop(streamId)
    */
   this.closeStream = function () {
+    console.log('🐱‍👤 : closeStream');
     thiz.localStream.getVideoTracks().forEach(function (track) {
       track.onended = null;
       track.stop();
@@ -419,6 +428,7 @@ function WebRTCAdaptor(initialValues) {
     typeof thiz.mediaConstraints != 'undefined' &&
     this.localStream == null
   ) {
+    console.log('🐱‍👤 : thiz.mediaConstraints', thiz.mediaConstraints);
     if (
       typeof thiz.mediaConstraints.video != 'undefined' &&
       thiz.mediaConstraints.video != false
@@ -485,6 +495,10 @@ function WebRTCAdaptor(initialValues) {
       navigator.mediaDevices
         .getUserMedia(media_audio_constraint)
         .then(function (stream) {
+          console.log(
+            '🐱‍👤 : navigator.mediaDevices.getUserMedia() -> stream',
+            stream
+          );
           thiz.gotStream(stream);
         })
         .catch(function (error) {
@@ -645,8 +659,15 @@ function WebRTCAdaptor(initialValues) {
   };
 
   this.gotStream = function (stream) {
+    console.log('🐱‍👤 : this.gotStream -> stream', stream);
     thiz.localStream = stream;
-    thiz.localVideo.srcObject = stream;
+
+    // ! MARTINA: check se esiste un localVideo
+    if (thiz.localVideo != null) {
+      thiz.localVideo.srcObject = stream;
+    }
+
+    console.log('🐱‍👤 : thiz.webSocketAdaptor', thiz.webSocketAdaptor);
     if (
       thiz.webSocketAdaptor == null ||
       thiz.webSocketAdaptor.isConnected() == false
@@ -754,7 +775,11 @@ function WebRTCAdaptor(initialValues) {
     thiz.localStream.removeTrack(audioTrack);
     audioTrack.stop();
     thiz.localStream.addTrack(stream.getAudioTracks()[0]);
-    thiz.localVideo.srcObject = thiz.localStream;
+
+    // ! MARTINA: check se esiste un localVideo
+    if (thiz.localVideo != null) {
+      thiz.localVideo.srcObject = thiz.localStream;
+    }
 
     if (onEndedCallback != null) {
       stream.getAudioTracks()[0].onended = function (event) {
@@ -780,7 +805,11 @@ function WebRTCAdaptor(initialValues) {
     thiz.localStream.removeTrack(videoTrack);
     videoTrack.stop();
     thiz.localStream.addTrack(stream.getVideoTracks()[0]);
-    thiz.localVideo.srcObject = thiz.localStream;
+
+    // ! MARTINA: check se esiste un localVideo
+    if (thiz.localVideo != null) {
+      thiz.localVideo.srcObject = thiz.localStream;
+    }
 
     if (onEndedCallback != null) {
       stream.getVideoTracks()[0].onended = function (event) {
@@ -1189,6 +1218,7 @@ function WebRTCAdaptor(initialValues) {
 
   this.muteLocalMic = function () {
     if (thiz.remotePeerConnection != null) {
+      console.log('🐱‍👤 : muteLocalMic');
       var track = thiz.localStream.getAudioTracks()[0];
       track.enabled = false;
     } else {
@@ -1201,6 +1231,7 @@ function WebRTCAdaptor(initialValues) {
    */
   this.unmuteLocalMic = function () {
     if (thiz.remotePeerConnection != null) {
+      console.log('🐱‍👤 : unmuteLocalMic');
       var track = thiz.localStream.getAudioTracks()[0];
       track.enabled = true;
     } else {
@@ -1564,6 +1595,7 @@ function WebRTCAdaptor(initialValues) {
     wsConn.onopen = function () {
       if (thiz.debug) {
         console.log('websocket connected');
+        console.log('🐱‍👤 : wsConn', wsConn);
       }
 
       pingTimerId = setInterval(() => {
