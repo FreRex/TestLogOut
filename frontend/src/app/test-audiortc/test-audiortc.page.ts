@@ -13,13 +13,14 @@ export class TestAudiortcPage implements OnInit {
   constructor(private route: ActivatedRoute) {}
 
   private webRTCInstance: any;
-  pc_config = {
-    iceServers: [
-      {
-        urls: 'stun:stun1.l.google.com:19302',
-      },
-    ],
-  };
+  // pc_config = {
+  //   iceServers: [
+  //     {
+  //       urls: 'stun:stun1.l.google.com:19302',
+  //     },
+  //   ],
+  // };
+  pc_config = null;
   sdpConstraints = {
     OfferToReceiveAudio: false,
     // OfferToReceiveVideo: false,
@@ -44,76 +45,16 @@ export class TestAudiortcPage implements OnInit {
     let cognome = Math.round(Math.random() * 100);
     let usermobile = 'test1';
     this.streamId = nome + '-' + cognome;
-
     this.roomName = usermobile;
   }
-
-  // ! function muteLocalMic() {
-  // ! 	webRTCAdaptor.muteLocalMic();
-  // ! 	isMicMuted = true;
-  // ! 	handleMicButtons();
-  // ! 	sendNotificationEvent("MIC_MUTED");
-  // ! 	document.getElementById("talk").style.zIndex=-1;
-  // !       document.getElementById("notalk").style.zIndex=1;
-  // ! }
-
-  // ! function unmuteLocalMic() {
-  // ! 	webRTCAdaptor.unmuteLocalMic();
-  // ! 	isMicMuted = false;
-  // ! 	handleMicButtons();
-  // ! 	sendNotificationEvent("MIC_UNMUTED");
-  // ! 	document.getElementById("talk").style.zIndex=1;
-  // !       document.getElementById("notalk").style.zIndex=-1;
-  // ! }
-
-  // ! function handleMicButtons() {
-  // ! 	if (isMicMuted) {
-  // ! 		mute_mic_button.disabled = true;
-  // ! 		unmute_mic_button.disabled = false;
-  // ! 	} else {
-  // ! 		mute_mic_button.disabled = false;
-  // ! 		unmute_mic_button.disabled = true;
-  // ! 	}
-  // ! }
 
   toggleMic() {
     if (this.isMicOn) {
       this.webRTCInstance.unmuteLocalMic();
-      this.isMicOn = !this.isMicOn;
+      this.isMicOn = true;
     } else {
       this.webRTCInstance.muteLocalMic();
-      this.isMicOn = !this.isMicOn;
-    }
-  }
-
-  sendNotificationEvent(eventType) {
-    if (this.isDataChannelOpen) {
-      let notEvent = {
-        streamId: this.publishStreamId,
-        eventType: eventType,
-      };
-      this.webRTCInstance.sendData(
-        this.publishStreamId,
-        JSON.stringify(notEvent)
-      );
-    }
-    console.log(
-      'Could not send the notification because data channel is not open.'
-    );
-  }
-
-  handleNotificationEvent(obj) {
-    console.log('Received data : ', obj.event.data);
-    var notificationEvent = JSON.parse(obj.event.data);
-    if (notificationEvent != null && typeof notificationEvent == 'object') {
-      var eventStreamId = notificationEvent.streamId;
-      var eventTyp = notificationEvent.eventType;
-
-      if (eventTyp == 'MIC_MUTED') {
-        console.log('Microphone muted for : ', eventStreamId);
-      } else if (eventTyp == 'MIC_UNMUTED') {
-        console.log('Microphone unmuted for : ', eventStreamId);
-      }
+      this.isMicOn = false;
     }
   }
 
@@ -125,13 +66,6 @@ export class TestAudiortcPage implements OnInit {
     this.webRTCInstance.leaveFromRoom(this.roomName);
     this.webRTCInstance.muteLocalMic();
     // this.webRTCInstance.turnOffLocalCamera();
-
-    // ! Da Implementare
-    // ! for (var node in document.getElementById("players").childNodes) {
-    // ! 	if (node.tagName == 'DIV' && node.id != "localVideo") {
-    // !     document.getElementById("players").removeChild(node);
-    // ! 	}
-    // ! }
   }
 
   publish(streamName, token) {
@@ -147,17 +81,6 @@ export class TestAudiortcPage implements OnInit {
   }
 
   playVideo(obj) {
-    // ! Da Implementare
-    // ! var room = roomOfStream[obj.streamId];
-    // ! console.log("new stream available with id: "
-    // ! 	+ obj.streamId + "on the room:" + room);
-    // ! var video = document.getElementById("remoteVideo" + obj.streamId);
-    // ! if (video == null) {
-    // !         createRemoteVideo(obj.streamId);
-    // ! 	video = document.getElementById("remoteVideo" + obj.streamId);
-    // ! }
-    // ! video.srcObject = obj.stream;
-
     const streamExists = this.remoteStreams.findIndex(
       (stream) => stream.id == obj.streamId
     );
@@ -169,23 +92,7 @@ export class TestAudiortcPage implements OnInit {
     }
   }
 
-  // ! function createRemoteVideo(streamId) {
-  // ! 	var player = document.createElement("div");
-  // ! 	player.className = "col-sm-3";
-  // ! 	player.id = "player" + streamId;
-  // ! 	//player.innerHTML = '<audio id="remoteVideo' + streamId + '"autoplay></audio> <img src="images/Logo_audio.png" style="height:60%; position: absolute; top:4%; left: 50%; transform: translateX(-50%); z-index: 2;">';
-  // ! 	player.innerHTML = '<audio id="remoteVideo' + streamId + '"autoplay></audio>';
-  // ! 	document.getElementById("players").appendChild(player);
-  // ! }
-
   removeRemoteVideo(streamId) {
-    // ! var video = document.getElementById("remoteVideo" + streamId);
-    // ! if (video != null) {
-    // ! 	var player = document.getElementById("player" + streamId);
-    // ! 	video.srcObject = null;
-    // ! 	document.getElementById("players").removeChild(player);
-    // ! }
-
     const streamIndex = this.remoteStreams.findIndex(
       (stream) => stream.id == streamId
     );
@@ -196,12 +103,10 @@ export class TestAudiortcPage implements OnInit {
 
   startAnimation() {
     let state = this.webRTCInstance.signallingState(this.publishStreamId);
-    console.log('🐱‍👤 : state', state);
     if (state != null && state != 'closed') {
       let iceState = this.webRTCInstance.iceConnectionState(
         this.publishStreamId
       );
-      console.log('🐱‍👤 : iceState', iceState);
       if (
         iceState != null &&
         iceState != 'failed' &&
@@ -212,6 +117,7 @@ export class TestAudiortcPage implements OnInit {
     }
   }
 
+  joinedTheRoom = false;
   playOnly = true;
   ngAfterViewInit(): void {
     this.webRTCInstance = new WebRTCAdaptor({
@@ -219,7 +125,7 @@ export class TestAudiortcPage implements OnInit {
       mediaConstraints: this.mediaConstraints,
       peerconnection_config: this.pc_config,
       sdp_constraints: this.sdpConstraints,
-      localVideoId: 'localVideo',
+      // localVideoId: 'localVideo',
       // isPlayMode: this.playOnly,
       debug: true,
       callback: (info, obj) => {
@@ -227,17 +133,15 @@ export class TestAudiortcPage implements OnInit {
           console.log('initialized');
         } else if (info == 'joinedTheRoom') {
           console.log('🐱‍👤 : obj', obj);
+          console.log('🐱‍👤 : obj.streamId', obj.streamId);
+
           let roomOfStream = new Array();
           roomOfStream[obj.streamId] = obj.ATTR_ROOM_NAME;
+          this.joinedTheRoom = true;
           console.log('joined the room: ' + roomOfStream[obj.streamId]);
-          // ! if (this.playOnly) {
-          // !  join_publish_button.disabled = true;
-          // !  stop_publish_button.disabled = false;
-          // ! } else {
-          // !   this.publish(obj.streamId, this.token);
-          // ! }
-          console.log('🐱‍👤 : obj.streamId', obj.streamId);
+
           this.publish(obj.streamId, this.token);
+
           if (obj.streams != null) {
             obj.streams.forEach((item) => {
               this.webRTCInstance.play(item, this.token, this.roomName);
@@ -252,23 +156,14 @@ export class TestAudiortcPage implements OnInit {
           console.log(' stream leaved with id ' + obj.streamId);
           this.removeRemoteVideo(obj.streamId);
         } else if (info == 'publish_started') {
-          // * stream is being published
-          // ! join_publish_button.disabled = true;
-          // ! stop_publish_button.disabled = false;
           console.log('publish started to room: ' + this.roomName);
-          // this.startAnimation();
+          this.startAnimation();
         } else if (info == 'publish_finished') {
-          // * stream is being finished
-          // ! join_publish_button.disabled = false;
-          // ! stop_publish_button.disabled = true;
           console.log('publish finished');
         } else if (info == 'leavedFromRoom') {
           var room = obj.ATTR_ROOM_NAME;
           console.log('leaved from the room:' + room);
-          // ! if (this.playOnly) {
-          // ! 	join_publish_button.disabled = false;
-          // ! 	stop_publish_button.disabled = true;
-          // ! }
+          this.joinedTheRoom = false;
         } else if (info == 'closed') {
           console.log('Connection closed ?');
           if (typeof obj != 'undefined') {
@@ -276,11 +171,6 @@ export class TestAudiortcPage implements OnInit {
           }
         } else if (info == 'play_finished') {
           console.log('play_finished');
-          // ! var video = document.getElementById("remoteVideo"
-          // ! 	+ obj.streamId);
-          // ! if (video != null) {
-          // ! 	video.srcObject = null;
-          // ! }
         } else if (info == 'streamInformation') {
           this.streamInformation(obj);
         } else if (info == 'data_channel_opened') {
@@ -364,6 +254,37 @@ export class TestAudiortcPage implements OnInit {
         }
       },
     });
+  }
+
+  sendNotificationEvent(eventType) {
+    if (this.isDataChannelOpen) {
+      let notEvent = {
+        streamId: this.publishStreamId,
+        eventType: eventType,
+      };
+      this.webRTCInstance.sendData(
+        this.publishStreamId,
+        JSON.stringify(notEvent)
+      );
+    }
+    console.log(
+      'Could not send the notification because data channel is not open.'
+    );
+  }
+
+  handleNotificationEvent(obj) {
+    console.log('Received data : ', obj.event.data);
+    var notificationEvent = JSON.parse(obj.event.data);
+    if (notificationEvent != null && typeof notificationEvent == 'object') {
+      var eventStreamId = notificationEvent.streamId;
+      var eventTyp = notificationEvent.eventType;
+
+      if (eventTyp == 'MIC_MUTED') {
+        console.log('Microphone muted for : ', eventStreamId);
+      } else if (eventTyp == 'MIC_UNMUTED') {
+        console.log('Microphone unmuted for : ', eventStreamId);
+      }
+    }
   }
 
   ngOnDestroy(): void {

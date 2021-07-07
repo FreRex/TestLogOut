@@ -6,30 +6,25 @@
 
 <ion-content>
   <div id="players">
-    <audio id="localVideo" autoplay muted></audio>
+    <!-- <audio id="localVideo" autoplay muted></audio> -->
+    <!-- <audio id="localVideo" muted></audio> -->
   </div>
 
   <!------------- PARTE AUDIO ---------------------------->
   <div>
-    <button id="join_publish_button" (click)="joinRoom()">
+    <ion-button [disabled]="joinedTheRoom" (click)="joinRoom()">
       Join Conference
-    </button>
-    <button id="stop_publish_button" (click)="leaveRoom()">
+    </ion-button>
+    <ion-button [disabled]="!joinedTheRoom" (click)="leaveRoom()">
       Leave Conference
-    </button>
+    </ion-button>
 
-    <button id="mute_mic_button" (click)="toggleMic()">Toggle Mic</button>
+    <ion-button id="mute_mic_button" (click)="toggleMic()"
+      >Toggle Mic</ion-button
+    >
     <!-- <button id="unmute_mic_button" disabled onclick="unmuteLocalMic()">
       Attiva Microfono
     </button> -->
-  </div>
-  <div>
-    <span
-      class="label label-success"
-      id="broadcastingInfo"
-      style="font-size: 14px; display: none"
-      >-- AUDIO CONNESSO --</span
-    >
   </div>
 
   <div id="streamappiccato"></div>
