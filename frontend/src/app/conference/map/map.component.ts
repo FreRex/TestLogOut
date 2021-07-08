@@ -15,10 +15,6 @@ import { defaults as defaultControls } from 'ol/control';
 import MousePosition from 'ol/control/MousePosition';
 import { MapData, MapService } from './map.service';
 
-import * as olFeature from 'ol/Feature';
-import * as olPolygon from 'ol/geom/Polygon';
-import * as olPoint from 'ol/geom/Point';
-
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
@@ -31,47 +27,6 @@ export class MapComponent implements OnInit {
 
   ngOnInit() {
     /* MARKER ROSSO CENTRO MAPPA */
-    /*     var iconFeature = new olFeature.Feature({
-      geometry: new olPolygon.geom.Point(
-        olPolygon.proj.transform(
-          [Map.longcentrmap, Map.latcentromap],
-          'EPSG:4326',
-          'EPSG:3857'
-        )
-      ),
-      name: 'Start',
-    });
-    var iconStyle = new olPoint.style.Style({
-      image: new olPoint.style.Circle({
-        fill: new olPoint.style.Fill({
-          color: 'rgba(255,0,0,1)',
-        }),
-        stroke: new olPoint.style.Stroke({
-          color: '#000',
-          width: 1.25,
-        }),
-        radius: 5,
-      }),
-      fill: new olPoint.style.Fill({
-        color: 'rgba(255,0,0,1)',
-      }),
-      stroke: new olPoint.style.Stroke({
-        color: '#000',
-        width: 1.25,
-      }),
-    });
-
-    iconFeature.setStyle(iconStyle);
-
-    var vectorSource = new olFeature.source.Vector({
-      features: [iconFeature],
-    });
-
-    var vectorLayer = new olFeature.layer.Vector({
-      source: vectorSource,
-    });
-
-    Map.addLayer(vectorLayer); */
 
     /* COORDINATE AL PASSAGGIO DEL MOUSE */
     var mousePosition = new MousePosition({
