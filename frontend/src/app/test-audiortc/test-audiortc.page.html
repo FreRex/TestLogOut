@@ -8,6 +8,8 @@
   <div id="players">
     <!-- <audio id="localVideo" autoplay muted></audio> -->
     <!-- <audio id="localVideo" muted></audio> -->
+    <h2>Room Name: {{roomName}}</h2>
+    <h2>Stream Id: {{streamId}}</h2>
   </div>
 
   <!------------- PARTE AUDIO ---------------------------->
@@ -30,6 +32,23 @@
   <div id="streamappiccato"></div>
 
   <div id="partecipantiAudio"></div>
+
+  <div *ngFor="let remoteStream of remoteStreams">
+    <div class="audio-container">
+      <div class="ion-padding">
+        <p>Utente</p>
+        <h3>{{remoteStream.id}}</h3>
+      </div>
+      <audio
+        id="{{ 'remoteVideo' + remoteStream.id }}"
+        [srcObject]="remoteStream.stream"
+        controls
+        autoplay
+        playsinline
+      ></audio>
+      <h5>{{ remoteStream.displayName }}</h5>
+    </div>
+  </div>
 
   <!----------------------------------------------------->
 </ion-content>

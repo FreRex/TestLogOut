@@ -93,6 +93,7 @@ export class TestAudiortcPage implements OnInit {
   }
 
   removeRemoteVideo(streamId) {
+    console.log('🐱‍👤 : streamId', streamId);
     const streamIndex = this.remoteStreams.findIndex(
       (stream) => stream.id == streamId
     );
@@ -162,7 +163,8 @@ export class TestAudiortcPage implements OnInit {
           console.log('publish finished');
         } else if (info == 'leavedFromRoom') {
           var room = obj.ATTR_ROOM_NAME;
-          console.log('leaved from the room:' + room);
+          console.log('🐱‍👤 : leavedFromRoom', obj);
+          this.remoteStreams = [];
           this.joinedTheRoom = false;
         } else if (info == 'closed') {
           console.log('Connection closed ?');
