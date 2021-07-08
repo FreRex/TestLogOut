@@ -15,6 +15,10 @@ import { defaults as defaultControls } from 'ol/control';
 import MousePosition from 'ol/control/MousePosition';
 import { MapData, MapService } from './map.service';
 
+import * as olFeature from 'ol/Feature';
+import * as olPolygon from 'ol/geom/Polygon';
+import * as olPoint from 'ol/geom/Point';
+
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
@@ -26,18 +30,64 @@ export class MapComponent implements OnInit {
   constructor(private mapService: MapService) {}
 
   ngOnInit() {
+    /* MARKER ROSSO CENTRO MAPPA */
+    /*     var iconFeature = new olFeature.Feature({
+      geometry: new olPolygon.geom.Point(
+        olPolygon.proj.transform(
+          [Map.longcentrmap, Map.latcentromap],
+          'EPSG:4326',
+          'EPSG:3857'
+        )
+      ),
+      name: 'Start',
+    });
+    var iconStyle = new olPoint.style.Style({
+      image: new olPoint.style.Circle({
+        fill: new olPoint.style.Fill({
+          color: 'rgba(255,0,0,1)',
+        }),
+        stroke: new olPoint.style.Stroke({
+          color: '#000',
+          width: 1.25,
+        }),
+        radius: 5,
+      }),
+      fill: new olPoint.style.Fill({
+        color: 'rgba(255,0,0,1)',
+      }),
+      stroke: new olPoint.style.Stroke({
+        color: '#000',
+        width: 1.25,
+      }),
+    });
+
+    iconFeature.setStyle(iconStyle);
+
+    var vectorSource = new olFeature.source.Vector({
+      features: [iconFeature],
+    });
+
+    var vectorLayer = new olFeature.layer.Vector({
+      source: vectorSource,
+    });
+
+    Map.addLayer(vectorLayer); */
+
+    /* COORDINATE AL PASSAGGIO DEL MOUSE */
     var mousePosition = new MousePosition({
       coordinateFormat: olCoordinate.createStringXY(7),
       projection: 'EPSG:4326',
       target: document.getElementById('mouse-position'),
       undefinedHTML: '&nbsp;',
     });
-
+    /* MAPPA E LAYER */
     this.mapService.fetchMap(this.roomId).subscribe((map: Map) => {
       console.log('🐱‍👤 : mapData', map);
 
       new Map({
-        controls: defaultControls().extend([mousePosition]),
+        controls: defaultControls().extend([
+          mousePosition,
+        ]) /* COORDINATE AL PASSAGGIO DEL MOUSE */,
         target: 'map',
         layers: [
           new LayerGroup({
@@ -111,19 +161,6 @@ export class MapComponent implements OnInit {
           zoom: 15,
         }),
       });
-
-      // LayerSwitcher (legenda)
-      /* 
-        let layerSwitcher = new LayerSwitcher({
-          reverse: true,
-          groupSelectStyle: 'group'
-        });
-        Map.addControl(layerSwitcher); 
-        */
-      //Map.addLayer(new LayerSwitcher({ reverse: false }));
     });
   }
-}
-function createStringXY(arg0: number) {
-  throw new Error('Function not implemented.');
 }
