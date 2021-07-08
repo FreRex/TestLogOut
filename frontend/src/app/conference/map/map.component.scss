@@ -1,4 +1,11 @@
 #map {
+  position: realtive;
   height: 100%;
   width: 100%;
+}
+#mouse-position {
+  font-size: 10px;
+  position: absolute;
+  bottom: 0;
+  z-index: 100;
 }
