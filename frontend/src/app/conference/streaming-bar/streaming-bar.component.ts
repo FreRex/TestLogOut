@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { AudioRTCService } from 'src/app/test-audiortc/audiortc.service';
 
 @Component({
   selector: 'app-streaming-bar',
@@ -15,9 +16,11 @@ export class StreamingBarComponent implements OnInit {
   @Output() toggleStream = new EventEmitter<any>();
   @Output() togglePlay = new EventEmitter<any>();
 
-  constructor() {}
+  constructor(public audioService: AudioRTCService) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.audioService.createWebRTCInstance(this.roomId);
+  }
 
   configureSocket() {
     console.log('🐱‍👤 : StreamingBarComponent : this.userId', this.userId);

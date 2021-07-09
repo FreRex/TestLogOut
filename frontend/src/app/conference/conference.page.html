@@ -69,6 +69,8 @@
           [isPlaying]="isPlaying"
           (togglePlay)="togglePlay()"
           (toggleStream)="toggleStream()"
+          [roomId]="room?.id.toString()"
+          [userId]="user?.idutcas"
         ></app-streaming-bar>
       </ion-col>
 
@@ -109,6 +111,25 @@
           <app-users-list [usersInRoom]="usersInRoom"></app-users-list>
         </div>
       </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <div *ngFor="let remoteStream of this.audioService.remoteStreams">
+        <div class="audio-container">
+          <div class="ion-padding">
+            <p>Utente</p>
+            <h3>{{remoteStream.id}}</h3>
+          </div>
+          <audio
+            id="{{ 'remoteVideo' + remoteStream.id }}"
+            [srcObject]="remoteStream.stream"
+            controls
+            autoplay
+            playsinline
+          ></audio>
+          <h5>{{ remoteStream.displayName }}</h5>
+        </div>
+      </div>
     </ion-row>
   </ion-grid>
 </ion-content>

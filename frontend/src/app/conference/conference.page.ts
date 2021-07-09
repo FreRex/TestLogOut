@@ -10,6 +10,7 @@ import { AuthUser } from '../auth/auth-user.model';
 import { AuthService } from '../auth/auth.service';
 import { RoomItemService } from '../rooms/room-item.service';
 import { Room, RoomService } from '../rooms/room.service';
+import { AudioRTCService } from '../test-audiortc/audiortc.service';
 import { RoomUser } from './conference.service';
 import { PlayerComponent } from './player/player.component';
 
@@ -40,7 +41,8 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
     private authService: AuthService,
     private roomItemService: RoomItemService,
     private socket: Socket,
-    private router: Router
+    private router: Router,
+    public audioService: AudioRTCService
   ) {}
 
   isLoading: boolean = false;
@@ -199,15 +201,15 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
           case `startPlayer_${this.room.id}`: // TODO: cambiare in startPlayer_${this.room.id}
             console.log('🐱‍👤 : startPlayer', msg);
             //if (!this.isPlaying) {
-              this.playerComponent.startPlayer(
-                this.room.id,
-                this.streamingUser.idutente
-              );
-              this.isPlaying = true;
+            this.playerComponent.startPlayer(
+              this.room.id,
+              this.streamingUser.idutente
+            );
+            this.isPlaying = true;
             //}
             break;
 
-          case `stopPlayer_${this.room.id}`: 
+          case `stopPlayer_${this.room.id}`:
             console.log('🐱‍👤 : stopPlayer_', msg);
             if (this.isPlaying) {
               this.playerComponent.stopPlayer();
