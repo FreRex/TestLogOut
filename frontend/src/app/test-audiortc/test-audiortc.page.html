@@ -14,14 +14,20 @@
 
   <!------------- PARTE AUDIO ---------------------------->
   <div>
-    <ion-button [disabled]="joinedTheRoom" (click)="joinRoom()">
+    <ion-button
+      [disabled]="this.audioService.joinedTheRoom"
+      (click)="this.audioService.joinRoom(roomName, streamId)"
+    >
       Join Conference
     </ion-button>
-    <ion-button [disabled]="!joinedTheRoom" (click)="leaveRoom()">
+    <ion-button
+      [disabled]="!this.audioService.joinedTheRoom"
+      (click)="this.audioService.leaveRoom(roomName)"
+    >
       Leave Conference
     </ion-button>
 
-    <ion-button id="mute_mic_button" (click)="toggleMic()"
+    <ion-button id="mute_mic_button" (click)="this.audioService.toggleMic()"
       >Toggle Mic</ion-button
     >
     <!-- <button id="unmute_mic_button" disabled onclick="unmuteLocalMic()">
@@ -33,7 +39,7 @@
 
   <div id="partecipantiAudio"></div>
 
-  <div *ngFor="let remoteStream of remoteStreams">
+  <div *ngFor="let remoteStream of this.audioService.remoteStreams">
     <div class="audio-container">
       <div class="ion-padding">
         <p>Utente</p>
