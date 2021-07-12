@@ -1,5 +1,4 @@
-import { Injectable, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Injectable } from '@angular/core';
 
 declare let WebRTCAdaptor: any;
 
@@ -103,13 +102,11 @@ export class AudioRTCService {
         if (info == 'initialized') {
           console.log('initialized');
         } else if (info == 'joinedTheRoom') {
-          console.log('🐱‍👤 : obj', obj);
-          console.log('🐱‍👤 : obj.streamId', obj.streamId);
+          console.log('🐱‍👤 : joinedTheRoom', obj);
 
           let roomOfStream = new Array();
           roomOfStream[obj.streamId] = obj.ATTR_ROOM_NAME;
           this.joinedTheRoom = true;
-          console.log('joined the room: ' + roomOfStream[obj.streamId]);
 
           this.publish(obj.streamId, this.token);
 
@@ -118,40 +115,40 @@ export class AudioRTCService {
               this.webRTCInstance.play(item, this.token, roomName);
             });
           }
+        } else if (info == 'leavedFromRoom') {
+          console.log('🐱‍👤 : leavedFromRoom', obj);
+          this.remoteStreams = [];
+          this.joinedTheRoom = false;
         } else if (info == 'streamJoined') {
-          console.log('stream joined with id ' + obj.streamId);
+          console.log('🐱‍👤 : streamJoined', obj);
           this.webRTCInstance.play(obj.streamId, this.token, roomName);
         } else if (info == 'newStreamAvailable') {
           this.playVideo(obj);
         } else if (info == 'streamLeaved') {
-          console.log(' stream leaved with id ' + obj.streamId);
+          console.log('🐱‍👤 : streamLeaved', obj);
           this.removeRemoteVideo(obj.streamId);
         } else if (info == 'publish_started') {
-          console.log('publish started to room: ' + roomName);
-          // this.startAnimation();
+          console.log('🐱‍👤 : publish_started', obj);
         } else if (info == 'publish_finished') {
-          console.log('publish finished');
-        } else if (info == 'leavedFromRoom') {
-          // var room = obj.ATTR_ROOM_NAME;
-          console.log('🐱‍👤 : leavedFromRoom', obj);
-          this.remoteStreams = [];
-          this.joinedTheRoom = false;
-        } else if (info == 'closed') {
+          console.log('🐱‍👤 : publish_finished', obj);
+        } /* else if (info == 'closed') {
           console.log('Connection closed ?');
           if (typeof obj != 'undefined') {
             console.log('Connecton closed: ' + JSON.stringify(obj));
           }
-        } else if (info == 'play_finished') {
+        } */ /*  else if (info == 'play_finished') {
           console.log('play_finished');
-        } else if (info == 'streamInformation') {
+        } */ /* else if (info == 'streamInformation') {
+          console.log('🐱‍👤 : streamInformation', obj);
           this.streamInformation(obj, roomName);
-        } else if (info == 'data_channel_opened') {
+        } */ /* else if (info == 'data_channel_opened') {
           console.log('Data Channel open for stream id', obj);
           this.isDataChannelOpen = true;
         } else if (info == 'data_channel_closed') {
           console.log('Data Channel closed for stream id', obj);
           this.isDataChannelOpen = false;
-        } else if (info == 'data_received') {
+        } */ else if (info == 'data_received') {
+          console.log('🐱‍👤 : data_received', obj);
           this.handleNotificationEvent(obj);
         }
       },
@@ -224,19 +221,6 @@ export class AudioRTCService {
     });
   }
 
-  sendNotificationEvent(eventType, streamId) {
-    if (this.isDataChannelOpen) {
-      let notEvent = {
-        streamId: streamId,
-        eventType: eventType,
-      };
-      this.webRTCInstance.sendData(streamId, JSON.stringify(notEvent));
-    }
-    console.log(
-      'Could not send the notification because data channel is not open.'
-    );
-  }
-
   handleNotificationEvent(obj) {
     console.log('Received data : ', obj.event.data);
     var notificationEvent = JSON.parse(obj.event.data);
@@ -251,6 +235,19 @@ export class AudioRTCService {
       }
     }
   }
+
+  // sendNotificationEvent(eventType, streamId) {
+  //   if (this.isDataChannelOpen) {
+  //     let notEvent = {
+  //       streamId: streamId,
+  //       eventType: eventType,
+  //     };
+  //     this.webRTCInstance.sendData(streamId, JSON.stringify(notEvent));
+  //   }
+  //   console.log(
+  //     'Could not send the notification because data channel is not open.'
+  //   );
+  // }
 
   // TODO: implementarlo su conference page?
   // ngOnDestroy(): void {

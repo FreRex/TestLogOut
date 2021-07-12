@@ -307,6 +307,7 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
     console.log('🐱‍👤 generateRandomId : result', result);
     return result;
   }
+
   copyLink() {
     this.roomItemService.copyLink(this.room);
   }
