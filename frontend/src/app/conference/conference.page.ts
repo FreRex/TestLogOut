@@ -25,7 +25,7 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
   @ViewChild(PlayerComponent) private playerComponent: PlayerComponent;
   public room: Room;
   public user: AuthUser;
-  public usersInRoom: RoomUser[];
+  public usersInRoom: RoomUser[] = [];
   public streamingUser: RoomUser = null;
 
   // roomId: string = '';
@@ -65,7 +65,7 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
             replaceUrl: true,
             relativeTo: this.activatedRoute,
           });
-          console.log('roomId', roomId);
+          // console.log('roomId', roomId);
           return this.roomService.selectRoom(+roomId);
           // return this.authService.currentUser$;
         }),
@@ -74,7 +74,7 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
             throw new Error('Room Not Found');
           }
           this.room = room;
-          console.log('this.room.id', this.room.id);
+          // console.log('this.room.id', this.room.id);
           // this.userId = user.idutcas;
           // return this.roomService.selectRoom(+this.roomId);
           return this.authService.currentUser$;
@@ -86,7 +86,7 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
         (user: AuthUser) => {
           this.user = user;
           // this.userId = user.idutcas;
-          console.log('this.user.idutcas', this.user.idutcas);
+          // console.log('this.user.idutcas', this.user.idutcas);
           // this.room = room;
           this.configureSocket();
           this.isLoading = false;
@@ -143,8 +143,8 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
       .subscribe(
         (user: AuthUser) => {
           this.user = user;
-          console.log('this.user.idutcas', this.user.idutcas);
-          console.log('this.user.nomecognome: ', this.user.nomecognome);
+          // console.log('this.user.idutcas', this.user.idutcas);
+          // console.log('this.user.nomecognome: ', this.user.nomecognome);
 
           this.socket.emit('config_rtmpDestination', {
             rtmp: `${environment.urlRTMP}/${this.room.id}/${this.user.idutcas}`,
@@ -160,23 +160,15 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
           }
         },
         (err) => {
-          console.log('subscribe : err', err);
+          // console.log('subscribe : err', err);
         }
       );
 
-    this.socket.fromEvent<any>('message').subscribe(
-      (msg) => {
-        switch (msg.type) {
-          case 'welcome':
-            console.log('Welcome! ', msg.data);
-            break;
-          case 'info':
-            console.log('Info: ', msg.data);
-            break;
-          case 'fatal':
-            console.log('Fatal: ', msg.data);
-            break;
-          case `${this.room.id}`: //FREXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    this.socket
+      .fromEvent<any>('message')
+      .pipe(
+        switchMap((msg) => {
+          if (msg.type === `${this.room.id}`) {
             console.log('array per idroom: ', msg);
             this.usersInRoom = [];
             msg.data.slice(1).forEach((user) => {
@@ -187,9 +179,64 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
                 this.usersInRoom.push(user);
               }
             });
+          }
+          return this.audioService.userJoined$;
+        }),
+        switchMap((userJoined) => {
+          console.log('🐱‍👤 : res', userJoined);
+          console.log('🐱‍👤 : this.usersInRoom', this.usersInRoom);
+          this.usersInRoom?.forEach((user) => {
+            if (user.idutente === userJoined) {
+              user.audio = true;
+            }
+          });
+          return this.audioService.userLeaved$;
+        }),
+        map((userLeaved) => {
+          console.log('🐱‍👤 : res', userLeaved);
+          console.log('🐱‍👤 : this.usersInRoom', this.usersInRoom);
+          this.usersInRoom?.forEach((user) => {
+            if (user.idutente === userLeaved) {
+              user.audio = false;
+            }
+          });
+        })
+      )
+      .subscribe();
+
+    // this.audioService.userJoined$.subscribe((res) => {
+    //   this.usersInRoom?.forEach((user) => {
+    //     if (user.idutente === res) {
+    //       user.audio = true;
+    //     }
+    //   });
+    // });
+
+    this.socket.fromEvent<any>('message').subscribe(
+      (msg) => {
+        switch (msg.type) {
+          case 'welcome':
+            // console.log('Welcome! ', msg.data);
             break;
+          case 'info':
+            // console.log('Info: ', msg.data);
+            break;
+          case 'fatal':
+            // console.log('Fatal: ', msg.data);
+            break;
+          // case `${this.room.id}`: //FREXXXXXXXXXXXXX
+          //   console.log('array per idroom: ', msg);
+          //   this.usersInRoom = [];
+          //   msg.data.slice(1).forEach((user) => {
+          //     if (user.stream) {
+          //       this.streamingUser = user;
+          //       this.usersInRoom.unshift(user);
+          //     } else {
+          //       this.usersInRoom.push(user);
+          //     }
+          //   });
+          //   break;
           case 'stopWebCam': // TODO: cambiare in stopWebCam_${this.room.id}
-            console.log('🐱‍👤 : stopWebCam', msg);
             // if (msg.data == this.room.id) {
             if (this.isStreaming) {
               // this.socket.emit('disconnectStream', '');
@@ -199,7 +246,6 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
             // }
             break;
           case `startPlayer_${this.room.id}`: // TODO: cambiare in startPlayer_${this.room.id}
-            console.log('🐱‍👤 : startPlayer', msg);
             //if (!this.isPlaying) {
             this.playerComponent.startPlayer(
               this.room.id,
@@ -210,7 +256,7 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
             break;
 
           case `stopPlayer_${this.room.id}`:
-            console.log('🐱‍👤 : stopPlayer_', msg);
+            // console.log('🐱‍👤 : stopPlayer_', msg);
             if (this.isPlaying) {
               this.playerComponent.stopPlayer();
               this.isPlaying = false;
@@ -261,7 +307,7 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
         );
       } else {
         // TODO: gestire l'errore in modo visibile anche per l'utente
-        console.log('ERRORE: impossibile avviare il player');
+        // console.log('ERRORE: impossibile avviare il player');
       }
     }
   }
@@ -278,7 +324,7 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
             map((users) => {
               userId = `guest_${this.generateRandomId(12)}`;
               // userId = `guest_${Math.floor(Math.random() * 3)}`;
-              console.log('🐱‍👤 : NEW userId:', userId);
+              // console.log('🐱‍👤 : NEW userId:', userId);
               for (let user of users) {
                 if (user['idutente'] == userId) {
                   throw userId;
@@ -304,7 +350,7 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
         Math.floor(Math.random() * characters.length)
       );
     }
-    console.log('🐱‍👤 generateRandomId : result', result);
+    // console.log('🐱‍👤 generateRandomId : result', result);
     return result;
   }
 

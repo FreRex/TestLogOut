@@ -11,6 +11,7 @@ export interface RoomUser {
   // iniziali: string;
   socketid: string;
   stream: boolean;
+  audio: boolean;
 }
 
 @Injectable({

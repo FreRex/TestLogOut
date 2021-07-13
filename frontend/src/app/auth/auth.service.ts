@@ -82,7 +82,7 @@ export class AuthService implements OnDestroy {
     return this.currentUser$.pipe(
       take(1),
       map((user) => {
-        console.log('🐱‍👤 : AuthService : newId', newId);
+        // console.log('🐱‍👤 : AuthService : newId', newId);
 
         // * Crea un nuovo utente
         const newUser = new AuthUser(

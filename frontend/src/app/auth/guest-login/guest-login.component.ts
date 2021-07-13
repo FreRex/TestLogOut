@@ -52,7 +52,7 @@ export class GuestLoginComponent implements OnInit {
                 .then((res) => Storage.remove({ key: 'roomData' }));
             },
             (err) => {
-              console.log('🐱‍👤 : LoginComponent : err', err);
+              // console.log('🐱‍👤 : LoginComponent : err', err);
               loadingEl.dismiss();
               this.showAlert(err);
             }

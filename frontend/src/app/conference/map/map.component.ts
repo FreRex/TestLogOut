@@ -37,7 +37,7 @@ export class MapComponent implements OnInit {
     });
     /* MAPPA E LAYER */
     this.mapService.fetchMap(this.roomId).subscribe((map: Map) => {
-      console.log('🐱‍👤 : mapData', map);
+      // console.log('🐱‍👤 : mapData', map);
 
       new Map({
         controls: defaultControls().extend([

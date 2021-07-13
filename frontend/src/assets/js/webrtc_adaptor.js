@@ -145,7 +145,7 @@ function WebRTCAdaptor(initialValues) {
   }
 
   if (!('WebSocket' in window)) {
-    console.log('WebSocket not supported.');
+    // console.log('WebSocket not supported.');
     thiz.callbackError('WebSocketNotSupported');
     return;
   }
@@ -154,9 +154,9 @@ function WebRTCAdaptor(initialValues) {
     typeof navigator.mediaDevices == 'undefined' &&
     thiz.isPlayMode == false
   ) {
-    console.log(
-      'Cannot open camera and mic because of unsecure context. Please Install SSL(https)'
-    );
+    // console.log(
+    //   'Cannot open camera and mic because of unsecure context. Please Install SSL(https)'
+    // );
     thiz.callbackError('UnsecureContext');
     return;
   }
@@ -167,7 +167,7 @@ function WebRTCAdaptor(initialValues) {
     audioStream,
     onEndedCallback
   ) {
-    console.log('🐱‍👤 : setDesktopwithCameraSource');
+    // console.log('🐱‍👤 : setDesktopwithCameraSource');
     thiz.desktopStream = stream;
 
     navigator.mediaDevices
@@ -253,7 +253,7 @@ function WebRTCAdaptor(initialValues) {
     stream,
     streamId
   ) {
-    console.log('🐱‍👤 : prepareStreamTracks');
+    // console.log('🐱‍👤 : prepareStreamTracks');
     //this trick, getting audio and video separately, make us add or remove tracks on the fly
     var audioTrack = stream.getAudioTracks();
     if (audioTrack.length > 0) {
@@ -306,7 +306,7 @@ function WebRTCAdaptor(initialValues) {
    * Get user media
    */
   this.getUserMedia = function (mediaConstraints, audioConstraint, streamId) {
-    console.log('🐱‍👤 : getUserMedia');
+    // console.log('🐱‍👤 : getUserMedia');
     // Check Media Constraint video value screen or screen + camera
     if (thiz.publishMode == 'screen+camera' || thiz.publishMode == 'screen') {
       navigator.mediaDevices
@@ -321,7 +321,7 @@ function WebRTCAdaptor(initialValues) {
         })
         .catch(function (error) {
           if (error.name === 'NotAllowedError') {
-            console.debug('Permission denied error');
+            // console.debug('Permission denied error');
             thiz.callbackError('ScreenSharePermissionDenied');
 
             // Redirect Default Stream Camera
@@ -362,10 +362,10 @@ function WebRTCAdaptor(initialValues) {
    * Open media stream, it may be screen, camera or audio
    */
   this.openStream = function (mediaConstraints) {
-    console.log(
-      '🐱‍👤 : this.openStream -> mediaConstraints',
-      mediaConstraints
-    );
+    // console.log(
+    //   '🐱‍👤 : this.openStream -> mediaConstraints',
+    //   mediaConstraints
+    // );
     thiz.mediaConstraints = mediaConstraints;
     var audioConstraint = false;
     if (
@@ -387,7 +387,7 @@ function WebRTCAdaptor(initialValues) {
    * Closes stream, if you want to stop peer connection, call stop(streamId)
    */
   this.closeStream = function () {
-    console.log('🐱‍👤 : closeStream');
+    // console.log('🐱‍👤 : closeStream');
     thiz.localStream.getVideoTracks().forEach(function (track) {
       track.onended = null;
       track.stop();
@@ -428,7 +428,7 @@ function WebRTCAdaptor(initialValues) {
     typeof thiz.mediaConstraints != 'undefined' &&
     this.localStream == null
   ) {
-    console.log('🐱‍👤 : thiz.mediaConstraints', thiz.mediaConstraints);
+    // console.log('🐱‍👤 : thiz.mediaConstraints', thiz.mediaConstraints);
     if (
       typeof thiz.mediaConstraints.video != 'undefined' &&
       thiz.mediaConstraints.video != false
@@ -443,10 +443,10 @@ function WebRTCAdaptor(initialValues) {
             navigator.mediaDevices
               .getUserMedia(thiz.mediaConstraints)
               .then(function (stream) {
-                console.debug(
-                  'audio stream track count: ' +
-                    audioStream.getAudioTracks().length
-                );
+                // console.debug(
+                //   'audio stream track count: ' +
+                //     audioStream.getAudioTracks().length
+                // );
 
                 var audioContext = new AudioContext();
                 var desktopSoundGainNode = audioContext.createGain();
@@ -475,7 +475,7 @@ function WebRTCAdaptor(initialValues) {
                     stream.addTrack(track);
                   });
 
-                console.debug('Running gotStream');
+                // console.debug('Running gotStream');
                 thiz.gotStream(stream);
               })
               .catch(function (error) {
@@ -495,10 +495,10 @@ function WebRTCAdaptor(initialValues) {
       navigator.mediaDevices
         .getUserMedia(media_audio_constraint)
         .then(function (stream) {
-          console.log(
-            '🐱‍👤 : navigator.mediaDevices.getUserMedia() -> stream',
-            stream
-          );
+          // console.log(
+          //   '🐱‍👤 : navigator.mediaDevices.getUserMedia() -> stream',
+          //   stream
+          // );
           thiz.gotStream(stream);
         })
         .catch(function (error) {
@@ -594,7 +594,7 @@ function WebRTCAdaptor(initialValues) {
     // thiz.localStream.getVideoTracks()[0].stop();
     // thiz.localStream.getAudioTracks()[0].stop();
 
-    console.log('leave request is sent for ' + roomName);
+    // console.log('leave request is sent for ' + roomName);
 
     if (thiz.roomTimerId != null) {
       clearInterval(thiz.roomTimerId);
@@ -611,7 +611,7 @@ function WebRTCAdaptor(initialValues) {
           ? thiz.multiPeerStreamId
           : streamId,
     };
-    console.log('leave semplice');
+    // console.log('leave semplice');
 
     thiz.webSocketAdaptor.send(JSON.stringify(jsCmd));
     thiz.closePeerConnection(streamId);
@@ -659,7 +659,7 @@ function WebRTCAdaptor(initialValues) {
   };
 
   this.gotStream = function (stream) {
-    console.log('🐱‍👤 : this.gotStream -> stream', stream);
+    // console.log('🐱‍👤 : this.gotStream -> stream', stream);
     thiz.localStream = stream;
 
     // ! MARTINA: check se esiste un localVideo
@@ -667,7 +667,7 @@ function WebRTCAdaptor(initialValues) {
       thiz.localVideo.srcObject = stream;
     }
 
-    console.log('🐱‍👤 : thiz.webSocketAdaptor', thiz.webSocketAdaptor);
+    // console.log('🐱‍👤 : thiz.webSocketAdaptor', thiz.webSocketAdaptor);
     if (
       thiz.webSocketAdaptor == null ||
       thiz.webSocketAdaptor.isConnected() == false
@@ -930,12 +930,12 @@ function WebRTCAdaptor(initialValues) {
   };
 
   this.onTrack = function (event, streamId) {
-    console.log('onTrack');
+    // console.log('onTrack');
     if (thiz.remoteVideo != null) {
       //thiz.remoteVideo.srcObject = event.streams[0];
       if (thiz.remoteVideo.srcObject !== event.streams[0]) {
         thiz.remoteVideo.srcObject = event.streams[0];
-        console.log('Received remote stream');
+        // console.log('Received remote stream');
       }
     } else {
       var dataObj = {
@@ -977,17 +977,17 @@ function WebRTCAdaptor(initialValues) {
         };
 
         if (thiz.debug) {
-          console.log('sending ice candiate for stream Id ' + streamId);
-          console.log(JSON.stringify(event.candidate));
+          // console.log('sending ice candiate for stream Id ' + streamId);
+          // console.log(JSON.stringify(event.candidate));
         }
         thiz.webSocketAdaptor.send(JSON.stringify(jsCmd));
       } else {
-        console.log(
-          "Candidate's protocol(full sdp: " +
-            event.candidate.candidate +
-            ') is not supported. Supported protocols: ' +
-            thiz.candidateTypes
-        );
+        // console.log(
+        //   "Candidate's protocol(full sdp: " +
+        //     event.candidate.candidate +
+        //     ') is not supported. Supported protocols: ' +
+        //     thiz.candidateTypes
+        // );
         if (event.candidate.candidate != '') {
           //
           thiz.callbackError(
@@ -1000,18 +1000,18 @@ function WebRTCAdaptor(initialValues) {
         }
       }
     } else {
-      console.log('No event.candidate in the iceCandidate event');
+      // console.log('No event.candidate in the iceCandidate event');
     }
   };
 
   this.initDataChannel = function (streamId, dataChannel) {
     dataChannel.onerror = (error) => {
-      console.log('Data Channel Error:', error);
+      // console.log('Data Channel Error:', error);
       var obj = {
         streamId: streamId,
         error: error,
       };
-      console.log('channel status: ', dataChannel.readyState);
+      // console.log('channel status: ', dataChannel.readyState);
       if (dataChannel.readyState != 'closed') {
         thiz.callbackError('data_channel_error', obj);
       }
@@ -1027,12 +1027,12 @@ function WebRTCAdaptor(initialValues) {
 
     dataChannel.onopen = () => {
       thiz.remotePeerConnection[streamId].dataChannel = dataChannel;
-      console.log('Data channel is opened');
+      // console.log('Data channel is opened');
       thiz.callback('data_channel_opened', streamId);
     };
 
     dataChannel.onclose = () => {
-      console.log('Data channel is closed');
+      // console.log('Data channel is closed');
       thiz.callback('data_channel_closed', streamId);
     };
   };
@@ -1041,12 +1041,12 @@ function WebRTCAdaptor(initialValues) {
   this.initPeerConnection = function (streamId, dataChannelMode) {
     if (thiz.remotePeerConnection[streamId] == null) {
       var closedStreamId = streamId;
-      console.log(
-        'stream id in init peer connection: ' +
-          streamId +
-          ' close stream id: ' +
-          closedStreamId
-      );
+      // console.log(
+      //   'stream id in init peer connection: ' +
+      //     streamId +
+      //     ' close stream id: ' +
+      //     closedStreamId
+      // );
       thiz.remotePeerConnection[streamId] = new RTCPeerConnection(
         thiz.peerconnection_config
       );
@@ -1064,12 +1064,12 @@ function WebRTCAdaptor(initialValues) {
         thiz.onTrack(event, closedStreamId);
       };
 
-      console.log('🐱‍👤 : dataChannelMode', dataChannelMode);
-      console.log('🐱‍👤 : thiz.localStream', thiz.localStream);
-      console.log(
-        '🐱‍👤 : thiz.remotePeerConnection',
-        thiz.remotePeerConnection
-      );
+      // console.log('🐱‍👤 : dataChannelMode', dataChannelMode);
+      // console.log('🐱‍👤 : thiz.localStream', thiz.localStream);
+      // console.log(
+      //   '🐱‍👤 : thiz.remotePeerConnection',
+      //   thiz.remotePeerConnection
+      // );
 
       if (dataChannelMode == 'publish') {
         //open data channel if it's publish mode peer connection
@@ -1175,9 +1175,9 @@ function WebRTCAdaptor(initialValues) {
     thiz.remotePeerConnection[streamId]
       .setLocalDescription(configuration)
       .then(function (responose) {
-        console.log(
-          'Set local description successfully for stream Id ' + streamId
-        );
+        // console.log(
+        //   'Set local description successfully for stream Id ' + streamId
+        // );
 
         var jsCmd = {
           command: 'takeConfiguration',
@@ -1187,8 +1187,8 @@ function WebRTCAdaptor(initialValues) {
         };
 
         if (thiz.debug) {
-          console.debug('local sdp: ');
-          console.debug(configuration.sdp);
+          // console.debug('local sdp: ');
+          // console.debug(configuration.sdp);
         }
 
         thiz.webSocketAdaptor.send(JSON.stringify(jsCmd));
@@ -1218,7 +1218,7 @@ function WebRTCAdaptor(initialValues) {
 
   this.muteLocalMic = function () {
     if (thiz.remotePeerConnection != null) {
-      console.log('🐱‍👤 : muteLocalMic');
+      // console.log('🐱‍👤 : muteLocalMic');
       var track = thiz.localStream.getAudioTracks()[0];
       track.enabled = false;
     } else {
@@ -1231,7 +1231,7 @@ function WebRTCAdaptor(initialValues) {
    */
   this.unmuteLocalMic = function () {
     if (thiz.remotePeerConnection != null) {
-      console.log('🐱‍👤 : unmuteLocalMic');
+      // console.log('🐱‍👤 : unmuteLocalMic');
       var track = thiz.localStream.getAudioTracks()[0];
       track.enabled = true;
     } else {
@@ -1265,20 +1265,20 @@ function WebRTCAdaptor(initialValues) {
       )
       .then(function (response) {
         if (thiz.debug) {
-          console.debug(
-            'set remote description is succesfull with response: ' +
-              response +
-              ' for stream : ' +
-              streamId +
-              ' and type: ' +
-              type
-          );
-          console.debug(conf);
+          // console.debug(
+          //   'set remote description is succesfull with response: ' +
+          //     response +
+          //     ' for stream : ' +
+          //     streamId +
+          //     ' and type: ' +
+          //     type
+          // );
+          // console.debug(conf);
         }
 
         thiz.remoteDescriptionSet[streamId] = true;
         var length = thiz.iceCandidateList[streamId].length;
-        console.debug('Ice candidate list size to be added: ' + length);
+        // console.debug('Ice candidate list size to be added: ' + length);
         for (var i = 0; i < length; i++) {
           thiz.addIceCandidate(streamId, thiz.iceCandidateList[streamId][i]);
         }
@@ -1286,12 +1286,12 @@ function WebRTCAdaptor(initialValues) {
 
         if (isTypeOffer) {
           //SDP constraints may be different in play mode
-          console.log('try to create answer for stream id: ' + streamId);
+          // console.log('try to create answer for stream id: ' + streamId);
 
           thiz.remotePeerConnection[streamId]
             .createAnswer(thiz.sdp_constraints)
             .then(function (configuration) {
-              console.log('created answer for stream id: ' + streamId);
+              // console.log('created answer for stream id: ' + streamId);
               thiz.gotDescription(configuration, streamId);
             })
             .catch(function (error) {
@@ -1334,9 +1334,9 @@ function WebRTCAdaptor(initialValues) {
     if (thiz.remoteDescriptionSet[streamId] == true) {
       thiz.addIceCandidate(streamId, candidate);
     } else {
-      console.debug(
-        'Ice candidate is added to list because remote description is not set yet'
-      );
+      // console.debug(
+      //   'Ice candidate is added to list because remote description is not set yet'
+      // );
       thiz.iceCandidateList[streamId].push(candidate);
     }
   };
@@ -1364,8 +1364,7 @@ function WebRTCAdaptor(initialValues) {
         .addIceCandidate(candidate)
         .then(function (response) {
           if (thiz.debug) {
-            console.log('Candidate is added for stream ' + streamId);
-
+            // console.log('Candidate is added for stream ' + streamId);
             /*
             !!! Aggiunto e commentato da Frex
 					var btstr = document.createElement("div");
@@ -1376,7 +1375,6 @@ function WebRTCAdaptor(initialValues) {
 					btstr.innerHTML = streamId;
 					document.getElementById("partecipantiaudio").appendChild(btstr);
 					*/
-
             /* 
             !!! Aggiunto da Frex
             //Nuova parte (da prova.php)
@@ -1395,15 +1393,15 @@ function WebRTCAdaptor(initialValues) {
         });
     } else {
       if (thiz.debug) {
-        console.log(
-          "Candidate's protocol(" +
-            candidate.protocol +
-            ') is not supported.' +
-            'Candidate: ' +
-            candidate.candidate +
-            ' Supported protocols:' +
-            thiz.candidateTypes
-        );
+        // console.log(
+        //   "Candidate's protocol(" +
+        //     candidate.protocol +
+        //     ') is not supported.' +
+        //     'Candidate: ' +
+        //     candidate.candidate +
+        //     ' Supported protocols:' +
+        //     thiz.candidateTypes
+        // );
       }
     }
   };
@@ -1438,7 +1436,7 @@ function WebRTCAdaptor(initialValues) {
       'setParameters' in window.RTCRtpSender.prototype
     ) {
       const senders = thiz.remotePeerConnection[streamId].getSenders();
-      console.log('🐱‍👤 : senders', senders);
+      // console.log('🐱‍👤 : senders', senders);
 
       for (let i = 0; i < senders.length; i++) {
         if (senders[i].track != null && senders[i].track.kind == 'video') {
@@ -1447,7 +1445,7 @@ function WebRTCAdaptor(initialValues) {
         }
       }
     }
-    console.log('🐱‍👤 : videoSender', videoSender);
+    // console.log('🐱‍👤 : videoSender', videoSender);
     return videoSender;
   };
 
@@ -1574,7 +1572,7 @@ function WebRTCAdaptor(initialValues) {
     var clearPingTimer = function () {
       if (pingTimerId != -1) {
         if (thiz.debug) {
-          console.debug('Clearing ping message timer');
+          // console.debug('Clearing ping message timer');
         }
         clearInterval(pingTimerId);
         pingTimerId = -1;
@@ -1594,8 +1592,8 @@ function WebRTCAdaptor(initialValues) {
 
     wsConn.onopen = function () {
       if (thiz.debug) {
-        console.log('websocket connected');
-        console.log('🐱‍👤 : wsConn', wsConn);
+        // console.log('websocket connected');
+        // console.log('🐱‍👤 : wsConn', wsConn);
       }
 
       pingTimerId = setInterval(() => {
@@ -1616,7 +1614,7 @@ function WebRTCAdaptor(initialValues) {
         return;
       }
       wsConn.send(text);
-      console.log('sent message:' + text);
+      // console.log('sent message:' + text);
     };
 
     this.isConnected = function () {
@@ -1630,29 +1628,29 @@ function WebRTCAdaptor(initialValues) {
         //this command is received first, when publishing so playmode is false
 
         if (thiz.debug) {
-          console.debug('received start command');
+          // console.debug('received start command');
         }
 
         thiz.startPublishing(obj.streamId);
       } else if (obj.command == 'takeCandidate') {
         if (thiz.debug) {
-          console.debug('received ice candidate for stream id ' + obj.streamId);
-          console.debug(obj.candidate);
+          // console.debug('received ice candidate for stream id ' + obj.streamId);
+          // console.debug(obj.candidate);
         }
 
         thiz.takeCandidate(obj.streamId, obj.label, obj.candidate);
       } else if (obj.command == 'takeConfiguration') {
         if (thiz.debug) {
-          console.log(
-            'received remote description type for stream id: ' +
-              obj.streamId +
-              ' type: ' +
-              obj.type
-          );
+          // console.log(
+          //   'received remote description type for stream id: ' +
+          //     obj.streamId +
+          //     ' type: ' +
+          //     obj.type
+          // );
         }
         thiz.takeConfiguration(obj.streamId, obj.sdp, obj.type);
       } else if (obj.command == 'stop') {
-        console.debug('Stop command received');
+        // console.debug('Stop command received');
         thiz.closePeerConnection(obj.streamId);
       } else if (obj.command == 'error') {
         thiz.callbackError(obj.definition);
@@ -1663,7 +1661,7 @@ function WebRTCAdaptor(initialValues) {
           obj.definition == 'publish_finished'
         ) {
           thiz.closePeerConnection(obj.streamId);
-          console.log('Partecipante uscito:' + obj.streamId);
+          // console.log('Partecipante uscito:' + obj.streamId);
 
           /*
           !!! Aggiunta e commentata da Frex

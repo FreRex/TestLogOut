@@ -38,7 +38,7 @@ export class PlayerComponent implements OnInit {
   ngOnInit() {
     this.listaDispositivi().then((constraints: MediaStreamConstraints) => {
       this.constraints = constraints;
-      console.log('🐱‍👤 : this.constraints', this.constraints);
+      // console.log('🐱‍👤 : this.constraints', this.constraints);
     });
   }
 

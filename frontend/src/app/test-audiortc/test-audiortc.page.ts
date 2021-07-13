@@ -51,7 +51,7 @@ export class TestAudiortcPage implements OnInit {
     this.streamId = nome + '-' + cognome;
     this.roomName = usermobile;
 
-    this.audioService.createWebRTCInstance(this.roomName);
+    this.audioService.createWebRTCInstance(this.roomName, this.streamId);
   }
 
   // toggleMic() {

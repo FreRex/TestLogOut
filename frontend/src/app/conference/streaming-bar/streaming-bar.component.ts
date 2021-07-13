@@ -19,7 +19,7 @@ export class StreamingBarComponent implements OnInit {
   constructor(public audioService: AudioRTCService) {}
 
   ngOnInit() {
-    this.audioService.createWebRTCInstance(this.roomId);
+    this.audioService.createWebRTCInstance(this.roomId, this.userId);
   }
 
   configureSocket() {
