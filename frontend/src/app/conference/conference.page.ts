@@ -160,49 +160,49 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
           }
         },
         (err) => {
-          // console.log('subscribe : err', err);
+          console.log('subscribe : err', err);
         }
       );
 
-    this.socket
-      .fromEvent<any>('message')
-      .pipe(
-        switchMap((msg) => {
-          if (msg.type === `${this.room.id}`) {
-            console.log('array per idroom: ', msg);
-            this.usersInRoom = [];
-            msg.data.slice(1).forEach((user) => {
-              if (user.stream) {
-                this.streamingUser = user;
-                this.usersInRoom.unshift(user);
-              } else {
-                this.usersInRoom.push(user);
-              }
-            });
-          }
-          return this.audioService.userJoined$;
-        }),
-        switchMap((userJoined) => {
-          console.log('🐱‍👤 : res', userJoined);
-          console.log('🐱‍👤 : this.usersInRoom', this.usersInRoom);
-          this.usersInRoom?.forEach((user) => {
-            if (user.idutente === userJoined) {
-              user.audio = true;
-            }
-          });
-          return this.audioService.userLeaved$;
-        }),
-        map((userLeaved) => {
-          console.log('🐱‍👤 : res', userLeaved);
-          console.log('🐱‍👤 : this.usersInRoom', this.usersInRoom);
-          this.usersInRoom?.forEach((user) => {
-            if (user.idutente === userLeaved) {
-              user.audio = false;
-            }
-          });
-        })
-      )
-      .subscribe();
+    // this.socket
+    //   .fromEvent<any>('message')
+    //   .pipe(
+    //     switchMap((msg) => {
+    //       if (msg.type === `${this.room.id}`) {
+    //         console.log('array per idroom: ', msg);
+    //         this.usersInRoom = [];
+    //         msg.data.slice(1).forEach((user) => {
+    //           if (user.stream) {
+    //             this.streamingUser = user;
+    //             this.usersInRoom.unshift(user);
+    //           } else {
+    //             this.usersInRoom.push(user);
+    //           }
+    //         });
+    //       }
+    //       return this.audioService.userJoined$;
+    //     }),
+    //     switchMap((userJoined) => {
+    //       // console.log('🐱‍👤 : res', userJoined);
+    //       // console.log('🐱‍👤 : this.usersInRoom', this.usersInRoom);
+    //       this.usersInRoom?.forEach((user) => {
+    //         if (user.idutente === userJoined) {
+    //           user.audio = true;
+    //         }
+    //       });
+    //       return this.audioService.userLeaved$;
+    //     }),
+    //     map((userLeaved) => {
+    //       // console.log('🐱‍👤 : res', userLeaved);
+    //       // console.log('🐱‍👤 : this.usersInRoom', this.usersInRoom);
+    //       this.usersInRoom?.forEach((user) => {
+    //         if (user.idutente === userLeaved) {
+    //           user.audio = false;
+    //         }
+    //       });
+    //     })
+    //   )
+    //   .subscribe();
 
     // this.audioService.userJoined$.subscribe((res) => {
     //   this.usersInRoom?.forEach((user) => {
@@ -224,18 +224,18 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
           case 'fatal':
             // console.log('Fatal: ', msg.data);
             break;
-          // case `${this.room.id}`: //FREXXXXXXXXXXXXX
-          //   console.log('array per idroom: ', msg);
-          //   this.usersInRoom = [];
-          //   msg.data.slice(1).forEach((user) => {
-          //     if (user.stream) {
-          //       this.streamingUser = user;
-          //       this.usersInRoom.unshift(user);
-          //     } else {
-          //       this.usersInRoom.push(user);
-          //     }
-          //   });
-          //   break;
+          case `${this.room.id}`: //FREXXXXXXXXXXXXX
+            console.log('array per idroom: ', msg);
+            this.usersInRoom = [];
+            msg.data.slice(1).forEach((user) => {
+              if (user.stream) {
+                this.streamingUser = user;
+                this.usersInRoom.unshift(user);
+              } else {
+                this.usersInRoom.push(user);
+              }
+            });
+            break;
           case 'stopWebCam': // TODO: cambiare in stopWebCam_${this.room.id}
             // if (msg.data == this.room.id) {
             if (this.isStreaming) {

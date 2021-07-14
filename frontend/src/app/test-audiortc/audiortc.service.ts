@@ -1,7 +1,13 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { take, tap } from 'rxjs/operators';
 
 declare let WebRTCAdaptor: any;
+
+export interface Listener {
+  id: string;
+  stream?: MediaStream;
+}
 
 @Injectable({
   providedIn: 'root',
@@ -24,7 +30,7 @@ export class AudioRTCService {
     audio: true,
   };
 
-  public remoteStreams: { id: string; stream: MediaStream }[] = [];
+  public remoteStreams: Listener[] = [];
   public isDataChannelOpen: boolean = false;
   public isMicOn: boolean;
   public joinedTheRoom = false;
@@ -68,68 +74,89 @@ export class AudioRTCService {
     this.webRTCInstance.play(obj.streamId, this.token, roomName);
   }
 
-  addRemoteVideo(obj) {
-    // const streamExists = this.remoteStreams.findIndex(
-    //   (stream) => stream.id == obj.streamId
-    // );
-    // if (streamExists == -1) {
-    // this.remoteStreams.push({
-    //   id: obj.streamId,
-    //   stream: obj.stream,
-    // });
-    // }
+  // addRemoteVideo(obj) {
+  //   // const streamExists = this.remoteStreams.findIndex(
+  //   //   (stream) => stream.id == obj.streamId
+  //   // );
+  //   // if (streamExists == -1) {
+  //   // this.remoteStreams.push({
+  //   //   id: obj.streamId,
+  //   //   stream: obj.stream,
+  //   // });
+  //   // }
 
-    if (
-      this.remoteStreamsSubject
-        .getValue()
-        .findIndex((stream) => stream.id === obj.streamId) === -1
-    ) {
-      let array = this.remoteStreamsSubject.getValue().concat({
-        id: obj.streamId,
-        stream: obj.stream,
-      });
-      console.log('🐱‍👤 : array', array);
-      this.remoteStreamsSubject.next(array);
+  //   if (
+  //     this.listenersSubject
+  //       .getValue()
+  //       .findIndex((stream) => stream.id === obj.streamId) === -1
+  //   ) {
+  //     let array = this.listenersSubject.getValue().concat({
+  //       id: obj.streamId,
+  //       stream: obj.stream,
+  //     });
+  //     console.log('🐱‍👤 : array', array);
+  //     this.listenersSubject.next(array);
+  //   }
+  // }
+
+  // removeRemoteVideo(streamId) {
+  //   console.log('🐱‍👤 : streamId', streamId);
+  //   // const streamIndex = this.remoteStreams.findIndex(
+  //   //   (stream) => stream.id == streamId
+  //   // );
+  //   // if (streamIndex !== -1) {
+  //   //   this.remoteStreams.splice(streamIndex, 1);
+  //   // }
+  //   if (
+  //     this.listenersSubject
+  //       .getValue()
+  //       .findIndex((stream) => stream.id == streamId) !== -1
+  //   ) {
+  //     this.listenersSubject.next(
+  //       this.listenersSubject.getValue().filter((stream) => {
+  //         stream.id !== streamId;
+  //       })
+  //     );
+  //   }
+  // }
+
+  addListener(listenerId: string, streamData?: MediaStream) {
+    let listeners = this.listenersSubject.getValue();
+    const newListener = {
+      id: listenerId,
+      stream: streamData ? streamData : null,
+    };
+    console.log('🐱‍👤 : listeners', listeners);
+    console.log('🐱‍👤 : newListener', newListener);
+    if (!listeners.find((listener) => listener.id === listenerId)) {
+      let updatedListeners: Listener[] = [...listeners];
+      updatedListeners.push(newListener);
+      this.listenersSubject.next(updatedListeners);
     }
   }
 
-  removeRemoteVideo(streamId) {
-    console.log('🐱‍👤 : streamId', streamId);
-    // const streamIndex = this.remoteStreams.findIndex(
-    //   (stream) => stream.id == streamId
-    // );
-    // if (streamIndex !== -1) {
-    //   this.remoteStreams.splice(streamIndex, 1);
-    // }
-    if (
-      this.remoteStreamsSubject
-        .getValue()
-        .findIndex((stream) => stream.id == streamId) !== -1
-    ) {
-      this.remoteStreamsSubject.next(
-        this.remoteStreamsSubject.getValue().filter((stream) => {
-          stream.id !== streamId;
-        })
+  removeListener(listenerId: string) {
+    let listeners = this.listenersSubject.getValue();
+    console.log('🐱‍👤 : listeners', listeners);
+    console.log('🐱‍👤 : listenerId', listenerId);
+    if (!!listeners.find((listener) => listener.id === listenerId)) {
+      let updatedListeners: Listener[] = [...listeners].filter(
+        (listener) => listener.id !== listenerId
       );
+      this.listenersSubject.next(updatedListeners);
     }
   }
 
-  private remoteStreamsSubject = new BehaviorSubject<
-    { id: string; stream: MediaStream }[]
-  >([]);
-  remoteStreams$: Observable<{ id: string; stream: MediaStream }[]> =
-    this.remoteStreamsSubject.asObservable();
+  private listenersSubject = new BehaviorSubject<Listener[]>([]);
+  listeners$ = this.listenersSubject.asObservable();
 
-  private userJoined = new BehaviorSubject<string>(null);
-  userJoined$ = this.userJoined.asObservable();
+  // private userJoined = new BehaviorSubject<string>(null);
+  // userJoined$ = this.userJoined.asObservable();
 
-  private userLeaved = new BehaviorSubject<string>(null);
-  userLeaved$ = this.userLeaved.asObservable();
-
-  private streamId: string;
+  // private userLeaved = new BehaviorSubject<string>(null);
+  // userLeaved$ = this.userLeaved.asObservable();
 
   createWebRTCInstance(roomId, streamId): void {
-    this.streamId = streamId;
     this.webRTCInstance = new WebRTCAdaptor({
       websocket_url: this.websocketURL,
       mediaConstraints: this.mediaConstraints,
@@ -138,43 +165,46 @@ export class AudioRTCService {
       // localVideoId: 'localVideo',
       // isPlayMode: this.playOnly,
       debug: true,
-      callback: (info, obj) => {
+      callback: (info, data) => {
         if (info == 'initialized') {
           console.log('initialized');
         } else if (info == 'joinedTheRoom') {
-          console.log('🐱‍👤 : joinedTheRoom', obj);
-          // let roomOfStream = new Array();
-          // roomOfStream[obj.streamId] = obj.ATTR_ROOM_NAME;
-          this.joinedTheRoom = true;
-          this.userJoined.next(obj.streamId);
-          this.publish(obj.streamId, this.token);
-          if (obj.streams.length) {
-            obj.streams.forEach((item) => {
-              console.log('🐱‍👤 : item', item);
-              this.userJoined.next(item);
-              this.webRTCInstance.play(item, this.token, roomId);
+          console.log('🐱‍👤 : joinedTheRoom', data);
+          this.publish(data.streamId, this.token);
+          if (data.streams.length) {
+            data.streams.forEach((streamId) => {
+              console.log('🐱‍👤 : item', streamId);
+              // this.userJoined.next(item);
+              // this.addListener(streamId);
+              this.webRTCInstance.play(streamId, this.token, roomId);
             });
           }
         } else if (info == 'leavedFromRoom') {
-          console.log('🐱‍👤 : leavedFromRoom', obj);
-          this.userLeaved.next(this.streamId);
+          console.log('🐱‍👤 : leavedFromRoom', data);
+          // this.userLeaved.next(this.streamId);
+        } else if (info == 'streamJoined') {
+          console.log('🐱‍👤 : streamJoined', data);
+          this.webRTCInstance.play(data.streamId, this.token, roomId);
+        } else if (info == 'newStreamAvailable') {
+          console.log('🐱‍👤 : newStreamAvailable', data);
+          // this.addRemoteVideo(obj);
+          // this.userJoined.next(obj.streamId);
+          this.addListener(data.streamId, data.stream);
+        } else if (info == 'streamLeaved') {
+          console.log('🐱‍👤 : streamLeaved', data);
+          // this.removeRemoteVideo(obj.streamId);
+          // this.userLeaved.next(obj.streamId);
+          this.removeListener(data.streamId);
+        } else if (info == 'publish_started') {
+          console.log('🐱‍👤 : publish_started', data);
+          this.joinedTheRoom = true;
+          // this.userJoined.next(obj.streamId);
+          this.addListener(data.streamId);
+        } else if (info == 'publish_finished') {
+          console.log('🐱‍👤 : publish_finished', data);
+          this.removeListener(data.streamId);
           this.remoteStreams = [];
           this.joinedTheRoom = false;
-        } else if (info == 'streamJoined') {
-          console.log('🐱‍👤 : streamJoined', obj);
-          this.webRTCInstance.play(obj.streamId, this.token, roomId);
-        } else if (info == 'newStreamAvailable') {
-          console.log('🐱‍👤 : newStreamAvailable', obj);
-          this.userJoined.next(obj.streamId);
-          // this.addRemoteVideo(obj);
-        } else if (info == 'streamLeaved') {
-          console.log('🐱‍👤 : streamLeaved', obj);
-          this.userLeaved.next(obj.streamId);
-          // this.removeRemoteVideo(obj.streamId);
-        } else if (info == 'publish_started') {
-          console.log('🐱‍👤 : publish_started', obj);
-        } else if (info == 'publish_finished') {
-          console.log('🐱‍👤 : publish_finished', obj);
         } /* else if (info == 'closed') {
           console.log('Connection closed ?');
           if (typeof obj != 'undefined') {
@@ -192,8 +222,8 @@ export class AudioRTCService {
           console.log('Data Channel closed for stream id', obj);
           this.isDataChannelOpen = false;
         } */ else if (info == 'data_received') {
-          console.log('🐱‍👤 : data_received', obj);
-          this.handleNotificationEvent(obj);
+          console.log('🐱‍👤 : data_received', data);
+          this.handleNotificationEvent(data);
         }
       },
       callbackError: (error, message) => {

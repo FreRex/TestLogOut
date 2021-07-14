@@ -24,26 +24,34 @@ export class UsersListComponent implements OnInit {
 
   ngOnInit() {
     // this.isAudioOn;
+    this.audioService.listeners$.subscribe(
+      (res) => {
+        console.log(res);
+      },
+      (err) => {
+        console.log(err);
+      }
+    );
   }
 
-  isAudioOn(roomUser: RoomUser): void {
-    if (roomUser) {
-      this.audioService.remoteStreams$
-        .pipe(
-          tap(console.log),
-          filter(
-            (streams) =>
-              streams.filter((res) => res.id === roomUser.idutente).length > 0
-          ),
-          map((res) => (res.length > 0 ? true : false))
-        )
-        .subscribe((res) => {
-          this.usersInRoom?.forEach((user) => {
-            if (user.idutente === roomUser.idutente) {
-              user.audio = res;
-            }
-          });
-        });
-    }
-  }
+  // isAudioOn(roomUser: RoomUser): void {
+  //   if (roomUser) {
+  //     this.audioService.listeners$
+  //       .pipe(
+  //         tap(console.log),
+  //         filter(
+  //           (streams) =>
+  //             streams.filter((res) => res.id === roomUser.idutente).length > 0
+  //         ),
+  //         map((res) => (res.length > 0 ? true : false))
+  //       )
+  //       .subscribe((res) => {
+  //         this.usersInRoom?.forEach((user) => {
+  //           if (user.idutente === roomUser.idutente) {
+  //             user.audio = res;
+  //           }
+  //         });
+  //       });
+  //   }
+  // }
 }
