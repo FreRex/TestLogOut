@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NavController, ViewDidLeave } from '@ionic/angular';
 import { Socket } from 'ngx-socket-io';
-import { iif, Observable, of, Subscription } from 'rxjs';
+import { BehaviorSubject, iif, Observable, of, Subscription } from 'rxjs';
 import { map, retryWhen, switchMap, take, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 
@@ -108,6 +108,9 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
     }
   }
 
+  private roomUsersSubject = new BehaviorSubject<RoomUser[]>([]);
+  roomUsers$ = this.roomUsersSubject.asObservable();
+
   // handles messages coming from signalling_server (remote party)
   public configureSocket(): void {
     this.socket.emit('first_idroom', this.room.id);
@@ -164,54 +167,6 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
         }
       );
 
-    // this.socket
-    //   .fromEvent<any>('message')
-    //   .pipe(
-    //     switchMap((msg) => {
-    //       if (msg.type === `${this.room.id}`) {
-    //         console.log('array per idroom: ', msg);
-    //         this.usersInRoom = [];
-    //         msg.data.slice(1).forEach((user) => {
-    //           if (user.stream) {
-    //             this.streamingUser = user;
-    //             this.usersInRoom.unshift(user);
-    //           } else {
-    //             this.usersInRoom.push(user);
-    //           }
-    //         });
-    //       }
-    //       return this.audioService.userJoined$;
-    //     }),
-    //     switchMap((userJoined) => {
-    //       // console.log('🐱‍👤 : res', userJoined);
-    //       // console.log('🐱‍👤 : this.usersInRoom', this.usersInRoom);
-    //       this.usersInRoom?.forEach((user) => {
-    //         if (user.idutente === userJoined) {
-    //           user.audio = true;
-    //         }
-    //       });
-    //       return this.audioService.userLeaved$;
-    //     }),
-    //     map((userLeaved) => {
-    //       // console.log('🐱‍👤 : res', userLeaved);
-    //       // console.log('🐱‍👤 : this.usersInRoom', this.usersInRoom);
-    //       this.usersInRoom?.forEach((user) => {
-    //         if (user.idutente === userLeaved) {
-    //           user.audio = false;
-    //         }
-    //       });
-    //     })
-    //   )
-    //   .subscribe();
-
-    // this.audioService.userJoined$.subscribe((res) => {
-    //   this.usersInRoom?.forEach((user) => {
-    //     if (user.idutente === res) {
-    //       user.audio = true;
-    //     }
-    //   });
-    // });
-
     this.socket.fromEvent<any>('message').subscribe(
       (msg) => {
         switch (msg.type) {
@@ -235,6 +190,7 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
                 this.usersInRoom.push(user);
               }
             });
+            this.roomUsersSubject.next(this.usersInRoom);
             break;
           case 'stopWebCam': // TODO: cambiare in stopWebCam_${this.room.id}
             // if (msg.data == this.room.id) {

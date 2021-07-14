@@ -19,19 +19,19 @@ import { RoomUser } from '../conference.service';
 })
 export class UsersListComponent implements OnInit {
   @Input() usersInRoom: RoomUser[];
+  @Input() roomUsers$: Observable<RoomUser[]>;
 
   constructor(public audioService: AudioRTCService) {}
 
   ngOnInit() {
     // this.isAudioOn;
-    this.audioService.listeners$.subscribe(
-      (res) => {
-        console.log(res);
-      },
-      (err) => {
-        console.log(err);
-      }
-    );
+    this.audioService.listeners$.subscribe((listeners) => {
+      console.log('🐱‍👤 : listeners', listeners);
+    });
+
+    this.roomUsers$.subscribe((roomUsers) => {
+      console.log('🐱‍👤 : roomUsers', roomUsers);
+    });
   }
 
   // isAudioOn(roomUser: RoomUser): void {
