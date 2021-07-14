@@ -46,11 +46,6 @@ const routes: Routes = [
     canLoad: [AuthGuard],
   },
   {
-    path: 'test-map',
-    loadChildren: () =>
-      import('./test-map/test-map.module').then((m) => m.TestMapPageModule),
-  },
-  {
     path: 'test-audiortc',
     loadChildren: () =>
       import('./test-audiortc/test-audiortc.module').then(
@@ -59,7 +54,8 @@ const routes: Routes = [
   },
   {
     path: 'test-gps',
-    loadChildren: () => import('./test-gps/test-gps.module').then( m => m.TestGpsPageModule)
+    loadChildren: () =>
+      import('./test-gps/test-gps.module').then((m) => m.TestGpsPageModule),
   },
   {
     path: 'capt-photo',
