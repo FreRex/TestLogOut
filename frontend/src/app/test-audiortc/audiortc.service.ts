@@ -202,8 +202,8 @@ export class AudioRTCService {
           this.addListener(data.streamId);
         } else if (info == 'publish_finished') {
           console.log('🐱‍👤 : publish_finished', data);
-          this.removeListener(data.streamId);
-          this.remoteStreams = [];
+          this.listenersSubject.next([]);
+          // this.remoteStreams = [];
           this.joinedTheRoom = false;
         } /* else if (info == 'closed') {
           console.log('Connection closed ?');

@@ -108,8 +108,8 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
     }
   }
 
-  private roomUsersSubject = new BehaviorSubject<RoomUser[]>([]);
-  roomUsers$ = this.roomUsersSubject.asObservable();
+  private warchersSubject = new BehaviorSubject<RoomUser[]>([]);
+  watchers$ = this.warchersSubject.asObservable();
 
   // handles messages coming from signalling_server (remote party)
   public configureSocket(): void {
@@ -190,7 +190,7 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
                 this.usersInRoom.push(user);
               }
             });
-            this.roomUsersSubject.next(this.usersInRoom);
+            this.warchersSubject.next(this.usersInRoom);
             break;
           case 'stopWebCam': // TODO: cambiare in stopWebCam_${this.room.id}
             // if (msg.data == this.room.id) {

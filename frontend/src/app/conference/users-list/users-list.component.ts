@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { combineLatest, forkJoin, Observable, pipe, zip } from 'rxjs';
 import {
   distinctUntilChanged,
   filter,
@@ -19,19 +19,53 @@ import { RoomUser } from '../conference.service';
 })
 export class UsersListComponent implements OnInit {
   @Input() usersInRoom: RoomUser[];
-  @Input() roomUsers$: Observable<RoomUser[]>;
+  @Input() watchers$: Observable<RoomUser[]>;
+
+  roomUsers$: Observable<RoomUser[]>;
 
   constructor(public audioService: AudioRTCService) {}
 
   ngOnInit() {
     // this.isAudioOn;
-    this.audioService.listeners$.subscribe((listeners) => {
-      console.log('🐱‍👤 : listeners', listeners);
-    });
+    // this.audioService.listeners$.subscribe((listeners) => {
+    //   console.log('🐱‍👤 : listeners', listeners);
+    // });
 
-    this.roomUsers$.subscribe((roomUsers) => {
-      console.log('🐱‍👤 : roomUsers', roomUsers);
-    });
+    // this.roomUsers$.subscribe((roomUsers) => {
+    //   console.log('🐱‍👤 : roomUsers', roomUsers);
+    // });
+
+    this.roomUsers$ = combineLatest([
+      this.audioService.listeners$,
+      this.watchers$,
+    ]).pipe(
+      map(([listeners, watchers]) => {
+        console.log('🐱‍👤 : watchers', watchers);
+        console.log('🐱‍👤 : listeners', listeners);
+        let roomUsers: RoomUser[] = [];
+        watchers.forEach((watcher) => {
+          roomUsers.push({
+            idutente: watcher.idutente,
+            nome: watcher.nome,
+            stream: watcher.stream,
+            audioStream: listeners.find(
+              (listener) => listener.id === watcher.idutente
+            ),
+            // audioStream: listeners.map((listener) =>
+            //   listener.id === watcher.idutente
+            //     ? listener.stream
+            //       ? listener.stream
+            //       : null
+            //     : null
+            // ),
+          });
+        });
+        return roomUsers;
+      }),
+      tap((roomUsers) => {
+        console.log('🐱‍👤 : roomUsers', roomUsers);
+      })
+    );
   }
 
   // isAudioOn(roomUser: RoomUser): void {
