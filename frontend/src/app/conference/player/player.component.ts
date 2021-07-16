@@ -103,26 +103,6 @@ export class PlayerComponent implements OnInit {
   /************************* GetUserMedia *************************/
 
   private async requestGetUserMedia(): Promise<void> {
-    // if (this.devicePosition == 'fronte') {
-    //   this.constraints = {
-    //     audio: { sampleRate: AUDIO_BITRATE, echoCancellation: true },
-    //     video: {
-    //       width: { min: MIN_WIDTH, ideal: IDEAL_WIDTH, max: MAX_WIDTH },
-    //       height: { min: MIN_HEIGHT, ideal: IDEAL_HEIGHT, max: MAX_HEIGHT },
-    //       frameRate: { ideal: VIDEO_FRAMERATE },
-    //     },
-    //   };
-    // } else if (this.devicePosition == 'retro') {
-    //   this.constraints = {
-    //     audio: { sampleRate: AUDIO_BITRATE, echoCancellation: true },
-    //     video: {
-    //       width: { min: MIN_WIDTH, ideal: IDEAL_WIDTH, max: MAX_WIDTH },
-    //       height: { min: MIN_HEIGHT, ideal: IDEAL_HEIGHT, max: MAX_HEIGHT },
-    //       frameRate: { ideal: VIDEO_FRAMERATE },
-    //       facingMode: { exact: 'environment' },
-    //     },
-    //   };
-    // }
     this.localStream = await navigator.mediaDevices.getUserMedia(
       this.constraints
     );

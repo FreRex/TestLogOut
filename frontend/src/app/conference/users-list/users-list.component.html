@@ -12,12 +12,12 @@
       <p>{{ user?.idutente }}</p>
     </ion-label>
     <ion-icon *ngIf="user?.stream" slot="end" name="videocam-sharp"></ion-icon>
-    <ion-icon *ngIf="user?.audioStream" slot="end" name="volume-high-sharp">
+    <ion-icon *ngIf="user?.audioOn" slot="end" name="volume-high-sharp">
     </ion-icon>
     <audio
-      *ngIf="user?.audioStream"
-      id="{{ 'remoteVideo' + user?.audioStream.id }}"
-      [srcObject]="user?.audioStream.stream"
+      *ngIf="user?.audioOn"
+      id="{{ 'remoteVideo' + user?.idutente }}"
+      [srcObject]="user?.audioStream"
       controls
       autoplay
       playsinline

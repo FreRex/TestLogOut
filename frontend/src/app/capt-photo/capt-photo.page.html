@@ -5,7 +5,30 @@
 </ion-header>
 
 <ion-content>
-  <video class="videoElementCaptPhoto" id="videoElement" controls="controls" playsinline>
-    <source src="../../assets/video/gatto.mp4" type="video/mp4">  
-  </video> 
+  <div class="video-container" *ngIf="!error">
+    <video #video id="video" [width]="WIDTH" [height]="HEIGHT" autoplay></video>
+    <canvas #canvas id="canvas" [width]="WIDTH" [height]="HEIGHT"></canvas>
+  </div>
+
+  <div class="snap-container">
+    <ion-button (click)="capture()">Snap Photo</ion-button>
+    <!-- <button class="btn btn-danger" *ngIf="isCaptured" (click)="removeCurrent()">
+      Take Another
+    </button> -->
+
+    <div *ngIf="error" class="text-danger mt-4">
+      {{ error }}. Please click refresh on stackblitz
+      <div class="mt-5">
+        <img
+          src="https://trungk18.com/7e0976255739e721501803ee074f1f94/camera.gif"
+        />
+      </div>
+    </div>
+  </div>
+
+  <ul class="list-unstyled">
+    <li *ngFor="let src of captures; let idx = index" (click)="setPhoto(idx)">
+      <img [src]="src" height="50" />
+    </li>
+  </ul>
 </ion-content>

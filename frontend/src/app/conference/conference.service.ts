@@ -17,7 +17,8 @@ export interface RoomUser {
   // iniziali: string;
   // socketid: string;
   stream: boolean;
-  audioStream?: Listener;
+  audioOn?: boolean;
+  audioStream?: MediaStream;
 }
 
 @Injectable({

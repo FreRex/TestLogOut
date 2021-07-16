@@ -8,7 +8,10 @@ import {
   take,
   tap,
 } from 'rxjs/operators';
-import { AudioRTCService } from 'src/app/test-audiortc/audiortc.service';
+import {
+  AudioRTCService,
+  Listener,
+} from 'src/app/test-audiortc/audiortc.service';
 
 import { RoomUser } from '../conference.service';
 
@@ -44,20 +47,15 @@ export class UsersListComponent implements OnInit {
         console.log('🐱‍👤 : listeners', listeners);
         let roomUsers: RoomUser[] = [];
         watchers.forEach((watcher) => {
+          let listener = listeners.find(
+            (listener) => listener.id === watcher.idutente
+          );
           roomUsers.push({
             idutente: watcher.idutente,
             nome: watcher.nome,
             stream: watcher.stream,
-            audioStream: listeners.find(
-              (listener) => listener.id === watcher.idutente
-            ),
-            // audioStream: listeners.map((listener) =>
-            //   listener.id === watcher.idutente
-            //     ? listener.stream
-            //       ? listener.stream
-            //       : null
-            //     : null
-            // ),
+            audioOn: !!listener,
+            audioStream: this.getAudioStream(listener),
           });
         });
         return roomUsers;
@@ -68,6 +66,13 @@ export class UsersListComponent implements OnInit {
     );
   }
 
+  getAudioStream(listener: Listener): MediaStream {
+    if (listener) {
+      return listener.stream ? listener.stream : null;
+    } else {
+      return null;
+    }
+  }
   // isAudioOn(roomUser: RoomUser): void {
   //   if (roomUser) {
   //     this.audioService.listeners$
