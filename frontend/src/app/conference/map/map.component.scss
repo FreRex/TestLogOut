@@ -1,11 +1,15 @@
+@import 'https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.6.0/css/ol.css';
+@import 'https://unpkg.com/ol-layerswitcher@3.8.3/dist/ol-layerswitcher.css';
 #map {
-  position: realtive;
+  position: relative;
   height: 100%;
   width: 100%;
 }
 #mouse-position {
   font-size: 10px;
   position: absolute;
-  bottom: 0;
+  bottom: 40px;
+  left: unset;
+  right: 1px;
   z-index: 100;
 }
