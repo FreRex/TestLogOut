@@ -124,3 +124,11 @@ div.fixed {
     height: 100%;
   }
 }
+/* OL MAPPA */
+.layer-switcher button {
+  background-color: transparent !important;
+}
+.layer-switcher .panel {
+  background-color: rgba(255, 255, 255, 0.8) !important;
+  font-size: small !important;
+}

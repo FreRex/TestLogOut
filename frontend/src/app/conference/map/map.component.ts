@@ -1,6 +1,6 @@
 import 'ol/ol.css';
 
-import { Component, Input, OnChanges, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import LayerGroup from 'ol/layer/Group';
 import TileLayer from 'ol/layer/Tile';
 import Map from 'ol/Map';
@@ -13,19 +13,29 @@ import View from 'ol/View';
 import * as olCoordinate from 'ol/coordinate';
 import { defaults as defaultControls } from 'ol/control';
 import MousePosition from 'ol/control/MousePosition';
-import { MapData, MapService } from './map.service';
+import { MapService } from './map.service';
 
 import VectorSource from 'ol/source/Vector';
 import { Vector as VectorLayer } from 'ol/layer';
 import { Icon, Style } from 'ol/style';
-import Feature from 'ol/Feature';
+import Feature, { FeatureLike } from 'ol/Feature';
 import Point from 'ol/geom/Point';
 import { fromLonLat } from 'ol/proj.js';
+import Rotate from 'ol/control/Rotate';
+import ScaleLine from 'ol/control/ScaleLine';
+import FullScreen from 'ol/control/FullScreen';
 
 import { DragAndDrop, defaults as defaultInteractions } from 'ol/interaction';
 import { GPX, GeoJSON, IGC, KML, TopoJSON } from 'ol/format';
-import * as JSZip from 'jszip';
-import { fromEvent } from 'rxjs';
+
+import LayerSwitcher, {
+  Options as LsOptions,
+  GroupSelectStyle,
+  BaseLayerOptions,
+  GroupLayerOptions,
+} from 'ol-layerswitcher';
+import { KMZ } from './KMZ';
+import Geometry from 'ol/geom/Geometry';
 
 @Component({
   selector: 'app-map',
@@ -39,8 +49,10 @@ export class MapComponent implements OnInit {
   marker2: Feature;
   vectorSource: VectorSource;
   vectorSource2: VectorSource;
+  vectorSourceKML: VectorSource;
   vectorLayer: VectorLayer;
   vectorLayer2: VectorLayer;
+  vectorLayerKML: VectorLayer;
 
   coordByMouse: { lat: string; lon: string } = { lat: '', lon: '' };
   mappa: Map;
@@ -50,8 +62,10 @@ export class MapComponent implements OnInit {
 
   constructor(private mapService: MapService) {}
 
+  /* KMZ/KML Drag & Drop */
+
+  /* MARKER BLUE definizione */
   createMarker2() {
-    /* MARKER BLUE definizione */
     this.marker2 = new Feature({
       geometry: new Point(
         fromLonLat([+this.coordByMouse.lon, +this.coordByMouse.lat])
@@ -84,7 +98,8 @@ export class MapComponent implements OnInit {
 
   ngOnInit() {
     this.vectorLayer2 = this.createMarker2();
-    console.log(this.vectorLayer2);
+    //console.log(this.vectorLayer2);
+    /* rotate ctrl */
 
     /* COORDINATE AL PASSAGGIO DEL MOUSE */
     this.mousePosition = new MousePosition({
@@ -123,80 +138,85 @@ export class MapComponent implements OnInit {
       });
       /* ************************************ */
 
+      /* drag &drop */
+      const dragAndDropInteraction = new DragAndDrop({
+        formatConstructors: [KMZ, GPX, GeoJSON, IGC, KML, TopoJSON],
+      });
+
       this.mappa = new Map({
-        controls: defaultControls().extend([
+        interactions: defaultInteractions().extend([dragAndDropInteraction]),
+        controls: defaultControls({ attribution: false }).extend([
           this.mousePosition,
-        ]) /* COORDINATE AL PASSAGGIO DEL MOUSE */,
+        ]),
         target: 'map',
         layers: [
           new LayerGroup({
-            // title: 'Sfondi cartografici',
+            title: 'Sfondi cartografici',
             layers: [
               new TileLayer({
-                // title: 'Google Streets',
-                // type: 'base',
-                visible: true,
+                title: 'Google Streets',
+                type: 'base',
+                visible: false,
                 source: new XYZ({
                   url: 'http://mt1.googleapis.com/vt?x={x}&y={y}&z={z}',
                 }),
-              }),
+              } as BaseLayerOptions),
               new TileLayer({
-                // title: 'Open Street Map',
-                // type: 'base',
-                visible: false,
+                title: 'Open Street Map',
+                type: 'base',
+                visible: true,
                 source: new OSM(),
-              }),
+              } as BaseLayerOptions),
               new TileLayer({
-                // title: 'Google satellite',
-                // type: 'base',
+                title: 'Google satellite',
+                type: 'base',
                 visible: false,
                 source: new XYZ({
                   url: 'http://mt0.google.com/vt/lyrs=s&hl=en&x={x}&y={y}&z={z}?key=AIzaSyAfSMp-syOQXDlulMxr14XIV4-hgOt2DRc',
                 }),
-              }),
+              } as BaseLayerOptions),
               new TileLayer({
-                // title: 'Nessuno',
-                // type: 'base',
+                //title: 'Nessuno',
+                //type: 'base',
                 visible: false,
               }),
             ],
-          }),
+          } as GroupLayerOptions),
           new LayerGroup({
-            // title: 'Progetto completo',
+            title: 'Progetto completo',
             layers: [
               new TileLayer({
-                // title: 'Nodi fisici',
+                title: 'Nodi fisici',
                 minZoom: 12,
                 source: new TileWMS({
                   url: 'https://www.collaudolive.com:9080/geoserver/CollaudoLiveGisfo/wms',
                   params: { LAYERS: map.nodifisici, TILED: true },
                   serverType: 'geoserver',
                 }),
-              }),
+              } as BaseLayerOptions),
               new TileLayer({
-                // title: 'Nodi ottici',
+                title: 'Nodi ottici',
                 minZoom: 12,
                 source: new TileWMS({
                   url: 'https://www.collaudolive.com:9080/geoserver/CollaudoLiveGisfo/wms',
                   params: { LAYERS: map.nodiottici, TILED: true },
                   serverType: 'geoserver',
                 }),
-              }),
+              } as BaseLayerOptions),
               new TileLayer({
-                // title: 'Tratte',
+                title: 'Tratte',
                 minZoom: 12,
                 source: new TileWMS({
                   url: 'https://www.collaudolive.com:9080/geoserver/CollaudoLiveGisfo/wms',
                   params: { LAYERS: map.tratte, TILED: true },
                   serverType: 'geoserver',
                 }),
-              }),
+              } as BaseLayerOptions),
             ],
-          }),
+          } as GroupLayerOptions),
           this.vectorLayer,
           this.vectorLayer2,
         ],
-
         view: new View({
           center: olProj.transform(
             [map.longcentrmap, map.latcentromap],
@@ -206,6 +226,35 @@ export class MapComponent implements OnInit {
           zoom: 15,
         }),
       });
+
+      /* CONTROLLI IN AGGIUNTA */
+      const scaleLineControl = new ScaleLine();
+      this.mappa.addControl(scaleLineControl);
+
+      const rotateMapControl = new Rotate({
+        autoHide: false,
+      });
+      this.mappa.removeControl(rotateMapControl);
+
+      const fullScreenControl = new FullScreen();
+      this.mappa.addControl(fullScreenControl);
+
+      /* Layer Menu */
+
+      const groupStyle: GroupSelectStyle = 'children';
+
+      const opts: LsOptions = {
+        reverse: true,
+        groupSelectStyle: groupStyle,
+        startActive: false,
+        activationMode: 'click',
+      };
+      const layerSwitcher = new LayerSwitcher(opts);
+
+      this.mappa.addControl(layerSwitcher);
+
+      /* click event marker blu */
+
       this.mappa.on('click', (evt) => {
         //         var numtotlayers = map.getLayers().getLength();
         // if (numtotlayers == 4) {
@@ -233,6 +282,21 @@ export class MapComponent implements OnInit {
         this.mappa.removeLayer(this.vectorLayer2);
         this.vectorLayer2 = this.createMarker2();
         this.mappa.addLayer(this.vectorLayer2);
+      });
+
+      /* Drag&Drop */
+
+      dragAndDropInteraction.on('addfeatures', (event: any) => {
+        this.vectorSourceKML = new VectorSource({
+          features: event.features,
+        });
+        //console.log('evevevevevv', event.features);
+
+        this.vectorLayerKML = new VectorLayer({
+          source: this.vectorSourceKML,
+        });
+        this.mappa.addLayer(this.vectorLayerKML);
+        this.mappa.getView().fit(this.vectorSourceKML.getExtent());
       });
     });
   }
