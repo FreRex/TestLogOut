@@ -18,7 +18,7 @@ if (process.env.NODE_ENV == 'production') {
 }
 else
 {
-  port = 9230;
+  port = 9187;
 }
 
 app.use(express.json());
