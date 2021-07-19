@@ -261,6 +261,7 @@ export class MapComponent implements OnInit {
         //   var indexMarker = numtotlayers - 1;
         //   var ttt = this.mappa.getLayers().removeAt(indexMarker);
         // }
+
         //coordinate in EPSG 3857 (coord. proiettate)
         var X = evt.coordinate[0].toFixed(7);
         var Y = evt.coordinate[1].toFixed(7);
@@ -273,7 +274,6 @@ export class MapComponent implements OnInit {
         var lat = lonlat[1].toFixed(7);
 
         // console.log('coordinateeeeeeeeeeeeee', lon, lat);
-
         this.coordByMouse = {
           lat: lonlat[1].toFixed(7),
           lon: lonlat[0].toFixed(7),
