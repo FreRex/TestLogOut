@@ -89,7 +89,9 @@ export class MapComponent implements OnInit {
 
     let vectorLayer = new VectorLayer({
       source: vectorSource,
-    });
+      title: 'Marker Indicazioni',
+      visible: true,
+    } as BaseLayerOptions);
 
     return vectorLayer;
 
@@ -176,10 +178,13 @@ export class MapComponent implements OnInit {
                 }),
               } as BaseLayerOptions),
               new TileLayer({
-                //title: 'Nessuno',
-                //type: 'base',
+                title: 'Nessuno',
+                type: 'base',
                 visible: false,
-              }),
+                source: new XYZ({
+                  url: '',
+                }),
+              } as BaseLayerOptions),
             ],
           } as GroupLayerOptions),
           new LayerGroup({
@@ -214,8 +219,15 @@ export class MapComponent implements OnInit {
               } as BaseLayerOptions),
             ],
           } as GroupLayerOptions),
-          this.vectorLayer,
-          this.vectorLayer2,
+
+          (this.vectorLayer = new VectorLayer({
+            source: this.vectorSource,
+            title: 'Marker Operatore',
+            visible: true,
+          } as BaseLayerOptions)),
+
+          // this.vectorLayer,
+          // this.vectorLayer2,
         ],
         view: new View({
           center: olProj.transform(
@@ -290,11 +302,14 @@ export class MapComponent implements OnInit {
         this.vectorSourceKML = new VectorSource({
           features: event.features,
         });
-        //console.log('evevevevevv', event.features);
 
         this.vectorLayerKML = new VectorLayer({
           source: this.vectorSourceKML,
-        });
+          opacity: 0.7,
+          declutter: true,
+          updateWhileInteracting: true,
+          title: 'KMZ / KML',
+        } as BaseLayerOptions);
         this.mappa.addLayer(this.vectorLayerKML);
         this.mappa.getView().fit(this.vectorSourceKML.getExtent());
       });
