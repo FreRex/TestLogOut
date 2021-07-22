@@ -1,7 +1,12 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { ModalController } from '@ionic/angular';
 import FlvJs from 'flv.js';
 import { Socket } from 'ngx-socket-io';
+import { AuthUser } from 'src/app/auth/auth-user.model';
+import { Room } from 'src/app/rooms/room.service';
+import { AlertService } from 'src/app/shared/alert.service';
 import { environment } from 'src/environments/environment';
+import { PhotoModalComponent } from '../photo-modal/photo-modal.component';
 
 const MIN_WIDTH = 320;
 const MIN_HEIGHT = 180;
@@ -21,11 +26,14 @@ const AUDIO_BITRATE = 44100;
   styleUrls: ['./player.component.scss'],
 })
 export class PlayerComponent implements OnInit {
-  @ViewChild('local_video', { static: false }) localVideo: ElementRef;
-  @ViewChild('output_video', { static: false }) remoteVideo: ElementRef;
+  @ViewChild('localVideo', { static: false }) localVideo: ElementRef;
+  @ViewChild('remoteVideo', { static: false }) remoteVideo: ElementRef;
 
   @Input() isStreaming: boolean = false;
   @Input() isPlaying: boolean = true;
+
+  @Input() room: Room;
+  @Input() user: AuthUser;
 
   // private devicePosition: string = 'fronte';
 
@@ -33,13 +41,50 @@ export class PlayerComponent implements OnInit {
   private mediaRecorder: MediaRecorder;
   private constraints: MediaStreamConstraints;
 
-  constructor(private socket: Socket) {}
+  constructor(
+    private socket: Socket,
+    private alertService: AlertService,
+    private modalController: ModalController
+  ) {}
 
   ngOnInit() {
     this.listaDispositivi().then((constraints: MediaStreamConstraints) => {
       this.constraints = constraints;
       // console.log('🐱‍👤 : this.constraints', this.constraints);
     });
+  }
+
+  capture() {
+    this.modalController
+      .create({
+        component: PhotoModalComponent,
+        cssClass: 'transparent-modal',
+        backdropDismiss: false,
+        componentProps: {
+          WIDTH: this.localVideo.nativeElement.videoWidth,
+          HEIGHT: this.localVideo.nativeElement.videoHeight,
+          image: this.localVideo.nativeElement,
+          room: this.room,
+          user: this.user,
+        },
+      })
+      .then((modalEl) => {
+        modalEl.present();
+        return modalEl.onDidDismiss();
+      });
+    // .then((res) => {
+    //   if (res.role === 'ok') {
+    //     this.presentToast(res.data['message'], 'secondary');
+    //   } else if (res.role === 'error') {
+    //     this.presentToast(
+    //       `Aggiornamento fallito.\n${res.data['message']}`,
+    //       'danger',
+    //       5000
+    //     );
+    //   }
+    // });
+    // this.drawImageToCanvas(this.video.nativeElement);
+    // this.captures.push(this.canvas.nativeElement.toDataURL('image/png'));
   }
 
   startStream() {
@@ -50,7 +95,11 @@ export class PlayerComponent implements OnInit {
         this.startMediaRecorder();
       })
       .catch((err) => {
-        console.log(err);
+        this.alertService.presentAlert(
+          err.toString(),
+          `Concedi i permessi per usare la Fotocamera al sito e Ricarica la pagina <br>
+          <img src="../../../assets/permessi.png" />`
+        );
       });
   }
 
@@ -103,9 +152,18 @@ export class PlayerComponent implements OnInit {
   /************************* GetUserMedia *************************/
 
   private async requestGetUserMedia(): Promise<void> {
-    this.localStream = await navigator.mediaDevices.getUserMedia(
-      this.constraints
-    );
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      try {
+        this.localStream = await navigator.mediaDevices.getUserMedia(
+          this.constraints
+        );
+        if (!this.localStream) {
+          throw new Error('You have no output video device');
+        }
+      } catch (e) {
+        throw new Error(e);
+      }
+    }
   }
 
   startLocalVideo(): void {

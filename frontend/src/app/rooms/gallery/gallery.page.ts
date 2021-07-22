@@ -13,7 +13,7 @@ import {
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
-import { Foto, MediaService } from './media.service';
+import { Photo, MediaService } from './media.service';
 import { PhotoDetailsComponent } from './photo-details/photo-details.component';
 
 @Component({
@@ -41,7 +41,7 @@ export class GalleryPage implements ViewWillEnter, ViewWillLeave {
   backToTop: boolean = false;
   load: boolean = true;
 
-  foto$: Observable<Foto[]>;
+  photoSet$: Observable<Photo[]>;
 
   @ViewChild(IonContent) content: IonContent;
 
@@ -57,7 +57,7 @@ export class GalleryPage implements ViewWillEnter, ViewWillLeave {
 
   ionViewWillEnter() {
     this.activatedRoute.paramMap.subscribe((pM: ParamMap) => {
-      this.foto$ = this.mediaServ.fotoSet$;
+      this.photoSet$ = this.mediaServ.photoSet$;
       this.roomId = pM.get('id');
       this.roomName = pM.get('proj');
       this.loadFoto();
@@ -66,13 +66,13 @@ export class GalleryPage implements ViewWillEnter, ViewWillLeave {
   }
 
   ionViewWillLeave() {
-    this.mediaServ.fotoSetSubject.next([]);
+    this.mediaServ.photoSetSubject.next([]);
     this.pageNum = 1;
   }
 
   loadFoto() {
-    this.mediaServ.loadMedia(this.roomId, this.pageNum).subscribe(
-      (res: Foto[]) => {
+    this.mediaServ.loadPhotos(this.roomId, this.pageNum).subscribe(
+      (res: Photo[]) => {
         this.load = false;
         if (res.length == 0) {
           this.presentToast('Non ci sono Foto');
@@ -87,8 +87,8 @@ export class GalleryPage implements ViewWillEnter, ViewWillLeave {
 
   loadMoreFoto(event) {
     this.pageNum++;
-    this.mediaServ.loadMedia(this.roomId, this.pageNum).subscribe(
-      (res: Foto[]) => {
+    this.mediaServ.loadPhotos(this.roomId, this.pageNum).subscribe(
+      (res: Photo[]) => {
         if (res.length == 0) {
           if (event) {
             event.target.complete();
@@ -134,7 +134,7 @@ export class GalleryPage implements ViewWillEnter, ViewWillLeave {
     });
   }
 
-  editFoto(singleFoto: Foto) {
+  editFoto(singleFoto: Photo) {
     this.modalController
       .create({
         component: PhotoDetailsComponent,

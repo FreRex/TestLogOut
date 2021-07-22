@@ -227,6 +227,10 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
     );
   }
 
+  capturePhoto() {
+    this.playerComponent.capture();
+  }
+
   public isPlaying: boolean = false;
   public isStreaming: boolean = false;
 

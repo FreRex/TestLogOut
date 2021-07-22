@@ -1,8 +1,18 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AlertController, ModalController, ToastController } from '@ionic/angular';
-import { Foto, MediaService } from '../media.service';
-import { trigger, state, style, animate, transition } from '@angular/animations';
+import {
+  AlertController,
+  ModalController,
+  ToastController,
+} from '@ionic/angular';
+import { Photo, MediaService } from '../media.service';
+import {
+  trigger,
+  state,
+  style,
+  animate,
+  transition,
+} from '@angular/animations';
 import { delay } from 'rxjs/operators';
 
 @Component({
@@ -13,7 +23,10 @@ import { delay } from 'rxjs/operators';
     trigger('inOutAnimation', [
       transition(':enter', [
         style({ transform: 'rotateY(-90deg)', opacity: 0 }),
-        animate('.5s ease-in', style({ transform: 'rotateY(0deg)', opacity: 1 })),
+        animate(
+          '.5s ease-in',
+          style({ transform: 'rotateY(0deg)', opacity: 1 })
+        ),
       ]),
       transition(':leave', [
         style({ transform: 'scale(1)', opacity: 1 }),
@@ -23,13 +36,16 @@ import { delay } from 'rxjs/operators';
     trigger('inAnimation', [
       transition(':enter', [
         style({ transform: 'rotateY(90deg)', opacity: 0.5 }),
-        animate('.5s .5s ease-in', style({ transform: 'rotateY(0deg)', opacity: 1 })),
+        animate(
+          '.5s .5s ease-in',
+          style({ transform: 'rotateY(0deg)', opacity: 1 })
+        ),
       ]),
     ]),
   ],
 })
 export class PhotoDetailsComponent implements OnInit {
-  @Input() foto: Foto;
+  @Input() foto: Photo;
   @Input() roomName: string;
 
   inputArea: boolean = false;
@@ -62,7 +78,10 @@ export class PhotoDetailsComponent implements OnInit {
   dowloadSinglePhoto() {
     const link = document.createElement('a');
 
-    link.setAttribute('href', `data:image/jpeg;base64,${this.foto.imageBase64}`);
+    link.setAttribute(
+      'href',
+      `data:image/jpeg;base64,${this.foto.imageBase64}`
+    );
     link.setAttribute('download', `${this.foto.nomelemento}.jpeg`);
     document.body.appendChild(link);
     link.click();
@@ -86,7 +105,7 @@ export class PhotoDetailsComponent implements OnInit {
           // non ci sono errori
           console.log('chiamata update:', res);
           if (res['affectedRows'] === 1) {
-            const foto = this.mediaService.fotoSetSubject
+            const foto = this.mediaService.photoSetSubject
               .getValue()
               .find((ph) => ph.idPhoto === this.foto.idPhoto);
             foto.nomelemento = this.form.value.nome;
@@ -128,7 +147,10 @@ export class PhotoDetailsComponent implements OnInit {
               this.mediaService.deleteFoto(fotoID).subscribe((res) => {
                 this.presentToast('Foto Eliminata', 'secondary');
                 this.closeModal();
-                this.modalController.dismiss({ message: 'ok' }, 'Foto cancellata');
+                this.modalController.dismiss(
+                  { message: 'ok' },
+                  'Foto cancellata'
+                );
               }),
           },
         ],

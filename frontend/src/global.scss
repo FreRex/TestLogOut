@@ -124,3 +124,15 @@ div.fixed {
     height: 100%;
   }
 }
+
+.custom-alert {
+  // --max-height: 300;
+  --min-width: 360px;
+}
+
+.transparent-modal {
+  .modal-wrapper {
+    --background: transparent;
+    --box-shadow: 0;
+  }
+}

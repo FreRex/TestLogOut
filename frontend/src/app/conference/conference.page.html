@@ -62,6 +62,8 @@
           <app-player
             [isStreaming]="isStreaming"
             [isPlaying]="isPlaying"
+            [room]="room"
+            [user]="user"
           ></app-player>
         </div>
         <app-streaming-bar
@@ -69,6 +71,7 @@
           [isPlaying]="isPlaying"
           (togglePlay)="togglePlay()"
           (toggleStream)="toggleStream()"
+          (capturePhoto)="capturePhoto()"
           [roomId]="room?.id.toString()"
           [userId]="user?.idutcas"
         ></app-streaming-bar>

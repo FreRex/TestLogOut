@@ -11,14 +11,14 @@
   <video
     class="videoElementBase"
     [hidden]="!isStreaming"
-    #local_video
+    #localVideo
     [autoplay]="true"
     [muted]="true"
   ></video>
   <video
     class="videoElementBase"
     [hidden]="!isPlaying"
-    #output_video
+    #remoteVideo
     [autoplay]="true"
     [muted]="true"
     playsinline
