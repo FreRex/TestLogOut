@@ -1,6 +1,6 @@
 import 'ol/ol.css';
 
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import LayerGroup from 'ol/layer/Group';
 import TileLayer from 'ol/layer/Tile';
 import Map from 'ol/Map';
@@ -36,6 +36,7 @@ import LayerSwitcher, {
 } from 'ol-layerswitcher';
 import { KMZ } from './KMZ';
 import Geometry from 'ol/geom/Geometry';
+import { format } from 'ol/coordinate';
 
 @Component({
   selector: 'app-map',
@@ -44,6 +45,9 @@ import Geometry from 'ol/geom/Geometry';
 })
 export class MapComponent implements OnInit {
   @Input() roomId: number;
+  @Input() followOperator: boolean;
+  @Input() marker2Delete: boolean;
+  @Input() isInfo: boolean;
 
   marker: Feature;
   marker2: Feature;
@@ -54,6 +58,12 @@ export class MapComponent implements OnInit {
   vectorLayer2: VectorLayer;
   vectorLayerKML: VectorLayer;
 
+  pozzetto: TileLayer;
+  tratte: TileLayer;
+  nodi: TileLayer;
+
+  @ViewChild('info') info: ElementRef;
+
   coordByMouse: { lat: string; lon: string } = { lat: '', lon: '' };
   mappa: Map;
 
@@ -61,8 +71,6 @@ export class MapComponent implements OnInit {
   mousePositionForMarker2: MousePosition;
 
   constructor(private mapService: MapService) {}
-
-  /* KMZ/KML Drag & Drop */
 
   /* MARKER BLUE definizione */
   createMarker2() {
@@ -99,9 +107,9 @@ export class MapComponent implements OnInit {
   }
 
   ngOnInit() {
+    window.setInterval(() => this.mapService.getLocation(), 1000);
+
     this.vectorLayer2 = this.createMarker2();
-    //console.log(this.vectorLayer2);
-    /* rotate ctrl */
 
     /* COORDINATE AL PASSAGGIO DEL MOUSE */
     this.mousePosition = new MousePosition({
@@ -110,40 +118,51 @@ export class MapComponent implements OnInit {
       target: document.getElementById('mouse-position'),
       undefinedHTML: '&nbsp;',
     });
+
     /* MAPPA E LAYER */
     this.mapService.fetchMap(this.roomId).subscribe((map) => {
-      console.log('🐱‍👤 : mapData', map);
-
-      /* MARKER ROSSO CENTRO MAPPA */
-
-      this.marker = new Feature({
-        geometry: new Point(fromLonLat([map.longcentrmap, map.latcentromap])),
-      });
-
-      this.marker.setStyle(
-        new Style({
-          image: new Icon({
-            color: '#E21C20',
-            crossOrigin: 'anonymous',
-            src: '../../../assets/markerDot.svg',
-            imgSize: [20, 20],
-          }),
-        })
-      );
-
-      this.vectorSource = new VectorSource({
-        features: [this.marker],
-      });
-
-      this.vectorLayer = new VectorLayer({
-        source: this.vectorSource,
-      });
-      /* ************************************ */
+      //console.log('🐱‍👤 : mapData', map);
 
       /* drag &drop */
       const dragAndDropInteraction = new DragAndDrop({
         formatConstructors: [KMZ, GPX, GeoJSON, IGC, KML, TopoJSON],
       });
+
+      /* ****************** DEFINIZIONE LAYER PROGETTO *******************/
+      this.pozzetto = new TileLayer({
+        title: 'Nodi fisici',
+        minZoom: 12,
+        source: new TileWMS({
+          url: 'https://www.collaudolive.com:9080/geoserver/CollaudoLiveGisfo/wms',
+          params: {
+            LAYERS: map.nodifisici,
+            TILED: true,
+          },
+          serverType: 'geoserver',
+        }),
+      } as BaseLayerOptions);
+
+      this.tratte = new TileLayer({
+        title: 'Tratte',
+        minZoom: 12,
+        source: new TileWMS({
+          url: 'https://www.collaudolive.com:9080/geoserver/CollaudoLiveGisfo/wms',
+          params: { LAYERS: map.tratte, TILED: true },
+          serverType: 'geoserver',
+        }),
+      } as BaseLayerOptions);
+
+      this.nodi = new TileLayer({
+        title: 'Nodi ottici',
+        minZoom: 12,
+        source: new TileWMS({
+          url: 'https://www.collaudolive.com:9080/geoserver/CollaudoLiveGisfo/wms',
+          params: { LAYERS: map.nodiottici, TILED: true },
+          serverType: 'geoserver',
+        }),
+      } as BaseLayerOptions);
+
+      /* ********************************************************************************************* */
 
       this.mappa = new Map({
         interactions: defaultInteractions().extend([dragAndDropInteraction]),
@@ -189,45 +208,8 @@ export class MapComponent implements OnInit {
           } as GroupLayerOptions),
           new LayerGroup({
             title: 'Progetto completo',
-            layers: [
-              new TileLayer({
-                title: 'Nodi fisici',
-                minZoom: 12,
-                source: new TileWMS({
-                  url: 'https://www.collaudolive.com:9080/geoserver/CollaudoLiveGisfo/wms',
-                  params: { LAYERS: map.nodifisici, TILED: true },
-                  serverType: 'geoserver',
-                }),
-              } as BaseLayerOptions),
-              new TileLayer({
-                title: 'Nodi ottici',
-                minZoom: 12,
-                source: new TileWMS({
-                  url: 'https://www.collaudolive.com:9080/geoserver/CollaudoLiveGisfo/wms',
-                  params: { LAYERS: map.nodiottici, TILED: true },
-                  serverType: 'geoserver',
-                }),
-              } as BaseLayerOptions),
-              new TileLayer({
-                title: 'Tratte',
-                minZoom: 12,
-                source: new TileWMS({
-                  url: 'https://www.collaudolive.com:9080/geoserver/CollaudoLiveGisfo/wms',
-                  params: { LAYERS: map.tratte, TILED: true },
-                  serverType: 'geoserver',
-                }),
-              } as BaseLayerOptions),
-            ],
+            layers: [this.pozzetto, this.nodi, this.tratte],
           } as GroupLayerOptions),
-
-          (this.vectorLayer = new VectorLayer({
-            source: this.vectorSource,
-            title: 'Marker Operatore',
-            visible: true,
-          } as BaseLayerOptions)),
-
-          // this.vectorLayer,
-          // this.vectorLayer2,
         ],
         view: new View({
           center: olProj.transform(
@@ -238,6 +220,8 @@ export class MapComponent implements OnInit {
           zoom: 15,
         }),
       });
+
+      this.updateMarkerOperatore(map.longcentrmap, map.latcentromap);
 
       /* CONTROLLI IN AGGIUNTA */
       const scaleLineControl = new ScaleLine();
@@ -265,38 +249,42 @@ export class MapComponent implements OnInit {
 
       this.mappa.addControl(layerSwitcher);
 
-      /* click event marker blu */
+      /* click event marker blu / display info kmz/l */
 
       this.mappa.on('click', (evt) => {
-        //         var numtotlayers = map.getLayers().getLength();
-        // if (numtotlayers == 4) {
-        //   var indexMarker = numtotlayers - 1;
-        //   var ttt = this.mappa.getLayers().removeAt(indexMarker);
-        // }
+        if (this.isInfo) {
+          this.displayFeatureInfo(evt.pixel);
+        }
 
-        //coordinate in EPSG 3857 (coord. proiettate)
-        var X = evt.coordinate[0].toFixed(7);
-        var Y = evt.coordinate[1].toFixed(7);
+        if (this.marker2Delete) {
+          //coordinate in EPSG 3857 (coord. proiettate)
+          var X = evt.coordinate[0].toFixed(7);
+          var Y = evt.coordinate[1].toFixed(7);
 
-        //trasformazione coordinate da EPSG:3857 a EPSG:4326
-        var lonlat = olProj.transform(evt.coordinate, 'EPSG:3857', 'EPSG:4326');
+          //trasformazione coordinate da EPSG:3857 a EPSG:4326
+          var lonlat = olProj.transform(
+            evt.coordinate,
+            'EPSG:3857',
+            'EPSG:4326'
+          );
 
-        //coordinate in EPSG 4326 (coord. geografiche)
-        var lon = lonlat[0].toFixed(7);
-        var lat = lonlat[1].toFixed(7);
+          //coordinate in EPSG 4326 (coord. geografiche)
+          var lon = lonlat[0].toFixed(7);
+          var lat = lonlat[1].toFixed(7);
 
-        // console.log('coordinateeeeeeeeeeeeee', lon, lat);
-        this.coordByMouse = {
-          lat: lonlat[1].toFixed(7),
-          lon: lonlat[0].toFixed(7),
-        };
+          // console.log('coordinateeeeeeeeeeeeee', lon, lat);
+          this.coordByMouse = {
+            lat: lonlat[1].toFixed(7),
+            lon: lonlat[0].toFixed(7),
+          };
 
-        this.mappa.removeLayer(this.vectorLayer2);
-        this.vectorLayer2 = this.createMarker2();
-        this.mappa.addLayer(this.vectorLayer2);
+          this.mappa.removeLayer(this.vectorLayer2);
+          this.vectorLayer2 = this.createMarker2();
+          this.mappa.addLayer(this.vectorLayer2);
+        }
       });
 
-      /* Drag&Drop */
+      /* Drag&Drop KML KMZ*/
 
       dragAndDropInteraction.on('addfeatures', (event: any) => {
         this.vectorSourceKML = new VectorSource({
@@ -314,5 +302,89 @@ export class MapComponent implements OnInit {
         this.mappa.getView().fit(this.vectorSourceKML.getExtent());
       });
     });
+
+    this.mapService.coordinate$.subscribe((coords) => {
+      if (coords && coords.length > 0) {
+        let index = coords.length - 1;
+        this.updateMarkerOperatore(coords[index].long, coords[index].lat);
+      }
+    });
+  }
+
+  /* INFO KML/KMZ */
+
+  displayFeatureInfo(pixel) {
+    if (this.isInfo) {
+      const features = [];
+      this.mappa.forEachFeatureAtPixel(pixel, function (feature) {
+        features.push(feature);
+      });
+      if (features.length > 0) {
+        const info = [];
+        let i, ii;
+        for (i = 0, ii = features.length; i < ii; ++i) {
+          const description =
+            features[i].get('description') ||
+            features[i].get('name') ||
+            features[i].get('_name') ||
+            features[i].get('layer');
+          if (description) {
+            info.push(description);
+          }
+        }
+        document.getElementById('info').innerHTML =
+          info.join('<br/>') || '&nbsp';
+      } else {
+        document.getElementById('info').innerHTML = '&nbsp;';
+      }
+    }
+  }
+
+  /* SEGUI OPERATORE */
+  updateMarkerOperatore(long, lat) {
+    if (this.mappa) {
+      if (this.vectorLayer) {
+        this.mappa.removeLayer(this.vectorLayer);
+      }
+      this.marker = new Feature({
+        geometry: new Point(fromLonLat([long, lat])),
+      });
+
+      this.marker.setStyle(
+        new Style({
+          zIndex: 999,
+          image: new Icon({
+            color: '#E21C20',
+            crossOrigin: 'anonymous',
+            src: '../../../assets/markerDot.svg',
+            imgSize: [20, 20],
+          }),
+        })
+      );
+
+      this.vectorSource = new VectorSource({
+        features: [this.marker],
+      });
+
+      this.vectorLayer = new VectorLayer({
+        source: this.vectorSource,
+        title: 'Marker Operatore',
+        visible: true,
+      } as BaseLayerOptions);
+
+      this.mappa.addLayer(this.vectorLayer);
+
+      if (this.followOperator) {
+        this.mappa
+          .getView()
+          .setCenter(olProj.transform([long, lat], 'EPSG:4326', 'EPSG:3857'));
+      }
+      /* rimuove marker BLU all' update */
+      if (this.marker2Delete == false) {
+        if (this.vectorLayer2) {
+          this.mappa.removeLayer(this.vectorLayer2);
+        }
+      }
+    }
   }
 }

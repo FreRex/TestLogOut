@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 import { Observable } from 'rxjs/internal/Observable';
 import { take } from 'rxjs/internal/operators/take';
 import { map } from 'rxjs/operators';
@@ -35,6 +36,16 @@ export interface Map {
 export class MapService {
   constructor(private http: HttpClient) {}
 
+  // coord: { lat:string, long:string };
+
+  coordinate = [];
+
+  private coordinateSubject = new BehaviorSubject<
+    { lat: string; long: string }[]
+  >([]);
+  coordinate$: Observable<{ lat: string; long: string }[]> =
+    this.coordinateSubject.asObservable();
+
   /** SELECT mappa */
   fetchMap(roomId: number): Observable<Map> {
     return this.http
@@ -67,5 +78,48 @@ export class MapService {
           return newMap;
         })
       );
+  }
+
+  getLocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(this.showPosition.bind(this));
+    } else {
+      console.log('Geolocation is not supported by this browser.');
+    }
+  }
+
+  async showPosition(position: {
+    coords: { latitude: number; longitude: number };
+  }) {
+    //Parte per coordinate random
+    function randomCoord(coordinataIni: any) {
+      // console.log(coordinataIni);
+      let coordinata = Number.parseFloat(coordinataIni).toFixed(4);
+      //let coordinata = coordinataIni.toFixed(4);
+      let coordRandom = (Math.random() * 180).toFixed(6);
+      const baseDecimRandom = coordRandom.split('.');
+      let base = baseDecimRandom[1];
+      let lunghBase = base.length;
+      const decimNew = base.substring(3, lunghBase);
+
+      let finale = coordinata + decimNew;
+
+      return finale;
+    }
+
+    let datalat: any = position.coords.latitude.toFixed(7);
+    let datalong: any = position.coords.longitude.toFixed(7);
+    let lat = randomCoord(datalat);
+    let long = randomCoord(datalong);
+
+    //console.log('this cooooooooooooooordinate', this.coordinate);
+
+    this.coordinate.push({ lat: lat, long: long });
+
+    this.coordinateSubject.next(this.coordinate);
+
+    if (this.coordinate.length > 5) {
+      this.coordinate.shift();
+    }
   }
 }

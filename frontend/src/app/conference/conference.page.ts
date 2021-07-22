@@ -46,6 +46,10 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
   ) {}
 
   isLoading: boolean = false;
+  public followOperatorOnMap: boolean = true;
+  public marker2Delete: boolean = true;
+  isInfo: boolean = false;
+
   ngOnInit() {
     /*
      * Recupera l'ID della room dall'URL,
@@ -106,6 +110,18 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
     if (this.sub) {
       this.sub.unsubscribe();
     }
+  }
+
+  followOperator() {
+    this.followOperatorOnMap = !this.followOperatorOnMap;
+  }
+
+  removeMarker2() {
+    this.marker2Delete = !this.marker2Delete;
+  }
+
+  showDisplayInfo() {
+    this.isInfo = !this.isInfo;
   }
 
   private watchersSubject = new BehaviorSubject<RoomUser[]>([]);
