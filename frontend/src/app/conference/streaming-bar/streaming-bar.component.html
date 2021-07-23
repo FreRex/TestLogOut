@@ -64,7 +64,11 @@
         src="assets/icons/mockup-icons/smart-glasses.svg"
       ></ion-icon>
     </ion-button>
-    <ion-button class="btn-trasparent">
+    <ion-button
+      class="btn-trasparent"
+      [disabled]="!isStreaming"
+      (click)="capturingPhoto()"
+    >
       <ion-icon
         slot="icon-only"
         src="assets/icons/mockup-icons/aperture.svg"

@@ -31,7 +31,7 @@
       <ion-col size-lg="4.5" size-xs="12">
         <div class="conference-title">
           <div class="title">
-            <ion-text><b>{{room?.progetto}}</b></ion-text>
+            <ion-text class="bold">{{room?.progetto}}</ion-text>
             <ion-text>{{room?.sessione}}</ion-text>
           </div>
           <!-- BTN CHE COPIA IL LINK DELLA CONFERENCE -->
@@ -52,12 +52,24 @@
             </ion-text>
             <ion-text *ngIf="streamingUser.idutente != user.idutcas">
               {{streamingUser.nome}}
-            </ion-text>
-          </span>
-          <app-player [isStreaming]="isStreaming" [isPlaying]="isPlaying"></app-player>
+            </ion-text></span
+          >
+          <app-player
+            [isStreaming]="isStreaming"
+            [isPlaying]="isPlaying"
+            [room]="room"
+            [user]="user"
+          ></app-player>
         </div>
-        <app-streaming-bar [isStreaming]="isStreaming" [isPlaying]="isPlaying" (togglePlay)="togglePlay()"
-          (toggleStream)="toggleStream()" [roomId]="room?.id.toString()" [userId]="user?.idutcas"></app-streaming-bar>
+        <app-streaming-bar
+          [isStreaming]="isStreaming"
+          [isPlaying]="isPlaying"
+          (togglePlay)="togglePlay()"
+          (toggleStream)="toggleStream()"
+          (capturePhoto)="capturePhoto()"
+          [roomId]="room?.id.toString()"
+          [userId]="user?.idutcas"
+        ></app-streaming-bar>
       </ion-col>
 
       <ion-col size-lg="4.5" size-xs="12">

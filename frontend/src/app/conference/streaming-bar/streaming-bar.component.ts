@@ -15,6 +15,7 @@ export class StreamingBarComponent implements OnInit {
 
   @Output() toggleStream = new EventEmitter<any>();
   @Output() togglePlay = new EventEmitter<any>();
+  @Output() capturePhoto = new EventEmitter<any>();
 
   constructor(public audioService: AudioRTCService) {}
 
@@ -35,5 +36,9 @@ export class StreamingBarComponent implements OnInit {
   togglePlaying() {
     // this.streamingService.requestTogglePlay();
     this.togglePlay.emit();
+  }
+
+  capturingPhoto() {
+    this.capturePhoto.emit();
   }
 }

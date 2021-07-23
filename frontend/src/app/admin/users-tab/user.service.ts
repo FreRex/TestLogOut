@@ -130,7 +130,7 @@ export class UserService {
           collaudatoreufficio: collaudatoreufficio,
           username: username,
           password: password,
-          autorizzazioni: autorizzazione,
+          autorizzazioni: +autorizzazione,
           idcommessa: +idcommessa,
         });
       }),

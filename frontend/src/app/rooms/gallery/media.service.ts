@@ -6,9 +6,9 @@ import { environment } from 'src/environments/environment';
 
 import { AuthService } from '../../auth/auth.service';
 
-export interface Foto {
+export interface Photo {
   imageBase64: string;
-  idroom: number;
+  idRoom: number;
   idPhoto: number;
   progettoselezionato: string;
   collaudatoreufficio: string;
@@ -30,11 +30,11 @@ export interface Check {
   providedIn: 'root',
 })
 export class MediaService {
-  fotoData: Foto;
+  fotoData: Photo;
   numberOfFotoXPage: string = '12';
 
-  public fotoSetSubject = new BehaviorSubject<Foto[]>([]);
-  fotoSet$: Observable<Foto[]> = this.fotoSetSubject.asObservable();
+  public photoSetSubject = new BehaviorSubject<Photo[]>([]);
+  photoSet$: Observable<Photo[]> = this.photoSetSubject.asObservable();
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 
@@ -46,10 +46,9 @@ export class MediaService {
     );
   }
 
-  loadMedia(id: string, numPage: number, event?) {
-    let addedFoto: Foto[];
-
-    return this.fotoSet$.pipe(
+  loadPhotos(id: string, numPage: number) {
+    let addedFoto: Photo[];
+    return this.photoSet$.pipe(
       take(1),
       switchMap((res) => {
         addedFoto = [...res];
@@ -66,7 +65,7 @@ export class MediaService {
           if (res.hasOwnProperty(key)) {
             addedFoto.push({
               imageBase64: res[key]['foto'],
-              idroom: res[key]['id'],
+              idRoom: res[key]['idroom'],
               idPhoto: res[key]['idPhoto'],
               progettoselezionato: res[key]['progettoselezionato'],
               collaudatoreufficio: res[key]['collaudatoreufficio'],
@@ -82,8 +81,8 @@ export class MediaService {
         }
         return addedFoto;
       }),
-      tap((res: Foto[]) => {
-        this.fotoSetSubject.next(res);
+      tap((res: Photo[]) => {
+        this.photoSetSubject.next(res);
       })
     );
   }
@@ -99,12 +98,10 @@ export class MediaService {
   }
 
   deleteFoto(idFoto: number) {
-    let updatedFotos: Foto[];
-    return this.fotoSet$.pipe(
+    let updatedFotos: Photo[];
+    return this.photoSet$.pipe(
       take(1),
       switchMap((fotoRes) => {
-        console.log('array prima', fotoRes);
-
         updatedFotos = fotoRes.filter((foto) => foto.idPhoto != idFoto);
         return this.http.post(`${environment.apiUrl}/d`, {
           id: idFoto,
@@ -115,9 +112,7 @@ export class MediaService {
         return throwError(err);
       }),
       tap((res) => {
-        console.log('eccolo', updatedFotos);
-
-        this.fotoSetSubject.next(updatedFotos);
+        this.photoSetSubject.next(updatedFotos);
       })
     );
   }
@@ -128,5 +123,77 @@ export class MediaService {
       nomelemento: fotoNome,
       noteimg: fotoNote,
     });
+  }
+
+  addPhoto(
+    imageBase64: string,
+    idPhoto: number,
+    imgName: string,
+    imgTitle: string,
+    imgNotes: string,
+    imgData: Date,
+    idUtente: string,
+    idRoom: number,
+    usermobile: string,
+    nomeProgetto: string,
+    lat: string,
+    long: string
+  ) {
+    let updatedPhotos: Photo[];
+    const newPhoto = {
+      imageBase64: imageBase64,
+      idPhoto: idPhoto, // ??????????????????
+      nameimg: imgName,
+      nomelemento: imgTitle,
+      noteimg: imgNotes ? imgNotes : '',
+      dataimg: imgData,
+      collaudatoreufficio: idUtente,
+      idRoom: idRoom,
+      progettoselezionato: nomeProgetto,
+      latitu: lat,
+      longitu: long,
+      onlynota: 0,
+    };
+    console.log('🐱‍👤 : newPhoto', newPhoto);
+    console.log('🐱‍👤 : API', {
+      id: +idPhoto,
+      prodnumber: usermobile,
+      progettoselezionato: nomeProgetto,
+      collaudatoreufficio: `${idUtente}`,
+      latitu: lat,
+      longitu: long,
+      nameimg: imgName,
+      nomelemento: imgTitle,
+      noteimg: imgNotes ? imgNotes : '',
+      img: imageBase64,
+      onlynota: 0,
+    });
+
+    return this.photoSet$.pipe(
+      take(1),
+      switchMap((photos) => {
+        updatedPhotos = [...photos];
+        return this.http.post(`${environment.apiUrl}/cph/`, {
+          id: +idPhoto,
+          prodnumber: usermobile,
+          progettoselezionato: nomeProgetto,
+          collaudatoreufficio: `${idUtente}`,
+          latitu: lat,
+          longitu: long,
+          nameimg: imgName,
+          nomelemento: imgTitle,
+          noteimg: imgNotes ? imgNotes : '',
+          img: imageBase64,
+          onlynota: 0,
+        });
+      }),
+      catchError((err) => {
+        return throwError(err);
+      }),
+      tap((res) => {
+        updatedPhotos.unshift(newPhoto);
+        this.photoSetSubject.next(updatedPhotos);
+      })
+    );
   }
 }

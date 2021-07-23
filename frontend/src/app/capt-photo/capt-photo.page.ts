@@ -6,8 +6,8 @@ import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
   styleUrls: ['./capt-photo.page.scss'],
 })
 export class CaptPhotoPage implements AfterViewInit {
-  WIDTH = 640;
-  HEIGHT = 480;
+  WIDTH = 1080;
+  HEIGHT = 720;
 
   @ViewChild('video')
   public video: ElementRef;
@@ -22,7 +22,6 @@ export class CaptPhotoPage implements AfterViewInit {
   async ngAfterViewInit() {
     await this.setupDevices();
   }
-
   async setupDevices() {
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
       try {
