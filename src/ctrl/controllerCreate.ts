@@ -235,7 +235,8 @@ exports.postCreateCaptphoto = (req: any, res: any, next: any) => {
         else
         {
             console.log('1');
-            if(typeof(req.body[attribute]) !== 'undefined' && req.body[attribute] !== null && req.body[attribute] !== ''){
+            //if(typeof(req.body[attribute]) !== 'undefined' && req.body[attribute] !== null && req.body[attribute] !== ''){
+            if(typeof(req.body[attribute]) !== 'undefined' && req.body[attribute] !== null){
                 console.log('2');
                 queryInsert.push(req.body[attribute]);                
             }
