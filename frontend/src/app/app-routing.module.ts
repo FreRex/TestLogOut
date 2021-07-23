@@ -46,20 +46,16 @@ const routes: Routes = [
     canLoad: [AuthGuard],
   },
   {
-    path: 'test-audiortc',
-    loadChildren: () =>
-      import('./test-audiortc/test-audiortc.module').then(
-        (m) => m.TestAudiortcPageModule
-      ),
-  },
-  {
     path: 'test-gps',
     loadChildren: () =>
       import('./test-gps/test-gps.module').then((m) => m.TestGpsPageModule),
   },
   {
     path: 'capt-photo',
-    loadChildren: () => import('./capt-photo/capt-photo.module').then( m => m.CaptPhotoPageModule)
+    loadChildren: () =>
+      import('./capt-photo/capt-photo.module').then(
+        (m) => m.CaptPhotoPageModule
+      ),
   },
 ];
 

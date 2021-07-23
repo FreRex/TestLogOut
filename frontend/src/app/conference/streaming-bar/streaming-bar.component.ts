@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { AudioRTCService } from 'src/app/test-audiortc/audiortc.service';
+import { AudioRTCService } from 'src/app/conference/audiortc.service';
 
 @Component({
   selector: 'app-streaming-bar',

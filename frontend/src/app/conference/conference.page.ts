@@ -10,7 +10,7 @@ import { AuthUser } from '../auth/auth-user.model';
 import { AuthService } from '../auth/auth.service';
 import { RoomItemService } from '../rooms/room-item.service';
 import { Room, RoomService } from '../rooms/room.service';
-import { AudioRTCService } from '../test-audiortc/audiortc.service';
+import { AudioRTCService } from './audiortc.service';
 import { RoomUser } from './conference.service';
 import { PlayerComponent } from './player/player.component';
 

@@ -9,7 +9,7 @@ import { environment } from 'src/environments/environment';
 import { AuthUser } from '../auth/auth-user.model';
 import { AuthService } from '../auth/auth.service';
 import { Room } from '../rooms/room.service';
-import { Listener } from '../test-audiortc/audiortc.service';
+import { Listener } from './audiortc.service';
 
 export interface RoomUser {
   idutente: string;

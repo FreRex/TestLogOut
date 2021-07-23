@@ -8,10 +8,7 @@ import {
   take,
   tap,
 } from 'rxjs/operators';
-import {
-  AudioRTCService,
-  Listener,
-} from 'src/app/test-audiortc/audiortc.service';
+import { AudioRTCService, Listener } from 'src/app/conference/audiortc.service';
 
 import { RoomUser } from '../conference.service';
 
