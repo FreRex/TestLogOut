@@ -14,8 +14,13 @@ ion-item {
     text-align: center;
     ion-text {
       text-align: center;
-      font-weight: bold;
+      font-weight: 500;
       font-size: 1.4rem;
+    }
+  }
+  ion-label {
+    h2 {
+      font-weight: 600;
     }
   }
   ion-icon {

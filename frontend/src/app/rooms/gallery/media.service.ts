@@ -8,7 +8,7 @@ import { AuthService } from '../../auth/auth.service';
 
 export interface Photo {
   imageBase64: string;
-  id: number;
+  idRoom: number;
   idPhoto: number;
   progettoselezionato: string;
   collaudatoreufficio: string;
@@ -65,7 +65,7 @@ export class MediaService {
           if (res.hasOwnProperty(key)) {
             addedFoto.push({
               imageBase64: res[key]['foto'],
-              id: res[key]['id'],
+              idRoom: res[key]['idroom'],
               idPhoto: res[key]['idPhoto'],
               progettoselezionato: res[key]['progettoselezionato'],
               collaudatoreufficio: res[key]['collaudatoreufficio'],
@@ -148,12 +148,27 @@ export class MediaService {
       noteimg: imgNotes,
       dataimg: imgData,
       collaudatoreufficio: idUtente,
-      id: idRoom,
+      idRoom: idRoom,
       progettoselezionato: nomeProgetto,
       latitu: lat,
       longitu: long,
       onlynota: 0,
     };
+    console.log('🐱‍👤 : newPhoto', newPhoto);
+    console.log('🐱‍👤 : API', {
+      id: +idPhoto,
+      prodnumber: usermobile,
+      progettoselezionato: nomeProgetto,
+      collaudatoreufficio: idUtente,
+      latitu: lat,
+      longitu: long,
+      nameimg: +imgName,
+      nomelemento: imgTitle,
+      noteimg: imgNotes,
+      img: imageBase64,
+      onlynota: 0,
+    });
+
     return this.photoSet$.pipe(
       take(1),
       switchMap((photos) => {

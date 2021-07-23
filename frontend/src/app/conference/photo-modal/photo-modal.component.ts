@@ -3,6 +3,7 @@ import {
   Component,
   ElementRef,
   Input,
+  OnInit,
   ViewChild,
 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -16,22 +17,10 @@ import { Room } from 'src/app/rooms/room.service';
   templateUrl: './photo-modal.component.html',
   styleUrls: ['./photo-modal.component.scss'],
 })
-export class PhotoModalComponent implements AfterViewInit {
+export class PhotoModalComponent implements OnInit, AfterViewInit {
   form: FormGroup = this.fb.group({
-    nome: [
-      null,
-      {
-        validators: [Validators.required],
-        updateOn: 'change',
-      },
-    ],
-    title: [
-      null,
-      {
-        validators: [Validators.required],
-        updateOn: 'submit',
-      },
-    ],
+    title: [null, [Validators.required]],
+    note: [null],
   });
 
   @ViewChild('canvas') public canvas: ElementRef;
@@ -51,14 +40,16 @@ export class PhotoModalComponent implements AfterViewInit {
     private mediaService: MediaService
   ) {}
 
+  ngOnInit() {
+    this.date = new Date();
+    this.idPhoto = this.date.getTime();
+  }
+
   ngAfterViewInit() {
     if (this.image) {
       console.log('🐱‍👤 : WIDTH', this.WIDTH);
       console.log('🐱‍👤 : HEIGHT', this.HEIGHT);
       console.log('🐱‍👤 : this.image', this.image);
-
-      this.date = new Date();
-      this.idPhoto = this.date.getTime();
 
       this.canvas.nativeElement
         .getContext('2d')
@@ -70,12 +61,19 @@ export class PhotoModalComponent implements AfterViewInit {
     if (!this.form.valid) {
       return;
     }
+    let imgBase64 = this.canvas.nativeElement
+      .toDataURL('image/png')
+      .replace(/^data:image\/(png|jpg);base64,/, '');
+    // .split(';base64,')[1];
+    console.log(imgBase64);
+
     this.mediaService
       .addPhoto(
-        this.canvas.nativeElement.toDataURL('image/png'),
+        // imgBase64,
+        'gggggggggggggg',
         this.idPhoto,
         `img${this.idPhoto}`,
-        this.form.value.nome,
+        this.form.value.title,
         this.form.value.note,
         this.date,
         this.user.idutente,
@@ -88,6 +86,7 @@ export class PhotoModalComponent implements AfterViewInit {
       .subscribe(
         /** Il server risponde con 200 */
         (res) => {
+          console.log('🐱‍👤 : res', res);
           // non ci sono errori
           if (res['affectedRows'] === 1) {
             this.form.reset();
@@ -101,6 +100,7 @@ export class PhotoModalComponent implements AfterViewInit {
         },
         /** Il server risponde con un errore */
         (err) => {
+          console.log('🐱‍👤 : err', err);
           this.form.reset();
           this.modalController.dismiss({ message: err.error['text'] }, 'error');
         }

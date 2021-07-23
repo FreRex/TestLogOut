@@ -14,6 +14,9 @@
     display: flex;
     flex-direction: column;
     flex-grow: 1;
+    .bold {
+      font-weight: 600;
+    }
   }
   .button {
     --background: none;
@@ -46,7 +49,7 @@
   }
   ion-text {
     font-size: 0.8rem;
-    font-weight: bold;
+    font-weight: 500;
   }
 }
 .none {
@@ -83,7 +86,7 @@
       flex-direction: row;
       align-items: center;
       font-size: 0.8rem;
-      font-weight: bold;
+      font-weight: 500;
       color: var(--ion-color-dark);
       ion-icon {
         padding-left: 12px;

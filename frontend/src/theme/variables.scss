@@ -61,4 +61,60 @@
   --ion-color-light-contrast-rgb: 0, 0, 0;
   --ion-color-light-shade: #d1d3d5;
   --ion-color-light-tint: #eff2f3;
+
+  --ion-font-family: 'Montserrat';
+}
+@font-face {
+  font-family: 'Montserrat'; //valore da chiamare nel CSS
+  font-style: normal;
+  font-weight: 100;
+  src: url('../assets/fonts/Montserrat-Thin.ttf');
+}
+@font-face {
+  font-family: 'Montserrat'; //valore da chiamare nel CSS
+  font-style: normal;
+  font-weight: 200;
+  src: url('../assets/fonts/Montserrat-ExtraLight.ttf');
+}
+@font-face {
+  font-family: 'Montserrat'; //valore da chiamare nel CSS
+  font-style: normal;
+  font-weight: 300;
+  src: url('../assets/fonts/Montserrat-Light.ttf');
+}
+@font-face {
+  font-family: 'Montserrat'; //valore da chiamare nel CSS
+  font-style: normal;
+  font-weight: 400;
+  src: url('../assets/fonts/Montserrat-Regular.ttf');
+}
+@font-face {
+  font-family: 'Montserrat'; //valore da chiamare nel CSS
+  font-style: normal;
+  font-weight: 500;
+  src: url('../assets/fonts/Montserrat-Medium.ttf');
+}
+@font-face {
+  font-family: 'Montserrat'; //valore da chiamare nel CSS
+  font-style: normal;
+  font-weight: 600;
+  src: url('../assets/fonts/Montserrat-SemiBold.ttf');
+}
+@font-face {
+  font-family: 'Montserrat'; //valore da chiamare nel CSS
+  font-style: normal;
+  font-weight: 700;
+  src: url('../assets/fonts/Montserrat-Bold.ttf');
+}
+@font-face {
+  font-family: 'Montserrat'; //valore da chiamare nel CSS
+  font-style: normal;
+  font-weight: 800;
+  src: url('../assets/fonts/Montserrat-ExtraBold.ttf');
+}
+@font-face {
+  font-family: 'Montserrat'; //valore da chiamare nel CSS
+  font-style: normal;
+  font-weight: 900;
+  src: url('../assets/fonts/Montserrat-Black.ttf');
 }

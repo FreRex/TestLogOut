@@ -29,18 +29,21 @@
 FONT
 */
 
-@font-face {
-  font-family: 'Varela'; //valore da chiamare nel CSS
-  src: url('../src/assets/fonts/Varela-Regular.ttf');
-}
-@font-face {
-  font-family: 'Courier'; //valore da chiamare nel CSS
-  src: url('../src/assets/fonts/CourierPrime-Regular.ttf');
-}
-@font-face {
-  font-family: 'Montserrat'; //valore da chiamare nel CSS
-  src: url('../src/assets/fonts/Montserrat-Regular.ttf');
-}
+// @font-face {
+//   font-family: 'Varela'; //valore da chiamare nel CSS
+//   src: url('../src/assets/fonts/Varela-Regular.ttf');
+// }
+// @font-face {
+//   font-family: 'Courier'; //valore da chiamare nel CSS
+//   src: url('../src/assets/fonts/CourierPrime-Regular.ttf');
+// }
+
+// * {
+//   font-family: Montserrat !important;
+// }
+// ion-label {
+//   font-family: Montserrat !important;
+// }
 
 /*
 *  Applica uno stile globale alla toolbar
@@ -65,13 +68,6 @@ ion-toolbar {
 ::-webkit-scrollbar-thumb {
   background: var(--ion-color-secondary-tint);
   border-radius: 5px;
-}
-
-* {
-  font-family: Montserrat !important;
-}
-ion-label {
-  font-family: Montserrat !important;
 }
 
 ion-button {
@@ -134,5 +130,6 @@ div.fixed {
   .modal-wrapper {
     --background: transparent;
     --box-shadow: 0;
+    --min-height: 620px;
   }
 }
