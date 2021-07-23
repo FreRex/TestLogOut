@@ -107,8 +107,6 @@ export class MapComponent implements OnInit {
   }
 
   ngOnInit() {
-    window.setInterval(() => this.mapService.getLocation(), 1000);
-
     this.vectorLayer2 = this.createMarker2();
 
     /* COORDINATE AL PASSAGGIO DEL MOUSE */
@@ -220,8 +218,11 @@ export class MapComponent implements OnInit {
           zoom: 15,
         }),
       });
-
       this.updateMarkerOperatore(map.longcentrmap, map.latcentromap);
+
+      setTimeout(() => {
+        window.setInterval(() => this.mapService.getLocation(), 3000);
+      }, 5000);
 
       /* CONTROLLI IN AGGIUNTA */
       const scaleLineControl = new ScaleLine();

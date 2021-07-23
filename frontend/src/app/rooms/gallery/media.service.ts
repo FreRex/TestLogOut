@@ -8,7 +8,7 @@ import { AuthService } from '../../auth/auth.service';
 
 export interface Foto {
   imageBase64: string;
-  id: number;
+  idroom: number;
   idPhoto: number;
   progettoselezionato: string;
   collaudatoreufficio: string;
@@ -66,7 +66,7 @@ export class MediaService {
           if (res.hasOwnProperty(key)) {
             addedFoto.push({
               imageBase64: res[key]['foto'],
-              id: res[key]['id'],
+              idroom: res[key]['id'],
               idPhoto: res[key]['idPhoto'],
               progettoselezionato: res[key]['progettoselezionato'],
               collaudatoreufficio: res[key]['collaudatoreufficio'],
