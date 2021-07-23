@@ -208,3 +208,68 @@ exports.postCreateCommessa = (req: any, res: any, next: any) => {
     //-----------------------------
 
 }
+
+exports.postCreateCaptphoto = (req: any, res: any, next: any) => {  
+
+    const db = require('../conf/db');
+    let queryInsert:any = [];    
+
+    let messageErrore: any = '';    
+    let key: any;
+    let valore: any = '';
+   
+    for(let attribute in req.body){
+        console.log('a');
+        if(attribute=='id' || attribute =='onlynota'){
+            console.log('b');
+            if(typeof(req.body[attribute]) !== 'undefined' && req.body[attribute] !== null && req.body[attribute] !== '' && typeof(req.body[attribute]) === 'number'){
+                queryInsert.push(req.body[attribute]);   
+                console.log('c');            
+            }
+            else
+            { 
+               { messageErrore = ('Errore parametro ' + attribute + ': vuoto, "undefined", non "number" o "null"');} 
+            }     
+
+        }
+        else
+        {
+            console.log('1');
+            if(typeof(req.body[attribute]) !== 'undefined' && req.body[attribute] !== null && req.body[attribute] !== ''){
+                console.log('2');
+                queryInsert.push(req.body[attribute]);                
+            }
+            else
+            { 
+                { messageErrore = ('Errore parametro ' + attribute + ': vuoto, "undefined" o "null"');} 
+            }
+
+        } 
+    }
+
+    // Fine ciclo-esame json => operazione da compiere
+    if(messageErrore==''){        
+       //let sql: any = "INSERT INTO collaudolive (id,noteimg,onlynota,nameimg,nomelemento,progettoselezionato,img,latitu,longitu,prodnumber,collaudatoreufficio) VALUES (?,?,?,?,?,?,?,?,?,?,?)";             
+       let sql: any = "INSERT INTO collaudolive (id,prodnumber,progettoselezionato,collaudatoreufficio,nameimg,latitu,longitu,nomelemento,img,noteimg,onlynota) VALUES (?,?,?,?,?,?,?,?,?,?,?)";             
+       
+       esecuzioneQuery(sql);
+    }
+    else
+    {
+       res.send(messageErrore);
+    } 
+
+    //-------------------   
+    function esecuzioneQuery(sqlInsert: any){        
+        console.log(queryInsert);
+        db.query(sqlInsert, queryInsert, (err: any, rows: any, fields: any) => {
+            if(err){
+                res.send('Query error: ' + err.sqlMessage);
+            }else{           
+                res.send(rows);
+            }
+        });
+    }
+    //-----------------------------
+
+}
