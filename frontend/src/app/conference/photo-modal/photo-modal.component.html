@@ -1,23 +1,21 @@
 <ion-content>
   <div class="form-container">
-    <div class="form-items">
-      <div>
-        <canvas #canvas id="canvas" [width]="WIDTH" [height]="HEIGHT"></canvas>
-      </div>
-      <form class="form-fields" [formGroup]="form">
-        <ion-text color="dark">{{
-          date | date: 'HH:mm - dd/MM/yyyy'
-        }}</ion-text>
-        <ion-item class="title">
-          <ion-label color="dark" position="floating">Titolo</ion-label>
-          <ion-input formControlName="title" type="text"></ion-input>
-        </ion-item>
-        <ion-item class="note">
-          <ion-label color="dark" position="floating">Note</ion-label>
-          <ion-textarea formControlName="note" type="text"></ion-textarea>
-        </ion-item>
-      </form>
-    </div>
+    <form class="form-fields" [formGroup]="form">
+      <canvas #canvas id="canvas" [width]="WIDTH" [height]="HEIGHT"></canvas>
+      <ion-text color="dark">{{ date | date: 'HH:mm - dd/MM/yyyy' }}</ion-text>
+      <ion-item class="title">
+        <ion-label color="dark" position="floating">Titolo</ion-label>
+        <ion-input formControlName="title" type="text"></ion-input>
+      </ion-item>
+      <ion-item class="note">
+        <ion-label color="dark" position="floating">Note</ion-label>
+        <ion-textarea
+          formControlName="note"
+          rows="4"
+          type="text"
+        ></ion-textarea>
+      </ion-item>
+    </form>
     <div class="form-buttons">
       <ion-button class="annulla" type="button" (click)="closeModal()"
         >Annulla</ion-button

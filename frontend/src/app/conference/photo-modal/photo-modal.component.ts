@@ -69,8 +69,8 @@ export class PhotoModalComponent implements OnInit, AfterViewInit {
 
     this.mediaService
       .addPhoto(
-        // imgBase64,
-        'gggggggggggggg',
+        imgBase64, // TODO
+        // 'gggggggggggggg',
         this.idPhoto,
         `img${this.idPhoto}`,
         this.form.value.title,
@@ -80,8 +80,8 @@ export class PhotoModalComponent implements OnInit, AfterViewInit {
         this.room.id,
         this.room.usermobile,
         this.room.progetto,
-        '11.11111',
-        '22.22222'
+        '11.11111', // TODO
+        '22.22222' // TODO
       )
       .subscribe(
         /** Il server risponde con 200 */
