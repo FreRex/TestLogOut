@@ -71,6 +71,7 @@ export class MapComponent implements OnInit {
 
   mousePosition: MousePosition;
   mousePositionForMarker2: MousePosition;
+  idroom: any;
 
   constructor(
     private mapService: MapService,
@@ -223,7 +224,7 @@ export class MapComponent implements OnInit {
         }),
       });
       this.updateMarkerOperatore(map.longcentrmap, map.latcentromap);
-
+      this.mapService.ConfigIdRoom(this.roomId);
       setTimeout(() => {
         window.setInterval(() => this.mapService.getLocation(), 3000);
       }, 5000);
@@ -281,36 +282,18 @@ export class MapComponent implements OnInit {
           this.coordByMouse = {
             lat: lonlat[1].toFixed(7),
             lon: lonlat[0].toFixed(7),
-          };
+          };              
 
-          // GPS EMIT --------------------------------
-          this.socket.emit('posizioneMarker', {
-            idroom: 1180,      
-            latitudine: lonlat[1].toFixed(7),
-            longitudine: lonlat[0].toFixed(7)    
-          });
-
-          // GPS ON --------------------------------
-          this.socket.on('posMkrBckEnd',function(posMkrBckEnd: any){
-            console.log('posMkrBckEnd.idroom: ' +posMkrBckEnd.idroom); 
-            console.log('posMkrBckEnd.lat: ' +posMkrBckEnd.latitudine);
-            console.log('posMkrBckEnd.long: ' +posMkrBckEnd.longitudine);
-          });        
-
+          this.mapService.socketMarker(lat, lon);
           this.mappa.removeLayer(this.vectorLayer2);
           this.vectorLayer2 = this.createMarker2();
-          this.mappa.addLayer(this.vectorLayer2);          
-
-        
-
-
-
+          this.mappa.addLayer(this.vectorLayer2);
 
         }
-      });
+      });       
+
 
       /* Drag&Drop KML KMZ*/
-
       dragAndDropInteraction.on('addfeatures', (event: any) => {
         this.vectorSourceKML = new VectorSource({
           features: event.features,
