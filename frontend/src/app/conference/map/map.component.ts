@@ -73,6 +73,8 @@ export class MapComponent implements OnInit {
   mousePosition: MousePosition;
   mousePositionForMarker2: MousePosition;
 
+  idroom: any;
+
   constructor(
     private mapService: MapService,
     private socket: Socket,
@@ -225,8 +227,10 @@ export class MapComponent implements OnInit {
           zoom: 15,
         }),
       });
+
       this.updateMarkerOperatore(map.longcentrmap, map.latcentromap);
 
+      this.gps.ConfigIdRoom(this.roomId);
       setTimeout(() => {
         window.setInterval(() => this.gps.getLocation(), 3000);
       }, 5000);
@@ -286,19 +290,20 @@ export class MapComponent implements OnInit {
           };
 
           // GPS EMIT --------------------------------
-          this.socket.emit('posizioneMarker', {
-            idroom: 1180,
-            latitudine: lonlat[1].toFixed(7),
-            longitudine: lonlat[0].toFixed(7),
-          });
+          // this.socket.emit('posizioneMarker', {
+          //   idroom: 1180,
+          //   latitudine: lonlat[1].toFixed(7),
+          //   longitudine: lonlat[0].toFixed(7),
+          // });
 
           // GPS ON --------------------------------
-          this.socket.on('posMkrBckEnd', function (posMkrBckEnd: any) {
-            console.log('posMkrBckEnd.idroom: ' + posMkrBckEnd.idroom);
-            console.log('posMkrBckEnd.lat: ' + posMkrBckEnd.latitudine);
-            console.log('posMkrBckEnd.long: ' + posMkrBckEnd.longitudine);
-          });
+          // this.socket.on('posMkrBckEnd', function (posMkrBckEnd: any) {
+          //   console.log('posMkrBckEnd.idroom: ' + posMkrBckEnd.idroom);
+          //   console.log('posMkrBckEnd.lat: ' + posMkrBckEnd.latitudine);
+          //   console.log('posMkrBckEnd.long: ' + posMkrBckEnd.longitudine);
+          // });
 
+          this.gps.socketMarker(lat, lon);
           this.mappa.removeLayer(this.vectorLayer2);
           this.vectorLayer2 = this.createMarker2();
           this.mappa.addLayer(this.vectorLayer2);
