@@ -1,7 +1,9 @@
 <ion-row class="ion-align-items-center row-data">
   <ion-col class="col-item" *ngFor="let col of columns" [size]="col.size">
     <div *ngIf="col.type !== 'buttons'" class="data-item">
-      {{ col.type === 'date' ? (room[col.key] | date: 'dd/MM/yy') : room[col.key] }}
+      {{
+        col.type === 'date' ? (room[col.key] | date: 'dd/MM/yy') : room[col.key]
+      }}
     </div>
     <div *ngIf="col.type === 'buttons'" class="btns">
       <span data-tooltip="Copia Link" data-tooltip-position="top">
@@ -10,7 +12,7 @@
           class="ion-no-margin"
           expand="block"
           fill="clear"
-          (click)="copyLink()"
+          (click)="this.roomFunctions.copyLink(room)"
         >
           <ion-icon name="copy-outline"></ion-icon>
         </ion-button>
@@ -21,7 +23,7 @@
           class="ion-no-margin"
           expand="block"
           fill="clear"
-          (click)="editRoom()"
+          (click)="this.roomFunctions.editRoom(room)"
         >
           <ion-icon name="create-outline"></ion-icon>
         </ion-button>
@@ -32,7 +34,7 @@
           class="ion-no-margin"
           expand="block"
           fill="clear"
-          (click)="deleteRoom()"
+          (click)="this.roomFunctions.deleteRoom(room)"
         >
           <ion-icon name="trash-outline"></ion-icon>
         </ion-button>
@@ -43,7 +45,7 @@
           class="ion-no-margin"
           expand="block"
           fill="clear"
-          (click)="openMedia(room.id, room.progetto)"
+          (click)="this.roomFunctions.openMedia(room.id, room.progetto)"
         >
           <ion-icon name="images-outline"></ion-icon>
         </ion-button>
@@ -54,7 +56,7 @@
           class="ion-no-margin"
           expand="block"
           fill="clear"
-          (click)="enterRoom()"
+          (click)="this.roomFunctions.enterRoom(room)"
         >
           <ion-icon name="enter-outline"></ion-icon>
         </ion-button>

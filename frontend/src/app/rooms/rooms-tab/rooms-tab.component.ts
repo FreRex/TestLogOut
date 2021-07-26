@@ -1,19 +1,17 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { AlertController, ModalController, NavController, ToastController } from '@ionic/angular';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { distinctUntilChanged, startWith, switchMap } from 'rxjs/operators';
-import { AuthService } from 'src/app/auth/auth.service';
 import { Room, RoomService } from 'src/app/rooms/room.service';
-import { GenericRoomItemComponent } from 'src/app/rooms/rooms-tab/generic-room-item.component';
 import { TableColumns } from 'src/app/shared/generic-table/generic-table.component';
+
+import { RoomItemFunctions } from '../room-item-functions';
 
 @Component({
   selector: 'app-rooms-tab',
   templateUrl: './rooms-tab.component.html',
   styleUrls: ['./rooms-tab.component.scss'],
 })
-export class RoomsTabComponent extends GenericRoomItemComponent implements OnInit {
+export class RoomsTabComponent implements OnInit {
   searchStream$ = new BehaviorSubject('');
   rooms$: Observable<Room[]>;
   // @ViewChild('desktopButtons', { static: true }) desktopButtons: TemplateRef<any>;
@@ -23,13 +21,55 @@ export class RoomsTabComponent extends GenericRoomItemComponent implements OnIni
   ngOnInit() {
     this.columns = [
       { title: 'ID', key: 'id', type: 'number', size: 1, orderEnabled: true },
-      { title: 'Creata', key: 'data_inserimento', type: 'date', size: 1, orderEnabled: true },
-      { title: 'Sync', key: 'data_sincronizzazione', type: 'date', size: 1, orderEnabled: true },
-      { title: 'Commessa', key: 'commessa', type: 'string', size: 1, orderEnabled: true },
-      { title: 'Collaudatore', key: 'collaudatore', type: 'string', size: 2, orderEnabled: true },
-      { title: 'Usermobile', key: 'usermobile', type: 'string', size: 2, orderEnabled: true },
-      { title: 'Progetto', key: 'progetto', type: 'string', size: 2, orderEnabled: true },
-      { title: 'Azioni', key: '', type: 'buttons', size: 2, orderEnabled: false },
+      {
+        title: 'Creata',
+        key: 'data_inserimento',
+        type: 'date',
+        size: 1,
+        orderEnabled: true,
+      },
+      {
+        title: 'Sync',
+        key: 'data_sincronizzazione',
+        type: 'date',
+        size: 1,
+        orderEnabled: true,
+      },
+      {
+        title: 'Commessa',
+        key: 'commessa',
+        type: 'string',
+        size: 1,
+        orderEnabled: true,
+      },
+      {
+        title: 'Collaudatore',
+        key: 'collaudatore',
+        type: 'string',
+        size: 2,
+        orderEnabled: true,
+      },
+      {
+        title: 'Usermobile',
+        key: 'usermobile',
+        type: 'string',
+        size: 2,
+        orderEnabled: true,
+      },
+      {
+        title: 'Progetto',
+        key: 'progetto',
+        type: 'string',
+        size: 2,
+        orderEnabled: true,
+      },
+      {
+        title: 'Azioni',
+        key: '',
+        type: 'buttons',
+        size: 2,
+        orderEnabled: false,
+      },
     ];
 
     this.rooms$ = this.searchStream$.pipe(
@@ -43,22 +83,7 @@ export class RoomsTabComponent extends GenericRoomItemComponent implements OnIni
   }
 
   constructor(
-    public router: Router,
-    public navController: NavController,
-    public roomsService: RoomService,
-    public authService: AuthService,
-    public alertController: AlertController,
-    public modalController: ModalController,
-    public toastController: ToastController
-  ) {
-    super(
-      router,
-      navController,
-      roomsService,
-      authService,
-      alertController,
-      modalController,
-      toastController
-    );
-  }
+    public roomFunctions: RoomItemFunctions,
+    private roomService: RoomService
+  ) {}
 }

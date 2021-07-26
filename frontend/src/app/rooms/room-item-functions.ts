@@ -11,19 +11,15 @@ import { AuthService } from 'src/app/auth/auth.service';
 import { environment } from 'src/environments/environment';
 
 import { Room, RoomService } from './room.service';
-import { CreateRoomModalComponent } from './rooms-tab/create-room-modal/create-room-modal.component';
-import { EditRoomModalComponent } from './rooms-tab/edit-room-modal/edit-room-modal.component';
+import { CreateRoomModalComponent } from './create-room-modal/create-room-modal.component';
+import { EditRoomModalComponent } from './edit-room-modal/edit-room-modal.component';
 
-// TODOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO???
 @Injectable({
   providedIn: 'root',
 })
-export class RoomItemService implements OnInit {
-  @Input() room: Room;
-  isFavourite: boolean;
+export class RoomItemFunctions implements OnInit {
   baseUrl =
     'https://www.collaudolive.com:9777/glasses/FrontEnd/src/index.php?q=';
-  linkProgetto: string;
 
   constructor(
     public router: Router,
@@ -41,6 +37,10 @@ export class RoomItemService implements OnInit {
     this.roomService.loadRooms().subscribe((res) => {
       event.target.complete();
     });
+  }
+
+  openMedia(id: number, proj: string) {
+    this.router.navigate([`/gallery/${id}/${proj}`]);
   }
 
   /** Apre il modale di CREAZIONE ROOM */
@@ -68,15 +68,15 @@ export class RoomItemService implements OnInit {
   }
 
   /** Apre il modale di MODIFICA ROOM */
-  editRoom(room?: Room, slidingItem?: IonItemSliding) {
+  editRoom(room: Room, slidingItem?: IonItemSliding) {
     if (slidingItem) slidingItem.close();
-    if (room) this.room = room;
+    // if (room) this.room = room;
 
     this.modalController
       .create({
         component: EditRoomModalComponent,
         backdropDismiss: false,
-        componentProps: { roomId: this.room.id },
+        componentProps: { roomId: room.id },
       })
       .then((modalEl) => {
         modalEl.present();
@@ -96,9 +96,9 @@ export class RoomItemService implements OnInit {
   }
 
   /** Crea un alert per la cancellazione della ROOM */
-  deleteRoom(room?: Room, slidingItem?: IonItemSliding) {
+  deleteRoom(room: Room, slidingItem?: IonItemSliding) {
     if (slidingItem) slidingItem.close();
-    if (room) this.room = room;
+    // if (room) this.room = room;
 
     this.alertController
       .create({
@@ -110,7 +110,7 @@ export class RoomItemService implements OnInit {
             text: 'Elimina',
             handler: () =>
               this.roomService
-                .deleteRoom(this.room.id)
+                .deleteRoom(room.id)
                 .subscribe((res) =>
                   this.presentToast('Room Eliminata', 'secondary')
                 ),
@@ -123,9 +123,9 @@ export class RoomItemService implements OnInit {
   }
 
   /** Entra nella ROOM */
-  enterRoom(room?: Room, slidingItem?: IonItemSliding) {
+  enterRoom(room: Room, slidingItem?: IonItemSliding) {
     if (slidingItem) slidingItem.close();
-    if (room) this.room = room;
+    // if (room) this.room = room;
 
     // * parametro sulla Url
     // * funziona tutto correttamente
@@ -136,7 +136,7 @@ export class RoomItemService implements OnInit {
     // ! se li modifico e la room esite vanno gestite le autorizzazioni
     // ? criptare il numero della room (codice meno evidente) ?
     // ? https://www.npmjs.com/package/uuid ?
-    this.router.navigate([`/conference/${this.room.id}`]);
+    this.router.navigate([`/conference/${room.id}`]);
 
     // * queryParams
     // * funziona tutto correttamente
@@ -180,15 +180,15 @@ export class RoomItemService implements OnInit {
   }
 
   /** Copia il link della ROOM */
-  copyLink(room?: Room, slidingItem?: IonItemSliding) {
+  copyLink(room: Room, slidingItem?: IonItemSliding) {
     if (slidingItem) slidingItem.close();
-    if (room) this.room = room;
+    // if (room) this.room = room;
 
     const params = new URLSearchParams({
       // roomId: encodeURIComponent(this.room.id),
-      session: encodeURIComponent(this.room.sessione),
-      project: encodeURIComponent(this.room.progetto),
-      creator: encodeURIComponent(this.room.collaudatore),
+      session: encodeURIComponent(room.sessione),
+      project: encodeURIComponent(room.progetto),
+      creator: encodeURIComponent(room.collaudatore),
     });
 
     let arr = window.location.href.split('/');
@@ -197,7 +197,7 @@ export class RoomItemService implements OnInit {
     document.addEventListener('copy', (e: ClipboardEvent) => {
       e.clipboardData.setData(
         'text/plain',
-        `${url}/conference/${this.room.id}?${params}`
+        `${url}/conference/${room.id}?${params}`
       );
       e.preventDefault();
       document.removeEventListener('copy', null);
@@ -207,11 +207,11 @@ export class RoomItemService implements OnInit {
   }
 
   /** Avvia il download delle foto della ROOM */
-  downloadFoto(room?: Room, slidingItem?: IonItemSliding) {
+  downloadFoto(room: Room, slidingItem?: IonItemSliding) {
     if (slidingItem) slidingItem.close();
-    if (room) this.room = room;
+    // if (room) this.room = room;
 
-    const nomeProgetto = this.room.progetto.trim().replace(' ', '');
+    const nomeProgetto = room.progetto.trim().replace(' ', '');
     this.roomService.checkDownload(nomeProgetto).subscribe((value: boolean) => {
       if (value) {
         const link = document.createElement('a');
@@ -241,13 +241,6 @@ export class RoomItemService implements OnInit {
       duration: duration ? duration : 2000,
       cssClass: 'custom-toast',
     });
-    // FIX: si può fare in entrambi i modi, qual'è il più giusto?
-    // .then(toastEl => toastEl.present());
     toast.present();
-  }
-
-  onFavoutite() {
-    console.log('My favourite room!');
-    this.isFavourite = !this.isFavourite;
   }
 }

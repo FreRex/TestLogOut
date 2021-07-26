@@ -152,7 +152,7 @@ export class MapService {
       latitudine: lat,
       longitudine: long,
     });
-    // SOCKET ON - POSIZIONE MARKE`R --------------------------------
+    // SOCKET ON - POSIZIONE MARKER --------------------------------
     //this.socket.on('posMkrBckEnd_'+this.idroom, function(posMkrBckEnd: any){
     this.socket.on(`posMkrBckEnd_${this.idroom}`, function (posMkrBckEnd: any) {
       console.log('posMkrBckEnd.idroom11: ' + posMkrBckEnd.idroom);

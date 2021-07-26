@@ -6,8 +6,8 @@ import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
   styleUrls: ['./capt-photo.page.scss'],
 })
 export class CaptPhotoPage implements AfterViewInit {
-  WIDTH = 1080;
-  HEIGHT = 720;
+  WIDTH = 640;
+  HEIGHT = 480;
 
   @ViewChild('video')
   public video: ElementRef;
@@ -43,16 +43,12 @@ export class CaptPhotoPage implements AfterViewInit {
 
   capture() {
     this.drawImageToCanvas(this.video.nativeElement);
-    this.captures.push(this.canvas.nativeElement.toDataURL('image/png'));
-    // this.isCaptured = true;
+    let dataURL = this.canvas.nativeElement.toDataURL('image/png');
+    //RESTITUISCE --> data:image/png;base64,<imgBase64>
+    this.captures.push(dataURL);
   }
 
-  // removeCurrent() {
-  //   this.isCaptured = false;
-  // }
-
   setPhoto(idx: number) {
-    // this.isCaptured = true;
     var image = new Image();
     image.src = this.captures[idx];
     this.drawImageToCanvas(image);

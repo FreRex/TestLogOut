@@ -26,6 +26,10 @@ const routes: Routes = [
     canLoad: [AuthGuard],
   },
   {
+    path: 'gallery/:id/:proj',
+    loadChildren: () => import('./gallery/gallery.module').then((m) => m.GalleryPageModule),
+  },
+  {
     path: 'backoffice',
     loadChildren: () =>
       import('./backoffice/backoffice.module').then(

@@ -8,7 +8,7 @@ import { environment } from 'src/environments/environment';
 
 import { AuthUser } from '../auth/auth-user.model';
 import { AuthService } from '../auth/auth.service';
-import { RoomItemService } from '../rooms/room-item.service';
+import { RoomItemFunctions } from '../rooms/room-item-functions';
 import { Room, RoomService } from '../rooms/room.service';
 import { AudioRTCService } from './audiortc.service';
 import { RoomUser } from './conference.service';
@@ -39,7 +39,7 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
     private navController: NavController,
     private roomService: RoomService,
     private authService: AuthService,
-    private roomItemService: RoomItemService,
+    private roomItemService: RoomItemFunctions,
     private socket: Socket,
     private router: Router,
     public audioService: AudioRTCService

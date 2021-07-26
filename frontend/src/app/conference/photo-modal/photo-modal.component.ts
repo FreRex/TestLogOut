@@ -9,7 +9,7 @@ import {
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import { AuthUser } from 'src/app/auth/auth-user.model';
-import { MediaService } from 'src/app/rooms/gallery/media.service';
+import { MediaService } from '../../gallery/media.service';
 import { Room } from 'src/app/rooms/room.service';
 
 @Component({
