@@ -19,7 +19,9 @@ if (process.env.NODE_ENV == 'production') {
 else {
     port = 9187;
 }
-app.use(express_1.default.json());
+//app.use(express.json());
+app.use(express_1.default.json({ limit: '50mb' }));
+app.use(express_1.default.urlencoded({ limit: "50mb", extended: true, parameterLimit: 50000 }));
 //-----------------------------------------------------------------------------------------------------------
 //SEZIONE ROUTE NODEJS
 //-----------------------------------------------------------------------------------------------------------

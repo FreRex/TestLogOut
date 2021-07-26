@@ -11,6 +11,7 @@ const { exec } = require("child_process");
 
 const app = express();
 
+
 let port: any;
 if (process.env.NODE_ENV == 'production') {
   require('dotenv').config();
@@ -21,7 +22,9 @@ else
   port = 9187;
 }
 
-app.use(express.json());
+//app.use(express.json());
+app.use(express.json({limit: '50mb'}));
+app.use(express.urlencoded({limit: "50mb", extended: true, parameterLimit:50000}));
 
 //-----------------------------------------------------------------------------------------------------------
 //SEZIONE ROUTE NODEJS
@@ -29,6 +32,8 @@ app.use(express.json());
 
 // Indirizzamento verso route API
 app.use('/', routes);
+
+
 
 //Indirizzamento verso route FRONTEND
 app.use('/',express.static(path.join(__dirname, '../frontend/www')));

@@ -251,7 +251,7 @@ exports.postCreateCaptphoto = (req: any, res: any, next: any) => {
     // Fine ciclo-esame json => operazione da compiere
     if(messageErrore==''){        
        //let sql: any = "INSERT INTO collaudolive (id,noteimg,onlynota,nameimg,nomelemento,progettoselezionato,img,latitu,longitu,prodnumber,collaudatoreufficio) VALUES (?,?,?,?,?,?,?,?,?,?,?)";             
-       let sql: any = "INSERT INTO collaudolive (id,prodnumber,progettoselezionato,collaudatoreufficio,nameimg,latitu,longitu,nomelemento,img,noteimg,onlynota) VALUES (?,?,?,?,?,?,?,?,?,?,?)";             
+       let sql: any = "INSERT INTO collaudolive (id,prodnumber,progettoselezionato,collaudatoreufficio,nameimg,latitu,longitu,nomelemento,noteimg,img,onlynota) VALUES (?,?,?,?,?,?,?,?,?,?,?)";             
        
        esecuzioneQuery(sql);
     }
