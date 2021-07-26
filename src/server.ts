@@ -18,7 +18,7 @@ if (process.env.NODE_ENV == 'production') {
 }
 else
 {
-  port = 9187;
+  port = 9242;
 }
 
 app.use(express.json());
@@ -52,9 +52,9 @@ app);
 const io = require('socket.io')(server, {
     cors: {
        origini: `https://www.chop.click:${port}`,
-        methods: ["GET", "POST"],
-        transports: ['websocket', 'polling'],
-        credentials: true
+       methods: ["GET", "POST"],
+       transports: ['websocket', 'polling'],
+       credentials: true
     },
     allowEIO3: true
 });
@@ -65,7 +65,6 @@ spawn('ffmpeg',['-h']).on('error',function(m:any){
 });
 
 
-
 //-----------------------------------------------------------------------------------------
 //------------------------- Socket connection ---------------------------------------------
 //-----------------------------------------------------------------------------------------
@@ -73,8 +72,22 @@ spawn('ffmpeg',['-h']).on('error',function(m:any){
 // Connessione socket.io
 io.on('connection', function(socket: any){
 
-	//console.log('socket.id: ' + socket.id)
-
+	//SOCKET PER POSIZIONAMENTO / GPS / COORDINATE
+	socket.on('gps',function(gps_data: any){
+	   console.log('gps_data.idroom: ' +gps_data.idroom);	   
+	   console.log('gps_data.latitudine: ' +gps_data.latitudine);
+	   console.log('gps_data.longitudine: ' +gps_data.longitudine);
+	   socket.emit('gpsUtente_idroom_'+gps_data.idroom, {idroom: gps_data.idroom, latitudine: gps_data.latitudine, longitudine: gps_data.longitudine});  
+	})
+	socket.on('posizioneMarker',function(posMkr: any){
+		console.log('posMkr.idroom: ' +posMkr.idroom);
+		console.log('posMkr.latitudine: ' +posMkr.latitudine);
+		console.log('posMkr.longitudine: ' +posMkr.longitudine);
+		socket.emit('posMkrBckEnd', {idroom: posMkr.idroom, latitudine: posMkr.latitudine, longitudine: posMkr.longitudine});
+	})
+	//----------------------------
+	
+	// Socket per streaming
 	socket.emit('message',{type: 'welcome', data: 'Hello from mediarecorder-to-rtmp server!'});	
 	socket.emit('message',{type: 'welcome', data: 'Please set rtmp destination before start streaming.'});
 
@@ -447,7 +460,7 @@ io.on('error',function(e: any){
 
 
 server.listen(port, function(){  
-  console.log(`https://www.collaudolive.com:${port}/`);
+  console.log(`https://www.collaudolive.com:${port}`);
 });
 
 process.on('uncaughtException', function(err) {

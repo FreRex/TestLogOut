@@ -129,6 +129,7 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
 
   // handles messages coming from signalling_server (remote party)
   public configureSocket(): void {
+    
     this.socket.emit('first_idroom', this.room.id);
 
     // let userId = this.user.idutcas;
@@ -182,8 +183,8 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
           console.log('subscribe : err', err);
         }
       );
-
-    this.socket.fromEvent<any>('message').subscribe(
+    
+     this.socket.fromEvent<any>('message').subscribe(
       (msg) => {
         switch (msg.type) {
           case 'welcome':

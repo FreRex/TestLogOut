@@ -245,4 +245,6 @@ export class ConferenceService {
     // console.log('🐱‍👤 generateRandomId : result', result);
     return result;
   }
+
+  
 }

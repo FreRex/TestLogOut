@@ -57,6 +57,10 @@ const routes: Routes = [
         (m) => m.CaptPhotoPageModule
       ),
   },
+  {
+    path: 'prova',
+    loadChildren: () => import('./prova/prova.module').then( m => m.ProvaPageModule)
+  },
 ];
 
 @NgModule({

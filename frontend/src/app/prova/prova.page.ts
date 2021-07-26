@@ -1,33 +1,30 @@
 import { Component, OnInit } from '@angular/core';
-import { setInterval } from 'timers/promises';
-
+import { promise } from 'protractor';
 import { Socket } from 'ngx-socket-io';
-import { bindCallback } from 'rxjs';
 
 @Component({
-  selector: 'app-test-gps',
-  templateUrl: './test-gps.page.html',
-  styleUrls: ['./test-gps.page.scss'],
+  selector: 'app-prova',
+  templateUrl: './prova.page.html',
+  styleUrls: ['./prova.page.scss'],
 })
-export class TestGpsPage implements OnInit {  
+export class ProvaPage implements OnInit {
 
   constructor(private socket: Socket){}
 
   ngOnInit() {    
-    window.setInterval(() => this.getLocation(), 5000);      
+    window.setInterval(() => this.getLocation(), 5000); 
+  }
+
+  async getLocation() {
+    
+    let sP = this.showPosition;
+    navigator.geolocation.getCurrentPosition(sP); 
+    //this.configureSocket();
+        
   }
   
-
-  getLocation() {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(this.showPosition.bind(this));    
-    } else { 
-      document.getElementById("demo").innerHTML = "Geolocation is not supported by this browser.";
-    }    
-  }
-
-  async showPosition(position: { coords: { latitude: number; longitude: number; }; }) {
-
+  async showPosition(position: { coords: { latitude: number; longitude: number; }; }) {   
+    
     //Parte per coordinate random
     function randomCoord(coordinataIni: any){
       console.log(coordinataIni);   
@@ -42,32 +39,30 @@ export class TestGpsPage implements OnInit {
       let finale = (coordinata + decimNew);	  
   
       return finale;  
-    }    
+    }   
 
     let datalat: any = position.coords.latitude.toFixed(7);
     let datalong: any = position.coords.longitude.toFixed(7);    
     let lat = randomCoord(datalat);
-    let long = randomCoord(datalong);
-   
+    let long = randomCoord(datalong);   
+
+  
+    
     let node = document.createElement("LI");
     let textnode = document.createTextNode("Lat: " + lat + " - Long: " + long);
     node.appendChild(textnode);
-    document.getElementById("demo").appendChild(node);    
-    
-
-     //Comunicazioni socket-gps
-     this.configureSocket(lat,long);
+    document.getElementById("demo").appendChild(node);       
    
   }
 
-   // Funzione per comunicazione socket-gps
-   public configureSocket(lat: any, long: any): void {
+  /*  // Funzione per comunicazione socket-gps
+   configureSocket(long): void {
 
     // GPS EMIT --------------------------------
     this.socket.emit('gps', {
       idroom: 1180,
-      idutente: 112,
-      latitudine: lat,
+      idutente: 1127,
+      latitudine: 3337,
       longitudine: long    
     });
 
@@ -76,20 +71,22 @@ export class TestGpsPage implements OnInit {
       (msgGps) => {
         switch (msgGps.type) { 
           case `gps_idroom_1180`:        
-            console.log('msgGps.idroom: ', msgGps.idroom);
-            console.log('msgGps.idutente: ', msgGps.idutente);
-            console.log('msgGps.latitudine: ', msgGps.latitudine);
-            console.log('msgGps.longitudine: ', msgGps.longitudine);
+            console.log('msgGps.idroom2: ', msgGps.idroom);
+            console.log('msgGps.idutente2: ', msgGps.idutente);
+            console.log('msgGps.latitudine2: ', msgGps.latitudine);
+            console.log('msgGps.longitudine2: ', msgGps.longitudine);
             break;
           default:
-            console.log('unknown GPS messageError: ', msgGps);
+            console.log('unknown GPS message2: ', msgGps);
         }
       
       }
     )
     //---------------------------------------------------
 
-   }
+   } */
+  
+
   
 
 }

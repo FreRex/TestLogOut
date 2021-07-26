@@ -38,6 +38,8 @@ import { KMZ } from './KMZ';
 import Geometry from 'ol/geom/Geometry';
 import { format } from 'ol/coordinate';
 
+import { Socket } from 'ngx-socket-io';
+
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
@@ -70,7 +72,9 @@ export class MapComponent implements OnInit {
   mousePosition: MousePosition;
   mousePositionForMarker2: MousePosition;
 
-  constructor(private mapService: MapService) {}
+  constructor(
+    private mapService: MapService,
+    private socket: Socket) {}
 
   /* MARKER BLUE definizione */
   createMarker2() {
@@ -279,9 +283,29 @@ export class MapComponent implements OnInit {
             lon: lonlat[0].toFixed(7),
           };
 
+          // GPS EMIT --------------------------------
+          this.socket.emit('posizioneMarker', {
+            idroom: 1180,      
+            latitudine: lonlat[1].toFixed(7),
+            longitudine: lonlat[0].toFixed(7)    
+          });
+
+          // GPS ON --------------------------------
+          this.socket.on('posMkrBckEnd',function(posMkrBckEnd: any){
+            console.log('posMkrBckEnd.idroom: ' +posMkrBckEnd.idroom); 
+            console.log('posMkrBckEnd.lat: ' +posMkrBckEnd.latitudine);
+            console.log('posMkrBckEnd.long: ' +posMkrBckEnd.longitudine);
+          });        
+
           this.mappa.removeLayer(this.vectorLayer2);
           this.vectorLayer2 = this.createMarker2();
-          this.mappa.addLayer(this.vectorLayer2);
+          this.mappa.addLayer(this.vectorLayer2);          
+
+        
+
+
+
+
         }
       });
 

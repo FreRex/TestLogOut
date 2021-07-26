@@ -6,6 +6,9 @@ import { take } from 'rxjs/internal/operators/take';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 
+import { Socket } from 'ngx-socket-io';
+
+
 export interface MapData {
   id: number;
   progettoselezionato: string;
@@ -34,7 +37,9 @@ export interface Map {
   providedIn: 'root',
 })
 export class MapService {
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private socket: Socket) {}
 
   // coord: { lat:string, long:string };
 
@@ -75,6 +80,7 @@ export class MapService {
             newMap.nodiottici = mapData[0].nodiottici;
             newMap.tratte = mapData[0].tratte;
           }
+          
           return newMap;
         })
       );
@@ -110,9 +116,9 @@ export class MapService {
     let datalat: any = position.coords.latitude.toFixed(7);
     let datalong: any = position.coords.longitude.toFixed(7);
     let lat = randomCoord(datalat);
-    let long = randomCoord(datalong);
+    let long = randomCoord(datalong);    
 
-    //console.log('this cooooooooooooooordinate', this.coordinate);
+    this.configureSocket(lat,long);
 
     this.coordinate.push({ lat: lat, long: long });
 
@@ -122,4 +128,26 @@ export class MapService {
       this.coordinate.shift();
     }
   }
+
+   // Funzione per comunicazione socket-gps
+   configureSocket(lat: any, long: any): void {
+
+    // GPS EMIT --------------------------------
+    this.socket.emit('gps', {
+      idroom: 1180,      
+      latitudine: lat,
+      longitudine: long    
+    });
+
+    // GPS ON --------------------------------
+    this.socket.on('gpsUtente_idroom_1180',function(msgGps: any){
+      console.log('msgGps.idroom: ', msgGps.idroom);            
+      console.log('msgGps.latitudine: ', msgGps.latitudine);
+      console.log('msgGps.longitudine: ', msgGps.longitudine);
+    }); 
+    //---------------------------------------------------
+
+   }
 }
+
+
