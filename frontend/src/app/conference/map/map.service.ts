@@ -85,8 +85,13 @@ export class MapService {
         })
       );
   }
+  
+  idroom: number;
+  ConfigIdRoom(idroom: number){
+    this.idroom=idroom;
+  }
 
-  getLocation() {
+  getLocation() {    
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(this.showPosition.bind(this));
     } else {
@@ -94,9 +99,8 @@ export class MapService {
     }
   }
 
-  async showPosition(position: {
-    coords: { latitude: number; longitude: number };
-  }) {
+  async showPosition(position: {coords: { latitude: number; longitude: number };}) {    
+    
     //Parte per coordinate random
     function randomCoord(coordinataIni: any) {
       // console.log(coordinataIni);
@@ -111,14 +115,27 @@ export class MapService {
       let finale = coordinata + decimNew;
 
       return finale;
-    }
+    } 
 
     let datalat: any = position.coords.latitude.toFixed(7);
     let datalong: any = position.coords.longitude.toFixed(7);
     let lat = randomCoord(datalat);
-    let long = randomCoord(datalong);    
+    let long = randomCoord(datalong);   
+    
+    // GPS EMIT --------------------------------
+    this.socket.emit('gps', {
+      idroom: this.idroom,      
+      latitudine: lat,
+      longitudine: long    
+    });
 
-    this.configureSocket(lat,long);
+    // GPS ON --------------------------------
+    this.socket.on('gpsUtente_idroom_'+this.idroom,function(msgGps: any){
+      console.log('msgGps.idroom: ', msgGps.idroom);            
+      console.log('msgGps.latitudine: ', msgGps.latitudine);
+      console.log('msgGps.longitudine: ', msgGps.longitudine);
+    }); 
+    //---------------------------------------------------
 
     this.coordinate.push({ lat: lat, long: long });
 
@@ -128,26 +145,28 @@ export class MapService {
       this.coordinate.shift();
     }
   }
+ 
+    
 
-   // Funzione per comunicazione socket-gps
-   configureSocket(lat: any, long: any): void {
-
-    // GPS EMIT --------------------------------
-    this.socket.emit('gps', {
-      idroom: 1180,      
+  // SOCKET - POSIZIONE MARKER --------------------------------
+  socketMarker(lat: string, long: string){
+    // SOCKET EMIT - POSIZIONE MARKER --------------------------------
+    this.socket.emit('posizioneMarker', {
+      idroom: this.idroom,      
       latitudine: lat,
       longitudine: long    
     });
+    // SOCKET ON - POSIZIONE MARKE`R --------------------------------
+    //this.socket.on('posMkrBckEnd_'+this.idroom, function(posMkrBckEnd: any){
+    this.socket.on(`posMkrBckEnd_${this.idroom}`, function(posMkrBckEnd: any){
+     console.log('posMkrBckEnd.idroom11: ' +posMkrBckEnd.idroom); 
+     console.log('posMkrBckEnd.lat11: ' +posMkrBckEnd.latitudine);
+     console.log('posMkrBckEnd.long11: ' +posMkrBckEnd.longitudine);
+   });
+  }
 
-    // GPS ON --------------------------------
-    this.socket.on('gpsUtente_idroom_1180',function(msgGps: any){
-      console.log('msgGps.idroom: ', msgGps.idroom);            
-      console.log('msgGps.latitudine: ', msgGps.latitudine);
-      console.log('msgGps.longitudine: ', msgGps.longitudine);
-    }); 
-    //---------------------------------------------------
-
-   }
+     
+   
 }
 
 
