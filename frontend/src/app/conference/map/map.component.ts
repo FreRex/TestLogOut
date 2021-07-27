@@ -57,11 +57,11 @@ export class MapComponent implements OnInit {
   vectorSource: VectorSource;
   vectorSource2: VectorSource;
   vectorSourceKML: VectorSource;
-  vectorSourceKMLOUT: VectorSource;
+  //vectorSourceKMLOUT: VectorSource;
   vectorLayer: VectorLayer;
   vectorLayer2: VectorLayer;
   vectorLayerKML: VectorLayer;
-  vectorLayerKMLOUT: VectorLayer;
+  //vectorLayerKMLOUT: VectorLayer;
 
   pozzetto: TileLayer;
   tratte: TileLayer;
@@ -74,8 +74,6 @@ export class MapComponent implements OnInit {
 
   mousePosition: MousePosition;
   mousePositionForMarker2: MousePosition;
-
-  idroom: any;
 
   constructor(
     private mapService: MapService,
@@ -118,18 +116,18 @@ export class MapComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.socket.on('kmzon', (res: any) => {
-      this.vectorLayerKMLOUT = new VectorLayer({
-        source: res.kmz,
-        opacity: 0.7,
-        declutter: true,
-        updateWhileInteracting: true,
-        title: 'KMZ / KML',
-      } as BaseLayerOptions);
+    // this.socket.on('kmzon', (res: any) => {
+    //   this.vectorLayerKMLOUT = new VectorLayer({
+    //     source: res.kmz,
+    //     opacity: 0.7,
+    //     declutter: true,
+    //     updateWhileInteracting: true,
+    //     title: 'KMZ / KML',
+    //   } as BaseLayerOptions);
 
-      this.mappa.addLayer(this.vectorLayerKMLOUT);
-      this.mappa.getView().fit(this.vectorSourceKMLOUT.getExtent());
-    });
+    //   this.mappa.addLayer(this.vectorLayerKMLOUT);
+    //   this.mappa.getView().fit(this.vectorSourceKMLOUT.getExtent());
+    // });
 
     this.vectorLayer2 = this.createMarker2();
 
@@ -246,9 +244,10 @@ export class MapComponent implements OnInit {
       this.updateMarkerOperatore(map.longcentrmap, map.latcentromap);
 
       this.gps.ConfigIdRoom(this.roomId);
-      setTimeout(() => {
-        window.setInterval(() => this.gps.getLocation(), 3000);
-      }, 5000);
+
+      // setTimeout(() => {
+      //   window.setInterval(() => this.gps.getLocation(), 3000);
+      // }, 5000);
 
       /* CONTROLLI IN AGGIUNTA */
       const scaleLineControl = new ScaleLine();
@@ -328,9 +327,10 @@ export class MapComponent implements OnInit {
       /* Drag&Drop KML KMZ*/
 
       dragAndDropInteraction.on('addfeatures', (event: any) => {
-        this.vectorSourceKMLOUT = new VectorSource({
-          features: event.features,
-        });
+        // this.vectorSourceKMLOUT = new VectorSource({
+        //   features: event.features,
+        // });
+
         this.vectorSourceKML = new VectorSource({
           features: event.features,
         });
@@ -345,7 +345,7 @@ export class MapComponent implements OnInit {
         console.log('qqq: ' + this.vectorLayerKML);
         this.mappa.addLayer(this.vectorLayerKML);
         this.mappa.getView().fit(this.vectorSourceKML.getExtent());
-        this.socket.emit('kmzemit', { kmz: this.vectorSourceKMLOUT });
+        //this.socket.emit('kmzemit', { kmz: this.vectorSourceKMLOUT });
       });
     });
 
@@ -355,6 +355,11 @@ export class MapComponent implements OnInit {
         this.updateMarkerOperatore(coords[index].long, coords[index].lat);
       }
     });
+    this.socket
+      .fromEvent<any>('gpsUtente_idroom_' + this.roomId)
+      .subscribe((gpsRemote) => {
+        this.updateMarkerOperatore(gpsRemote.longitudine, gpsRemote.latitudine);
+      });
   }
 
   /* INFO KML/KMZ */

@@ -12,6 +12,7 @@ import { RoomItemService } from '../rooms/room-item.service';
 import { Room, RoomService } from '../rooms/room.service';
 import { AudioRTCService } from './audiortc.service';
 import { RoomUser } from './conference.service';
+import { GpsService } from './gps.service';
 import { PlayerComponent } from './player/player.component';
 
 @Component({
@@ -42,7 +43,8 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
     private roomItemService: RoomItemService,
     private socket: Socket,
     private router: Router,
-    public audioService: AudioRTCService
+    public audioService: AudioRTCService,
+    private gpsService: GpsService
   ) {}
 
   isLoading: boolean = false;
@@ -129,7 +131,6 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
 
   // handles messages coming from signalling_server (remote party)
   public configureSocket(): void {
-    
     this.socket.emit('first_idroom', this.room.id);
 
     // let userId = this.user.idutcas;
@@ -183,8 +184,8 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
           console.log('subscribe : err', err);
         }
       );
-    
-     this.socket.fromEvent<any>('message').subscribe(
+
+    this.socket.fromEvent<any>('message').subscribe(
       (msg) => {
         switch (msg.type) {
           case 'welcome':
@@ -215,6 +216,7 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
               // this.socket.emit('disconnectStream', '');
               this.playerComponent.stopStream();
               this.isStreaming = false;
+              this.gpsService.stopGps();
             }
             // }
             break;
@@ -261,10 +263,12 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
       this.playerComponent.stopStream();
       this.isStreaming = false;
       this.streamingUser = null;
+      this.gpsService.stopGps();
     } else {
       this.socket.emit('start', { idutente: this.user.idutcas });
       this.playerComponent.startStream();
       this.isStreaming = true;
+      this.gpsService.startGps();
     }
   }
 

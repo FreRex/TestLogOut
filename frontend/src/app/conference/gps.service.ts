@@ -18,6 +18,7 @@ export class GpsService {
     this.coordinateSubject.asObservable();
 
   idroom: number;
+  gpsInterval: any;
 
   ConfigIdRoom(idroom: number) {
     this.idroom = idroom;
@@ -63,11 +64,11 @@ export class GpsService {
     });
 
     // GPS ON --------------------------------
-    this.socket.on('gpsUtente_idroom_' + this.idroom, function (msgGps: any) {
-      console.log('msgGps.idroom: ', msgGps.idroom);
-      console.log('msgGps.latitudine: ', msgGps.latitudine);
-      console.log('msgGps.longitudine: ', msgGps.longitudine);
-    });
+    // this.socket.on('gpsUtente_idroom_' + this.idroom, function (msgGps: any) {
+    //   console.log('msgGps.idroom: ', msgGps.idroom);
+    //   console.log('msgGps.latitudine: ', msgGps.latitudine);
+    //   console.log('msgGps.longitudine: ', msgGps.longitudine);
+    // });
     //---------------------------------------------------
 
     this.coordinate.push({ lat: lat, long: long });
@@ -87,12 +88,20 @@ export class GpsService {
       latitudine: lat,
       longitudine: long,
     });
-    // SOCKET ON - POSIZIONE MARKE`R --------------------------------
+    // SOCKET ON - POSIZIONE MARKER --------------------------------
     //this.socket.on('posMkrBckEnd_'+this.idroom, function(posMkrBckEnd: any){
     this.socket.on(`posMkrBckEnd_${this.idroom}`, function (posMkrBckEnd: any) {
       console.log('posMkrBckEnd.idroom11: ' + posMkrBckEnd.idroom);
       console.log('posMkrBckEnd.lat11: ' + posMkrBckEnd.latitudine);
       console.log('posMkrBckEnd.long11: ' + posMkrBckEnd.longitudine);
     });
+  }
+
+  startGps() {
+    this.gpsInterval = setInterval(() => this.getLocation(), 2000);
+    console.log('funzionaaaaa');
+  }
+  stopGps() {
+    clearInterval(this.gpsInterval);
   }
 }
