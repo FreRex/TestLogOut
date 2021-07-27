@@ -17,7 +17,7 @@ import { EditRoomModalComponent } from './edit-room-modal/edit-room-modal.compon
 @Injectable({
   providedIn: 'root',
 })
-export class RoomItemFunctions implements OnInit {
+export class RoomFunctionsService implements OnInit {
   baseUrl =
     'https://www.collaudolive.com:9777/glasses/FrontEnd/src/index.php?q=';
 

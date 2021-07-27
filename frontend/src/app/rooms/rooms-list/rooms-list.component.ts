@@ -4,14 +4,14 @@ import { distinctUntilChanged, startWith, switchMap } from 'rxjs/operators';
 import { Room, RoomService } from 'src/app/rooms/room.service';
 import { TableColumns } from 'src/app/shared/generic-table/generic-table.component';
 
-import { RoomItemFunctions } from '../room-item-functions';
+import { RoomFunctionsService } from '../room-functions.service';
 
 @Component({
-  selector: 'app-rooms-tab',
-  templateUrl: './rooms-tab.component.html',
-  styleUrls: ['./rooms-tab.component.scss'],
+  selector: 'app-rooms-list',
+  templateUrl: './rooms-list.component.html',
+  styleUrls: ['./rooms-list.component.scss'],
 })
-export class RoomsTabComponent implements OnInit {
+export class RoomsListComponent implements OnInit {
   searchStream$ = new BehaviorSubject('');
   rooms$: Observable<Room[]>;
   // @ViewChild('desktopButtons', { static: true }) desktopButtons: TemplateRef<any>;
@@ -83,7 +83,7 @@ export class RoomsTabComponent implements OnInit {
   }
 
   constructor(
-    public roomFunctions: RoomItemFunctions,
+    public roomFunctions: RoomFunctionsService,
     private roomService: RoomService
   ) {}
 }

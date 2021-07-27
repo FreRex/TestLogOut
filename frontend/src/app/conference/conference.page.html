@@ -21,7 +21,12 @@
     <ion-row>
       <ion-col size-lg="2">
         <!-- BTN CHE RIMANDA INDIETRO ALL'INGRESSO DELLA CONFERENCE -->
-        <ion-item lines="none" button="true" class="item-button" routerLink="/rooms">
+        <ion-item
+          lines="none"
+          button="true"
+          class="item-button"
+          routerLink="/rooms"
+        >
           <ion-icon slot="start" name="chevron-back-sharp"></ion-icon>
           <ion-text>Lista Room</ion-text>
         </ion-item>
@@ -35,7 +40,10 @@
             <ion-text>{{room?.sessione}}</ion-text>
           </div>
           <!-- BTN CHE COPIA IL LINK DELLA CONFERENCE -->
-          <ion-button class="button" (click)="copyLink()">
+          <ion-button
+            class="button"
+            (click)="this.roomFunctions.copyLink(room)"
+          >
             <ion-icon slot="icon-only" name="share-social"></ion-icon>
           </ion-button>
         </div>
@@ -75,31 +83,47 @@
       <ion-col size-lg="4.5" size-xs="12">
         <!-- QUI DENTRO VA LA MAPPA -->
         <div class="spazio-vuoto-dimensione-fissa">
-          <app-map [roomId]="room?.id" [followOperator]="followOperatorOnMap" [marker2Delete]="marker2Delete"
-            [isInfo]="isInfo"></app-map>
+          <app-map
+            [roomId]="room?.id"
+            [followOperator]="followOperatorOnMap"
+            [marker2Delete]="marker2Delete"
+            [isInfo]="isInfo"
+          ></app-map>
         </div>
         <div class="btn-map">
           <div class="box-toggle">
             <ion-label>Segui Operatore</ion-label>
-            <ion-toggle color="success" (click)="followOperator()" checked></ion-toggle>
+            <ion-toggle
+              color="success"
+              (click)="followOperator()"
+              checked
+            ></ion-toggle>
           </div>
           <div class="box-toggle">
             <ion-label>Indicazioni</ion-label>
-            <ion-toggle color="success" (click)="removeMarker2()" checked></ion-toggle>
+            <ion-toggle
+              color="success"
+              (click)="removeMarker2()"
+              checked
+            ></ion-toggle>
           </div>
           <div class="box-toggle">
             <ion-label>KML/Z Info</ion-label>
-            <ion-toggle color="success" (click)="showDisplayInfo()"></ion-toggle>
+            <ion-toggle
+              color="success"
+              (click)="showDisplayInfo()"
+            ></ion-toggle>
           </div>
-
-
         </div>
       </ion-col>
 
       <ion-col size-lg="3" size-xs="12">
         <!-- QUI DENTRO VA LA LISTA PARTECIPANTI con SWITCH su CHAT-->
         <div>
-          <app-users-list [usersInRoom]="usersInRoom" [watchers$]="watchers$"></app-users-list>
+          <app-users-list
+            [usersInRoom]="usersInRoom"
+            [watchers$]="watchers$"
+          ></app-users-list>
         </div>
       </ion-col>
     </ion-row>
@@ -111,8 +135,13 @@
             <p>Utente</p>
             <h3>{{remoteStream.id}}</h3>
           </div>
-          <audio id="{{ 'remoteVideo' + remoteStream.id }}" [srcObject]="remoteStream.stream" controls autoplay
-            playsinline></audio>
+          <audio
+            id="{{ 'remoteVideo' + remoteStream.id }}"
+            [srcObject]="remoteStream.stream"
+            controls
+            autoplay
+            playsinline
+          ></audio>
         </div>
       </div>
     </ion-row>

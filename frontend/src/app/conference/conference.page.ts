@@ -8,7 +8,7 @@ import { environment } from 'src/environments/environment';
 
 import { AuthUser } from '../auth/auth-user.model';
 import { AuthService } from '../auth/auth.service';
-import { RoomItemFunctions } from '../rooms/room-item-functions';
+import { RoomFunctionsService } from '../rooms/room-functions.service';
 import { Room, RoomService } from '../rooms/room.service';
 import { AudioRTCService } from './audiortc.service';
 import { RoomUser } from './conference.service';
@@ -39,9 +39,9 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
     private navController: NavController,
     private roomService: RoomService,
     private authService: AuthService,
-    private roomItemService: RoomItemFunctions,
     private socket: Socket,
     private router: Router,
+    public roomFunctions: RoomFunctionsService,
     public audioService: AudioRTCService
   ) {}
 
@@ -332,9 +332,5 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
     }
     // console.log('🐱‍👤 generateRandomId : result', result);
     return result;
-  }
-
-  copyLink() {
-    this.roomItemService.copyLink(this.room);
   }
 }
