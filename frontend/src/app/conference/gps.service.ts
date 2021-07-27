@@ -81,7 +81,7 @@ export class GpsService {
   }
 
   // SOCKET - POSIZIONE MARKER --------------------------------
-  socketMarker(lat: string, long: string) {
+  socketEmitMarkerBlu(lat: string, long: string) {
     // SOCKET EMIT - POSIZIONE MARKER --------------------------------
     this.socket.emit('posizioneMarker', {
       idroom: this.idroom,
@@ -90,11 +90,11 @@ export class GpsService {
     });
     // SOCKET ON - POSIZIONE MARKER --------------------------------
     //this.socket.on('posMkrBckEnd_'+this.idroom, function(posMkrBckEnd: any){
-    this.socket.on(`posMkrBckEnd_${this.idroom}`, function (posMkrBckEnd: any) {
-      console.log('posMkrBckEnd.idroom11: ' + posMkrBckEnd.idroom);
-      console.log('posMkrBckEnd.lat11: ' + posMkrBckEnd.latitudine);
-      console.log('posMkrBckEnd.long11: ' + posMkrBckEnd.longitudine);
-    });
+    // this.socket.on(`posMkrBckEnd_${this.idroom}`, function (posMkrBckEnd: any) {
+    //   console.log('posMkrBckEnd.idroom11: ' + posMkrBckEnd.idroom);
+    //   console.log('posMkrBckEnd.lat11: ' + posMkrBckEnd.latitudine);
+    //   console.log('posMkrBckEnd.long11: ' + posMkrBckEnd.longitudine);
+    // });
   }
 
   startGps() {

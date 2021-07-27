@@ -49,8 +49,9 @@ import { GpsService } from '../gps.service';
 export class MapComponent implements OnInit {
   @Input() roomId: number;
   @Input() followOperator: boolean;
-  @Input() marker2Delete: boolean;
   @Input() isInfo: boolean;
+
+  isMarkerBluOn: boolean = false;
 
   marker: Feature;
   marker2: Feature;
@@ -81,40 +82,6 @@ export class MapComponent implements OnInit {
     private gps: GpsService
   ) {}
 
-  /* MARKER BLUE definizione */
-  createMarker2() {
-    this.marker2 = new Feature({
-      geometry: new Point(
-        fromLonLat([+this.coordByMouse.lon, +this.coordByMouse.lat])
-      ),
-    });
-
-    this.marker2.setStyle(
-      new Style({
-        image: new Icon({
-          color: '#03477e',
-          crossOrigin: 'anonymous',
-          src: '../../../assets/markerDot2.svg',
-          imgSize: [20, 20],
-        }),
-      })
-    );
-
-    let vectorSource = new VectorSource({
-      features: [this.marker2],
-    });
-
-    let vectorLayer = new VectorLayer({
-      source: vectorSource,
-      title: 'Marker Indicazioni',
-      visible: true,
-    } as BaseLayerOptions);
-
-    return vectorLayer;
-
-    /* ************************************ */
-  }
-
   ngOnInit() {
     // this.socket.on('kmzon', (res: any) => {
     //   this.vectorLayerKMLOUT = new VectorLayer({
@@ -129,7 +96,7 @@ export class MapComponent implements OnInit {
     //   this.mappa.getView().fit(this.vectorSourceKMLOUT.getExtent());
     // });
 
-    this.vectorLayer2 = this.createMarker2();
+    this.updateMarkerBlu(0, 0);
 
     /* COORDINATE AL PASSAGGIO DEL MOUSE */
     this.mousePosition = new MousePosition({
@@ -281,8 +248,7 @@ export class MapComponent implements OnInit {
         if (this.isInfo) {
           this.displayFeatureInfo(evt.pixel);
         }
-
-        if (this.marker2Delete) {
+        if (this.isMarkerBluOn) {
           //coordinate in EPSG 3857 (coord. proiettate)
           var X = evt.coordinate[0].toFixed(7);
           var Y = evt.coordinate[1].toFixed(7);
@@ -303,24 +269,8 @@ export class MapComponent implements OnInit {
             lon: lonlat[0].toFixed(7),
           };
 
-          // GPS EMIT --------------------------------
-          // this.socket.emit('posizioneMarker', {
-          //   idroom: 1180,
-          //   latitudine: lonlat[1].toFixed(7),
-          //   longitudine: lonlat[0].toFixed(7),
-          // });
-
-          // GPS ON --------------------------------
-          // this.socket.on('posMkrBckEnd', function (posMkrBckEnd: any) {
-          //   console.log('posMkrBckEnd.idroom: ' + posMkrBckEnd.idroom);
-          //   console.log('posMkrBckEnd.lat: ' + posMkrBckEnd.latitudine);
-          //   console.log('posMkrBckEnd.long: ' + posMkrBckEnd.longitudine);
-          // });
-
-          this.gps.socketMarker(lat, lon);
-          this.mappa.removeLayer(this.vectorLayer2);
-          this.vectorLayer2 = this.createMarker2();
-          this.mappa.addLayer(this.vectorLayer2);
+          this.updateMarkerBlu(lon, lat);
+          this.gps.socketEmitMarkerBlu(lat, lon);
         }
       });
 
@@ -360,6 +310,13 @@ export class MapComponent implements OnInit {
       .subscribe((gpsRemote) => {
         this.updateMarkerOperatore(gpsRemote.longitudine, gpsRemote.latitudine);
       });
+    this.socket
+      .fromEvent<any>('posMkrBckEnd_' + this.roomId)
+      .subscribe((markerBlu) => {
+        console.log('eccoloooooooo', markerBlu);
+
+        this.updateMarkerBlu(markerBlu.longitudine, markerBlu.latitudine);
+      });
   }
 
   /* INFO KML/KMZ */
@@ -388,6 +345,59 @@ export class MapComponent implements OnInit {
       } else {
         document.getElementById('info').innerHTML = '&nbsp;';
       }
+    }
+  }
+
+  /* MARKER BLUE definizione */
+  updateMarkerBlu(long, lat) {
+    if (this.mappa) {
+      if (this.vectorLayer2) {
+        this.mappa.removeLayer(this.vectorLayer2);
+        //this.vectorLayer2 = null;
+      }
+
+      this.marker2 = new Feature({
+        geometry: new Point(fromLonLat([+long, +lat])),
+      });
+
+      this.marker2.setStyle(
+        new Style({
+          image: new Icon({
+            color: '#03477e',
+            crossOrigin: 'anonymous',
+            src: '../../../assets/markerDot2.svg',
+            imgSize: [20, 20],
+          }),
+        })
+      );
+
+      let vectorSource = new VectorSource({
+        features: [this.marker2],
+      });
+
+      this.vectorLayer2 = new VectorLayer({
+        source: vectorSource,
+        title: 'Marker Indicazioni',
+        visible: true,
+      } as BaseLayerOptions);
+
+      this.mappa.addLayer(this.vectorLayer2);
+    }
+  }
+
+  toggleMarkerBlu() {
+    if (this.isMarkerBluOn) {
+      this.deleteMarkerBlu();
+      this.isMarkerBluOn = false;
+    } else {
+      this.isMarkerBluOn = true;
+    }
+  }
+  /* rimuove marker BLU  */
+  deleteMarkerBlu() {
+    if (this.vectorLayer2) {
+      this.mappa.removeLayer(this.vectorLayer2);
+      this.gps.socketEmitMarkerBlu('0', '0');
     }
   }
 
@@ -429,13 +439,6 @@ export class MapComponent implements OnInit {
         this.mappa
           .getView()
           .setCenter(olProj.transform([long, lat], 'EPSG:4326', 'EPSG:3857'));
-      }
-
-      /* rimuove marker BLU all' update */
-      if (this.marker2Delete == false) {
-        if (this.vectorLayer2) {
-          this.mappa.removeLayer(this.vectorLayer2);
-        }
       }
     }
   }

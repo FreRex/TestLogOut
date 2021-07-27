@@ -13,6 +13,7 @@ import { Room, RoomService } from '../rooms/room.service';
 import { AudioRTCService } from './audiortc.service';
 import { RoomUser } from './conference.service';
 import { GpsService } from './gps.service';
+import { MapComponent } from './map/map.component';
 import { PlayerComponent } from './player/player.component';
 
 @Component({
@@ -116,10 +117,6 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
 
   followOperator() {
     this.followOperatorOnMap = !this.followOperatorOnMap;
-  }
-
-  removeMarker2() {
-    this.marker2Delete = !this.marker2Delete;
   }
 
   showDisplayInfo() {
