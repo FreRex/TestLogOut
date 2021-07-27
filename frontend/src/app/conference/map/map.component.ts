@@ -57,9 +57,11 @@ export class MapComponent implements OnInit {
   vectorSource: VectorSource;
   vectorSource2: VectorSource;
   vectorSourceKML: VectorSource;
+  vectorSourceKMLOUT: VectorSource;
   vectorLayer: VectorLayer;
   vectorLayer2: VectorLayer;
   vectorLayerKML: VectorLayer;
+  vectorLayerKMLOUT: VectorLayer;
 
   pozzetto: TileLayer;
   tratte: TileLayer;
@@ -116,6 +118,19 @@ export class MapComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.socket.on('kmzon', (res: any) => {
+      this.vectorLayerKMLOUT = new VectorLayer({
+        source: res.kmz,
+        opacity: 0.7,
+        declutter: true,
+        updateWhileInteracting: true,
+        title: 'KMZ / KML',
+      } as BaseLayerOptions);
+
+      this.mappa.addLayer(this.vectorLayerKMLOUT);
+      this.mappa.getView().fit(this.vectorSourceKMLOUT.getExtent());
+    });
+
     this.vectorLayer2 = this.createMarker2();
 
     /* COORDINATE AL PASSAGGIO DEL MOUSE */
@@ -313,6 +328,9 @@ export class MapComponent implements OnInit {
       /* Drag&Drop KML KMZ*/
 
       dragAndDropInteraction.on('addfeatures', (event: any) => {
+        this.vectorSourceKMLOUT = new VectorSource({
+          features: event.features,
+        });
         this.vectorSourceKML = new VectorSource({
           features: event.features,
         });
@@ -324,17 +342,11 @@ export class MapComponent implements OnInit {
           updateWhileInteracting: true,
           title: 'KMZ / KML',
         } as BaseLayerOptions);
-        this.socket.emit('kmzemit', {kmz: this.vectorLayerKML});
-        console.log("qqq: " + this.vectorLayerKML);
+        console.log('qqq: ' + this.vectorLayerKML);
         this.mappa.addLayer(this.vectorLayerKML);
         this.mappa.getView().fit(this.vectorSourceKML.getExtent());
+        this.socket.emit('kmzemit', { kmz: this.vectorSourceKMLOUT });
       });
-    });
-    
-    this.socket.on('kmzon',(kmz_data_on: any)=>{
-      console.log('ritorno: ' + kmz_data_on.kmz);     
-      this.mappa.addLayer(kmz_data_on.kmz);
-      this.mappa.getView().fit(kmz_data_on.getExtent());
     });
 
     this.gps.coordinate$.subscribe((coords) => {
@@ -413,6 +425,7 @@ export class MapComponent implements OnInit {
           .getView()
           .setCenter(olProj.transform([long, lat], 'EPSG:4326', 'EPSG:3857'));
       }
+
       /* rimuove marker BLU all' update */
       if (this.marker2Delete == false) {
         if (this.vectorLayer2) {
