@@ -324,9 +324,17 @@ export class MapComponent implements OnInit {
           updateWhileInteracting: true,
           title: 'KMZ / KML',
         } as BaseLayerOptions);
+        this.socket.emit('kmzemit', {kmz: this.vectorLayerKML});
+        console.log("qqq: " + this.vectorLayerKML);
         this.mappa.addLayer(this.vectorLayerKML);
         this.mappa.getView().fit(this.vectorSourceKML.getExtent());
       });
+    });
+    
+    this.socket.on('kmzon',(kmz_data_on: any)=>{
+      console.log('ritorno: ' + kmz_data_on.kmz);     
+      this.mappa.addLayer(kmz_data_on.kmz);
+      this.mappa.getView().fit(kmz_data_on.getExtent());
     });
 
     this.gps.coordinate$.subscribe((coords) => {
