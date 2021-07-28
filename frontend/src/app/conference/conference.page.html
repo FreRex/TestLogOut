@@ -25,7 +25,7 @@
           lines="none"
           button="true"
           class="item-button"
-          routerLink="/rooms"
+          (click)="goBack()"
         >
           <ion-icon slot="start" name="chevron-back-sharp"></ion-icon>
           <ion-text>Lista Room</ion-text>
@@ -84,6 +84,7 @@
         <!-- QUI DENTRO VA LA MAPPA -->
         <div class="spazio-vuoto-dimensione-fissa">
           <app-map
+            #mappa
             [roomId]="room?.id"
             [followOperator]="followOperatorOnMap"
             [marker2Delete]="marker2Delete"
@@ -113,6 +114,9 @@
               color="success"
               (click)="showDisplayInfo()"
             ></ion-toggle>
+          </div>
+          <div class="box-toggle">
+            <ion-button (click)="mappa.updateSize()">UpdateMap</ion-button>
           </div>
         </div>
       </ion-col>

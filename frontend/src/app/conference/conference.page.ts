@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NavController, ViewDidLeave } from '@ionic/angular';
+import { NavController, ViewDidLeave, ViewWillEnter } from '@ionic/angular';
 import { Socket } from 'ngx-socket-io';
 import { BehaviorSubject, iif, Observable, of, Subscription } from 'rxjs';
 import { map, retryWhen, switchMap, take, tap } from 'rxjs/operators';
@@ -19,7 +19,7 @@ import { PlayerComponent } from './player/player.component';
   templateUrl: './conference.page.html',
   styleUrls: ['./conference.page.scss'],
 })
-export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
+export class ConferencePage implements ViewWillEnter, OnDestroy, ViewDidLeave {
   private sub: Subscription;
 
   @ViewChild(PlayerComponent) private playerComponent: PlayerComponent;
@@ -50,7 +50,7 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
   public marker2Delete: boolean = true;
   isInfo: boolean = false;
 
-  ngOnInit() {
+  ionViewWillEnter() {
     /*
      * Recupera l'ID della room dall'URL,
      * l'utente corrente dall'authService,
@@ -104,6 +104,10 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
 
   ionViewDidLeave() {
     this.roomService.deselectRoom();
+  }
+
+  goBack() {
+    this.navController.navigateBack(['/rooms']);
   }
 
   ngOnDestroy() {
