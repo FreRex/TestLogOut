@@ -77,6 +77,12 @@ spawn('ffmpeg',['-h']).on('error',function(m:any){
 // Connessione socket.io
 io.on('connection', function(socket: any){
 
+	//SOCKET PER KMZ
+	socket.on('kmzemit',function(kmz_data: any){
+		console.log('kmz_data: ' +kmz_data.kmz);
+		socket.broadcast.emit('kmzon',{kmz: kmz_data.kmz})
+	});
+
 	//SOCKET PER POSIZIONAMENTO / GPS / COORDINATE
 	socket.on('gps',function(gps_data: any){
 	   console.log('gps_data.idroom: ' +gps_data.idroom);	   

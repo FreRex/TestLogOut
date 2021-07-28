@@ -1,6 +1,13 @@
 import 'ol/ol.css';
 
-import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  HostListener,
+  Input,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import LayerGroup from 'ol/layer/Group';
 import TileLayer from 'ol/layer/Tile';
 import Map from 'ol/Map';
@@ -39,6 +46,9 @@ import Geometry from 'ol/geom/Geometry';
 import { format } from 'ol/coordinate';
 
 import { Socket } from 'ngx-socket-io';
+import { GpsService } from '../gps.service';
+import { fromEvent, Observable, Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'app-map',
@@ -48,21 +58,29 @@ import { Socket } from 'ngx-socket-io';
 export class MapComponent implements OnInit {
   @Input() roomId: number;
   @Input() followOperator: boolean;
-  @Input() marker2Delete: boolean;
   @Input() isInfo: boolean;
+
+  isMarkerBluOn: boolean = false;
 
   marker: Feature;
   marker2: Feature;
   vectorSource: VectorSource;
   vectorSource2: VectorSource;
   vectorSourceKML: VectorSource;
+  //vectorSourceKMLOUT: VectorSource;
   vectorLayer: VectorLayer;
   vectorLayer2: VectorLayer;
   vectorLayerKML: VectorLayer;
+  //vectorLayerKMLOUT: VectorLayer;
 
   pozzetto: TileLayer;
   tratte: TileLayer;
   nodi: TileLayer;
+
+  googleStreet: TileLayer;
+  openSM: TileLayer;
+  satellite: TileLayer;
+  nessuno: TileLayer;
 
   @ViewChild('info') info: ElementRef;
 
@@ -71,48 +89,46 @@ export class MapComponent implements OnInit {
 
   mousePosition: MousePosition;
   mousePositionForMarker2: MousePosition;
-  idroom: any;
+
+  resizeObservable$: Observable<Event> = fromEvent(window, 'resize');
+  resizeSubscription$: Subscription;
 
   constructor(
     private mapService: MapService,
-    private socket: Socket) {}
+    private socket: Socket,
+    private gps: GpsService
+  ) {}
 
-  /* MARKER BLUE definizione */
-  createMarker2() {
-    this.marker2 = new Feature({
-      geometry: new Point(
-        fromLonLat([+this.coordByMouse.lon, +this.coordByMouse.lat])
-      ),
-    });
+  updateSize() {
+    if (this.mappa) {
+      this.mappa.updateSize();
+    }
+  }
 
-    this.marker2.setStyle(
-      new Style({
-        image: new Icon({
-          color: '#03477e',
-          crossOrigin: 'anonymous',
-          src: '../../../assets/markerDot2.svg',
-          imgSize: [20, 20],
-        }),
-      })
-    );
-
-    let vectorSource = new VectorSource({
-      features: [this.marker2],
-    });
-
-    let vectorLayer = new VectorLayer({
-      source: vectorSource,
-      title: 'Marker Indicazioni',
-      visible: true,
-    } as BaseLayerOptions);
-
-    return vectorLayer;
-
-    /* ************************************ */
+  ngOnDestroy() {
+    this.resizeSubscription$.unsubscribe();
   }
 
   ngOnInit() {
-    this.vectorLayer2 = this.createMarker2();
+    this.resizeSubscription$ = this.resizeObservable$
+      .pipe(distinctUntilChanged(), debounceTime(500))
+      .subscribe((evt) => {
+        this.updateSize();
+      });
+    // this.socket.on('kmzon', (res: any) => {
+    //   this.vectorLayerKMLOUT = new VectorLayer({
+    //     source: res.kmz,
+    //     opacity: 0.7,
+    //     declutter: true,
+    //     updateWhileInteracting: true,
+    //     title: 'KMZ / KML',
+    //   } as BaseLayerOptions);
+
+    //   this.mappa.addLayer(this.vectorLayerKMLOUT);
+    //   this.mappa.getView().fit(this.vectorSourceKMLOUT.getExtent());
+    // });
+
+    this.updateMarkerBlu(0, 0);
 
     /* COORDINATE AL PASSAGGIO DEL MOUSE */
     this.mousePosition = new MousePosition({
@@ -165,158 +181,177 @@ export class MapComponent implements OnInit {
         }),
       } as BaseLayerOptions);
 
+      this.googleStreet = new TileLayer({
+        title: 'Google Streets',
+        type: 'base',
+        visible: false,
+        source: new XYZ({
+          url: 'http://mt1.googleapis.com/vt?x={x}&y={y}&z={z}',
+        }),
+      } as BaseLayerOptions);
+
+      this.openSM = new TileLayer({
+        title: 'Open Street Map',
+        type: 'base',
+        visible: true,
+        source: new OSM(),
+      } as BaseLayerOptions);
+
+      this.satellite = new TileLayer({
+        title: 'Google satellite',
+        type: 'base',
+        visible: false,
+        source: new XYZ({
+          url: 'http://mt0.google.com/vt/lyrs=s&hl=en&x={x}&y={y}&z={z}?key=AIzaSyAfSMp-syOQXDlulMxr14XIV4-hgOt2DRc',
+        }),
+      } as BaseLayerOptions);
+
+      this.nessuno = new TileLayer({
+        title: 'Nessuno',
+        type: 'base',
+        visible: false,
+        source: new XYZ({
+          url: '',
+        }),
+      } as BaseLayerOptions);
+
       /* ********************************************************************************************* */
 
-      this.mappa = new Map({
-        interactions: defaultInteractions().extend([dragAndDropInteraction]),
-        controls: defaultControls({ attribution: false }).extend([
-          this.mousePosition,
-        ]),
-        target: 'map',
-        layers: [
-          new LayerGroup({
-            title: 'Sfondi cartografici',
-            layers: [
-              new TileLayer({
-                title: 'Google Streets',
-                type: 'base',
-                visible: false,
-                source: new XYZ({
-                  url: 'http://mt1.googleapis.com/vt?x={x}&y={y}&z={z}',
-                }),
-              } as BaseLayerOptions),
-              new TileLayer({
-                title: 'Open Street Map',
-                type: 'base',
-                visible: true,
-                source: new OSM(),
-              } as BaseLayerOptions),
-              new TileLayer({
-                title: 'Google satellite',
-                type: 'base',
-                visible: false,
-                source: new XYZ({
-                  url: 'http://mt0.google.com/vt/lyrs=s&hl=en&x={x}&y={y}&z={z}?key=AIzaSyAfSMp-syOQXDlulMxr14XIV4-hgOt2DRc',
-                }),
-              } as BaseLayerOptions),
-              new TileLayer({
-                title: 'Nessuno',
-                type: 'base',
-                visible: false,
-                source: new XYZ({
-                  url: '',
-                }),
-              } as BaseLayerOptions),
-            ],
-          } as GroupLayerOptions),
-          new LayerGroup({
-            title: 'Progetto completo',
-            layers: [this.pozzetto, this.nodi, this.tratte],
-          } as GroupLayerOptions),
-        ],
-        view: new View({
-          center: olProj.transform(
-            [map.longcentrmap, map.latcentromap],
-            'EPSG:4326',
-            'EPSG:3857'
-          ),
-          zoom: 15,
-        }),
-      });
-      this.updateMarkerOperatore(map.longcentrmap, map.latcentromap);
-      this.mapService.ConfigIdRoom(this.roomId);
       setTimeout(() => {
-        window.setInterval(() => this.mapService.getLocation(), 3000);
-      }, 5000);
+        this.mappa = new Map({
+          interactions: defaultInteractions().extend([dragAndDropInteraction]),
+          controls: defaultControls({ attribution: false }).extend([
+            this.mousePosition,
+          ]),
+          target: 'map',
+          layers: [
+            new LayerGroup({
+              title: 'Sfondi cartografici',
+              layers: [
+                this.googleStreet,
+                this.openSM,
+                this.satellite,
+                this.nessuno,
+              ],
+            } as GroupLayerOptions),
+            new LayerGroup({
+              title: 'Progetto completo',
+              layers: [this.pozzetto, this.nodi, this.tratte],
+            } as GroupLayerOptions),
+          ],
+          view: new View({
+            center: olProj.transform(
+              [map.longcentrmap, map.latcentromap],
+              'EPSG:4326',
+              'EPSG:3857'
+            ),
+            zoom: 15,
+          }),
+        });
+        this.updateMarkerOperatore(map.longcentrmap, map.latcentromap);
+        /* CONTROLLI IN AGGIUNTA */
+        const scaleLineControl = new ScaleLine();
+        this.mappa.addControl(scaleLineControl);
 
-      /* CONTROLLI IN AGGIUNTA */
-      const scaleLineControl = new ScaleLine();
-      this.mappa.addControl(scaleLineControl);
+        const rotateMapControl = new Rotate({
+          autoHide: false,
+        });
+        this.mappa.removeControl(rotateMapControl);
 
-      const rotateMapControl = new Rotate({
-        autoHide: false,
-      });
-      this.mappa.removeControl(rotateMapControl);
+        const fullScreenControl = new FullScreen();
+        this.mappa.addControl(fullScreenControl);
+        /* Layer Menu */
 
-      const fullScreenControl = new FullScreen();
-      this.mappa.addControl(fullScreenControl);
+        const groupStyle: GroupSelectStyle = 'children';
 
-      /* Layer Menu */
+        const opts: LsOptions = {
+          reverse: true,
+          groupSelectStyle: groupStyle,
+          startActive: false,
+          activationMode: 'click',
+        };
+        const layerSwitcher = new LayerSwitcher(opts);
 
-      const groupStyle: GroupSelectStyle = 'children';
+        this.mappa.addControl(layerSwitcher);
 
-      const opts: LsOptions = {
-        reverse: true,
-        groupSelectStyle: groupStyle,
-        startActive: false,
-        activationMode: 'click',
-      };
-      const layerSwitcher = new LayerSwitcher(opts);
+        /* click event marker blu / display info kmz/l */
 
-      this.mappa.addControl(layerSwitcher);
+        this.mappa.on('click', (evt) => {
+          if (this.isInfo) {
+            this.displayFeatureInfo(evt.pixel);
+          }
+          if (this.isMarkerBluOn) {
+            //coordinate in EPSG 3857 (coord. proiettate)
+            var X = evt.coordinate[0].toFixed(7);
+            var Y = evt.coordinate[1].toFixed(7);
 
-      /* click event marker blu / display info kmz/l */
+            //trasformazione coordinate da EPSG:3857 a EPSG:4326
+            var lonlat = olProj.transform(
+              evt.coordinate,
+              'EPSG:3857',
+              'EPSG:4326'
+            );
 
-      this.mappa.on('click', (evt) => {
-        if (this.isInfo) {
-          this.displayFeatureInfo(evt.pixel);
-        }
+            //coordinate in EPSG 4326 (coord. geografiche)
+            var lon = lonlat[0].toFixed(7);
+            var lat = lonlat[1].toFixed(7);
 
-        if (this.marker2Delete) {
-          //coordinate in EPSG 3857 (coord. proiettate)
-          var X = evt.coordinate[0].toFixed(7);
-          var Y = evt.coordinate[1].toFixed(7);
+            this.coordByMouse = {
+              lat: lonlat[1].toFixed(7),
+              lon: lonlat[0].toFixed(7),
+            };
 
-          //trasformazione coordinate da EPSG:3857 a EPSG:4326
-          var lonlat = olProj.transform(
-            evt.coordinate,
-            'EPSG:3857',
-            'EPSG:4326'
-          );
-
-          //coordinate in EPSG 4326 (coord. geografiche)
-          var lon = lonlat[0].toFixed(7);
-          var lat = lonlat[1].toFixed(7);
-
-          // console.log('coordinateeeeeeeeeeeeee', lon, lat);
-          this.coordByMouse = {
-            lat: lonlat[1].toFixed(7),
-            lon: lonlat[0].toFixed(7),
-          };              
-
-          this.mapService.socketMarker(lat, lon);
-          this.mappa.removeLayer(this.vectorLayer2);
-          this.vectorLayer2 = this.createMarker2();
-          this.mappa.addLayer(this.vectorLayer2);
-
-        }
-      });       
-
-
-      /* Drag&Drop KML KMZ*/
-      dragAndDropInteraction.on('addfeatures', (event: any) => {
-        this.vectorSourceKML = new VectorSource({
-          features: event.features,
+            this.updateMarkerBlu(lon, lat);
+            this.gps.socketEmitMarkerBlu(lat, lon);
+          }
         });
 
-        this.vectorLayerKML = new VectorLayer({
-          source: this.vectorSourceKML,
-          opacity: 0.7,
-          declutter: true,
-          updateWhileInteracting: true,
-          title: 'KMZ / KML',
-        } as BaseLayerOptions);
-        this.mappa.addLayer(this.vectorLayerKML);
-        this.mappa.getView().fit(this.vectorSourceKML.getExtent());
-      });
+        /* Drag&Drop KML KMZ*/
+
+        dragAndDropInteraction.on('addfeatures', (event: any) => {
+          // this.vectorSourceKMLOUT = new VectorSource({
+          //   features: event.features,
+          // });
+
+          this.vectorSourceKML = new VectorSource({
+            features: event.features,
+          });
+
+          this.vectorLayerKML = new VectorLayer({
+            source: this.vectorSourceKML,
+            opacity: 0.7,
+            declutter: true,
+            updateWhileInteracting: true,
+            title: 'KMZ / KML',
+          } as BaseLayerOptions);
+          console.log('qqq: ' + this.vectorLayerKML);
+          this.mappa.addLayer(this.vectorLayerKML);
+          this.mappa.getView().fit(this.vectorSourceKML.getExtent());
+          //this.socket.emit('kmzemit', { kmz: this.vectorSourceKMLOUT });
+        });
+      }, 1000);
+
+      this.gps.ConfigIdRoom(this.roomId);
     });
 
-    this.mapService.coordinate$.subscribe((coords) => {
+    this.gps.coordinate$.subscribe((coords) => {
       if (coords && coords.length > 0) {
         let index = coords.length - 1;
         this.updateMarkerOperatore(coords[index].long, coords[index].lat);
       }
     });
+    this.socket
+      .fromEvent<any>('gpsUtente_idroom_' + this.roomId)
+      .subscribe((gpsRemote) => {
+        this.updateMarkerOperatore(gpsRemote.longitudine, gpsRemote.latitudine);
+      });
+    this.socket
+      .fromEvent<any>('posMkrBckEnd_' + this.roomId)
+      .subscribe((markerBlu) => {
+        console.log('eccoloooooooo', markerBlu);
+
+        this.updateMarkerBlu(markerBlu.longitudine, markerBlu.latitudine);
+      });
   }
 
   /* INFO KML/KMZ */
@@ -345,6 +380,59 @@ export class MapComponent implements OnInit {
       } else {
         document.getElementById('info').innerHTML = '&nbsp;';
       }
+    }
+  }
+
+  /* MARKER BLUE definizione */
+  updateMarkerBlu(long, lat) {
+    if (this.mappa) {
+      if (this.vectorLayer2) {
+        this.mappa.removeLayer(this.vectorLayer2);
+        //this.vectorLayer2 = null;
+      }
+
+      this.marker2 = new Feature({
+        geometry: new Point(fromLonLat([+long, +lat])),
+      });
+
+      this.marker2.setStyle(
+        new Style({
+          image: new Icon({
+            color: '#03477e',
+            crossOrigin: 'anonymous',
+            src: '../../../assets/markerDot2.svg',
+            imgSize: [20, 20],
+          }),
+        })
+      );
+
+      let vectorSource = new VectorSource({
+        features: [this.marker2],
+      });
+
+      this.vectorLayer2 = new VectorLayer({
+        source: vectorSource,
+        title: 'Marker Indicazioni',
+        visible: true,
+      } as BaseLayerOptions);
+
+      this.mappa.addLayer(this.vectorLayer2);
+    }
+  }
+
+  toggleMarkerBlu() {
+    if (this.isMarkerBluOn) {
+      this.deleteMarkerBlu();
+      this.isMarkerBluOn = false;
+    } else {
+      this.isMarkerBluOn = true;
+    }
+  }
+  /* rimuove marker BLU  */
+  deleteMarkerBlu() {
+    if (this.vectorLayer2) {
+      this.mappa.removeLayer(this.vectorLayer2);
+      this.gps.socketEmitMarkerBlu('0', '0');
     }
   }
 
@@ -386,12 +474,6 @@ export class MapComponent implements OnInit {
         this.mappa
           .getView()
           .setCenter(olProj.transform([long, lat], 'EPSG:4326', 'EPSG:3857'));
-      }
-      /* rimuove marker BLU all' update */
-      if (this.marker2Delete == false) {
-        if (this.vectorLayer2) {
-          this.mappa.removeLayer(this.vectorLayer2);
-        }
       }
     }
   }

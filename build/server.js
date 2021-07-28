@@ -58,6 +58,11 @@ child_process_1.spawn('ffmpeg', ['-h']).on('error', function (m) {
 //-----------------------------------------------------------------------------------------
 // Connessione socket.io
 io.on('connection', function (socket) {
+    //SOCKET PER KMZ
+    socket.on('kmzemit', function (kmz_data) {
+        console.log('kmz_data: ' + kmz_data.kmz);
+        socket.broadcast.emit('kmzon', { kmz: kmz_data.kmz });
+    });
     //SOCKET PER POSIZIONAMENTO / GPS / COORDINATE
     socket.on('gps', function (gps_data) {
         console.log('gps_data.idroom: ' + gps_data.idroom);
