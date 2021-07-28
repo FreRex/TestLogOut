@@ -24,7 +24,6 @@ export class MenuComponent implements OnInit {
 
   ngOnInit() {
     this.ionMenu.ionWillOpen.subscribe((willOpen) => {
-      console.log('🐱‍👤 : willOpen', willOpen);
       this.currentUser$ = this.authService.currentUser$;
       this.currentRoom$ = this.roomService.currentRoom$;
     });

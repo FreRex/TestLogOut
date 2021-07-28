@@ -21,7 +21,7 @@ import { PlayerComponent } from './player/player.component';
   templateUrl: './conference.page.html',
   styleUrls: ['./conference.page.scss'],
 })
-export class ConferencePage implements ViewWillEnter, OnDestroy, ViewDidLeave {
+export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
   private sub: Subscription;
 
   @ViewChild(PlayerComponent) private playerComponent: PlayerComponent;
@@ -53,7 +53,7 @@ export class ConferencePage implements ViewWillEnter, OnDestroy, ViewDidLeave {
   public marker2Delete: boolean = true;
   isInfo: boolean = false;
 
-  ionViewWillEnter() {
+  ngOnInit() {
     /*
      * Recupera l'ID della room dall'URL,
      * l'utente corrente dall'authService,
@@ -106,7 +106,6 @@ export class ConferencePage implements ViewWillEnter, OnDestroy, ViewDidLeave {
   }
 
   ionViewDidLeave() {
-    this.roomService.deselectRoom();
     if (this.isStreaming) {
       this.socket.emit('disconnectStream', '');
       this.playerComponent.stopStream();
@@ -121,6 +120,7 @@ export class ConferencePage implements ViewWillEnter, OnDestroy, ViewDidLeave {
   }
 
   goBack() {
+    this.roomService.deselectRoom();
     this.navController.navigateBack(['/rooms']);
   }
 
