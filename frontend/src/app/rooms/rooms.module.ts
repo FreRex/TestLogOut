@@ -7,10 +7,10 @@ import { SharedModule } from '../shared/shared.module';
 import { RoomsPageRoutingModule } from './rooms-routing.module';
 import { CreateRoomModalComponent } from './create-room-modal/create-room-modal.component';
 import { EditRoomModalComponent } from './edit-room-modal/edit-room-modal.component';
-import { RoomsListComponent } from './rooms-list/rooms-list.component';
+import { RoomsListComponent } from './room-list/room-list.component';
 import { RoomsPage } from './rooms.page';
-import { RoomsListItemDesktopComponent } from './rooms-list/rooms-list-item-desktop/rooms-list-item-desktop.component';
-import { RoomsListItemMobileComponent } from './rooms-list/rooms-list-item-mobile/rooms-list-item-mobile.component';
+import { RoomsItemDesktopComponent } from './room-list/room-item-desktop/room-item-desktop.component';
+import { RoomsItemMobileComponent } from './room-list/room-item-mobile/room-item-mobile.component';
 
 @NgModule({
   imports: [
@@ -23,8 +23,8 @@ import { RoomsListItemMobileComponent } from './rooms-list/rooms-list-item-mobil
   declarations: [
     RoomsPage,
     RoomsListComponent,
-    RoomsListItemDesktopComponent,
-    RoomsListItemMobileComponent,
+    RoomsItemDesktopComponent,
+    RoomsItemMobileComponent,
     CreateRoomModalComponent,
     EditRoomModalComponent,
   ],

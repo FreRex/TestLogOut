@@ -31,10 +31,10 @@
   >
     <ng-template #desktopItem let-data="data">
       <!-- Rooms Table Item -->
-      <app-rooms-list-item-desktop
+      <app-room-item-desktop
         [room]="data"
         [columns]="columns"
-      ></app-rooms-list-item-desktop>
+      ></app-room-item-desktop>
     </ng-template>
   </app-generic-table>
 </div>
@@ -52,7 +52,7 @@
   <app-generic-list [inputDatas$]="rooms$" [mobileItem]="mobileItem">
     <ng-template #mobileItem let-data="data">
       <!-- Rooms List Item -->
-      <app-rooms-list-item-mobile [room]="data"></app-rooms-list-item-mobile>
+      <app-room-item-mobile [room]="data"></app-room-item-mobile>
     </ng-template>
   </app-generic-list>
 </div>

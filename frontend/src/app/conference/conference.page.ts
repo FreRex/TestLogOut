@@ -8,7 +8,7 @@ import { environment } from 'src/environments/environment';
 
 import { AuthUser } from '../auth/auth-user.model';
 import { AuthService } from '../auth/auth.service';
-import { RoomFunctionsService } from '../rooms/room-functions.service';
+import { RoomFunctionsService } from '../rooms/room-list/room-functions.service';
 import { Room, RoomService } from '../rooms/room.service';
 import { AudioRTCService } from './audiortc.service';
 import { RoomUser } from './conference.service';

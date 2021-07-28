@@ -10,9 +10,9 @@ import {
 import { AuthService } from 'src/app/auth/auth.service';
 import { environment } from 'src/environments/environment';
 
-import { Room, RoomService } from './room.service';
-import { CreateRoomModalComponent } from './create-room-modal/create-room-modal.component';
-import { EditRoomModalComponent } from './edit-room-modal/edit-room-modal.component';
+import { Room, RoomService } from '../room.service';
+import { CreateRoomModalComponent } from '../create-room-modal/create-room-modal.component';
+import { EditRoomModalComponent } from '../edit-room-modal/edit-room-modal.component';
 
 @Injectable({
   providedIn: 'root',

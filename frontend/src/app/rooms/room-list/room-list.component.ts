@@ -4,12 +4,12 @@ import { distinctUntilChanged, startWith, switchMap } from 'rxjs/operators';
 import { Room, RoomService } from 'src/app/rooms/room.service';
 import { TableColumns } from 'src/app/shared/generic-table/generic-table.component';
 
-import { RoomFunctionsService } from '../room-functions.service';
+import { RoomFunctionsService } from './room-functions.service';
 
 @Component({
-  selector: 'app-rooms-list',
-  templateUrl: './rooms-list.component.html',
-  styleUrls: ['./rooms-list.component.scss'],
+  selector: 'app-room-list',
+  templateUrl: './room-list.component.html',
+  styleUrls: ['./room-list.component.scss'],
 })
 export class RoomsListComponent implements OnInit {
   searchStream$ = new BehaviorSubject('');
