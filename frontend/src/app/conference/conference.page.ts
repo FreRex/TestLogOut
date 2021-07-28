@@ -107,6 +107,17 @@ export class ConferencePage implements ViewWillEnter, OnDestroy, ViewDidLeave {
 
   ionViewDidLeave() {
     this.roomService.deselectRoom();
+    if (this.isStreaming) {
+      this.socket.emit('disconnectStream', '');
+      this.playerComponent.stopStream();
+      this.isStreaming = false;
+      this.streamingUser = null;
+      this.gpsService.stopGps();
+    }
+    if (this.isPlaying) {
+      this.isPlaying = false;
+      this.playerComponent.stopPlayer();
+    }
   }
 
   goBack() {

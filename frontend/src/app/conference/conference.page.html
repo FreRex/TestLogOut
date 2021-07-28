@@ -25,7 +25,7 @@
           lines="none"
           button="true"
           class="item-button"
-          (click)="goBack()"
+          routerLink="/rooms"
         >
           <ion-icon slot="start" name="chevron-back-sharp"></ion-icon>
           <ion-text>Lista Room</ion-text>
@@ -62,17 +62,33 @@
               {{streamingUser.nome}}
             </ion-text>
           </span>
-          <app-player [isStreaming]="isStreaming" [isPlaying]="isPlaying" [room]="room" [user]="user"></app-player>
+          <app-player
+            [isStreaming]="isStreaming"
+            [isPlaying]="isPlaying"
+            [room]="room"
+            [user]="user"
+          ></app-player>
         </div>
-        <app-streaming-bar [isStreaming]="isStreaming" [isPlaying]="isPlaying" (togglePlay)="togglePlay()"
-          (toggleStream)="toggleStream()" (capturePhoto)="capturePhoto()" [roomId]="room?.id.toString()"
-          [userId]="user?.idutcas"></app-streaming-bar>
+        <app-streaming-bar
+          [isStreaming]="isStreaming"
+          [isPlaying]="isPlaying"
+          (togglePlay)="togglePlay()"
+          (toggleStream)="toggleStream()"
+          (capturePhoto)="capturePhoto()"
+          [roomId]="room?.id.toString()"
+          [userId]="user?.idutcas"
+        ></app-streaming-bar>
       </ion-col>
 
       <ion-col size-lg="4.5" size-xs="12">
         <!-- QUI DENTRO VA LA MAPPA -->
         <div class="spazio-vuoto-dimensione-fissa">
-          <app-map #mappa [roomId]="room?.id" [followOperator]="followOperatorOnMap" [isInfo]="isInfo"></app-map>
+          <app-map
+            #mappa
+            [roomId]="room?.id"
+            [followOperator]="followOperatorOnMap"
+            [isInfo]="isInfo"
+          ></app-map>
         </div>
         <div class="btn-map">
           <div class="box-toggle">
@@ -85,7 +101,10 @@
           </div>
           <div class="box-toggle">
             <ion-label>Indicazioni</ion-label>
-            <ion-toggle color="success" (click)="mappa.toggleMarkerBlu()"></ion-toggle>
+            <ion-toggle
+              color="success"
+              (click)="mappa.toggleMarkerBlu()"
+            ></ion-toggle>
           </div>
           <div class="box-toggle">
             <ion-label>KML/Z Info</ion-label>
@@ -93,9 +112,6 @@
               color="success"
               (click)="showDisplayInfo()"
             ></ion-toggle>
-          </div>
-          <div class="box-toggle">
-            <ion-button (click)="mappa.updateSize()">UpdateMap</ion-button>
           </div>
         </div>
       </ion-col>
