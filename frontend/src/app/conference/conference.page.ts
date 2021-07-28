@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NavController, ViewDidLeave, ViewWillEnter } from '@ionic/angular';
+import { NavController, ViewWillLeave } from '@ionic/angular';
 import { Socket } from 'ngx-socket-io';
 import { BehaviorSubject, iif, Observable, of, Subscription } from 'rxjs';
 import { map, retryWhen, switchMap, take, tap } from 'rxjs/operators';
@@ -13,7 +13,6 @@ import { Room, RoomService } from '../rooms/room.service';
 import { AudioRTCService } from './audiortc.service';
 import { RoomUser } from './conference.service';
 import { GpsService } from './gps.service';
-import { MapComponent } from './map/map.component';
 import { PlayerComponent } from './player/player.component';
 
 @Component({
@@ -21,7 +20,7 @@ import { PlayerComponent } from './player/player.component';
   templateUrl: './conference.page.html',
   styleUrls: ['./conference.page.scss'],
 })
-export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
+export class ConferencePage implements OnInit, OnDestroy, ViewWillLeave {
   private sub: Subscription;
 
   @ViewChild(PlayerComponent) private playerComponent: PlayerComponent;
@@ -105,7 +104,7 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
       );
   }
 
-  ionViewDidLeave() {
+  ionViewWillLeave() {
     if (this.isStreaming) {
       this.socket.emit('disconnectStream', '');
       this.playerComponent.stopStream();
@@ -117,6 +116,7 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
       this.isPlaying = false;
       this.playerComponent.stopPlayer();
     }
+    this.audioService.leaveRoom(this.room.id);
   }
 
   goBack() {
