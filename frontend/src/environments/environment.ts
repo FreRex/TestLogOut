@@ -8,8 +8,8 @@ export const environment = {
   production: false,
   app: `http://localhost:8100`,
   apiUrl: `https://www.collaudolive.com:9187`,
-  urlRTMP: 'rtmp://www.collaudolive.com:1941',
-  urlWSS: 'wss://www.collaudolive.com:8471',
+  urlRTMP: `rtmp://www.collaudolive.com:1941`,
+  urlWSS: `wss://www.collaudolive.com:8471`,
 };
 
 /*

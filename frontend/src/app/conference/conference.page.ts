@@ -12,6 +12,8 @@ import { RoomItemService } from '../rooms/room-item.service';
 import { Room, RoomService } from '../rooms/room.service';
 import { AudioRTCService } from './audiortc.service';
 import { RoomUser } from './conference.service';
+import { GpsService } from './gps.service';
+import { MapComponent } from './map/map.component';
 import { PlayerComponent } from './player/player.component';
 
 @Component({
@@ -42,7 +44,8 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
     private roomItemService: RoomItemService,
     private socket: Socket,
     private router: Router,
-    public audioService: AudioRTCService
+    public audioService: AudioRTCService,
+    private gpsService: GpsService
   ) {}
 
   isLoading: boolean = false;
@@ -114,10 +117,6 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
 
   followOperator() {
     this.followOperatorOnMap = !this.followOperatorOnMap;
-  }
-
-  removeMarker2() {
-    this.marker2Delete = !this.marker2Delete;
   }
 
   showDisplayInfo() {
@@ -214,6 +213,7 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
               // this.socket.emit('disconnectStream', '');
               this.playerComponent.stopStream();
               this.isStreaming = false;
+              this.gpsService.stopGps();
             }
             // }
             break;
@@ -264,10 +264,12 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
       this.playerComponent.stopStream();
       this.isStreaming = false;
       this.streamingUser = null;
+      this.gpsService.stopGps();
     } else {
       this.socket.emit('start', { idutente: this.user.idutcas });
       this.playerComponent.startStream();
       this.isStreaming = true;
+      this.gpsService.startGps();
     }
   }
 
