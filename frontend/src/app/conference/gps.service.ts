@@ -2,15 +2,41 @@ import { Injectable } from '@angular/core';
 import { Socket } from 'ngx-socket-io';
 import { Observable } from 'rxjs';
 import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
+import Geolocation from 'ol/Geolocation';
 
 @Injectable({
   providedIn: 'root',
 })
-export class GpsService {
+export class GpsService /* implements OnInit */ {
   constructor(private socket: Socket) {}
 
   coordinate = [];
 
+  // ngOnInit(){
+  //   const geolocation = new Geolocation({
+  //     // enableHighAccuracy must be set to true to have the heading value.
+  //     trackingOptions: {
+  //       enableHighAccuracy: true,
+  //     },
+  //     projection: view.getProjection(),
+  //   });
+
+  //   // update the HTML page when the position changes.
+  // geolocation.on('change', function () {
+  //   el('accuracy').innerText = geolocation.getAccuracy() + ' [m]';
+  //   el('altitude').innerText = geolocation.getAltitude() + ' [m]';
+  //   el('altitudeAccuracy').innerText = geolocation.getAltitudeAccuracy() + ' [m]';
+  //   el('heading').innerText = geolocation.getHeading() + ' [rad]';
+  //   el('speed').innerText = geolocation.getSpeed() + ' [m/s]';
+  // });
+
+  // // handle geolocation error.
+  // geolocation.on('error', function (error) {
+  //   const info = document.getElementById('info');
+  //   info.innerHTML = error.message;
+  //   info.style.display = '';
+  // });
+  // }
   private coordinateSubject = new BehaviorSubject<
     { lat: string; long: string }[]
   >([]);
@@ -35,27 +61,6 @@ export class GpsService {
   async showPosition(position: {
     coords: { latitude: number; longitude: number };
   }) {
-    // //Parte per coordinate random
-    // function randomCoord(coordinataIni: any) {
-    //   // console.log(coordinataIni);
-    //   let coordinata = Number.parseFloat(coordinataIni).toFixed(4);
-    //   //let coordinata = coordinataIni.toFixed(4);
-    //   let coordRandom = (Math.random() * 180).toFixed(6);
-    //   const baseDecimRandom = coordRandom.split('.');
-    //   let base = baseDecimRandom[1];
-    //   let lunghBase = base.length;
-    //   const decimNew = base.substring(3, lunghBase);
-
-    //   let finale = coordinata + decimNew;
-
-    //   return finale;
-    // }
-
-    // let datalat: any = position.coords.latitude.toFixed(7);
-    // let datalong: any = position.coords.longitude.toFixed(7);
-    // let lat = randomCoord(datalat);
-    // let long = randomCoord(datalong);
-
     let lat = position.coords.latitude;
     let long = position.coords.longitude;
 
@@ -65,14 +70,6 @@ export class GpsService {
       latitudine: lat,
       longitudine: long,
     });
-
-    // GPS ON --------------------------------
-    // this.socket.on('gpsUtente_idroom_' + this.idroom, function (msgGps: any) {
-    //   console.log('msgGps.idroom: ', msgGps.idroom);
-    //   console.log('msgGps.latitudine: ', msgGps.latitudine);
-    //   console.log('msgGps.longitudine: ', msgGps.longitudine);
-    // });
-    //---------------------------------------------------
 
     this.coordinate.push({ lat: lat, long: long });
 
@@ -91,13 +88,6 @@ export class GpsService {
       latitudine: lat,
       longitudine: long,
     });
-    // SOCKET ON - POSIZIONE MARKER --------------------------------
-    //this.socket.on('posMkrBckEnd_'+this.idroom, function(posMkrBckEnd: any){
-    // this.socket.on(`posMkrBckEnd_${this.idroom}`, function (posMkrBckEnd: any) {
-    //   console.log('posMkrBckEnd.idroom11: ' + posMkrBckEnd.idroom);
-    //   console.log('posMkrBckEnd.lat11: ' + posMkrBckEnd.latitudine);
-    //   console.log('posMkrBckEnd.long11: ' + posMkrBckEnd.longitudine);
-    // });
   }
 
   startGps() {
