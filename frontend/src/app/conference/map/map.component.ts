@@ -1,13 +1,6 @@
 import 'ol/ol.css';
 
-import {
-  Component,
-  ElementRef,
-  HostListener,
-  Input,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import LayerGroup from 'ol/layer/Group';
 import TileLayer from 'ol/layer/Tile';
 import Map from 'ol/Map';
@@ -42,8 +35,6 @@ import LayerSwitcher, {
   GroupLayerOptions,
 } from 'ol-layerswitcher';
 import { KMZ } from './KMZ';
-import Geometry from 'ol/geom/Geometry';
-import { format } from 'ol/coordinate';
 
 import { Socket } from 'ngx-socket-io';
 import { GpsService } from '../gps.service';
@@ -110,6 +101,7 @@ export class MapComponent implements OnInit {
   }
 
   ngOnInit() {
+    /* SUBSCRIBE AL RESIZE DELLA PAGINA PER AGGIORNARE LA MAPPA  */
     this.resizeSubscription$ = this.resizeObservable$
       .pipe(distinctUntilChanged(), debounceTime(500))
       .subscribe((evt) => {
@@ -140,9 +132,7 @@ export class MapComponent implements OnInit {
 
     /* MAPPA E LAYER */
     this.mapService.fetchMap(this.roomId).subscribe((map) => {
-      //console.log('🐱‍👤 : mapData', map);
-
-      /* drag &drop */
+      /* DRAG & DROP */
       const dragAndDropInteraction = new DragAndDrop({
         formatConstructors: [KMZ, GPX, GeoJSON, IGC, KML, TopoJSON],
       });
@@ -181,6 +171,8 @@ export class MapComponent implements OnInit {
         }),
       } as BaseLayerOptions);
 
+      /* ****************** DEFINIZIONE LAYER BASE MAPPA *******************/
+
       this.googleStreet = new TileLayer({
         title: 'Google Streets',
         type: 'base',
@@ -207,6 +199,7 @@ export class MapComponent implements OnInit {
       } as BaseLayerOptions);
 
       this.nessuno = new TileLayer({
+        // TODO ++++ SFONDO BIANCO
         title: 'Nessuno',
         type: 'base',
         visible: false,
@@ -217,6 +210,7 @@ export class MapComponent implements OnInit {
 
       /* ********************************************************************************************* */
 
+      /* INIZIALIZZAZIONE MAPPA CON TIMEOUT PER CARICAMENTO PREVENTIVO LAYER*/
       setTimeout(() => {
         this.mappa = new Map({
           interactions: defaultInteractions().extend([dragAndDropInteraction]),
@@ -248,20 +242,23 @@ export class MapComponent implements OnInit {
             zoom: 15,
           }),
         });
+
         this.updateMarkerOperatore(map.longcentrmap, map.latcentromap);
+
         /* CONTROLLI IN AGGIUNTA */
         const scaleLineControl = new ScaleLine();
         this.mappa.addControl(scaleLineControl);
 
+        const fullScreenControl = new FullScreen();
+        this.mappa.addControl(fullScreenControl);
+
+        /* CONTROLLI RIMOSSI */
         const rotateMapControl = new Rotate({
           autoHide: false,
         });
         this.mappa.removeControl(rotateMapControl);
 
-        const fullScreenControl = new FullScreen();
-        this.mappa.addControl(fullScreenControl);
-        /* Layer Menu */
-
+        /* LAYER SWITCHER MENU */
         const groupStyle: GroupSelectStyle = 'children';
 
         const opts: LsOptions = {
@@ -274,7 +271,7 @@ export class MapComponent implements OnInit {
 
         this.mappa.addControl(layerSwitcher);
 
-        /* click event marker blu / display info kmz/l */
+        /* EVENTO CLICK - INDICAZIONI - INFO KMZ/L */
 
         this.mappa.on('click', (evt) => {
           if (this.isInfo) {
@@ -306,7 +303,7 @@ export class MapComponent implements OnInit {
           }
         });
 
-        /* Drag&Drop KML KMZ*/
+        /* ISTRUZIONI AL DRAG & DROP DEL KML-KMZ*/
 
         dragAndDropInteraction.on('addfeatures', (event: any) => {
           // this.vectorSourceKMLOUT = new VectorSource({
@@ -334,6 +331,8 @@ export class MapComponent implements OnInit {
       this.gps.ConfigIdRoom(this.roomId);
     });
 
+    /* SUBSCRIBE ALLE COORDINATE DEI MARKER DELLA MAPPA E TRASMISSIONE POSIZIONI TRAMITE SOCKET */
+
     this.gps.coordinate$.subscribe((coords) => {
       if (coords && coords.length > 0) {
         let index = coords.length - 1;
@@ -348,13 +347,11 @@ export class MapComponent implements OnInit {
     this.socket
       .fromEvent<any>('posMkrBckEnd_' + this.roomId)
       .subscribe((markerBlu) => {
-        console.log('eccoloooooooo', markerBlu);
-
         this.updateMarkerBlu(markerBlu.longitudine, markerBlu.latitudine);
       });
   }
 
-  /* INFO KML/KMZ */
+  /* DISPLAY INFO KML/KMZ */
 
   displayFeatureInfo(pixel) {
     if (this.isInfo) {
@@ -383,12 +380,11 @@ export class MapComponent implements OnInit {
     }
   }
 
-  /* MARKER BLUE definizione */
+  /* DEFINIZIONE DEL MARKER BLUE (INDICAZIONI)  */
   updateMarkerBlu(long, lat) {
     if (this.mappa) {
       if (this.vectorLayer2) {
         this.mappa.removeLayer(this.vectorLayer2);
-        //this.vectorLayer2 = null;
       }
 
       this.marker2 = new Feature({
@@ -428,7 +424,7 @@ export class MapComponent implements OnInit {
       this.isMarkerBluOn = true;
     }
   }
-  /* rimuove marker BLU  */
+  /* RIMUOVE MARKER BLUE ED INVIA AL BACKEND LA POSIZIONE 0,0 TRAMITE SOKET */
   deleteMarkerBlu() {
     if (this.vectorLayer2) {
       this.mappa.removeLayer(this.vectorLayer2);
@@ -436,7 +432,7 @@ export class MapComponent implements OnInit {
     }
   }
 
-  /* SEGUI OPERATORE */
+  /* ISTRUZIONI SEGUI OPERATORE (CREA E CANCELLA IL MARKER CON LE NUOVE COORDINATE) */
   updateMarkerOperatore(long, lat) {
     if (this.mappa) {
       if (this.vectorLayer) {

@@ -35,26 +35,29 @@ export class GpsService {
   async showPosition(position: {
     coords: { latitude: number; longitude: number };
   }) {
-    //Parte per coordinate random
-    function randomCoord(coordinataIni: any) {
-      // console.log(coordinataIni);
-      let coordinata = Number.parseFloat(coordinataIni).toFixed(4);
-      //let coordinata = coordinataIni.toFixed(4);
-      let coordRandom = (Math.random() * 180).toFixed(6);
-      const baseDecimRandom = coordRandom.split('.');
-      let base = baseDecimRandom[1];
-      let lunghBase = base.length;
-      const decimNew = base.substring(3, lunghBase);
+    // //Parte per coordinate random
+    // function randomCoord(coordinataIni: any) {
+    //   // console.log(coordinataIni);
+    //   let coordinata = Number.parseFloat(coordinataIni).toFixed(4);
+    //   //let coordinata = coordinataIni.toFixed(4);
+    //   let coordRandom = (Math.random() * 180).toFixed(6);
+    //   const baseDecimRandom = coordRandom.split('.');
+    //   let base = baseDecimRandom[1];
+    //   let lunghBase = base.length;
+    //   const decimNew = base.substring(3, lunghBase);
 
-      let finale = coordinata + decimNew;
+    //   let finale = coordinata + decimNew;
 
-      return finale;
-    }
+    //   return finale;
+    // }
 
-    let datalat: any = position.coords.latitude.toFixed(7);
-    let datalong: any = position.coords.longitude.toFixed(7);
-    let lat = randomCoord(datalat);
-    let long = randomCoord(datalong);
+    // let datalat: any = position.coords.latitude.toFixed(7);
+    // let datalong: any = position.coords.longitude.toFixed(7);
+    // let lat = randomCoord(datalat);
+    // let long = randomCoord(datalong);
+
+    let lat = position.coords.latitude;
+    let long = position.coords.longitude;
 
     // GPS EMIT --------------------------------
     this.socket.emit('gps', {
@@ -99,7 +102,6 @@ export class GpsService {
 
   startGps() {
     this.gpsInterval = setInterval(() => this.getLocation(), 2000);
-    console.log('funzionaaaaa');
   }
   stopGps() {
     clearInterval(this.gpsInterval);
