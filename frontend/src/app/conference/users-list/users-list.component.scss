@@ -1,5 +1,6 @@
 ion-item {
   align-content: center;
+  --padding-start: 0px;
   .user-avatar {
     height: 48px;
     width: 48px;
@@ -27,4 +28,11 @@ ion-item {
     font-size: 1.7rem;
     fill: var(--ion-color-primary);
   }
+}
+
+.partecipanti {
+  font-weight: 600;
+  padding-bottom: 3px;
+  color: var(--ion-color-secondary);
+  border-bottom: 2px solid var(--ion-color-secondary);
 }

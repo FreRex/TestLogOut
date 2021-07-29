@@ -44,7 +44,7 @@ export class ConferencePage implements OnInit, OnDestroy, ViewWillLeave {
     private router: Router,
     public roomFunctions: RoomFunctionsService,
     public audioService: AudioRTCService,
-    private gpsService: GpsService
+    public gps: GpsService
   ) {}
 
   isLoading: boolean = false;
@@ -71,35 +71,70 @@ export class ConferencePage implements OnInit, OnDestroy, ViewWillLeave {
             replaceUrl: true,
             relativeTo: this.activatedRoute,
           });
-          // console.log('roomId', roomId);
           return this.roomService.selectRoom(+roomId);
-          // return this.authService.currentUser$;
         }),
         switchMap((room: Room) => {
           if (!room) {
             throw new Error('Room Not Found');
           }
           this.room = room;
-          // console.log('this.room.id', this.room.id);
-          // this.userId = user.idutcas;
-          // return this.roomService.selectRoom(+this.roomId);
           return this.authService.currentUser$;
-          // return from(Storage.get({ key: 'authData' }));
         }),
         take(1)
       )
       .subscribe(
         (user: AuthUser) => {
           this.user = user;
-          // this.userId = user.idutcas;
-          // console.log('this.user.idutcas', this.user.idutcas);
-          // this.room = room;
-          this.configureSocket();
+          this.socket.emit('first_idroom', this.room.id);
           this.isLoading = false;
         },
         (err) => {
           this.navController.navigateBack(['/not-found']);
           this.isLoading = false;
+        }
+      );
+
+    this.socket
+      .fromEvent<any>('lista_utenti')
+      .pipe(
+        tap((utentiInConference) => {
+          if (utentiInConference) {
+            utentiInConference.slice(1).forEach((user) => {
+              if (user.stream == true) {
+                this.streamingUser = user;
+              }
+            });
+          }
+        }),
+        switchMap((utentiInConference) =>
+          iif(
+            () => this.user.idutcas !== 'guest',
+            of(this.user.idutcas),
+            this.checkIdGuest(utentiInConference, this.user.idutcas)
+          )
+        ),
+        switchMap((userId: string) =>
+          iif(
+            () => userId !== this.user.idutcas,
+            this.authService.updateGuest(userId),
+            of(this.user)
+          )
+        )
+      )
+      .subscribe(
+        (user: AuthUser) => {
+          this.user = user;
+          this.configureSocket();
+          if (this.streamingUser && !this.isPlaying) {
+            this.playerComponent.startPlayer(
+              this.room.id,
+              this.streamingUser.idutente
+            );
+            this.isPlaying = true;
+          }
+        },
+        (err) => {
+          console.log('subscribe : err', err);
         }
       );
   }
@@ -110,7 +145,7 @@ export class ConferencePage implements OnInit, OnDestroy, ViewWillLeave {
       this.playerComponent.stopStream();
       this.isStreaming = false;
       this.streamingUser = null;
-      this.gpsService.stopGps();
+      this.gps.stopGps();
     }
     if (this.isPlaying) {
       this.isPlaying = false;
@@ -143,71 +178,18 @@ export class ConferencePage implements OnInit, OnDestroy, ViewWillLeave {
 
   // handles messages coming from signalling_server (remote party)
   public configureSocket(): void {
-    this.socket.emit('first_idroom', this.room.id);
-
-    // let userId = this.user.idutcas;
-    this.socket
-      .fromEvent<any>('lista_utenti')
-      .pipe(
-        tap((utentiInConference) => {
-          if (utentiInConference) {
-            utentiInConference.slice(1).forEach((user) => {
-              if (user.stream == true) {
-                this.streamingUser = user;
-              }
-            });
-          }
-        }),
-        switchMap((utentiInConference) =>
-          iif(
-            () => this.user.idutcas !== 'guest',
-            of(this.user.idutcas),
-            this.checkIdGuest(utentiInConference, this.user.idutcas)
-          )
-        ),
-        switchMap((userId: string) =>
-          iif(
-            () => userId !== this.user.idutcas,
-            this.authService.updateGuest(userId),
-            of(this.user)
-          )
-        )
-      )
-      .subscribe(
-        (user: AuthUser) => {
-          this.user = user;
-          // console.log('this.user.idutcas', this.user.idutcas);
-          // console.log('this.user.nomecognome: ', this.user.nomecognome);
-
-          this.socket.emit('config_rtmpDestination', {
-            rtmp: `${environment.urlRTMP}/${this.room.id}/${this.user.idutcas}`,
-            nome: this.user.nomecognome,
-          });
-
-          if (this.streamingUser && !this.isPlaying) {
-            this.playerComponent.startPlayer(
-              this.room.id,
-              this.streamingUser.idutente
-            );
-            this.isPlaying = true;
-          }
-        },
-        (err) => {
-          console.log('subscribe : err', err);
-        }
-      );
-
+    this.socket.emit('config_rtmpDestination', {
+      rtmp: `${environment.urlRTMP}/${this.room.id}/${this.user.idutcas}`,
+      nome: this.user.nomecognome,
+    });
     this.socket.fromEvent<any>('message').subscribe(
       (msg) => {
         switch (msg.type) {
           case 'welcome':
-            // console.log('Welcome! ', msg.data);
             break;
           case 'info':
-            // console.log('Info: ', msg.data);
             break;
           case 'fatal':
-            // console.log('Fatal: ', msg.data);
             break;
           case `${this.room.id}`: //FREXXXXXXXXXXXXX
             console.log('array per idroom: ', msg);
@@ -228,7 +210,7 @@ export class ConferencePage implements OnInit, OnDestroy, ViewWillLeave {
               // this.socket.emit('disconnectStream', '');
               this.playerComponent.stopStream();
               this.isStreaming = false;
-              this.gpsService.stopGps();
+              this.gps.stopGps();
             }
             // }
             break;
@@ -279,12 +261,12 @@ export class ConferencePage implements OnInit, OnDestroy, ViewWillLeave {
       this.playerComponent.stopStream();
       this.isStreaming = false;
       this.streamingUser = null;
-      this.gpsService.stopGps();
+      this.gps.stopGps();
     } else {
       this.socket.emit('start', { idutente: this.user.idutcas });
       this.playerComponent.startStream();
       this.isStreaming = true;
-      this.gpsService.startGps();
+      this.gps.startGps();
     }
   }
 
