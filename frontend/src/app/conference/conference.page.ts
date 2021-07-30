@@ -221,7 +221,6 @@ export class ConferencePage implements OnInit, OnDestroy, ViewWillLeave {
           case 'fatal':
             break;
           case `${this.room.id}`: //FREXXXXXXXXXXXXX
-            console.log('array per idroom: ', msg);
             this.usersInRoom = [];
             msg.data.slice(1).forEach((user) => {
               if (user.stream) {

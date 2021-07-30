@@ -58,7 +58,7 @@ export class UsersListComponent implements OnInit {
         return roomUsers;
       }),
       tap((roomUsers) => {
-        console.log('🐱‍👤 : roomUsers', roomUsers);
+        // console.log('🐱‍👤 : roomUsers', roomUsers);
       })
     );
   }

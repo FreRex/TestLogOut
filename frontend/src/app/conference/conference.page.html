@@ -72,7 +72,7 @@
     </ion-row>
     <ion-row>
       <ion-col
-        *ngIf="isVideoVisible"
+        [hidden]="!isVideoVisible"
         [sizeLg]="isMapVisible ? '4.5' : '9'"
         size-xs="12"
       >
@@ -105,7 +105,7 @@
         ></app-streaming-bar>
       </ion-col>
       <ion-col
-        *ngIf="isMapVisible"
+        [hidden]="!isMapVisible"
         [sizeLg]="isVideoVisible ? '4.5' : '9'"
         size-xs="12"
       >
@@ -153,23 +153,5 @@
         </div>
       </ion-col>
     </ion-row>
-
-    <!-- <ion-row>
-      <div *ngFor="let remoteStream of this.audioService.remoteStreams">
-        <div class="audio-container">
-          <div class="ion-padding">
-            <p>Utente</p>
-            <h3>{{remoteStream.id}}</h3>
-          </div>
-          <audio
-            id="{{ 'remoteVideo' + remoteStream.id }}"
-            [srcObject]="remoteStream.stream"
-            controls
-            autoplay
-            playsinline
-          ></audio>
-        </div>
-      </div>
-    </ion-row> -->
   </ion-grid>
 </ion-content>
