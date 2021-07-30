@@ -24,6 +24,7 @@ export class ConferencePage implements OnInit, OnDestroy, ViewWillLeave {
   private sub: Subscription;
 
   @ViewChild(PlayerComponent) private playerComponent: PlayerComponent;
+  @ViewChild(MapComponent) private map: MapComponent;
   public room: Room;
   public user: AuthUser;
   public usersInRoom: RoomUser[] = [];
@@ -210,7 +211,7 @@ export class ConferencePage implements OnInit, OnDestroy, ViewWillLeave {
               // this.socket.emit('disconnectStream', '');
               this.playerComponent.stopStream();
               this.isStreaming = false;
-              this.gps.stopGps();
+              this.map.stopGps();
             }
             // }
             break;
@@ -261,12 +262,12 @@ export class ConferencePage implements OnInit, OnDestroy, ViewWillLeave {
       this.playerComponent.stopStream();
       this.isStreaming = false;
       this.streamingUser = null;
-      this.gps.stopGps();
+      this.map.stopGps();
     } else {
       this.socket.emit('start', { idutente: this.user.idutcas });
       this.playerComponent.startStream();
       this.isStreaming = true;
-      this.gps.startGps();
+      this.map.startGps();
     }
   }
 
