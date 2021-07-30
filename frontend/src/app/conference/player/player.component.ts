@@ -54,16 +54,20 @@ export class PlayerComponent implements OnInit {
     });
   }
 
-  capture() {
+  capture(isLocal: boolean) {
+    let video = isLocal
+      ? this.localVideo.nativeElement
+      : this.remoteVideo.nativeElement;
+    console.log('🐱‍👤 : video', video);
     this.modalController
       .create({
         component: PhotoModalComponent,
         cssClass: 'transparent-modal',
         backdropDismiss: false,
         componentProps: {
-          WIDTH: this.localVideo.nativeElement.videoWidth,
-          HEIGHT: this.localVideo.nativeElement.videoHeight,
-          image: this.localVideo.nativeElement,
+          WIDTH: video.videoWidth,
+          HEIGHT: video.videoHeight,
+          image: video,
           room: this.room,
           user: this.user,
         },

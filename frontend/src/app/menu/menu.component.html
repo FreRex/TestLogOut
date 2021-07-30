@@ -1,4 +1,4 @@
-<ion-menu contentId="main" swipeGesture="false" side="end">
+<ion-menu #menu contentId="main" swipeGesture="false" side="end">
   <ion-header class="ion-no-border">
     <ion-toolbar>
       <ion-buttons slot="end">
@@ -29,7 +29,7 @@
           <ion-item
             lines="none"
             button="true"
-            routerLink="/rooms/gallery/{{ room.id }}/{{ room.progetto }}"
+            routerLink="/gallery/{{ room.id }}/{{ room.progetto }}"
           >
             <ion-text>Media</ion-text>
           </ion-item>
@@ -48,14 +48,12 @@
       <div class="user-menu">
         <div>
           <ion-item lines="none">
-            <div>
-              <h2>{{ (currentUser$ | async)?.nomecognome }}</h2>
-              <p>Username: {{ (currentUser$ | async)?.username }}</p>
-              <p>Commessa: {{ (currentUser$ | async)?.commessa }}</p>
-              <p>
-                Autorizzazione: {{ (currentUser$ | async)?.autorizzazione }}
-              </p>
-              <p>ID Utente: {{ (currentUser$ | async)?.idutcas }}</p>
+            <div *ngIf="currentUser$ | async as user">
+              <h2>{{ user.nomecognome }}</h2>
+              <p>Username: {{ user.username }}</p>
+              <p>Commessa: {{ user.commessa }}</p>
+              <p>Autorizzazione: {{ user.autorizzazione }}</p>
+              <p>ID Utente: {{ user.idutcas }}</p>
             </div>
           </ion-item>
         </div>

@@ -101,7 +101,9 @@ export class MapComponent implements OnInit {
 
   updateSize() {
     if (this.mappa) {
-      this.mappa.updateSize();
+      setTimeout(() => {
+        this.mappa.updateSize();
+      }, 200);
     }
   }
 

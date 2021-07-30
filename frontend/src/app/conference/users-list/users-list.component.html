@@ -1,3 +1,4 @@
+<div class="partecipanti">Partecipanti</div>
 <ion-list>
   <ion-item *ngFor="let user of roomUsers$ | async">
     <div class="user-avatar">
@@ -16,7 +17,6 @@
       *ngIf="user?.audioOn"
       id="{{ 'remoteVideo' + user?.idutente }}"
       [srcObject]="user?.audioStream"
-      controls
       autoplay
       playsinline
     ></audio>

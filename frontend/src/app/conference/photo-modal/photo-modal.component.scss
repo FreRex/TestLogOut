@@ -1,48 +1,3 @@
-// ion-content {
-//   --background: transparent;
-// }
-// .modal_content {
-//   display: block;
-//   position: relative;
-//   top: calc(50% - (50% / 2));
-//   left: 0;
-//   right: 0;
-//   width: 100%;
-//   height: 50%;
-//   padding: 10px;
-//   z-index: 1;
-//   margin: 0 auto;
-//   padding: 10px;
-//   color: #333;
-//   background: #e8e8e8;
-//   background: -moz-linear-gradient(top, #fff 0%, #e8e8e8 100%);
-//   background: -webkit-linear-gradient(top, #fff 0%, #e8e8e8 100%);
-//   background: linear-gradient(to bottom, #fff 0%, #e8e8e8 100%);
-//   border-radius: 5px;
-//   box-shadow: 0 2px 3px rgba(51, 51, 51, 0.35);
-//   box-sizing: border-box;
-//   -moz-box-sizing: border-box;
-//   -webkit-box-sizing: border-box;
-//   //overflow: hidden;
-// }
-
-// .circle {
-//   position: absolute;
-//   height: 100px;
-//   width: 100px;
-//   border-radius: 50%;
-//   border: 3px solid white;
-//   left: 50%;
-//   margin-left: -55px;
-//   top: -40px;
-//   background: #d33;
-//   z-index: 10000;
-// }
-
-// .modal-content {
-//   padding-top: 5rem;
-// }
-
 ion-content {
   --background: transparent;
 }
@@ -58,8 +13,6 @@ ion-content {
   align-content: stretch;
 }
 
-// .form-items {
-// display: block;
 .form-fields {
   display: flex;
   flex-grow: 1;
@@ -110,7 +63,6 @@ ion-content {
     --padding-start: 0px;
   }
 }
-// }
 
 ion-label {
   opacity: 70%;
@@ -125,7 +77,7 @@ ion-input {
   display: block;
   flex-grow: 0;
   align-self: flex-end;
-  padding-top: 16px;
+  padding-top: 8px;
   ion-button {
     font-size: 0.85rem;
     font-weight: 600;

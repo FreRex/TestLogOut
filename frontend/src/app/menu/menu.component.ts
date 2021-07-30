@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { IonMenu } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
 
@@ -12,18 +12,21 @@ import { Room, RoomService } from '../rooms/room.service';
   styleUrls: ['./menu.component.scss'],
 })
 export class MenuComponent implements OnInit {
+  @ViewChild('menu', { static: true }) ionMenu: IonMenu;
+
   public currentUser$: Observable<AuthUser>;
   public currentRoom$: Observable<Room>;
 
   constructor(
-    private router: Router,
-    private authService: AuthService,
-    private roomService: RoomService
+    public authService: AuthService,
+    public roomService: RoomService
   ) {}
 
   ngOnInit() {
-    this.currentUser$ = this.authService.currentUser$;
-    this.currentRoom$ = this.roomService.currentRoom$;
+    this.ionMenu.ionWillOpen.subscribe((willOpen) => {
+      this.currentUser$ = this.authService.currentUser$;
+      this.currentRoom$ = this.roomService.currentRoom$;
+    });
   }
 
   onLogout() {

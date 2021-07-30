@@ -4,7 +4,7 @@ import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AuthGuard as AuthGuard } from './auth/auth.guard';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'auth', pathMatch: 'full' },
+  { path: '', redirectTo: 'rooms', pathMatch: 'full' },
   {
     path: 'auth',
     loadChildren: () =>
@@ -24,6 +24,11 @@ const routes: Routes = [
       ),
     // canActivate: [AuthGuard],
     canLoad: [AuthGuard],
+  },
+  {
+    path: 'gallery/:id/:proj',
+    loadChildren: () =>
+      import('./gallery/gallery.module').then((m) => m.GalleryPageModule),
   },
   {
     path: 'backoffice',
@@ -59,7 +64,8 @@ const routes: Routes = [
   },
   {
     path: 'prova',
-    loadChildren: () => import('./prova/prova.module').then( m => m.ProvaPageModule)
+    loadChildren: () =>
+      import('./prova/prova.module').then((m) => m.ProvaPageModule),
   },
 ];
 

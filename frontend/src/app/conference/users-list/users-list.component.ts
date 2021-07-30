@@ -40,8 +40,8 @@ export class UsersListComponent implements OnInit {
       this.watchers$,
     ]).pipe(
       map(([listeners, watchers]) => {
-        console.log('🐱‍👤 : watchers', watchers);
-        console.log('🐱‍👤 : listeners', listeners);
+        // console.log('🐱‍👤 : watchers', watchers);
+        // console.log('🐱‍👤 : listeners', listeners);
         let roomUsers: RoomUser[] = [];
         watchers.forEach((watcher) => {
           let listener = listeners.find(

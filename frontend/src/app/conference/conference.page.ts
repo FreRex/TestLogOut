@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NavController, ViewDidLeave } from '@ionic/angular';
+import { NavController, Platform, ViewWillLeave } from '@ionic/angular';
 import { Socket } from 'ngx-socket-io';
 import { BehaviorSubject, iif, Observable, of, Subscription } from 'rxjs';
 import { map, retryWhen, switchMap, take, tap } from 'rxjs/operators';
@@ -8,7 +8,7 @@ import { environment } from 'src/environments/environment';
 
 import { AuthUser } from '../auth/auth-user.model';
 import { AuthService } from '../auth/auth.service';
-import { RoomItemService } from '../rooms/room-item.service';
+import { RoomFunctionsService } from '../rooms/room-list/room-functions.service';
 import { Room, RoomService } from '../rooms/room.service';
 import { AudioRTCService } from './audiortc.service';
 import { RoomUser } from './conference.service';
@@ -21,7 +21,7 @@ import { PlayerComponent } from './player/player.component';
   templateUrl: './conference.page.html',
   styleUrls: ['./conference.page.scss'],
 })
-export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
+export class ConferencePage implements OnInit, OnDestroy, ViewWillLeave {
   private sub: Subscription;
 
   @ViewChild(PlayerComponent) private playerComponent: PlayerComponent;
@@ -42,19 +42,46 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
     private navController: NavController,
     private roomService: RoomService,
     private authService: AuthService,
-    private roomItemService: RoomItemService,
     private socket: Socket,
     private router: Router,
+    public platform: Platform,
+    public roomFunctions: RoomFunctionsService,
     public audioService: AudioRTCService,
-    private gpsService: GpsService
+    public gps: GpsService
   ) {}
 
   isLoading: boolean = false;
+  isMapVisible: boolean = true;
+  isVideoVisible: boolean = true;
+  isMobile: boolean = false;
+
   public followOperatorOnMap: boolean = true;
   public marker2Delete: boolean = true;
   isInfo: boolean = false;
 
+  toggleMappa() {
+    if (this.isMobile) {
+      this.isVideoVisible = this.isMapVisible;
+      this.isMapVisible = !this.isMapVisible;
+    } else if (this.isVideoVisible) {
+      this.isMapVisible = !this.isMapVisible;
+    }
+  }
+  toggleVideo() {
+    if (this.isMobile) {
+      this.isMapVisible = this.isVideoVisible;
+      this.isVideoVisible = !this.isVideoVisible;
+    } else if (this.isMapVisible && !this.isStreaming && !this.isPlaying) {
+      this.isVideoVisible = !this.isVideoVisible;
+      this.map.updateSize();
+    }
+  }
+
   ngOnInit() {
+    if (this.platform.is('mobile')) {
+      this.isMobile = true;
+      this.isMapVisible = false;
+    }
     /*
      * Recupera l'ID della room dall'URL,
      * l'utente corrente dall'authService,
@@ -73,30 +100,21 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
             replaceUrl: true,
             relativeTo: this.activatedRoute,
           });
-          // console.log('roomId', roomId);
           return this.roomService.selectRoom(+roomId);
-          // return this.authService.currentUser$;
         }),
         switchMap((room: Room) => {
           if (!room) {
             throw new Error('Room Not Found');
           }
           this.room = room;
-          // console.log('this.room.id', this.room.id);
-          // this.userId = user.idutcas;
-          // return this.roomService.selectRoom(+this.roomId);
           return this.authService.currentUser$;
-          // return from(Storage.get({ key: 'authData' }));
         }),
         take(1)
       )
       .subscribe(
         (user: AuthUser) => {
           this.user = user;
-          // this.userId = user.idutcas;
-          // console.log('this.user.idutcas', this.user.idutcas);
-          // this.room = room;
-          this.configureSocket();
+          this.socket.emit('first_idroom', this.room.id);
           this.isLoading = false;
         },
         (err) => {
@@ -104,34 +122,7 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
           this.isLoading = false;
         }
       );
-  }
 
-  ionViewDidLeave() {
-    this.roomService.deselectRoom();
-  }
-
-  ngOnDestroy() {
-    if (this.sub) {
-      this.sub.unsubscribe();
-    }
-  }
-
-  followOperator() {
-    this.followOperatorOnMap = !this.followOperatorOnMap;
-  }
-
-  showDisplayInfo() {
-    this.isInfo = !this.isInfo;
-  }
-
-  private watchersSubject = new BehaviorSubject<RoomUser[]>([]);
-  watchers$ = this.watchersSubject.asObservable();
-
-  // handles messages coming from signalling_server (remote party)
-  public configureSocket(): void {
-    this.socket.emit('first_idroom', this.room.id);
-
-    // let userId = this.user.idutcas;
     this.socket
       .fromEvent<any>('lista_utenti')
       .pipe(
@@ -162,14 +153,7 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
       .subscribe(
         (user: AuthUser) => {
           this.user = user;
-          // console.log('this.user.idutcas', this.user.idutcas);
-          // console.log('this.user.nomecognome: ', this.user.nomecognome);
-
-          this.socket.emit('config_rtmpDestination', {
-            rtmp: `${environment.urlRTMP}/${this.room.id}/${this.user.idutcas}`,
-            nome: this.user.nomecognome,
-          });
-
+          this.configureSocket();
           if (this.streamingUser && !this.isPlaying) {
             this.playerComponent.startPlayer(
               this.room.id,
@@ -182,18 +166,59 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
           console.log('subscribe : err', err);
         }
       );
+  }
 
+  ionViewWillLeave() {
+    if (this.isStreaming) {
+      this.socket.emit('disconnectStream', '');
+      this.playerComponent.stopStream();
+      this.isStreaming = false;
+      this.streamingUser = null;
+      this.gps.stopGps();
+    }
+    if (this.isPlaying) {
+      this.isPlaying = false;
+      this.playerComponent.stopPlayer();
+    }
+    this.audioService.leaveRoom(this.room.id);
+  }
+
+  goBack() {
+    this.roomService.deselectRoom();
+    this.navController.navigateBack(['/rooms']);
+  }
+
+  ngOnDestroy() {
+    if (this.sub) {
+      this.sub.unsubscribe();
+    }
+  }
+
+  followOperator() {
+    this.followOperatorOnMap = !this.followOperatorOnMap;
+  }
+
+  showDisplayInfo() {
+    this.isInfo = !this.isInfo;
+  }
+
+  private watchersSubject = new BehaviorSubject<RoomUser[]>([]);
+  watchers$ = this.watchersSubject.asObservable();
+
+  // handles messages coming from signalling_server (remote party)
+  public configureSocket(): void {
+    this.socket.emit('config_rtmpDestination', {
+      rtmp: `${environment.urlRTMP}/${this.room.id}/${this.user.idutcas}`,
+      nome: this.user.nomecognome,
+    });
     this.socket.fromEvent<any>('message').subscribe(
       (msg) => {
         switch (msg.type) {
           case 'welcome':
-            // console.log('Welcome! ', msg.data);
             break;
           case 'info':
-            // console.log('Info: ', msg.data);
             break;
           case 'fatal':
-            // console.log('Fatal: ', msg.data);
             break;
           case `${this.room.id}`: //FREXXXXXXXXXXXXX
             console.log('array per idroom: ', msg);
@@ -245,7 +270,11 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
   }
 
   capturePhoto() {
-    this.playerComponent.capture();
+    if (this.isStreaming) {
+      this.playerComponent.capture(true);
+    } else {
+      this.playerComponent.capture(false);
+    }
   }
 
   public isPlaying: boolean = false;
@@ -331,9 +360,5 @@ export class ConferencePage implements OnInit, OnDestroy, ViewDidLeave {
     }
     // console.log('🐱‍👤 generateRandomId : result', result);
     return result;
-  }
-
-  copyLink() {
-    this.roomItemService.copyLink(this.room);
   }
 }
