@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NavController, ViewWillLeave } from '@ionic/angular';
+import { NavController, Platform, ViewWillLeave } from '@ionic/angular';
 import { Socket } from 'ngx-socket-io';
 import { BehaviorSubject, iif, Observable, of, Subscription } from 'rxjs';
 import { map, retryWhen, switchMap, take, tap } from 'rxjs/operators';
@@ -13,6 +13,7 @@ import { Room, RoomService } from '../rooms/room.service';
 import { AudioRTCService } from './audiortc.service';
 import { RoomUser } from './conference.service';
 import { GpsService } from './gps.service';
+import { MapComponent } from './map/map.component';
 import { PlayerComponent } from './player/player.component';
 
 @Component({
@@ -43,17 +44,44 @@ export class ConferencePage implements OnInit, OnDestroy, ViewWillLeave {
     private authService: AuthService,
     private socket: Socket,
     private router: Router,
+    public platform: Platform,
     public roomFunctions: RoomFunctionsService,
     public audioService: AudioRTCService,
     public gps: GpsService
   ) {}
 
   isLoading: boolean = false;
+  isMapVisible: boolean = true;
+  isVideoVisible: boolean = true;
+  isMobile: boolean = false;
+
   public followOperatorOnMap: boolean = true;
   public marker2Delete: boolean = true;
   isInfo: boolean = false;
 
+  toggleMappa() {
+    if (this.isMobile) {
+      this.isVideoVisible = this.isMapVisible;
+      this.isMapVisible = !this.isMapVisible;
+    } else if (this.isVideoVisible) {
+      this.isMapVisible = !this.isMapVisible;
+    }
+  }
+  toggleVideo() {
+    if (this.isMobile) {
+      this.isMapVisible = this.isVideoVisible;
+      this.isVideoVisible = !this.isVideoVisible;
+    } else if (this.isMapVisible && !this.isStreaming && !this.isPlaying) {
+      this.isVideoVisible = !this.isVideoVisible;
+      this.map.updateSize();
+    }
+  }
+
   ngOnInit() {
+    if (this.platform.is('mobile')) {
+      this.isMobile = true;
+      this.isMapVisible = false;
+    }
     /*
      * Recupera l'ID della room dall'URL,
      * l'utente corrente dall'authService,

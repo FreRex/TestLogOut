@@ -17,7 +17,6 @@
       *ngIf="user?.audioOn"
       id="{{ 'remoteVideo' + user?.idutente }}"
       [srcObject]="user?.audioStream"
-      controls
       autoplay
       playsinline
     ></audio>

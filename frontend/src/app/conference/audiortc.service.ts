@@ -32,11 +32,11 @@ export class AudioRTCService {
 
   public remoteStreams: Listener[] = [];
   public isDataChannelOpen: boolean = false;
-  public isMicOn: boolean;
-  public joinedTheRoom = false;
+  public isMicOn: boolean = true;
+  public isJoined: boolean = false;
 
   public toggleMic() {
-    if (this.isMicOn) {
+    if (!this.isMicOn) {
       this.webRTCInstance.unmuteLocalMic();
       this.isMicOn = true;
     } else {
@@ -46,7 +46,7 @@ export class AudioRTCService {
   }
 
   public toggleAudio(roomName, streamId) {
-    if (!this.joinedTheRoom) {
+    if (!this.isJoined) {
       this.webRTCInstance.joinRoom(roomName, streamId);
     } else {
       this.webRTCInstance.leaveFromRoom(roomName);
@@ -58,7 +58,7 @@ export class AudioRTCService {
   // }
 
   public leaveRoom(roomName) {
-    if (this.joinedTheRoom) {
+    if (this.isJoined) {
       this.webRTCInstance.leaveFromRoom(roomName);
       console.log('🐱‍👤 : this.webRTCInstance', this.webRTCInstance);
     }
@@ -198,18 +198,18 @@ export class AudioRTCService {
           this.removeListener(data.streamId);
         } else if (info == 'publish_started') {
           console.log('🐱‍👤 : publish_started', data);
-          this.joinedTheRoom = true;
+          this.isJoined = true;
           // this.userJoined.next(obj.streamId);
           this.addListener(data.streamId);
         } else if (info == 'publish_finished') {
           console.log('🐱‍👤 : publish_finished', data);
           // this.remoteStreams = [];
           this.listenersSubject.next([]);
-          this.joinedTheRoom = false;
+          this.isJoined = false;
         } else if (info == 'closed') {
           console.log('🐱‍👤 : closed', data);
           this.listenersSubject.next([]);
-          this.joinedTheRoom = false;
+          this.isJoined = false;
           // if (typeof obj != 'undefined') {
           //   console.log('Connecton closed: ' + JSON.stringify(obj));
           // }
