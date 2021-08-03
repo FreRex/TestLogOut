@@ -66,7 +66,11 @@ export class ConferencePage implements OnInit, OnDestroy, ViewWillLeave {
     } else if (this.isVideoVisible) {
       this.isMapVisible = !this.isMapVisible;
     }
+    if (this.isMapVisible) {
+      this.map.updateSize();
+    }
   }
+
   toggleVideo() {
     if (this.isMobile) {
       this.isMapVisible = this.isVideoVisible;
