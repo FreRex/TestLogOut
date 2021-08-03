@@ -6,8 +6,8 @@ import { ProvaPage } from './prova.page';
 const routes: Routes = [
   {
     path: '',
-    component: ProvaPage
-  }
+    component: ProvaPage,
+  },
 ];
 
 @NgModule({

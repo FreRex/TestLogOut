@@ -6,8 +6,8 @@ import { CaptPhotoPage } from './capt-photo.page';
 const routes: Routes = [
   {
     path: '',
-    component: CaptPhotoPage
-  }
+    component: CaptPhotoPage,
+  },
 ];
 
 @NgModule({

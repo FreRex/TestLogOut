@@ -21,7 +21,9 @@
 
     <ion-item>
       <ion-label position="stacked" class="ion-margin">Commessa</ion-label>
-      <ion-input color="medium" disabled="true" type="text">{{ selectedUser?.commessa }}</ion-input>
+      <ion-input color="medium" disabled="true" type="text">{{
+        selectedUser?.commessa
+      }}</ion-input>
       <ion-icon
         size="small"
         name="lock-closed-outline"
@@ -67,7 +69,11 @@
   </form>
 </ion-content>
 <div class="ion-margin-vertical ion-padding">
-  <ion-button color="primary" expand="block" shape="round" (click)="createProject()"
+  <ion-button
+    color="primary"
+    expand="block"
+    shape="round"
+    (click)="createProject()"
     >Crea Progetto</ion-button
   >
 </div>

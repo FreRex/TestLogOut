@@ -10,7 +10,9 @@
         <p>
           <ion-icon
             name="person-circle-outline"
-            [color]="user['autorizzazioni'] === 'admin' ? 'danger' : 'secondary'"
+            [color]="
+              user['autorizzazioni'] === 'admin' ? 'danger' : 'secondary'
+            "
           >
           </ion-icon>
           - {{ user['commessa'] }} - {{ user['username'] }}

@@ -9,12 +9,7 @@ import { CaptPhotoPageRoutingModule } from './capt-photo-routing.module';
 import { CaptPhotoPage } from './capt-photo.page';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    CaptPhotoPageRoutingModule
-  ],
-  declarations: [CaptPhotoPage]
+  imports: [CommonModule, FormsModule, IonicModule, CaptPhotoPageRoutingModule],
+  declarations: [CaptPhotoPage],
 })
 export class CaptPhotoPageModule {}

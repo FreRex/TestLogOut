@@ -38,7 +38,11 @@
 
     <ion-item>
       <ion-label position="floating">Autorizzazione</ion-label>
-      <ion-select #autorizzazione interface="popover" value="{{ user?.autorizzazione }}">
+      <ion-select
+        #autorizzazione
+        interface="popover"
+        value="{{ user?.autorizzazione }}"
+      >
         <ion-select-option value="1">Admin</ion-select-option>
         <ion-select-option value="2">User</ion-select-option>
         <ion-select-option value="3">Supervisor</ion-select-option>
@@ -47,7 +51,11 @@
   </form>
 </ion-content>
 <div class="ion-margin-vertical ion-padding">
-  <ion-button color="primary" expand="block" shape="round" (click)="updateUser()"
+  <ion-button
+    color="primary"
+    expand="block"
+    shape="round"
+    (click)="updateUser()"
     >Aggiorna Utente
   </ion-button>
 </div>
