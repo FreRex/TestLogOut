@@ -2,7 +2,10 @@ import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { IonSelect, ModalController } from '@ionic/angular';
 
-import { Commission, CommissionService } from '../../commission-tab/commission.service';
+import {
+  Commission,
+  CommissionService,
+} from '../../commission-tab/commission.service';
 import { User, UserService } from '../user.service';
 
 @Component({
@@ -50,8 +53,12 @@ export class EditUserModalComponent implements OnInit {
         this.form.value.username,
         this.form.value.password,
         this.autorizzazione.value,
-        this.selectedCommission ? this.selectedCommission.id : this.user.idcommessa,
-        this.selectedCommission ? this.selectedCommission.commessa : this.user.commessa
+        this.selectedCommission
+          ? this.selectedCommission.id
+          : this.user.idcommessa,
+        this.selectedCommission
+          ? this.selectedCommission.commessa
+          : this.user.commessa
       )
       .subscribe(
         /** Il server risponde con 200 */
@@ -59,7 +66,10 @@ export class EditUserModalComponent implements OnInit {
           // non ci sono errori
           if (res['affectedRows'] === 1) {
             this.form.reset();
-            this.modalController.dismiss({ message: 'Utente Aggiornato' }, 'ok');
+            this.modalController.dismiss(
+              { message: 'Utente Aggiornato' },
+              'ok'
+            );
           }
           // possibili errori
           else {

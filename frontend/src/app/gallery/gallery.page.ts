@@ -116,7 +116,6 @@ export class GalleryPage implements ViewWillEnter, ViewWillLeave {
     this.mediaServ.checkDownload(nomeProgetto).subscribe((value: boolean) => {
       if (value) {
         const link = document.createElement('a');
-
         link.setAttribute(
           'href',
           `${environment.apiUrl}/downloadzip/${nomeProgetto}`

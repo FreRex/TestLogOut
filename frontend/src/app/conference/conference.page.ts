@@ -26,6 +26,7 @@ export class ConferencePage implements OnInit, OnDestroy, ViewWillLeave {
 
   @ViewChild(PlayerComponent) private playerComponent: PlayerComponent;
   @ViewChild(MapComponent) private map: MapComponent;
+
   public room: Room;
   public user: AuthUser;
   public usersInRoom: RoomUser[] = [];
@@ -184,7 +185,9 @@ export class ConferencePage implements OnInit, OnDestroy, ViewWillLeave {
       this.isPlaying = false;
       this.playerComponent.stopPlayer();
     }
-    this.audioService.leaveRoom(this.room.id);
+    if (this.room) {
+      this.audioService.leaveRoom(this.room.id);
+    }
   }
 
   goBack() {

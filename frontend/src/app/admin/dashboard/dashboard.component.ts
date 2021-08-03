@@ -39,7 +39,10 @@ export class DashboardComponent implements OnInit {
       this.presentToast('Altra sincronizzazione in corso!', 'danger');
     } else {
       this.syncService
-        .requestSync(this.selectedUser.id.toString(), this.form.value.pk_proj.toString())
+        .requestSync(
+          this.selectedUser.id.toString(),
+          this.form.value.pk_proj.toString()
+        )
         .subscribe(
           (res) => {
             console.log('this.syncService.requestSync => res: ', res);
@@ -113,12 +116,14 @@ export class DashboardComponent implements OnInit {
           {
             text: 'Riavvia',
             handler: () => {
-              this.http.get(`${environment.apiUrl}/vidapp/`).subscribe((res) => {
-                const restarted: boolean = res['restartNMS'];
-                if (restarted) {
-                  this.presentToast('Server Streaming Riavviato');
-                }
-              });
+              this.http
+                .get(`${environment.apiUrl}/vidapp/`)
+                .subscribe((res) => {
+                  const restarted: boolean = res['restartNMS'];
+                  if (restarted) {
+                    this.presentToast('Server Streaming Riavviato');
+                  }
+                });
             },
           },
         ],

@@ -6,8 +6,8 @@ import { TestGpsPage } from './test-gps.page';
 const routes: Routes = [
   {
     path: '',
-    component: TestGpsPage
-  }
+    component: TestGpsPage,
+  },
 ];
 
 @NgModule({

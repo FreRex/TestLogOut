@@ -19,7 +19,7 @@ import { Room } from 'src/app/rooms/room.service';
 })
 export class PhotoModalComponent implements OnInit, AfterViewInit {
   form: FormGroup = this.fb.group({
-    title: [null, [Validators.required]],
+    title: [null],
     note: [null],
   });
 
@@ -64,13 +64,12 @@ export class PhotoModalComponent implements OnInit, AfterViewInit {
     let imgBase64 = this.canvas.nativeElement
       .toDataURL('image/png')
       .replace(/^data:image\/(png|jpg);base64,/, '');
-    // .split(';base64,')[1];
-    console.log(imgBase64);
+
+    this.dowloadSinglePhoto(imgBase64);
 
     this.mediaService
       .addPhoto(
         imgBase64, // TODO
-        // 'gggggggggggggg',
         this.idPhoto,
         `img${this.idPhoto}`,
         this.form.value.title,
@@ -105,6 +104,21 @@ export class PhotoModalComponent implements OnInit, AfterViewInit {
           this.modalController.dismiss({ message: err.error['text'] }, 'error');
         }
       );
+  }
+
+  dowloadSinglePhoto(imageBase64: string) {
+    const link = document.createElement('a');
+
+    link.setAttribute('href', `data:image/jpeg;base64,${imageBase64}`);
+    link.setAttribute(
+      'download',
+      `${
+        this.form.value.title ? this.form.value.title : `img${this.idPhoto}`
+      }.jpeg`
+    );
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
   }
 
   closeModal() {

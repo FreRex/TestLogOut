@@ -31,20 +31,20 @@ const config: SocketIoConfig = { url: "http://localhost:4444", options: {} };
 The SocketIoModule provides now a **configured Socket service** that can be **injected anywhere** inside the AppModule.
 
 ```ts
-import { Injectable } from "@angular/core";
-import { Socket } from "ngx-socket-io";
-import { map } from "rxjs/operators";
+import { Injectable } from '@angular/core';
+import { Socket } from 'ngx-socket-io';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class ChatService {
   constructor(private socket: Socket) {}
 
   sendMessage(msg: string) {
-    this.socket.emit("message", msg);
+    this.socket.emit('message', msg);
   }
 
   getMessage() {
-    return this.socket.fromEvent("message").pipe(map((data) => data.msg));
+    return this.socket.fromEvent('message').pipe(map((data) => data.msg));
   }
 }
 ```
@@ -53,20 +53,20 @@ Using multiple sockets with different end points
 In this case we do not configure the SocketIoModule directly using forRoot. What we have to do is: extend the Socket service, and call super() with the SocketIoConfig object type (passing url & options if any).
 
 ```ts
-import { Injectable, NgModule } from "@angular/core";
-import { Socket } from "ngx-socket-io";
+import { Injectable, NgModule } from '@angular/core';
+import { Socket } from 'ngx-socket-io';
 
 @Injectable()
 export class SocketOne extends Socket {
   constructor() {
-    super({ url: "http://url_one:portOne", options: {} });
+    super({ url: 'http://url_one:portOne', options: {} });
   }
 }
 
 @Injectable()
 export class SocketTwo extends Socket {
   constructor() {
-    super({ url: "http://url_two:portTwo", options: {} });
+    super({ url: 'http://url_two:portTwo', options: {} });
   }
 }
 
@@ -156,7 +156,7 @@ npm install flv.js@1.5.0 -D
 And import FlvJs in test-stream.page.ts:
 
 ```ts
-import FlvJs from "flv.js";
+import FlvJs from 'flv.js';
 ```
 
 Now you can use FlvJs.Player a type and to create a Player
@@ -166,7 +166,7 @@ player: FlvJs.Player;
 
 this.player = FlvJs.createPlayer(
   {
-    type: "flv",
+    type: 'flv',
     url: `${this.urlWSS}${this.suffix}.flv`,
   },
   {
@@ -189,20 +189,36 @@ this.player = FlvJs.createPlayer(
 
 ## Streaming RTMP Node.js/Angular
 
-### Librerie npm interessanti:
+🐞 https://developers.google.com/web/updates/2017/06/play-request-was-interrupted
 
-- [node-media-server](https://www.npmjs.com/package/node-media-server): libreria base per pubblicare uno stream
-  - https://github.com/dougsillars/browserLiveStream
-  - https://www.fatalerrors.org/a/0t590jE.html
-- [video.js](https://www.npmjs.com/package/video.js): video player HTML5 open source
-  - https://opensource.com/article/20/2/video-streaming-tools
-  - https://docs.videojs.com/tutorial-angular.html
-- [socket.io](https://www.npmjs.com/package/socket.io): libreria base per connessione socket
-  - https://www.digitalocean.com/community/tutorials/angular-socket-io
-  - https://javascript-conference.com/blog/real-time-in-angular-a-journey-into-websocket-and-rxjs/
-  - https://blog.briebug.com/blog/making-use-of-websockets-in-angular
-- [ngx-webcam](https://www.npmjs.com/package/ngx-webcam): forse interessante ma WebRTC
-- [node-rtsp-stream](https://www.npmjs.com/package/node-rtsp-stream): forse interessante ma RTSP
+> "_Uncaught (in promise) DOMException: The play() request was interrupted by a call to pause()._"
+
+The [HTMLMediaElement](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement) interface adds to HTMLElement the properties and methods needed to support basic media-related capabilities that are common to audio and video. The HTMLVideoElement and HTMLAudioElement elements both inherit this interface.
+
+🔗 [Optimizing HTML5 Video Streaming [Updated for 2021]](https://www.dacast.com/blog/optimizing-html5-video-streaming/):
+
+> Native HTML5 video doesn’t support RTMP app streaming nor HDS protocols. However, JW does support these two protocols. So, as mentioned above, if you plan to use a solely HTML5 video player, HLS is probably the best protocol for you.
+
+🔗 [video.js](https://www.npmjs.com/package/video.js): video player HTML5 open source
+
+- https://opensource.com/article/20/2/video-streaming-tools
+- https://docs.videojs.com/tutorial-angular.html
+
+> [How can I play RTMP video in Video.js?](https://docs.videojs.comtutorial-faq.html#q-how-can-i-play-rtmp-video-in-videojs)
+> It is no longer possible to play RTMP as it requires Flash, andFlash has reached end of life. No browser supports it.
+
+🔗 [flvplayer](https://www.npmjs.com/package/flvplayer) ?
+
+🔗 [node-media-server](https://www.npmjs.com/package/node-media-server): libreria base per pubblicare uno stream
+
+- https://github.com/dougsillars/browserLiveStream
+- https://www.fatalerrors.org/a/0t590jE.html
+
+🔗 [socket.io](https://www.npmjs.com/package/socket.io): libreria base per connessione socket
+
+- https://www.digitalocean.com/community/tutorials/angular-socket-io
+- https://javascript-conference.com/blog/real-time-in-angular-a-journey-into-websocket-and-rxjs/
+- https://blog.briebug.com/blog/making-use-of-websockets-in-angular
 
 ### Altri spunti:
 
@@ -218,9 +234,7 @@ this.player = FlvJs.createPlayer(
 
 🔗 [Playing HTML 5 video from Angular 2 Typescript](https://stackoverflow.com/questions/40360174/playing-html-5-video-from-angular-2-typescript)
 
----
-
-## Using the Camera in Ionic
+### Using the Camera in Ionic
 
 🔗 [Creating a Custom Camera Preview Overlay with Ionic & Capacitor](https://www.youtube.com/watch?v=JA8k738i9jQ)
 
@@ -275,7 +289,7 @@ npm install @ionic/pwa-elements -D
 import @ionic/pwa-elements by editing src/main.ts
 
 ```ts
-import { defineCustomElements } from "@ionic/pwa-elements/loader";
+import { defineCustomElements } from '@ionic/pwa-elements/loader';
 
 // Call the element loader after the platform has been bootstrapped
 defineCustomElements(window);

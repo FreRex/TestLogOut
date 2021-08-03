@@ -25,25 +25,40 @@
       <ion-input color="medium" disabled="true" type="text">{{
         selectedProject?.collaudatoreufficio
       }}</ion-input>
-      <ion-icon name="lock-closed-outline" slot="end" class="ion-align-self-center"></ion-icon>
+      <ion-icon
+        name="lock-closed-outline"
+        slot="end"
+        class="ion-align-self-center"
+      ></ion-icon>
     </ion-item>
 
     <ion-item>
       <ion-label color="primary" position="floating">Usermobile</ion-label>
       <ion-input formControlName="usermobile" type="text"></ion-input>
-      <ion-icon name="pencil-outline" slot="end" class="ion-align-self-center"></ion-icon>
+      <ion-icon
+        name="pencil-outline"
+        slot="end"
+        class="ion-align-self-center"
+      ></ion-icon>
     </ion-item>
   </form>
 </ion-content>
 <div class="ion-margin-vertical ion-padding">
-  <div class="ion-padding" *ngIf="form.get('usermobile').errors?.usermobileExist">
+  <div
+    class="ion-padding"
+    *ngIf="form.get('usermobile').errors?.usermobileExist"
+  >
     <ion-text color="danger">L'usermobile è già in uso</ion-text>
   </div>
   <div class="ion-padding" *ngIf="form.get('usermobile').pending">
     <ion-spinner color="primary"></ion-spinner>
     <ion-text class="ion-padding-horizontal">Verifica usermobile...</ion-text>
   </div>
-  <ion-button color="primary" expand="block" shape="round" (click)="createRoom()"
+  <ion-button
+    color="primary"
+    expand="block"
+    shape="round"
+    (click)="createRoom()"
     >Crea Room</ion-button
   >
 </div>

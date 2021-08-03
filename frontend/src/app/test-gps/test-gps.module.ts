@@ -9,12 +9,7 @@ import { TestGpsPageRoutingModule } from './test-gps-routing.module';
 import { TestGpsPage } from './test-gps.page';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    TestGpsPageRoutingModule
-  ],
-  declarations: [TestGpsPage]
+  imports: [CommonModule, FormsModule, IonicModule, TestGpsPageRoutingModule],
+  declarations: [TestGpsPage],
 })
 export class TestGpsPageModule {}

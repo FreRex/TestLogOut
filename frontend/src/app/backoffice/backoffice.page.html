@@ -7,13 +7,25 @@
       <ion-title>Backoffice</ion-title>
       <div class="ion-text-right button-menu ion-hide-md-up">
         <ion-button size="small" shape="round" color="light" fill="outline">
-          <ion-icon size="small" slot="icon-only" name="person-add-outline"></ion-icon>
+          <ion-icon
+            size="small"
+            slot="icon-only"
+            name="person-add-outline"
+          ></ion-icon>
         </ion-button>
         <ion-button size="small" shape="round" color="light" fill="outline">
-          <ion-icon size="small" slot="icon-only" name="cloud-download-outline"></ion-icon>
+          <ion-icon
+            size="small"
+            slot="icon-only"
+            name="cloud-download-outline"
+          ></ion-icon>
         </ion-button>
         <ion-button size="small" shape="round" color="light" fill="outline">
-          <ion-icon size="small" slot="icon-only" name="duplicate-outline"></ion-icon>
+          <ion-icon
+            size="small"
+            slot="icon-only"
+            name="duplicate-outline"
+          ></ion-icon>
         </ion-button>
       </div>
     </div>
@@ -26,15 +38,24 @@
         <ion-text color="light">Link Gestione</ion-text>
       </div>
       <ion-tab-bar slot="bottom" color="primary">
-        <ion-tab-button href="https://www.collaudolive.xyz:9888/admin/streams" target="_blank">
+        <ion-tab-button
+          href="https://www.collaudolive.xyz:9888/admin/streams"
+          target="_blank"
+        >
           <ion-icon name="tv-outline"></ion-icon>
           <ion-label>Streaming</ion-label>
         </ion-tab-button>
-        <ion-tab-button href="http://www.eaglelive.tv:5080/#/pages/login" target="_blank">
+        <ion-tab-button
+          href="http://www.eaglelive.tv:5080/#/pages/login"
+          target="_blank"
+        >
           <ion-icon name="headset-outline"></ion-icon>
           <ion-label>Audio</ion-label>
         </ion-tab-button>
-        <ion-tab-button href="https://www.collaudolive.com:9080/geoserver/web/" target="_blank">
+        <ion-tab-button
+          href="https://www.collaudolive.com:9080/geoserver/web/"
+          target="_blank"
+        >
           <ion-icon name="map-outline"></ion-icon>
           <ion-label>Geoserver</ion-label>
         </ion-tab-button>
@@ -58,7 +79,10 @@
                   Crea Utente
                 </ion-button>
                 <ion-button color="secondary">
-                  <ion-icon slot="start" name="cloud-download-outline"></ion-icon>
+                  <ion-icon
+                    slot="start"
+                    name="cloud-download-outline"
+                  ></ion-icon>
                   Gisfo Sync
                 </ion-button>
                 <ion-button color="secondary">
@@ -93,7 +117,11 @@
                   Admin GeoServer
                 </ion-button>
                 <ion-button color="secondary" (click)="onRiavviaStreaming()">
-                  <ion-icon slot="start" name="videocam-off-outline" color="danger"></ion-icon>
+                  <ion-icon
+                    slot="start"
+                    name="videocam-off-outline"
+                    color="danger"
+                  ></ion-icon>
                   Riavvia Streaming
                 </ion-button>
               </div>
@@ -147,11 +175,18 @@
                   <ion-item-sliding>
                     <ion-item>
                       <div class="ion-margin-vertical">
-                        <ion-icon name="map-outline" color="secondary"></ion-icon>
+                        <ion-icon
+                          name="map-outline"
+                          color="secondary"
+                        ></ion-icon>
                       </div>
                       <ion-grid>
                         <ion-row>
-                          <ion-col size-md="4" offset-md="1" class="ion-margin-vertical">
+                          <ion-col
+                            size-md="4"
+                            offset-md="1"
+                            class="ion-margin-vertical"
+                          >
                             <ion-row>
                               <ion-text class="primary-data" color="primary"
                                 >{{ proj.nome }}</ion-text
@@ -201,10 +236,16 @@
                             class="ion-margin-vertical ion-hide-md-down"
                           >
                             <ion-button size="small" color="warning">
-                              <ion-icon name="pencil-outline" slot="icon-only"></ion-icon>
+                              <ion-icon
+                                name="pencil-outline"
+                                slot="icon-only"
+                              ></ion-icon>
                             </ion-button>
                             <ion-button size="small" color="danger">
-                              <ion-icon name="trash" slot="icon-only"></ion-icon>
+                              <ion-icon
+                                name="trash"
+                                slot="icon-only"
+                              ></ion-icon>
                             </ion-button>
                           </ion-col>
                         </ion-row>
@@ -212,7 +253,10 @@
                     </ion-item>
                     <ion-item-options>
                       <ion-item-option color="warning">
-                        <ion-icon name="pencil-outline" slot="icon-only"></ion-icon>
+                        <ion-icon
+                          name="pencil-outline"
+                          slot="icon-only"
+                        ></ion-icon>
                       </ion-item-option>
                       <ion-item-option color="danger">
                         <ion-icon name="trash" slot="icon-only"></ion-icon>
@@ -239,7 +283,10 @@
                     <ion-item>
                       <div class="ion-margin-vertical">
                         <!--  <ion-icon name="person-outline" color="secondary"></ion-icon> -->
-                        <ion-icon name="person-circle-outline" color="primary"></ion-icon>
+                        <ion-icon
+                          name="person-circle-outline"
+                          color="primary"
+                        ></ion-icon>
                       </div>
                       <ion-grid>
                         <ion-row>
@@ -255,13 +302,21 @@
                               </ion-text>
                             </ion-row>
                           </ion-col>
-                          <ion-col size-md="2" class="ion-margin vertical ion-hide-md-down">
-                            <p class="secondary-data" color="primary"><b>ID: </b> {{ user.id }}</p>
+                          <ion-col
+                            size-md="2"
+                            class="ion-margin vertical ion-hide-md-down"
+                          >
+                            <p class="secondary-data" color="primary">
+                              <b>ID: </b> {{ user.id }}
+                            </p>
                             <p class="secondary-data" color="primary">
                               <b>Autorizzazione: </b> {{ user.autorizzazioni }}
                             </p>
                           </ion-col>
-                          <ion-col size-md="3" class="ion-margin vertical ion-hide-md-down">
+                          <ion-col
+                            size-md="3"
+                            class="ion-margin vertical ion-hide-md-down"
+                          >
                             <p class="secondary-data" color="primary">
                               <b>User: </b> {{ user.username }}
                             </p>
@@ -269,12 +324,21 @@
                               <b>Password: </b> {{ user.password }}
                             </p>
                           </ion-col>
-                          <ion-col size-md="2" class="ion-margin-vertical ion-hide-md-down">
+                          <ion-col
+                            size-md="2"
+                            class="ion-margin-vertical ion-hide-md-down"
+                          >
                             <ion-button size="small" color="warning">
-                              <ion-icon name="pencil-outline" slot="icon-only"></ion-icon>
+                              <ion-icon
+                                name="pencil-outline"
+                                slot="icon-only"
+                              ></ion-icon>
                             </ion-button>
                             <ion-button size="small" color="danger">
-                              <ion-icon name="trash" slot="icon-only"></ion-icon>
+                              <ion-icon
+                                name="trash"
+                                slot="icon-only"
+                              ></ion-icon>
                             </ion-button>
                           </ion-col>
                         </ion-row>
@@ -282,7 +346,10 @@
                     </ion-item>
                     <ion-item-options>
                       <ion-item-option color="warning">
-                        <ion-icon name="pencil-outline" slot="icon-only"></ion-icon>
+                        <ion-icon
+                          name="pencil-outline"
+                          slot="icon-only"
+                        ></ion-icon>
                       </ion-item-option>
                       <ion-item-option color="danger">
                         <ion-icon name="trash" slot="icon-only"></ion-icon>

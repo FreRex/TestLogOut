@@ -9,7 +9,12 @@ import { GuestLoginComponent } from './guest-login/guest-login.component';
 import { UserLoginComponent } from './user-login/user-login.component';
 
 @NgModule({
-  imports: [CommonModule, ReactiveFormsModule, IonicModule, AuthPageRoutingModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    IonicModule,
+    AuthPageRoutingModule,
+  ],
   declarations: [AuthPage, UserLoginComponent, GuestLoginComponent],
 })
 export class AuthPageModule {}

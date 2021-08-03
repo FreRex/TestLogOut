@@ -27,7 +27,9 @@ export class ObsWithStatusPipe implements PipeTransform {
       map((res: any) => {
         return {
           loading:
-            res.type === 'finish' && (res.value ? res.value.length > 0 : false) ? false : true,
+            res.type === 'finish' && (res.value ? res.value.length > 0 : false)
+              ? false
+              : true,
           // loading:  res.type === 'start',
           error: res.type === 'error' ? defaultError : '',
           value: res.type ? res.value : res,

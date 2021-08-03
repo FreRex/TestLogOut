@@ -2,14 +2,22 @@
 <div class="login-form-container">
   <form [formGroup]="loginForm" class="form-fields">
     <div class="user-label">USER</div>
-    <ion-item [ngClass]="!loginForm.get('username').valid && formSubmitted ? 'invalid' : ''">
+    <ion-item
+      [ngClass]="
+        !loginForm.get('username').valid && formSubmitted ? 'invalid' : ''
+      "
+    >
       <ion-label class="smallLabel" position="floating">Nome Utente</ion-label>
       <ion-input formControlName="username" type="text"></ion-input>
     </ion-item>
     <div *ngIf="!loginForm.get('username').valid && formSubmitted">
       <ion-text>Inserire un nome utente!</ion-text>
     </div>
-    <ion-item [ngClass]="!loginForm.get('password').valid && formSubmitted ? 'invalid' : ''">
+    <ion-item
+      [ngClass]="
+        !loginForm.get('password').valid && formSubmitted ? 'invalid' : ''
+      "
+    >
       <ion-label class="smallLabel" position="floating">Password</ion-label>
       <ion-input
         formControlName="password"
@@ -33,7 +41,11 @@
   </form>
   <div class="form-button">
     <ion-button type="submit" (click)="authenticate()"
-      ><ion-icon class="arrow" name="arrow-forward-sharp" slot="icon-only"></ion-icon
+      ><ion-icon
+        class="arrow"
+        name="arrow-forward-sharp"
+        slot="icon-only"
+      ></ion-icon
     ></ion-button>
     <!-- <ion-button type="button" expand="block" fill="clear" (click)="isLogin = !isLogin">Switch to {{isLogin ?
                   "Sign Up" : "Login"}}</ion-button> -->
