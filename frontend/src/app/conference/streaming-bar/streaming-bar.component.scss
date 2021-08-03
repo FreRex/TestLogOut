@@ -24,6 +24,11 @@
   .dots {
     display: block;
   }
+  .btnCommand {
+    width: 80%;
+    display: flex;
+    justify-content: space-between;
+  }
 }
 
 .white-bar {
