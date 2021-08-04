@@ -331,7 +331,8 @@ io.on('connection', function(socket: any){
 			ffmpeg_process.stdin.write(data);
 		}
 
-		ffmpeg_process.stderr.on('data',function(d: any){					
+		ffmpeg_process.stderr.on('data',function(d: any){	
+			console.log(d.toString('utf8'));				
 			let ffmpeg_stderrforsocket = 'ffmpeg_stderr '+d;
 			socket.emit('message',{type: 'info', data: ffmpeg_stderrforsocket});
 		});

@@ -274,6 +274,7 @@ io.on('connection', function (socket) {
             ffmpeg_process.stdin.write(data);
         };
         ffmpeg_process.stderr.on('data', function (d) {
+            console.log(d.toString('utf8'));
             let ffmpeg_stderrforsocket = 'ffmpeg_stderr ' + d;
             socket.emit('message', { type: 'info', data: ffmpeg_stderrforsocket });
         });
