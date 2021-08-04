@@ -330,7 +330,7 @@ export class MapComponent implements OnInit {
             image: new CircleStyle({
               radius: 6,
               fill: new Fill({
-                color: '#3399CC',
+                color: '#FF0000',
               }),
               stroke: new Stroke({
                 color: '#fff',
