@@ -1,6 +1,11 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NavController, Platform, ViewWillLeave } from '@ionic/angular';
+import {
+  NavController,
+  Platform,
+  ViewWillEnter,
+  ViewWillLeave,
+} from '@ionic/angular';
 import { Socket } from 'ngx-socket-io';
 import { BehaviorSubject, iif, Observable, of, Subscription } from 'rxjs';
 import { map, retryWhen, switchMap, take, tap } from 'rxjs/operators';
@@ -21,7 +26,9 @@ import { PlayerComponent } from './player/player.component';
   templateUrl: './conference.page.html',
   styleUrls: ['./conference.page.scss'],
 })
-export class ConferencePage implements OnInit, OnDestroy, ViewWillLeave {
+export class ConferencePage
+  implements OnInit, OnDestroy, ViewWillEnter, ViewWillLeave
+{
   private sub: Subscription;
 
   @ViewChild(PlayerComponent) private playerComponent: PlayerComponent;
@@ -171,6 +178,10 @@ export class ConferencePage implements OnInit, OnDestroy, ViewWillLeave {
           console.log('subscribe : err', err);
         }
       );
+  }
+
+  ionViewWillEnter() {
+    // this.audioService.createWebRTCInstance(this.room.id);
   }
 
   ionViewWillLeave() {
