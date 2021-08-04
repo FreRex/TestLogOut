@@ -235,6 +235,8 @@ export class ConferencePage
           case 'welcome':
             break;
           case 'info':
+            // console.log(msg.data) // da decommentare per controllare il Framerate
+           
             break;
           case 'fatal':
             break;
