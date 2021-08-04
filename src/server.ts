@@ -85,16 +85,16 @@ io.on('connection', function(socket: any){
 
 	//SOCKET PER POSIZIONAMENTO / GPS / COORDINATE
 	socket.on('gps',function(gps_data: any){
-	   console.log('gps_data.idroom: ' +gps_data.idroom);	   
+	   /* console.log('gps_data.idroom: ' +gps_data.idroom);	   
 	   console.log('gps_data.latitudine: ' +gps_data.latitudine);
-	   console.log('gps_data.longitudine: ' +gps_data.longitudine);
+	   console.log('gps_data.longitudine: ' +gps_data.longitudine); */
 	   socket.broadcast.emit('gpsUtente_idroom_'+gps_data.idroom, {idroom: gps_data.idroom, latitudine: gps_data.latitudine, longitudine: gps_data.longitudine});  
 	})
 	socket.on('posizioneMarker',function(posMkr: any){
-		console.log('posMkr.idroom: ' +posMkr.idroom);
+		/* console.log('posMkr.idroom: ' +posMkr.idroom);
 		console.log('posMkr.latitudine: ' +posMkr.latitudine);
 		console.log('posMkr.longitudine: ' +posMkr.longitudine);
-		console.log('posMkrBckEnd_'+posMkr.idroom);
+		console.log('posMkrBckEnd_'+posMkr.idroom); */
 		socket.broadcast.emit('posMkrBckEnd_'+posMkr.idroom, {idroom: posMkr.idroom, latitudine: posMkr.latitudine, longitudine: posMkr.longitudine});
 	})
 	//----------------------------

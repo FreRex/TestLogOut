@@ -1,21 +1,22 @@
   exports.CheckDownloadZip = (req: any, res: any, next: any) => {  
     
-    const fs = require('fs');  
-    
+    const fs = require('fs'); 
+    const path = require('path');    
+            
     //-- Determinazione cartella da verificare
-    let nameRooms: any = req.params.folderzip;    
-    const path: any = '/var/www/html/glasses/FrontEnd/datasave/'+nameRooms;
+    let nameRooms: any = req.params.folderzip; 
+    const urlzip: string = __dirname.replace('build/ctrl','frontend/datasave/'+nameRooms);
     
     //-- Controllo se cartella: (non-esiste o vuota) => true; se esiste e non è vuota => false
-    function isFull(path: any) {
+    function isFull(urlzip: any) {
       try {
-          return fs.readdirSync(path).length !== 0;
+          return fs.readdirSync(urlzip).length !== 0;
       } catch (error) {
         return false;
       }
     }
-    
-    res.send(isFull(path));
+
+    res.send(isFull(urlzip));
   
   }
   
@@ -24,17 +25,16 @@
     const AdmZip = require('adm-zip');  
     const zip = new AdmZip();  
     const fs = require('fs');
+    const path = require('path');
    
-    //----------- determinazione path
-     const nameFolder = '/var/www/html/glasses/FrontEnd/datasave/';    
-     let nameRooms = req.params.folderzip;
+    //----------- determinazione nome cartella     
+     let nameRooms = req.params.folderzip;   
      
-    console.log(nameRooms)
-    console.log('------------------------')
-
      //-- Creazione cartella compressa
-     fs.readdirSync(nameFolder+nameRooms).forEach((file: string) => {           
-       zip.addLocalFile(nameFolder + nameRooms + '/' + file);          
+     const urlzip: string = __dirname.replace('build/ctrl','frontend/datasave/'+nameRooms);    
+  
+     fs.readdirSync(urlzip).forEach((file: string) => {           
+       zip.addLocalFile(urlzip + '/' + file);          
      });
    
      // --- Esecuzione download
