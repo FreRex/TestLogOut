@@ -45,22 +45,25 @@ export class AudioRTCService {
     }
   }
 
-  public toggleAudio(roomName, streamId) {
+  public toggleAudio(roomId, streamId) {
     if (!this.isJoined) {
-      this.webRTCInstance.joinRoom(roomName, streamId);
+      this.joinRoom(roomId, streamId);
     } else {
-      this.webRTCInstance.leaveFromRoom(roomName);
+      this.leaveRoom(roomId);
     }
   }
 
-  // public joinRoom(roomName, streamId) {
-  //   this.webRTCInstance.joinRoom(roomName, streamId);
-  // }
+  public joinRoom(roomId, streamId) {
+    !this.webRTCInstance
+      ? this.createWebRTCInstance(roomId, streamId)
+      : this.webRTCInstance.joinRoom(roomId, streamId);
+  }
 
-  public leaveRoom(roomName) {
+  public leaveRoom(roomId) {
     if (this.isJoined) {
-      this.webRTCInstance.leaveFromRoom(roomName);
-      console.log('🐱‍👤 : this.webRTCInstance', this.webRTCInstance);
+      if (this.webRTCInstance) {
+        this.webRTCInstance.leaveFromRoom(roomId);
+      }
     }
   }
 
@@ -69,9 +72,9 @@ export class AudioRTCService {
   //   this.webRTCInstance.publish(streamId, token);
   // }
 
-  // streamInformation(obj, roomName) {
+  // streamInformation(obj, roomId) {
   //   console.log('🐱‍👤 : obj', obj);
-  //   this.webRTCInstance.play(obj.streamId, this.token, roomName);
+  //   this.webRTCInstance.play(obj.streamId, this.token, roomId);
   // }
 
   // addRemoteVideo(obj) {
@@ -157,6 +160,9 @@ export class AudioRTCService {
   // userLeaved$ = this.userLeaved.asObservable();
 
   createWebRTCInstance(roomId, streamId): void {
+    if (this.webRTCInstance) {
+      return;
+    }
     this.webRTCInstance = new WebRTCAdaptor({
       websocket_url: this.websocketURL,
       mediaConstraints: this.mediaConstraints,
@@ -168,6 +174,7 @@ export class AudioRTCService {
       callback: (info, data) => {
         if (info == 'initialized') {
           console.log('initialized');
+          this.webRTCInstance.joinRoom(roomId, streamId);
         } else if (info == 'joinedTheRoom') {
           console.log('🐱‍👤 : joinedTheRoom', data);
           this.webRTCInstance.publish(data.streamId, this.token);
@@ -210,6 +217,7 @@ export class AudioRTCService {
           console.log('🐱‍👤 : closed', data);
           this.listenersSubject.next([]);
           this.isJoined = false;
+          this.webRTCInstance = null;
           // if (typeof obj != 'undefined') {
           //   console.log('Connecton closed: ' + JSON.stringify(obj));
           // }
@@ -217,7 +225,7 @@ export class AudioRTCService {
           console.log('play_finished');
         } */ /* else if (info == 'streamInformation') {
           console.log('🐱‍👤 : streamInformation', obj);
-          this.streamInformation(obj, roomName);
+          this.streamInformation(obj, roomId);
         } */ /* else if (info == 'data_channel_opened') {
           console.log('Data Channel open for stream id', obj);
           this.isDataChannelOpen = true;
