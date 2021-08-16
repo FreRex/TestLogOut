@@ -325,6 +325,7 @@ export class MapComponent implements OnInit {
           console.log('errore');
         });
         this.positionFeature = new Feature();
+        
         this.positionFeature.setStyle(
           new Style({
             image: new CircleStyle({
@@ -346,7 +347,9 @@ export class MapComponent implements OnInit {
             position,
             this.view.getProjection()
           );
+          this.gps.coordinateSubject.next({lat:coordinates[1].toString(), long:coordinates[0].toString()})
           console.log(
+            '🐱‍👤 : coordinatesSubject', this.gps.coordinateSubject,
             '🐱‍👤 : coordinates',
             date.format(new Date(), 'HH:mm:ss'),
             coordinates

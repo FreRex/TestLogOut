@@ -37,10 +37,13 @@ export class GpsService /* implements OnInit */ {
   //   info.style.display = '';
   // });
   // }
-  private coordinateSubject = new BehaviorSubject<
-    { lat: string; long: string }[]
-  >([]);
-  coordinate$: Observable<{ lat: string; long: string }[]> =
+
+
+
+  coordinateSubject = new BehaviorSubject<
+    { lat: string; long: string }
+  >(null);
+  coordinate$: Observable<{ lat: string; long: string }> =
     this.coordinateSubject.asObservable();
 
   idroom: number;
@@ -50,35 +53,35 @@ export class GpsService /* implements OnInit */ {
     this.idroom = idroom;
   }
 
-  getLocation() {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(this.showPosition.bind(this));
-    } else {
-      console.log('Geolocation is not supported by this browser.');
-    }
-  }
+  // getLocation() {
+  //   if (navigator.geolocation) {
+  //     navigator.geolocation.getCurrentPosition(this.showPosition.bind(this));
+  //   } else {
+  //     console.log('Geolocation is not supported by this browser.');
+  //   }
+  // }
 
-  async showPosition(position: {
-    coords: { latitude: number; longitude: number };
-  }) {
-    let lat = position.coords.latitude;
-    let long = position.coords.longitude;
+  // async showPosition(position: {
+  //   coords: { latitude: number; longitude: number };
+  // }) {
+  //   let lat = position.coords.latitude;
+  //   let long = position.coords.longitude;
 
-    // GPS EMIT --------------------------------
-    this.socket.emit('gps', {
-      idroom: this.idroom,
-      latitudine: lat,
-      longitudine: long,
-    });
+  //   GPS EMIT --------------------------------
+  //   this.socket.emit('gps', {
+  //     idroom: this.idroom,
+  //     latitudine: lat,
+  //     longitudine: long,
+  //   });
 
-    this.coordinate.push({ lat: lat, long: long });
+  //   this.coordinate.push({ lat: lat, long: long });
 
-    this.coordinateSubject.next(this.coordinate);
+  //    this.coordinateSubject.next(this.coordinate);
 
-    if (this.coordinate.length > 5) {
-      this.coordinate.shift();
-    }
-  }
+  //   if (this.coordinate.length > 5) {
+  //     this.coordinate.shift();
+  //   }
+  // }
 
   // SOCKET - POSIZIONE MARKER --------------------------------
   socketEmitMarkerBlu(lat: string, long: string) {
@@ -90,9 +93,9 @@ export class GpsService /* implements OnInit */ {
     });
   }
 
-  startGps() {
-    this.gpsInterval = setInterval(() => this.getLocation(), 2000);
-  }
+  // startGps() {
+  //   this.gpsInterval = setInterval(() => this.getLocation(), 2000);
+  // }
   stopGps() {
     clearInterval(this.gpsInterval);
   }
