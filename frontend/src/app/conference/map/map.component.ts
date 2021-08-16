@@ -325,7 +325,7 @@ export class MapComponent implements OnInit {
           console.log('errore');
         });
         this.positionFeature = new Feature();
-        
+
         this.positionFeature.setStyle(
           new Style({
             image: new CircleStyle({
@@ -347,13 +347,17 @@ export class MapComponent implements OnInit {
             position,
             this.view.getProjection()
           );
-          this.gps.coordinateSubject.next({lat:coordinates[1].toString(), long:coordinates[0].toString()})
-          console.log(
-            '🐱‍👤 : coordinatesSubject', this.gps.coordinateSubject,
-            '🐱‍👤 : coordinates',
-            date.format(new Date(), 'HH:mm:ss'),
-            coordinates
-          );
+          coordinates[1] = Math.round(coordinates[1] * 10000000) / 10000000;
+          coordinates[0] = Math.round(coordinates[0] * 10000000) / 10000000;
+          this.gps.coordinateSubject.next({
+            latitude: coordinates[1].toString(),
+            longitude: coordinates[0].toString(),
+          });
+          // console.log(
+          //   '🐱‍👤 : coordinates',
+          //   date.format(new Date(), 'HH:mm:ss'),
+          //   coordinates
+          // );
           this.socket.emit('gps', {
             idroom: this.roomId,
             latitudine: coordinates[1].toString(),
@@ -390,7 +394,7 @@ export class MapComponent implements OnInit {
             updateWhileInteracting: true,
             title: 'KMZ / KML',
           } as BaseLayerOptions);
-          console.log('qqq: ' + this.vectorLayerKML);
+          // console.log('qqq: ' + this.vectorLayerKML);
           this.mappa.addLayer(this.vectorLayerKML);
           this.mappa.getView().fit(this.vectorSourceKML.getExtent());
           //this.socket.emit('kmzemit', { kmz: this.vectorSourceKMLOUT });
@@ -412,11 +416,11 @@ export class MapComponent implements OnInit {
     this.socket
       .fromEvent<any>('gpsUtente_idroom_' + this.roomId)
       .subscribe((gpsRemote) => {
-        console.log(
-          '🐱‍👤 : gpsRemote',
-          date.format(new Date(), 'HH:mm:ss'),
-          gpsRemote
-        );
+        // console.log(
+        //   '🐱‍👤 : gpsRemote',
+        //   date.format(new Date(), 'HH:mm:ss'),
+        //   gpsRemote
+        // );
         //this.updateMarkerOperatore(gpsRemote.longitudine, gpsRemote.latitudine);
         let coordinates = [gpsRemote.longitudine, gpsRemote.latitudine];
         this.mappa

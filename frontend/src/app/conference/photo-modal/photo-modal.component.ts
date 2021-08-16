@@ -11,6 +11,7 @@ import { ModalController } from '@ionic/angular';
 import { AuthUser } from 'src/app/auth/auth-user.model';
 import { MediaService } from '../../gallery/media.service';
 import { Room } from 'src/app/rooms/room.service';
+import { GpsCoordinates } from '../gps.service';
 
 @Component({
   selector: 'app-photo-modal',
@@ -30,6 +31,7 @@ export class PhotoModalComponent implements OnInit, AfterViewInit {
   @Input() image: HTMLImageElement;
   @Input() room: Room;
   @Input() user: AuthUser;
+  @Input() coordinates: GpsCoordinates;
 
   public date: Date;
   public idPhoto: number;
@@ -79,8 +81,8 @@ export class PhotoModalComponent implements OnInit, AfterViewInit {
         this.room.id,
         this.room.usermobile,
         this.room.progetto,
-        '11.11111', // TODO
-        '22.22222' // TODO
+        this.coordinates.latitude,
+        this.coordinates.longitude
       )
       .subscribe(
         /** Il server risponde con 200 */

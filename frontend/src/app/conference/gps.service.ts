@@ -4,6 +4,10 @@ import { Observable } from 'rxjs';
 import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
 import Geolocation from 'ol/Geolocation';
 
+export interface GpsCoordinates {
+  latitude: string;
+  longitude: string;
+}
 @Injectable({
   providedIn: 'root',
 })
@@ -38,13 +42,8 @@ export class GpsService /* implements OnInit */ {
   // });
   // }
 
-
-
-  coordinateSubject = new BehaviorSubject<
-    { lat: string; long: string }
-  >(null);
-  coordinate$: Observable<{ lat: string; long: string }> =
-    this.coordinateSubject.asObservable();
+  coordinateSubject = new BehaviorSubject<GpsCoordinates>(null);
+  coordinate$ = this.coordinateSubject.asObservable();
 
   idroom: number;
   gpsInterval: any;

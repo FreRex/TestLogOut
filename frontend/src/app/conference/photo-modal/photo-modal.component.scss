@@ -1,5 +1,20 @@
 ion-content {
   --background: transparent;
+  position: relative;
+  .coordinates {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    padding: 8px;
+    background-color: white;
+    opacity: 0.6;
+    font-size: 0.9rem;
+    text-align: end;
+    p {
+      margin: 4px;
+      color: var(--ion-color-dark);
+    }
+  }
 }
 
 .form-container {

@@ -2,10 +2,12 @@ import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import FlvJs from 'flv.js';
 import { Socket } from 'ngx-socket-io';
+import { take } from 'rxjs/operators';
 import { AuthUser } from 'src/app/auth/auth-user.model';
 import { Room } from 'src/app/rooms/room.service';
 import { AlertService } from 'src/app/shared/alert.service';
 import { environment } from 'src/environments/environment';
+import { GpsService } from '../gps.service';
 import { PhotoModalComponent } from '../photo-modal/photo-modal.component';
 
 const MIN_WIDTH = 320;
@@ -44,7 +46,8 @@ export class PlayerComponent implements OnInit {
   constructor(
     private socket: Socket,
     private alertService: AlertService,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private gps: GpsService
   ) {}
 
   ngOnInit() {
@@ -59,23 +62,28 @@ export class PlayerComponent implements OnInit {
       ? this.localVideo.nativeElement
       : this.remoteVideo.nativeElement;
     console.log('🐱‍👤 : video', video);
-    this.modalController
-      .create({
-        component: PhotoModalComponent,
-        cssClass: 'transparent-modal',
-        backdropDismiss: false,
-        componentProps: {
-          WIDTH: video.videoWidth,
-          HEIGHT: video.videoHeight,
-          image: video,
-          room: this.room,
-          user: this.user,
-        },
-      })
-      .then((modalEl) => {
-        modalEl.present();
-        return modalEl.onDidDismiss();
-      });
+    this.gps.coordinate$.pipe(take(1)).subscribe((coordinates) => {
+      console.log('🐱‍👤 : coordinates', coordinates);
+      this.modalController
+        .create({
+          component: PhotoModalComponent,
+          cssClass: 'transparent-modal',
+          backdropDismiss: false,
+          componentProps: {
+            WIDTH: video.videoWidth,
+            HEIGHT: video.videoHeight,
+            image: video,
+            room: this.room,
+            user: this.user,
+            coordinates: coordinates,
+          },
+        })
+        .then((modalEl) => {
+          modalEl.present();
+          return modalEl.onDidDismiss();
+        });
+    });
+
     // .then((res) => {
     //   if (res.role === 'ok') {
     //     this.presentToast(res.data['message'], 'secondary');

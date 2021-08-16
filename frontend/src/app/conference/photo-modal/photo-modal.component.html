@@ -1,7 +1,18 @@
 <ion-content>
+  <div class="coordinates">
+    <p>{{ coordinates.latitude }}</p>
+    <p>{{ coordinates.longitude }}</p>
+  </div>
   <div class="form-container form-padding">
     <form class="form-fields" [formGroup]="form">
-      <canvas #canvas id="canvas" [width]="WIDTH" [height]="HEIGHT"></canvas>
+      <canvas
+        #canvas
+        id="canvas"
+        class="canvas"
+        [width]="WIDTH"
+        [height]="HEIGHT"
+      >
+      </canvas>
       <ion-text color="dark">{{ date | date: 'HH:mm - dd/MM/yyyy' }}</ion-text>
       <ion-item class="title">
         <ion-label color="dark" position="floating">Titolo</ion-label>
