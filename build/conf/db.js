@@ -10,7 +10,7 @@ const conn = mysql.createConnection({
     database: crecry.db,
     ssl: {
         rejectUnauthorized: false,
-        ca: fs.readFileSync('/etc/letsencrypt/live/www.collaudolive.xyz/cert.pem').toString()
+        ca: fs.readFileSync('/etc/letsencrypt/live/www.collaudolive.com/cert.pem').toString()
     }
 });
 module.exports = conn;

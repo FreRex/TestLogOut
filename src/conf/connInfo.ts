@@ -24,7 +24,7 @@ const pool_collaudolive_ssl_cry = new Pool({
     port: CreCry.portDecrypColl,
     ssl: {
         rejectUnauthorized: false,
-        ca: fsPg.readFileSync('/etc/letsencrypt/live/www.collaudolive.xyz/cert.pem').toString()  
+        ca: fsPg.readFileSync('/etc/letsencrypt/live/www.collaudolive.com/cert.pem').toString()  
     }
 });
 exports.conn_info_collaudolive_ssl_cry = pool_collaudolive_ssl_cry;
