@@ -2,6 +2,7 @@ export class AuthUser {
   constructor(
     public idutente: string,
     public idutcas: string,
+    public nomecognome: string, // nome e cognome
     public username: string,
     public idcommessa: string,
     public commessa: string,

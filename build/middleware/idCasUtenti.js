@@ -24,6 +24,5 @@ exports.idCasUtenti = function (iLen) {
             }
         });
         ii = ii + 1;
-        console.log(ii);
     } while (checkpresenxa === true);
 };

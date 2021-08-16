@@ -1,0 +1,150 @@
+.btn-trasparent {
+  --color: var(--ion-color-dark);
+  --background: none;
+}
+
+.item-button {
+  // color: var(--ion-color-dark);
+  display: inline-block;
+  --background: none;
+  --border-radius: 0;
+  --padding-start: 0px;
+  ion-icon {
+    margin-left: 8px;
+    margin-right: 8px;
+    color: var(--ion-color-dark);
+  }
+  ion-text {
+    font-size: 0.8rem;
+    font-weight: 500;
+  }
+}
+.none {
+  --background: none;
+  color: transparent;
+}
+
+.conference-title {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  .title {
+    color: --var(--ion-color-dark);
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    .bold {
+      font-weight: 600;
+    }
+  }
+}
+
+.button {
+  --background: none;
+  --color: var(--ion-color-dark);
+  --border-radius: 0;
+  --padding-bottom: 0px;
+  --padding-end: 0px;
+  --padding-top: 0px;
+  --padding-start: 0px;
+  height: 40px;
+  width: 40px;
+  ion-icon {
+    font-size: 1.3rem;
+  }
+}
+.button-active {
+  --background: var(--ion-color-primary);
+  --color: var(--ion-color-primary-contrast);
+}
+
+.cards-container {
+  box-shadow: none !important;
+}
+.video-head {
+  display: flex !important;
+  justify-content: space-between !important;
+}
+
+ion-col {
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+/* sotto da cancellare una volta sostituite le parti */
+.spazio-vuoto-dimensione-fissa {
+  position: relative;
+  height: 480px;
+  background-color: black;
+  span {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    z-index: 9;
+    background-color: white;
+    border-radius: 50px;
+    opacity: 60%;
+    padding: 6px 12px 6px 12px;
+    ion-text {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--ion-color-dark);
+      ion-icon {
+        padding-left: 12px;
+      }
+    }
+  }
+  div {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-transform: uppercase;
+    color: aliceblue;
+  }
+}
+
+/*  */
+.audio-video-ctrl {
+  background-color: var(--ion-color-light-tint);
+  width: 90%;
+  margin: 2% auto 0 auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  .left-ctrl {
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+  }
+  .dots {
+    position: relative;
+    align-self: center;
+    justify-self: center;
+  }
+}
+.btn-video {
+  display: flex !important;
+  justify-content: space-between !important;
+}
+.btn-map {
+  display: flex !important;
+  justify-content: space-around !important;
+  flex-direction: row;
+  align-items: flex-end;
+  margin: 0 auto;
+  font-size: small;
+  .box-toggle {
+    align-self: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+}

@@ -1,0 +1,24 @@
+<div class="partecipanti">Partecipanti</div>
+<ion-list>
+  <ion-item *ngFor="let user of roomUsers$ | async">
+    <div class="user-avatar">
+      <ion-text>{{
+        user?.nome.charAt(0) + user?.idutente.charAt(0) | uppercase
+      }}</ion-text>
+    </div>
+    <ion-label>
+      <h2>{{ user?.nome }}</h2>
+      <p>{{ user?.idutente }}</p>
+    </ion-label>
+    <ion-icon *ngIf="user?.stream" slot="end" name="videocam-sharp"></ion-icon>
+    <ion-icon *ngIf="user?.audioOn" slot="end" name="volume-high-sharp">
+    </ion-icon>
+    <audio
+      *ngIf="user?.audioOn"
+      id="{{ 'remoteVideo' + user?.idutente }}"
+      [srcObject]="user?.audioStream"
+      autoplay
+      playsinline
+    ></audio>
+  </ion-item>
+</ion-list>

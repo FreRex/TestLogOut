@@ -6,7 +6,9 @@
         name="ellipse-sharp"
         [color]="proj[col.key] === 'auto' ? 'success' : 'warning'"
       ></ion-icon>
-      {{ col.type === 'date' ? (proj[col.key] | date: 'dd/MM/yy') : proj[col.key] }}
+      {{
+        col.type === 'date' ? (proj[col.key] | date: 'dd/MM/yy') : proj[col.key]
+      }}
     </div>
     <div *ngIf="col.type === 'buttons'" class="btns">
       <span data-tooltip="Aggiorna" data-tooltip-position="top">

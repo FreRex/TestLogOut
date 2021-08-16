@@ -1,0 +1,40 @@
+ion-toolbar {
+  --background: white;
+  --color: var(--ion-color-dark);
+  // ion-button {
+  //   --color: var(--ion-color-dark);
+  // }
+}
+ion-item {
+  --padding-bottom: 6px;
+  ion-text {
+    font-size: 1.2rem;
+    font-weight: 500;
+    --color: var(--ion-color-dark);
+  }
+}
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  height: 100%;
+  padding-bottom: 16px;
+  .app-menu {
+    display: block;
+    flex-grow: 1;
+  }
+  .user-menu {
+    display: block;
+    flex-grow: 0;
+  }
+}
+
+p {
+  font-size: 0.9rem;
+  margin: 0px;
+}
+h2 {
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0px;
+}

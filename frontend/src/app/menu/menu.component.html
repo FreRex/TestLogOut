@@ -1,33 +1,69 @@
-<ion-menu contentId="main" swipeGesture="false">
-  <ion-header>
+<ion-menu #menu contentId="main" swipeGesture="false" side="end">
+  <ion-header class="ion-no-border">
     <ion-toolbar>
-      <ion-buttons slot="start">
-        <ion-menu-toggle auto-hide="false">
-          <ion-button>
-            <ion-icon name="close" size="default"></ion-icon>
-          </ion-button>
+      <ion-buttons slot="end">
+        <ion-menu-toggle auto-hide="false" class="ion-padding-end">
+          <ion-button
+            ><ion-icon slot="icon-only" name="close-sharp"></ion-icon
+          ></ion-button>
         </ion-menu-toggle>
       </ion-buttons>
-      <ion-title>Menu</ion-title>
     </ion-toolbar>
   </ion-header>
   <ion-content>
-    <ion-list>
-      <ion-menu-toggle auto-hide="false">
-        <ion-item lines="none" button="true" routerLink="rooms">
-          <ion-label>Rooms</ion-label>
-        </ion-item>
-      </ion-menu-toggle>
-      <ion-menu-toggle auto-hide="false" *userIsAdmin>
-        <ion-item lines="none" button="true" routerLink="admin">
-          <ion-label>Admin Backoffice</ion-label>
-        </ion-item>
-      </ion-menu-toggle>
-      <ion-menu-toggle auto-hide="false">
-        <ion-item lines="none" button="true" (click)="onLogout()">
-          <ion-label>Logout</ion-label>
-        </ion-item>
-      </ion-menu-toggle>
-    </ion-list>
+    <div class="container">
+      <div *ngIf="!(currentRoom$ | async)" class="app-menu">
+        <ion-menu-toggle auto-hide="false">
+          <ion-item lines="none" button="true" routerLink="/rooms">
+            <ion-text>Rooms</ion-text>
+          </ion-item>
+        </ion-menu-toggle>
+        <ion-menu-toggle auto-hide="false" *userIsAdmin>
+          <ion-item lines="none" button="true" routerLink="/admin">
+            <ion-text>Backoffice</ion-text>
+          </ion-item>
+        </ion-menu-toggle>
+      </div>
+      <div *ngIf="currentRoom$ | async as room" class="app-menu">
+        <ion-menu-toggle auto-hide="false">
+          <ion-item
+            lines="none"
+            button="true"
+            routerLink="/gallery/{{ room.id }}/{{ room.progetto }}"
+          >
+            <ion-text>Media</ion-text>
+          </ion-item>
+        </ion-menu-toggle>
+        <ion-menu-toggle auto-hide="false">
+          <ion-item lines="none" button="true">
+            <ion-text>Opzioni</ion-text>
+          </ion-item>
+        </ion-menu-toggle>
+        <ion-menu-toggle auto-hide="false">
+          <ion-item lines="none" button="true">
+            <ion-text>Info Sessione</ion-text>
+          </ion-item>
+        </ion-menu-toggle>
+      </div>
+      <div class="user-menu">
+        <div>
+          <ion-item lines="none">
+            <div *ngIf="currentUser$ | async as user">
+              <h2>{{ user.nomecognome }}</h2>
+              <p>Username: {{ user.username }}</p>
+              <p>Commessa: {{ user.commessa }}</p>
+              <p>Autorizzazione: {{ user.autorizzazione }}</p>
+              <p>ID Utente: {{ user.idutcas }}</p>
+            </div>
+          </ion-item>
+        </div>
+
+        <ion-menu-toggle auto-hide="false">
+          <ion-item lines="none" button="true" (click)="onLogout()">
+            <ion-text slot="end">Logout</ion-text>
+          </ion-item>
+        </ion-menu-toggle>
+      </div>
+    </div>
   </ion-content>
 </ion-menu>

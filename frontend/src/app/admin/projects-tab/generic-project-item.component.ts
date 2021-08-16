@@ -8,7 +8,10 @@ import {
   ToastController,
 } from '@ionic/angular';
 import { AuthService } from 'src/app/auth/auth.service';
-import { Project, ProjectService } from 'src/app/admin/projects-tab/project.service';
+import {
+  Project,
+  ProjectService,
+} from 'src/app/admin/projects-tab/project.service';
 import { EditProjectModalComponent } from './edit-project-modal/edit-project-modal.component';
 import { CreateProjectModalComponent } from './create-project-modal/create-project-modal.component';
 import { forkJoin } from 'rxjs';
@@ -57,7 +60,10 @@ export class GenericProjectItemComponent implements OnInit {
       this.presentToast('Altra sincronizzazione in corso!', 'danger');
     } else {
       this.syncService
-        .requestSync(this.proj.idutente.toString(), this.proj.pk_proj.toString())
+        .requestSync(
+          this.proj.idutente.toString(),
+          this.proj.pk_proj.toString()
+        )
         .subscribe(
           (res) => {
             console.log('this.syncService.requestSync => res: ', res);
@@ -90,7 +96,11 @@ export class GenericProjectItemComponent implements OnInit {
         if (res.role === 'ok') {
           this.presentToast(res.data['message'], 'secondary');
         } else if (res.role === 'error') {
-          this.presentToast(`Aggiornamento fallito.\n ${res.data['message']}`, 'danger', 5000);
+          this.presentToast(
+            `Aggiornamento fallito.\n ${res.data['message']}`,
+            'danger',
+            5000
+          );
         }
       });
   }
@@ -133,7 +143,11 @@ export class GenericProjectItemComponent implements OnInit {
         if (res.role === 'ok') {
           this.presentToast(res.data['message'], 'secondary');
         } else if (res.role === 'error') {
-          this.presentToast(`Aggiornamento fallito.\n ${res.data['message']}`, 'danger', 5000);
+          this.presentToast(
+            `Aggiornamento fallito.\n ${res.data['message']}`,
+            'danger',
+            5000
+          );
         }
       });
   }
@@ -157,7 +171,9 @@ export class GenericProjectItemComponent implements OnInit {
             handler: () =>
               this.projectService
                 .deleteProject(this.proj.idprogetto)
-                .subscribe((res) => this.presentToast('Progetto Eliminato', 'secondary')),
+                .subscribe((res) =>
+                  this.presentToast('Progetto Eliminato', 'secondary')
+                ),
           },
         ],
       })

@@ -74,7 +74,8 @@
   margin-top: 11px;
   height: 5px;
   background: var(--ion-color-danger);
-  animation: roundtime calc(var(--duration) * 1s) steps(var(--duration)) forwards;
+  animation: roundtime calc(var(--duration) * 1s) steps(var(--duration))
+    forwards;
   transform-origin: left center;
 }
 

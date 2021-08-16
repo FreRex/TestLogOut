@@ -19,7 +19,8 @@ export interface Commission {
 })
 export class CommissionService {
   private commissionSubject = new BehaviorSubject<Commission[]>([]);
-  commissions$: Observable<Commission[]> = this.commissionSubject.asObservable();
+  commissions$: Observable<Commission[]> =
+    this.commissionSubject.asObservable();
 
   constructor(private http: HttpClient) {}
 
@@ -46,27 +47,29 @@ export class CommissionService {
 
   /** SELECT commesse */
   loadCommissions(): Observable<Commission[]> {
-    return this.http.get<CommissionData[]>(`${environment.apiUrl}/s/commessa/`).pipe(
-      catchError((err) => {
-        return throwError(err);
-      }),
-      // <-- Rimappa i dati che arrivano dal server sull'interfaccia della Room
-      map((data) => {
-        const commissions: Commission[] = [];
-        for (const key in data) {
-          if (data.hasOwnProperty(key)) {
-            commissions.push({
-              id: data[key].idcommessa,
-              commessa: data[key].commessa,
-            });
+    return this.http
+      .get<CommissionData[]>(`${environment.apiUrl}/s/commessa/`)
+      .pipe(
+        catchError((err) => {
+          return throwError(err);
+        }),
+        // <-- Rimappa i dati che arrivano dal server sull'interfaccia della Room
+        map((data) => {
+          const commissions: Commission[] = [];
+          for (const key in data) {
+            if (data.hasOwnProperty(key)) {
+              commissions.push({
+                id: data[key].idcommessa,
+                commessa: data[key].commessa,
+              });
+            }
           }
-        }
-        return commissions;
-      }),
-      tap((commissions: Commission[]) => {
-        this.commissionSubject.next(commissions);
-      })
-    );
+          return commissions;
+        }),
+        tap((commissions: Commission[]) => {
+          this.commissionSubject.next(commissions);
+        })
+      );
   }
 
   /** CREATE commessa */
@@ -131,7 +134,9 @@ export class CommissionService {
     return this.commissions$.pipe(
       take(1),
       switchMap((commissions) => {
-        updatedCommissions = commissions.filter((commission) => commission.id !== commissionId);
+        updatedCommissions = commissions.filter(
+          (commission) => commission.id !== commissionId
+        );
         return this.http.post(`${environment.apiUrl}/d/`, {
           id: commissionId,
           tableDelete: 'commesse',

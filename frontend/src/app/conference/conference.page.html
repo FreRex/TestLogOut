@@ -1,0 +1,157 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="end">
+      <ion-menu-toggle auto-hide="false" class="ion-padding-end">
+        <ion-button>
+          <ion-icon name="ellipsis-horizontal"></ion-icon>
+        </ion-button>
+      </ion-menu-toggle>
+    </ion-buttons>
+    <div class="header">
+      <ion-title>Conference</ion-title>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div *ngIf="isLoading" class="ion-text-center ion-padding">
+    <ion-spinner></ion-spinner>
+  </div>
+  <ion-grid *ngIf="!isLoading" [class.ion-margin-horizontal]="!isMobile">
+    <!-- BTN CHE RIMANDA INDIETRO ALL'INGRESSO DELLA CONFERENCE -->
+    <ion-row *ngIf="!isMobile">
+      <ion-col size-lg="2">
+        <ion-item
+          lines="none"
+          button="true"
+          class="item-button"
+          (click)="goBack()"
+        >
+          <ion-icon slot="start" name="chevron-back-sharp"></ion-icon>
+          <ion-text>Lista Room</ion-text>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row class="ion-align-items-center">
+      <ion-col size-lg="4.5">
+        <div class="conference-title">
+          <div class="title">
+            <ion-text class="bold">{{room?.progetto}}</ion-text>
+            <ion-text>{{room?.sessione}}</ion-text>
+          </div>
+          <!-- BTN CHE COPIA IL LINK DELLA CONFERENCE -->
+          <!-- <ion-button
+            class="button ion-hide-md-down"
+            (click)="this.roomFunctions.copyLink(room)"
+          >
+            <ion-icon slot="icon-only" name="share-social"></ion-icon>
+          </ion-button> -->
+        </div>
+      </ion-col>
+      <ion-col class="ion-text-end">
+        <!-- BTN CHE COPIA IL LINK DELLA CONFERENCE -->
+        <ion-button class="button" (click)="this.roomFunctions.copyLink(room)">
+          <ion-icon slot="icon-only" name="share-social"></ion-icon>
+        </ion-button>
+        <ion-button
+          class="button"
+          [ngClass]="{'button-active' : isVideoVisible}"
+          (click)="toggleVideo()"
+          ><ion-icon slot="icon-only" name="call-sharp"></ion-icon
+        ></ion-button>
+        <ion-button
+          class="button"
+          [ngClass]="{'button-active' : isMapVisible}"
+          (click)="toggleMappa()"
+          ><ion-icon slot="icon-only" name="map-sharp"></ion-icon
+        ></ion-button>
+        <!-- <ion-button class="button"
+          ><ion-icon slot="icon-only" name="people-sharp"></ion-icon
+        ></ion-button> -->
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col
+        [hidden]="!isVideoVisible"
+        [sizeLg]="isMapVisible ? '4.5' : '9'"
+        size-xs="12"
+      >
+        <!-- QUI DENTRO VA IL VIDEO PLAYER -->
+        <div class="spazio-vuoto-dimensione-fissa">
+          <span *ngIf="streamingUser" class="label">
+            <ion-text *ngIf="streamingUser.idutente == user.idutcas">
+              stai trasmettendo
+              <ion-icon name="ellipse" color="primary"></ion-icon>
+            </ion-text>
+            <ion-text *ngIf="streamingUser.idutente != user.idutcas">
+              {{streamingUser.nome}}
+            </ion-text>
+          </span>
+          <app-player
+            [isStreaming]="isStreaming"
+            [isPlaying]="isPlaying"
+            [room]="room"
+            [user]="user"
+          ></app-player>
+        </div>
+        <app-streaming-bar
+          [isStreaming]="isStreaming"
+          [isPlaying]="isPlaying"
+          (togglePlay)="togglePlay()"
+          (toggleStream)="toggleStream()"
+          (capturePhoto)="capturePhoto()"
+          [roomId]="room?.id.toString()"
+          [userId]="user?.idutcas"
+        ></app-streaming-bar>
+      </ion-col>
+      <ion-col
+        [hidden]="!isMapVisible"
+        [sizeLg]="isVideoVisible ? '4.5' : '9'"
+        size-xs="12"
+      >
+        <!-- QUI DENTRO VA LA MAPPA -->
+        <div class="spazio-vuoto-dimensione-fissa">
+          <app-map
+            #mappa
+            [roomId]="room?.id"
+            [followOperator]="followOperatorOnMap"
+            [isInfo]="isInfo"
+          ></app-map>
+        </div>
+        <div class="btn-map">
+          <div class="box-toggle">
+            <ion-label>Segui Operatore</ion-label>
+            <ion-toggle
+              color="success"
+              (click)="followOperator()"
+              checked
+            ></ion-toggle>
+          </div>
+          <div class="box-toggle">
+            <ion-label>Indicazioni</ion-label>
+            <ion-toggle
+              color="success"
+              (click)="mappa.toggleMarkerBlu()"
+            ></ion-toggle>
+          </div>
+          <div class="box-toggle">
+            <ion-label>KML/Z Info</ion-label>
+            <ion-toggle
+              color="success"
+              (click)="showDisplayInfo()"
+            ></ion-toggle>
+          </div>
+        </div>
+      </ion-col>
+      <ion-col size-lg="3" size-xs="12">
+        <!-- QUI DENTRO VA LA LISTA PARTECIPANTI con SWITCH su CHAT-->
+        <div>
+          <app-users-list
+            [usersInRoom]="usersInRoom"
+            [watchers$]="watchers$"
+          ></app-users-list>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

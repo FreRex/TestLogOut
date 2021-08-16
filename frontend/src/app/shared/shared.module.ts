@@ -9,8 +9,8 @@ import { GenericTableComponent } from './generic-table/generic-table.component';
 import { HasRoleDirective } from './has-role.directive';
 import { ObsWithStatusPipe } from './obs-with-status.pipe';
 import { OrderByButtonComponent } from './order-by-button/order-by-button.component';
-import { SyncToastComponent } from './sync-toast/sync-toast.component';
 import { SafeHtmlPipe } from './safe-html.pipe';
+import { SyncToastComponent } from './sync-toast/sync-toast.component';
 
 @NgModule({
   declarations: [

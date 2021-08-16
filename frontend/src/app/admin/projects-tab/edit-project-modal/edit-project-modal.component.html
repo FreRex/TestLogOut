@@ -46,7 +46,9 @@
 
     <ion-item>
       <ion-label position="stacked" class="ion-margin">PK Project</ion-label>
-      <ion-input color="medium" disabled="true" type="text">{{ project.pk_proj }}</ion-input>
+      <ion-input color="medium" disabled="true" type="text">{{
+        project.pk_proj
+      }}</ion-input>
       <ion-icon
         size="small"
         name="lock-closed-outline"
@@ -56,8 +58,12 @@
     </ion-item>
 
     <ion-item>
-      <ion-label position="stacked" class="ion-margin">Connessione OPTA-Civici</ion-label>
-      <ion-input color="medium" disabled="true" type="text">{{ project.conn_edif_opta }}</ion-input>
+      <ion-label position="stacked" class="ion-margin"
+        >Connessione OPTA-Civici</ion-label
+      >
+      <ion-input color="medium" disabled="true" type="text">{{
+        project.conn_edif_opta
+      }}</ion-input>
       <ion-icon
         size="small"
         name="lock-closed-outline"
@@ -68,7 +74,9 @@
 
     <ion-item>
       <ion-label position="stacked" class="ion-margin">Nodi Fisici</ion-label>
-      <ion-input color="medium" disabled="true" type="text">{{ project.nodi_fisici }}</ion-input>
+      <ion-input color="medium" disabled="true" type="text">{{
+        project.nodi_fisici
+      }}</ion-input>
       <ion-icon
         size="small"
         name="lock-closed-outline"
@@ -79,7 +87,9 @@
 
     <ion-item>
       <ion-label position="stacked" class="ion-margin">Nodi Ottici</ion-label>
-      <ion-input color="medium" disabled="true" type="text">{{ project.nodi_ottici }}</ion-input>
+      <ion-input color="medium" disabled="true" type="text">{{
+        project.nodi_ottici
+      }}</ion-input>
       <ion-icon
         size="small"
         name="lock-closed-outline"
@@ -90,7 +100,9 @@
 
     <ion-item>
       <ion-label position="stacked" class="ion-margin">Tratte</ion-label>
-      <ion-input color="medium" disabled="true" type="text">{{ project.tratte }}</ion-input>
+      <ion-input color="medium" disabled="true" type="text">{{
+        project.tratte
+      }}</ion-input>
       <ion-icon
         size="small"
         name="lock-closed-outline"
@@ -101,7 +113,11 @@
   </form>
 </ion-content>
 <div class="ion-margin-vertical ion-padding">
-  <ion-button color="primary" expand="block" shape="round" (click)="updateProject()"
+  <ion-button
+    color="primary"
+    expand="block"
+    shape="round"
+    (click)="updateProject()"
     >Aggiorna Progetto</ion-button
   >
 </div>

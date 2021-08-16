@@ -58,9 +58,12 @@ router.get('/checkdownloadzip/:folderzip/', controllerDownloadZip.CheckDownloadZ
 router.get('/downloadzip/:folderzip/', controllerDownloadZip.DownloadZip);
 
 //Login/usermobile
-router.post('/lgn/', controllerLogin.checkLogin);
+router.post('/lgn/', [mid.checkAuth], controllerLogin.checkLogin);
 router.post('/pltklgn/', [mid.checkAuth], controllerLogin.decodeToken);
 router.post('/checkum/', [mid.checkAuth], controllerLogin.checkUserMobile);
+
+//MappaProgetto
+router.get('/mappaProgetto/:idroom', [mid.checkAuth], controllerVarie.mappaProgetto);
 
 //SincroDb
 router.get('/alfanumcasuale/', [mid.checkAuth], controllerAlfaNumCasuale.getAlfaNumeCasuale);
@@ -97,6 +100,7 @@ router.post('/cu/', [mid.checkAuth], controllerCreate.postCreateUtenti);
 router.post('/cp/', [mid.checkAuth], controllerCreate.postCreateProgetti);
 router.post('/cr/', [mid.checkAuth], controllerCreate.postCreateRoom);
 router.post('/cc/', [mid.checkAuth], controllerCreate.postCreateCommessa);
+router.post('/cph/', [mid.checkAuth], controllerCreate.postCreateCaptphoto);
 //------------------------------------------------------------------------
 
 module.exports = router;

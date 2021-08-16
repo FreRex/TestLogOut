@@ -1,0 +1,34 @@
+@import 'https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.6.0/css/ol.css';
+@import 'https://unpkg.com/ol-layerswitcher@3.8.3/dist/ol-layerswitcher.css';
+#map {
+  position: relative;
+  height: 100%;
+  width: auto;
+}
+#mouse-position {
+  font-size: 10px;
+  position: absolute;
+  bottom: 15%;
+  left: 80px;
+  z-index: 100;
+  transform: translate(-50%, -50%);
+}
+#info {
+  z-index: 100;
+  font-size: 12px;
+  position: absolute;
+  bottom: 6px;
+  left: unset;
+  right: 4px;
+  background: rgba(255, 255, 255, 0.8);
+  width: 50%;
+  height: auto;
+  max-height: 20%;
+  min-height: 5%;
+  overflow-y: scroll;
+  display: flex;
+  align-items: baseline;
+  border: 1px solid black;
+  justify-content: flex-start;
+  word-wrap: break-word;
+}

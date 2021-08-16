@@ -69,7 +69,9 @@ export class ProjectService {
         return projects.filter(
           (proj) =>
             proj.nome.toLowerCase().includes(query.toLowerCase()) ||
-            proj.collaudatoreufficio.toLowerCase().includes(query.toLowerCase()) ||
+            proj.collaudatoreufficio
+              .toLowerCase()
+              .includes(query.toLowerCase()) ||
             proj.commessa.toLowerCase().includes(query.toLowerCase()) ||
             proj.pk_proj.toString().toLowerCase().includes(query.toLowerCase())
         );
@@ -79,42 +81,49 @@ export class ProjectService {
 
   /** SELECT progetti */
   loadProjects(): Observable<Project[]> {
-    return this.http.get<ProjectData[]>(`${environment.apiUrl}/s/progetti/`).pipe(
-      catchError((err) => {
-        return throwError(err);
-      }),
-      // <-- Rimappa i dati che arrivano dal server sull'interfaccia della Room
-      map((data) => {
-        const projects: Project[] = [];
-        for (const key in data) {
-          if (data.hasOwnProperty(key)) {
-            projects.push({
-              idprogetto: data[key].idprogetto,
-              pk_proj: data[key].pk_proj,
-              nome: data[key].nome,
-              datasincro: new Date(data[key].datasincro),
-              DataLastSincro: new Date(data[key].DataLastSincro),
-              nodi_fisici: data[key].nodi_fisici,
-              nodi_ottici: data[key].nodi_ottici,
-              tratte: data[key].tratte,
-              conn_edif_opta: data[key].conn_edif_opta,
-              long_centro_map: data[key].long_centro_map.replace(' ', '').trim(),
-              lat_centro_map: data[key].lat_centro_map.replace(' ', '').trim(),
-              sync:
-                data[key].conn_edif_opta === 'CollaudoLiveGisfo:view_connessione_edificio_pta'
-                  ? 'auto'
-                  : 'manual',
-              idutente: data[key].idutente,
-              collaudatoreufficio: data[key].collaudatoreufficio,
-              idcommessa: data[key].idcommessa,
-              commessa: data[key].commessa,
-            });
+    return this.http
+      .get<ProjectData[]>(`${environment.apiUrl}/s/progetti/`)
+      .pipe(
+        catchError((err) => {
+          return throwError(err);
+        }),
+        // <-- Rimappa i dati che arrivano dal server sull'interfaccia della Room
+        map((data) => {
+          const projects: Project[] = [];
+          for (const key in data) {
+            if (data.hasOwnProperty(key)) {
+              projects.push({
+                idprogetto: data[key].idprogetto,
+                pk_proj: data[key].pk_proj,
+                nome: data[key].nome,
+                datasincro: new Date(data[key].datasincro),
+                DataLastSincro: new Date(data[key].DataLastSincro),
+                nodi_fisici: data[key].nodi_fisici,
+                nodi_ottici: data[key].nodi_ottici,
+                tratte: data[key].tratte,
+                conn_edif_opta: data[key].conn_edif_opta,
+                long_centro_map: data[key].long_centro_map
+                  .replace(' ', '')
+                  .trim(),
+                lat_centro_map: data[key].lat_centro_map
+                  .replace(' ', '')
+                  .trim(),
+                sync:
+                  data[key].conn_edif_opta ===
+                  'CollaudoLiveGisfo:view_connessione_edificio_pta'
+                    ? 'auto'
+                    : 'manual',
+                idutente: data[key].idutente,
+                collaudatoreufficio: data[key].collaudatoreufficio,
+                idcommessa: data[key].idcommessa,
+                commessa: data[key].commessa,
+              });
+            }
           }
-        }
-        return projects;
-      }),
-      tap((projects: Project[]) => this.projSubject.next(projects))
-    );
+          return projects;
+        }),
+        tap((projects: Project[]) => this.projSubject.next(projects))
+      );
   }
 
   /** CREATE progetti */
@@ -196,7 +205,9 @@ export class ProjectService {
     return this.projects$.pipe(
       take(1),
       switchMap((projects) => {
-        const projectIndex = projects.findIndex((proj) => proj.idprogetto === idprogetto);
+        const projectIndex = projects.findIndex(
+          (proj) => proj.idprogetto === idprogetto
+        );
         updatedProjetcs = [...projects];
         const oldProject = updatedProjetcs[projectIndex];
         updatedProjetcs[projectIndex] = {
@@ -242,7 +253,9 @@ export class ProjectService {
     return this.projects$.pipe(
       take(1),
       switchMap((projects) => {
-        updatedProjetcs = projects.filter((proj) => proj.idprogetto !== projectId);
+        updatedProjetcs = projects.filter(
+          (proj) => proj.idprogetto !== projectId
+        );
         return this.http.post(`${environment.apiUrl}/d/`, {
           id: projectId,
           tableDelete: 'rappre_prog_gisfo',
