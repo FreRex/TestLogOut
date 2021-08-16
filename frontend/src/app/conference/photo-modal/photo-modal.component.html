@@ -1,5 +1,5 @@
 <ion-content>
-  <div class="coordinates">
+  <div *ngIf="coordinates" class="coordinates">
     <p>{{ coordinates.latitude }}</p>
     <p>{{ coordinates.longitude }}</p>
   </div>
@@ -14,9 +14,9 @@
       >
       </canvas>
       <ion-text color="dark">{{ date | date: 'HH:mm - dd/MM/yyyy' }}</ion-text>
-      <ion-item class="title">
-        <ion-label color="dark" position="floating">Titolo</ion-label>
-        <ion-input formControlName="title" type="text"></ion-input>
+      <ion-item class="nomeElemento">
+        <ion-label color="dark" position="floating">Nome Elemento</ion-label>
+        <ion-input formControlName="nomeElemento" type="text"></ion-input>
       </ion-item>
       <ion-item class="note">
         <ion-label color="dark" position="floating">Note</ion-label>
