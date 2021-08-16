@@ -218,13 +218,11 @@ exports.postCreateCaptphoto = (req: any, res: any, next: any) => {
     let key: any;
     let valore: any = '';
    
-    for(let attribute in req.body){
-        console.log('a');
-        if(attribute=='id' || attribute =='onlynota'){
-            console.log('b');
-            if(typeof(req.body[attribute]) !== 'undefined' && req.body[attribute] !== null && req.body[attribute] !== '' && typeof(req.body[attribute]) === 'number'){
-                queryInsert.push(req.body[attribute]);   
-                console.log('c');            
+    for(let attribute in req.body){        
+        if(attribute=='id' || attribute =='onlynota'){            
+            //if(typeof(req.body[attribute]) !== 'undefined' && req.body[attribute] !== null && req.body[attribute] !== '' && typeof(req.body[attribute]) === 'number'){
+            if(typeof(req.body[attribute]) !== 'undefined' && req.body[attribute] !== null && typeof(req.body[attribute]) === 'number'){
+                queryInsert.push(req.body[attribute]);                        
             }
             else
             { 
@@ -233,8 +231,7 @@ exports.postCreateCaptphoto = (req: any, res: any, next: any) => {
 
         }
         else
-        {
-            console.log('1');
+        {            
             //if(typeof(req.body[attribute]) !== 'undefined' && req.body[attribute] !== null && req.body[attribute] !== ''){
             if(typeof(req.body[attribute]) !== 'undefined' && req.body[attribute] !== null){
                 console.log('2');
