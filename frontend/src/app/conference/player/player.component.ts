@@ -246,6 +246,8 @@ export class PlayerComponent implements OnInit {
             (device) => device.kind === 'videoinput'
           );
           videoDevices.forEach(function (devices) {
+            console.log('🐱‍👤 : devices', devices);
+
             //Check retro cam
             if (
               devices.label.indexOf('facing back') > 0 ||
@@ -255,7 +257,7 @@ export class PlayerComponent implements OnInit {
             ) {
               // this.checkRetroCam = true;
               constraints = {
-                audio: { sampleRate: AUDIO_BITRATE, echoCancellation: true },
+                // audio: { sampleRate: AUDIO_BITRATE, echoCancellation: true },
                 video: {
                   width: { min: MIN_WIDTH, ideal: IDEAL_WIDTH, max: MAX_WIDTH },
                   height: {
@@ -270,7 +272,7 @@ export class PlayerComponent implements OnInit {
             } else {
               // this.checkRetroCam = false;
               constraints = {
-                audio: { sampleRate: AUDIO_BITRATE, echoCancellation: true },
+                // audio: { sampleRate: AUDIO_BITRATE, echoCancellation: true },
                 video: {
                   width: { min: MIN_WIDTH, ideal: IDEAL_WIDTH, max: MAX_WIDTH },
                   height: {
