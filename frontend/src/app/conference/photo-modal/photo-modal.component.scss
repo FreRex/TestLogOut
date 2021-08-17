@@ -1,6 +1,23 @@
 ion-content {
   --background: transparent;
   position: relative;
+}
+
+.form-container {
+  position: relative;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  align-content: stretch;
+  overflow-y: scroll;
+  .canvas {
+    height: 100%;
+    width: 100%;
+  }
   .coordinates {
     position: absolute;
     top: 16px;
@@ -17,23 +34,6 @@ ion-content {
   }
 }
 
-.form-container {
-  height: 100%;
-  width: 100%;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: stretch;
-  align-content: stretch;
-}
-
-@media (max-width: 768px) {
-  .form-padding {
-    padding: 120px 16px 120px 16px;
-  }
-}
-
 .form-fields {
   display: flex;
   flex-grow: 1;
@@ -43,8 +43,7 @@ ion-content {
   align-items: stretch;
   align-content: stretch;
   padding-bottom: 16px;
-  width: 100%;
-  height: 100%;
+
   ion-text {
     display: block;
     flex-grow: 0;
@@ -115,5 +114,11 @@ ion-input {
   }
   ion-button.salva {
     --background: var(--ion-color-primary);
+  }
+}
+
+@media (max-width: 768px) {
+  .form-padding {
+    padding: 60px 16px 120px 16px;
   }
 }
