@@ -1,6 +1,7 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import FlvJs from 'flv.js';
+// import FlvJs from 'flv.js';
+import mpegts from 'mpegts.js';
 import { Socket } from 'ngx-socket-io';
 import { take } from 'rxjs/operators';
 import { AuthUser } from 'src/app/auth/auth-user.model';
@@ -126,28 +127,45 @@ export class PlayerComponent implements OnInit {
   idVarEglassesInFunction;
   idVarVideoZoomInFunction;
 
-  player: FlvJs.Player;
+  // https://github.com/xqq/mpegts.js
+  // https://github.com/xqq/mpegts.js/blob/master/docs/livestream.md
+  // https://github.com/xqq/mpegts.js/blob/master/docs/api.md#mpegtsmseplayer
+  player: mpegts.Player;
   startPlayer(roomId: number, streamId: string) {
     if (this.player) {
       this.stopPlayer();
     }
-    let flvOrigin = `${environment.urlWSS}/${roomId}/${streamId}.flv`;
-    this.player = FlvJs.createPlayer(
-      {
-        type: 'flv',
-        url: flvOrigin,
-      },
-      {
-        enableWorker: false,
-        enableStashBuffer: false,
-        stashInitialSize: 1,
-        isLive: true,
-        autoCleanupSourceBuffer: true,
-      }
-    );
-    this.player.attachMediaElement(this.remoteVideo.nativeElement);
-    this.player.load();
-    this.player.play();
+    if (mpegts.getFeatureList().mseLivePlayback) {
+      let flvOrigin = `${environment.urlWSS}/${roomId}/${streamId}.flv`;
+      this.player = mpegts.createPlayer(
+        {
+          type: 'flv',
+          isLive: true,
+          url: flvOrigin,
+        },
+        {
+          enableWorker: false,
+          enableStashBuffer: false,
+          // stashInitialSize: 1,
+          isLive: true,
+          liveBufferLatencyChasing: true,
+          liveBufferLatencyMaxLatency: 1.5,
+          liveBufferLatencyMinRemain: 0.5,
+          lazyLoad: true,
+          lazyLoadMaxDuration: 3 * 60,
+          lazyLoadRecoverDuration: 30,
+          // deferLoadAfterSourceOpen: true,
+          autoCleanupSourceBuffer: true,
+          autoCleanupMaxBackwardDuration: 3 * 60,
+          autoCleanupMinBackwardDuration: 2 * 60,
+        }
+      );
+      this.player.attachMediaElement(this.remoteVideo.nativeElement);
+      this.player.load();
+      this.player.play();
+    } else {
+      console.log(' HTTP MPEG2-TS/FLV live stream cannot work on your browser');
+    }
   }
 
   stopPlayer() {
