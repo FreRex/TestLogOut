@@ -331,8 +331,39 @@ io.on('connection', function(socket: any){
 			ffmpeg_process.stdin.write(data);
 		}
 
-		ffmpeg_process.stderr.on('data',function(d: any){	
-			console.log(d.toString('utf8'));				
+		//Ricezione da FFMPEG lo streaming nel formato per il RTMP
+		ffmpeg_process.stderr.on('data',function(d: any){
+			let dato_ffmpeg: string = d.toString('utf8')	
+			//console.log(dato_ffmpeg);
+
+			//inserimento dati rate nel db	
+			//InsertRateDb.insertRateVideo(d.toString('utf8'));
+
+			//Check BLOCCO VIDEO---------
+			if(dato_ffmpeg.search('Fatal ERROR: unexpected:rtmp not set yet')!=-1){
+				console.log('Fatal ERROR: unexpected:rtmp not set yet --> BLOCCO VIDEO ???');
+				socket.broadcast.emit('message', {type: 'bloccoVideoRtmp', data: 'Fatal ERROR: unexpected:rtmp not set yet'});
+			}
+			if(dato_ffmpeg.search('Fatal ERROR')!=-1){
+				console.log('Fatal ERROR --> BLOCCO VIDEO ???');
+				socket.broadcast.emit('message', {type: 'bloccoVideoRtmp', data: 'Fatal ERROR'});
+			}
+			if(dato_ffmpeg.search('Cannot read property')!=-1){
+				console.log('Cannot read property --> BLOCCO VIDEO ???');
+				socket.broadcast.emit('message', {type: 'bloccoVideoRtmp', data: 'Cannot read property'});
+			}
+
+			//Check LATENZA/CLOCCO VIDEO---------
+			if(dato_ffmpeg.search('Queue input is backward in time')!=-1){
+				console.log('Queue input is backward in time --> LATENZA VIDEO ???');
+				socket.broadcast.emit('message', {type: 'latenzaVideoRtmp', data: 'Queue input is backward in time'});				
+			}
+			if(dato_ffmpeg.search('speed=0.')!=-1){
+				console.log('speed < 0.yy --> LATENZA VIDEO/BLOCCO VIDEO ???');
+				socket.broadcast.emit('message', {type: 'latenzaVideoRtmp', data: 'speed < 0.yy'});
+			}
+			
+			
 			let ffmpeg_stderrforsocket = 'ffmpeg_stderr '+d;
 			socket.emit('message',{type: 'info', data: ffmpeg_stderrforsocket});
 		});
