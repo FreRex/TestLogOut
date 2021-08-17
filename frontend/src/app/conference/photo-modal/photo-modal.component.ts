@@ -20,7 +20,7 @@ import { GpsCoordinates } from '../gps.service';
 })
 export class PhotoModalComponent implements OnInit, AfterViewInit {
   form: FormGroup = this.fb.group({
-    title: [null],
+    nomeElemento: [null],
     note: [null],
   });
 
@@ -81,8 +81,8 @@ export class PhotoModalComponent implements OnInit, AfterViewInit {
         this.room.id,
         this.room.usermobile,
         this.room.progetto,
-        this.coordinates.latitude,
-        this.coordinates.longitude
+        this.coordinates ? this.coordinates.latitude : null,
+        this.coordinates ? this.coordinates.longitude : null
       )
       .subscribe(
         /** Il server risponde con 200 */
