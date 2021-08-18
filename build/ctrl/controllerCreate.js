@@ -207,11 +207,14 @@ exports.postCreateCaptphoto = (req, res, next) => {
     if (messageErrore == '') {
         //Inserimento foto in directory       
         const insertPhDir = require('../assets/functionInsertPhotoDir');
-        let namePhoto;
-        if (req.body['nomelemento'] != 0 || req.body['nomelemento'] != '') {
+        let namePhoto = req.body['nomelemento'];
+        console.log(namePhoto);
+        if (namePhoto != 0 || namePhoto != '') {
+            console.log('aaa');
             namePhoto = req.body['nomelemento'] + '.jpg';
         }
         else {
+            console.log('bbbb');
             namePhoto = req.body['nameimg'] + '.jpg';
         }
         insertPhDir.insertPhotoDir(req.body['progettoselezionato'], namePhoto, req.body['img']);
