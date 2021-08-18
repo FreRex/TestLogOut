@@ -13,7 +13,12 @@ import {
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
-import { Photo, MediaService } from './media.service';
+import {
+  Photo,
+  MediaService,
+  ERR_ZERO_PHOTOS,
+  ERR_NOMORE_PHOTOS,
+} from './media.service';
 import { PhotoDetailsComponent } from './photo-details/photo-details.component';
 
 @Component({
@@ -35,11 +40,15 @@ import { PhotoDetailsComponent } from './photo-details/photo-details.component';
 })
 export class GalleryPage implements ViewWillEnter, ViewWillLeave {
   galleryType = 'foto';
+
   roomId: string;
   roomName: string;
+
   pageNum: number = 1;
+  numberOfPhotosXPage: number = 12;
+
   backToTop: boolean = false;
-  load: boolean = true;
+  isLoading: boolean = true;
 
   photoSet$: Observable<Photo[]>;
 
@@ -56,13 +65,13 @@ export class GalleryPage implements ViewWillEnter, ViewWillLeave {
   ) {}
 
   ionViewWillEnter() {
+    this.photoSet$ = this.mediaServ.photoSet$;
     this.activatedRoute.paramMap.subscribe((pM: ParamMap) => {
-      this.photoSet$ = this.mediaServ.photoSet$;
       this.roomId = pM.get('id');
       this.roomName = pM.get('proj');
-      this.loadFoto();
+      this.loadPhotos();
     });
-    this.mediaServ.checkDownload(this.roomName);
+    // this.mediaServ.checkDownload(this.roomName);
   }
 
   ionViewWillLeave() {
@@ -70,48 +79,62 @@ export class GalleryPage implements ViewWillEnter, ViewWillLeave {
     this.pageNum = 1;
   }
 
-  loadFoto() {
-    this.mediaServ.loadPhotos(this.roomId, this.pageNum).subscribe(
-      (res: Photo[]) => {
-        this.load = false;
-        if (res.length == 0) {
-          this.presentToast('Non ci sono Foto');
-        } else {
-          /* this.foto.push(...res)  */
+  loadPhotos(event?) {
+    this.mediaServ
+      .loadPhotos(this.roomId, this.pageNum, this.numberOfPhotosXPage)
+      .subscribe(
+        (photoSet: Photo[]) => {
+          this.isLoading = false;
+          if (photoSet.length > 0) {
+            this.pageNum++;
+            if (event) {
+              event.target.complete();
+            }
+          }
+        },
+        (err) => {
+          if (err === ERR_ZERO_PHOTOS) {
+            this.isLoading = false;
+            this.presentToast('Non ci sono Foto');
+          } else if (err === ERR_NOMORE_PHOTOS) {
+            if (event) {
+              event.target.complete();
+              event.target.disable = true;
+            }
+          } else {
+            console.log('🐱‍👤 : err', err);
+          }
         }
-      },
-      (err) => console.log('errore', err),
-      () => console.log('complete')
-    );
+      );
   }
 
-  loadMoreFoto(event) {
-    this.pageNum++;
-    this.mediaServ.loadPhotos(this.roomId, this.pageNum).subscribe(
-      (res: Photo[]) => {
-        if (res.length == 0) {
-          if (event) {
-            event.target.complete();
-            event.target.disable = true;
-          }
-        } else {
-          /* this.foto.push(...res)  */
-          if (event) {
-            event.target.complete();
-          }
-        }
-      },
-      (err) => console.log('errore', err),
-      () => console.log('complete')
-    );
-  }
+  // loadMoreFoto(event) {
+  //   this.pageNum++;
+  //   this.mediaServ.loadPhotos(this.roomId, this.pageNum).subscribe(
+  //     (res: Photo[]) => {
+  //       if (res.length == 0) {
+  //         if (event) {
+  //           event.target.complete();
+  //           event.target.disable = true;
+  //         }
+  //       } else {
+  //         /* this.foto.push(...res)  */
+  //         if (event) {
+  //           event.target.complete();
+  //         }
+  //       }
+  //     },
+  //     (err) => console.log('errore', err),
+  //     () => console.log('complete')
+  //   );
+  // }
 
   toRoomPage() {
     this.navController.back();
     // this.router.navigate([`/rooms`]);
   }
 
-  downloadFoto() {
+  downloadPhotos() {
     const nomeProgetto = this.roomName.trim().replace(' ', '');
     this.mediaServ.checkDownload(nomeProgetto).subscribe((value: boolean) => {
       if (value) {
@@ -133,12 +156,12 @@ export class GalleryPage implements ViewWillEnter, ViewWillLeave {
     });
   }
 
-  editFoto(singleFoto: Photo) {
+  editPhoto(photo: Photo) {
     this.modalController
       .create({
         component: PhotoDetailsComponent,
         cssClass: 'modal-fullscreen',
-        componentProps: { foto: singleFoto, roomName: this.roomName },
+        componentProps: { foto: photo, roomName: this.roomName },
       })
       .then((modalEl) => {
         modalEl.present();
@@ -173,6 +196,7 @@ export class GalleryPage implements ViewWillEnter, ViewWillLeave {
       this.backToTop = false;
     }
   }
+
   gotToTop() {
     this.content.scrollToTop(1000);
   }

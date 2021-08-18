@@ -115,7 +115,9 @@ export class PhotoModalComponent implements OnInit, AfterViewInit {
     link.setAttribute(
       'download',
       `${
-        this.form.value.nomeElemento ? this.form.value.nomeElemento : `img${this.idPhoto}`
+        this.form.value.nomeElemento
+          ? this.form.value.nomeElemento
+          : `img${this.idPhoto}`
       }.jpeg`
     );
     document.body.appendChild(link);

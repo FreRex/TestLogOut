@@ -43,7 +43,7 @@
       </ion-button> -->
         <ion-button
           class="btn-trasparent ion-no-padding"
-          (click)="downloadFoto()"
+          (click)="downloadPhotos()"
         >
           <ion-icon
             class="ion-margin"
@@ -67,18 +67,18 @@
     <div [ngSwitch]="galleryType">
       <ion-grid *ngSwitchCase="'foto'">
         <ion-row>
-          <div *ngIf="load" class="ion-padding-horizontal load-spin">
+          <div *ngIf="isLoading" class="ion-padding-horizontal load-spin">
             <ion-spinner></ion-spinner>
           </div>
-          <ion-col *ngFor="let singleFoto of (photoSet$ | async)">
+          <ion-col *ngFor="let photo of (photoSet$ | async)">
             <ion-thumbnail
               class="foto-thumbnail-mobile"
-              (click)="editFoto(singleFoto)"
+              (click)="editPhoto(photo)"
             >
               <img
-                [src]="'data:image/png;base64,'+singleFoto.imageBase64 | safeHtml"
+                [src]="'data:image/png;base64,'+photo.imageBase64 | safeHtml"
               />
-              <div class="note-yes" *ngIf="singleFoto.noteimg">
+              <div class="note-yes" *ngIf="photo.noteimg">
                 <ion-icon
                   class="note-ico"
                   slot="icon-only"
@@ -93,7 +93,7 @@
       <ion-infinite-scroll
         threshold="5%"
         position="bottom"
-        (ionInfinite)="loadMoreFoto($event)"
+        (ionInfinite)="loadPhotos($event)"
       >
         <ion-infinite-scroll-content
           loadingSpinner="dots"
@@ -132,7 +132,7 @@
           <div class="head-btn-desktop">
             <ion-button
               class="btn-trasparent ion-no-padding"
-              (click)="downloadFoto()"
+              (click)="downloadPhotos()"
             >
               <ion-icon
                 class="ion-margin"
@@ -163,7 +163,7 @@
           <div [ngSwitch]="galleryType">
             <ion-grid *ngSwitchCase="'foto'">
               <ion-row>
-                <div *ngIf="load" class="load-container" [@inOutAnimation]>
+                <div *ngIf="isLoading" class="load-container" [@inOutAnimation]>
                   <div id="building" style="font-size: 12px">
                     <div id="blocks">
                       <div class="b" id="b1"></div>
@@ -176,15 +176,15 @@
                     </div> -->
                   </div>
                 </div>
-                <ion-col *ngFor="let singleFoto of (photoSet$ |async)">
+                <ion-col *ngFor="let photo of (photoSet$ |async)">
                   <ion-thumbnail
                     class="foto-thumbnail-desktop"
-                    (click)="editFoto(singleFoto)"
+                    (click)="editPhoto(photo)"
                   >
                     <img
-                      [src]="'data:image/png;base64,'+singleFoto.imageBase64 | safeHtml"
+                      [src]="'data:image/png;base64,'+photo.imageBase64 | safeHtml"
                     />
-                    <div class="note-yes" *ngIf="singleFoto.noteimg">
+                    <div class="note-yes" *ngIf="photo.noteimg">
                       <ion-icon
                         class="note-ico"
                         slot="icon-only"
@@ -199,7 +199,7 @@
             <ion-infinite-scroll
               threshold="5%"
               position="bottom"
-              (ionInfinite)="loadMoreFoto($event)"
+              (ionInfinite)="loadPhotos($event)"
             >
               <ion-infinite-scroll-content
                 loadingSpinner="dots"
