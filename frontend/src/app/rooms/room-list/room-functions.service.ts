@@ -18,8 +18,8 @@ import { EditRoomModalComponent } from '../edit-room-modal/edit-room-modal.compo
   providedIn: 'root',
 })
 export class RoomFunctionsService implements OnInit {
-  baseUrl =
-    'https://www.collaudolive.com:9777/glasses/FrontEnd/src/index.php?q=';
+  // baseUrl =
+  //   'https://www.collaudolive.com:9777/glasses/FrontEnd/src/index.php?q=';
 
   constructor(
     public router: Router,

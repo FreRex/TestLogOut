@@ -74,7 +74,7 @@ export class PhotoModalComponent implements OnInit, AfterViewInit {
         imgBase64, // TODO
         this.idPhoto,
         `img${this.idPhoto}`,
-        this.form.value.title,
+        this.form.value.nomeElemento,
         this.form.value.note,
         this.date,
         this.user.idutente,
@@ -115,7 +115,9 @@ export class PhotoModalComponent implements OnInit, AfterViewInit {
     link.setAttribute(
       'download',
       `${
-        this.form.value.title ? this.form.value.title : `img${this.idPhoto}`
+        this.form.value.nomeElemento
+          ? this.form.value.nomeElemento
+          : `img${this.idPhoto}`
       }.jpeg`
     );
     document.body.appendChild(link);

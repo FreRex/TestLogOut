@@ -141,6 +141,8 @@ export class PlayerComponent implements OnInit {
         {
           type: 'flv',
           isLive: true,
+          hasAudio: false,
+          hasVideo: true,
           url: flvOrigin,
         },
         {
@@ -164,7 +166,7 @@ export class PlayerComponent implements OnInit {
       this.player.load();
       this.player.play();
     } else {
-      console.log(' HTTP MPEG2-TS/FLV live stream cannot work on your browser');
+      console.log('HTTP MPEG2-TS/FLV live stream cannot work on your browser');
     }
   }
 

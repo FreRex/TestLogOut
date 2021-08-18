@@ -6,6 +6,8 @@ import { environment } from 'src/environments/environment';
 
 import { AuthService } from '../auth/auth.service';
 
+export const ERR_ZERO_PHOTOS = new Error('Nessuna Foto');
+export const ERR_NOMORE_PHOTOS = new Error('Foto Finite');
 export interface Photo {
   imageBase64: string;
   idRoom: number;
@@ -31,7 +33,6 @@ export interface Check {
 })
 export class MediaService {
   fotoData: Photo;
-  numberOfFotoXPage: string = '12';
 
   public photoSetSubject = new BehaviorSubject<Photo[]>([]);
   photoSet$: Observable<Photo[]> = this.photoSetSubject.asObservable();
@@ -46,43 +47,51 @@ export class MediaService {
     );
   }
 
-  loadPhotos(id: string, numPage: number) {
-    let addedFoto: Photo[];
+  loadPhotos(roomId: string, pageNum: number, numberOfFotoXPage: number) {
+    let updatedPhotoSet: Photo[];
+    let newPhotoSet: Photo[] = [];
     return this.photoSet$.pipe(
       take(1),
-      switchMap((res) => {
-        addedFoto = [...res];
+      switchMap((photoSet) => {
+        updatedPhotoSet = [...photoSet];
         return this.http.get(
-          `${environment.apiUrl}/s/galleria/0/${id}/${numPage}/${this.numberOfFotoXPage}`
+          `${environment.apiUrl}/s/galleria/0/${roomId}/${pageNum}/${numberOfFotoXPage}`
         );
       }),
       catchError((err) => {
-        console.log('errore: ', err);
-        return of([]);
+        // console.log('errore: ', err);
+        // return of([]);
+        return throwError(err);
       }),
-      map((res) => {
-        for (const key in res) {
-          if (res.hasOwnProperty(key)) {
-            addedFoto.push({
-              imageBase64: res[key]['foto'],
-              idRoom: res[key]['idroom'],
-              idPhoto: res[key]['idPhoto'],
-              progettoselezionato: res[key]['progettoselezionato'],
-              collaudatoreufficio: res[key]['collaudatoreufficio'],
-              dataimg: res[key]['dataimg'],
-              nameimg: res[key]['nameimg'],
-              latitu: res[key]['latitu'],
-              longitu: res[key]['longitu'],
-              nomelemento: res[key]['nomelemento'],
-              noteimg: res[key]['noteimg'],
-              onlynota: res[key]['onlynota'],
-            });
+      map((photoData: Photo[]) => {
+        console.log('🐱‍👤 : photoData', photoData);
+        if (photoData.length <= 0) {
+          throw pageNum === 1 ? ERR_ZERO_PHOTOS : ERR_NOMORE_PHOTOS;
+        } else {
+          for (const key in photoData) {
+            if (photoData.hasOwnProperty(key)) {
+              newPhotoSet.push({
+                imageBase64: photoData[key]['foto'],
+                idRoom: photoData[key]['idroom'],
+                idPhoto: photoData[key]['idPhoto'],
+                progettoselezionato: photoData[key]['progettoselezionato'],
+                collaudatoreufficio: photoData[key]['collaudatoreufficio'],
+                dataimg: photoData[key]['dataimg'],
+                nameimg: photoData[key]['nameimg'],
+                latitu: photoData[key]['latitu'],
+                longitu: photoData[key]['longitu'],
+                nomelemento: photoData[key]['nomelemento'],
+                noteimg: photoData[key]['noteimg'],
+                onlynota: photoData[key]['onlynota'],
+              });
+            }
           }
         }
-        return addedFoto;
+        return newPhotoSet;
       }),
-      tap((res: Photo[]) => {
-        this.photoSetSubject.next(res);
+      tap((newPhotoSet: Photo[]) => {
+        updatedPhotoSet.push(...newPhotoSet);
+        this.photoSetSubject.next(updatedPhotoSet);
       })
     );
   }
@@ -117,20 +126,20 @@ export class MediaService {
     );
   }
 
-  updateFoto(fotoID: any, fotoNome: string, fotoNote: string) {
+  updateFoto(idPhoto: any, nomeElemento: string, noteFoto: string) {
     return this.http.put(`${environment.apiUrl}/ug`, {
-      id: fotoID,
-      nomelemento: fotoNome,
-      noteimg: fotoNote,
+      id: idPhoto,
+      nomelemento: nomeElemento,
+      noteimg: noteFoto,
     });
   }
 
   addPhoto(
     imageBase64: string,
     idPhoto: number,
-    imgName: string,
-    imgTitle: string,
-    imgNotes: string,
+    nomeDefault: string,
+    nomeElemento: string,
+    note: string,
     imgData: Date,
     idUtente: string,
     idRoom: number,
@@ -139,60 +148,23 @@ export class MediaService {
     lat: string,
     long: string
   ) {
-    let updatedPhotos: Photo[];
     const newPhoto = {
-      imageBase64: imageBase64,
-      idPhoto: idPhoto,
-      nameimg: imgName,
-      nomelemento: imgTitle ? imgTitle : '',
-      noteimg: imgNotes ? imgNotes : '',
-      dataimg: imgData,
-      collaudatoreufficio: idUtente,
-      idRoom: idRoom,
-      progettoselezionato: nomeProgetto,
-      latitu: lat ? lat : '',
-      longitu: long ? long : '',
-      onlynota: 0,
-    };
-    console.log('🐱‍👤 : newPhoto', newPhoto);
-    console.log('🐱‍👤 : API', {
       id: +idPhoto,
       prodnumber: usermobile,
       progettoselezionato: nomeProgetto,
       collaudatoreufficio: `${idUtente}`,
+      nameimg: nomeDefault,
       latitu: lat ? lat : '',
       longitu: long ? long : '',
-      nameimg: imgName,
-      nomelemento: imgTitle ? imgTitle : '',
-      noteimg: imgNotes ? imgNotes : '',
+      nomelemento: nomeElemento ? nomeElemento : '',
+      noteimg: note ? note : '',
       img: imageBase64,
       onlynota: 0,
-    });
-
-    return this.photoSet$.pipe(
-      take(1),
-      switchMap((photos) => {
-        updatedPhotos = [...photos];
-        return this.http.post(`${environment.apiUrl}/cph/`, {
-          id: +idPhoto,
-          prodnumber: usermobile,
-          progettoselezionato: nomeProgetto,
-          collaudatoreufficio: `${idUtente}`,
-          latitu: lat ? lat : '',
-          longitu: long ? long : '',
-          nameimg: imgName,
-          nomelemento: imgTitle ? imgTitle : '',
-          noteimg: imgNotes ? imgNotes : '',
-          img: imageBase64,
-          onlynota: 0,
-        });
-      }),
+    };
+    console.log('🐱‍👤 : newPhoto', newPhoto);
+    return this.http.post(`${environment.apiUrl}/cph/`, newPhoto).pipe(
       catchError((err) => {
         return throwError(err);
-      }),
-      tap((res) => {
-        updatedPhotos.unshift(newPhoto);
-        this.photoSetSubject.next(updatedPhotos);
       })
     );
   }
