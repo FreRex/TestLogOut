@@ -1,36 +1,40 @@
 ion-content {
-  --background: transparent;
-  position: relative;
-  .coordinates {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    padding: 8px;
-    background-color: white;
-    opacity: 0.6;
-    font-size: 0.9rem;
-    text-align: end;
-    p {
-      margin: 4px;
-      color: var(--ion-color-dark);
-    }
-  }
+  background-color: transparent;
 }
-
 .form-container {
+  padding: 16px;
+  position: relative;
   height: 100%;
   width: 100%;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: stretch;
   align-content: stretch;
-}
-
-@media (max-width: 768px) {
-  .form-padding {
-    padding: 120px 16px 120px 16px;
+  object-fit: contain;
+  .form-fields {
+    .canvas {
+      height: 100%;
+      width: 100%;
+      object-fit: contain;
+    }
+    .testoData {
+      margin-top: -10%;
+    }
+  }
+  .coordinates {
+    position: absolute;
+    top: 4px;
+    right: 16px;
+    padding: 3px;
+    background-color: white;
+    opacity: 0.6;
+    text-align: end;
+    p {
+      font-size: 12px;
+      margin: 2px;
+      color: var(--ion-color-dark);
+    }
   }
 }
 
@@ -43,16 +47,25 @@ ion-content {
   align-items: stretch;
   align-content: stretch;
   padding-bottom: 16px;
-  width: 100%;
-  height: 100%;
-  ion-text {
+  ion-item.invalid {
+    --border-color: var(--ion-color-warning);
+    --border-width: 2px;
+  }
+  .nomeElemento {
+    ion-input {
+      margin: 16px 0 16px 0;
+    }
+  }
+
+  /*   ion-text {
     display: block;
     flex-grow: 0;
     font-size: 0.9rem;
     opacity: 70%;
-    margin: 16px 16px 0px 16px;
-  }
-  ion-item {
+    margin: 16px;
+  } */
+
+  /*   ion-item {
     --highlight-height: 0;
     --padding-top: 0px;
     --padding-bottom: 0px;
@@ -65,24 +78,12 @@ ion-content {
   ion-item::part(native) {
     height: 100%;
   }
-  ion-item.nomeElemento {
-    display: block;
-    flex-grow: 0;
-  }
-  ion-item.note {
-    display: block;
-    flex-grow: 1;
-  }
-  ion-item.invalid {
-    --border-color: var(--ion-color-warning);
-    --border-width: 2px;
-  }
   ion-textarea {
     --padding-top: 0px;
     --padding-bottom: 0px;
     --padding-end: 0px;
     --padding-start: 0px;
-  }
+  } */
 }
 
 ion-label {
