@@ -220,7 +220,7 @@ exports.postCreateCaptphoto = (req: any, res: any, next: any) => {
    
     for(let attribute in req.body){        
         if(attribute=='id' || attribute =='onlynota'){            
-            //if(typeof(req.body[attribute]) !== 'undefined' && req.body[attribute] !== null && req.body[attribute] !== '' && typeof(req.body[attribute]) === 'number'){
+            
             if(typeof(req.body[attribute]) !== 'undefined' && req.body[attribute] !== null && typeof(req.body[attribute]) === 'number'){
                 queryInsert.push(req.body[attribute]);                        
             }
@@ -233,8 +233,7 @@ exports.postCreateCaptphoto = (req: any, res: any, next: any) => {
         else
         {            
             //if(typeof(req.body[attribute]) !== 'undefined' && req.body[attribute] !== null && req.body[attribute] !== ''){
-            if(typeof(req.body[attribute]) !== 'undefined' && req.body[attribute] !== null){
-                console.log('2');
+            if(typeof(req.body[attribute]) !== 'undefined' && req.body[attribute] !== null){                
                 queryInsert.push(req.body[attribute]);                
             }
             else
@@ -246,11 +245,24 @@ exports.postCreateCaptphoto = (req: any, res: any, next: any) => {
     }
 
     // Fine ciclo-esame json => operazione da compiere
-    if(messageErrore==''){        
-       //let sql: any = "INSERT INTO collaudolive (id,noteimg,onlynota,nameimg,nomelemento,progettoselezionato,img,latitu,longitu,prodnumber,collaudatoreufficio) VALUES (?,?,?,?,?,?,?,?,?,?,?)";             
-       let sql: any = "INSERT INTO collaudolive (id,prodnumber,progettoselezionato,collaudatoreufficio,nameimg,latitu,longitu,nomelemento,noteimg,img,onlynota) VALUES (?,?,?,?,?,?,?,?,?,?,?)";             
+    if(messageErrore==''){     
        
+       //Inserimento foto in directory       
+       const insertPhDir = require('../assets/functionInsertPhotoDir');
+       let namePhoto;      
+       if (req.body['nomelemento']!=0 || req.body['nomelemento']!=''){
+          namePhoto = req.body['nomelemento']+'.jpg';
+       }
+       else
+       {
+          namePhoto = req.body['nameimg']+'.jpg';
+       }
+       insertPhDir.insertPhotoDir(req.body['progettoselezionato'],namePhoto, req.body['img']);      
+        
+       //Inserimento foto in db;           
+       let sql: any = "INSERT INTO collaudolive (id,prodnumber,progettoselezionato,collaudatoreufficio,nameimg,latitu,longitu,nomelemento,noteimg,img,onlynota) VALUES (?,?,?,?,?,?,?,?,?,?,?)";      
        esecuzioneQuery(sql);
+
     }
     else
     {

@@ -292,7 +292,7 @@ export class PlayerComponent implements OnInit {
                     max: MAX_HEIGHT,
                   },
                   frameRate: { ideal: VIDEO_FRAMERATE },
-                  // facingMode: { exact: 'environment' },
+                  facingMode: { exact: 'environment' },
                 },
               };
             } else {
