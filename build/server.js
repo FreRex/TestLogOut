@@ -58,6 +58,17 @@ child_process_1.spawn('ffmpeg', ['-h']).on('error', function (m) {
 //-----------------------------------------------------------------------------------------
 // Connessione socket.io
 io.on('connection', function (socket) {
+    //SOCKET PER CHAT TESTUALE
+    //Connected/Disconnect
+    console.log('a user connected');
+    socket.on('disconnect', () => {
+        console.log('user disconnected');
+    });
+    //Message
+    socket.on('chat message', (msg) => {
+        io.emit('chat message', msg);
+        console.log('message: ' + msg);
+    });
     //SOCKET PER KMZ
     socket.on('kmzemit', function (kmz_data) {
         console.log('kmz_data: ' + kmz_data.kmz);

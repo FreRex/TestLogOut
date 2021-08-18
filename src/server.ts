@@ -77,6 +77,19 @@ spawn('ffmpeg',['-h']).on('error',function(m:any){
 // Connessione socket.io
 io.on('connection', function(socket: any){
 
+	 //SOCKET PER CHAT TESTUALE
+	 //Connected/Disconnect
+	 console.log('a user connected');
+	 socket.on('disconnect', () => {
+		 console.log('user disconnected');
+	 });
+	 
+	 //Message
+	 socket.on('chat message', (msg: any) => {
+		 io.emit('chat message', msg);
+		 console.log('message: ' + msg);
+	   });
+
 	//SOCKET PER KMZ
 	socket.on('kmzemit',function(kmz_data: any){
 		console.log('kmz_data: ' +kmz_data.kmz);
