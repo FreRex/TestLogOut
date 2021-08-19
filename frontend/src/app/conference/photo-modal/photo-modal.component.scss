@@ -1,8 +1,10 @@
 ion-content {
   background-color: transparent;
 }
-.form-container {
-  padding: 16px;
+.padtot {
+  padding: 10px;
+}
+.form-container {  
   position: relative;
   height: 100%;
   width: 100%;
@@ -20,6 +22,7 @@ ion-content {
       width: 100%;
       object-fit: contain;
       max-width: 300px;
+      max-height: 280px;
     }
   }
   .coordinates {

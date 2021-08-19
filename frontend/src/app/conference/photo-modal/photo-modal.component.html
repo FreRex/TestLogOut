@@ -1,4 +1,5 @@
 <ion-content>
+  <div class="padtot">
   <div class="form-container form-padding">
     <div *ngIf="coordinates" class="coordinates">
       <p>{{ coordinates.latitude }}</p>
@@ -22,6 +23,7 @@
       <ion-button class="salva" type="submit" (click)="createPhoto()">Salva foto</ion-button>
     </div>
   </div>
+</div>
 </ion-content>
 
 <!-- <ion-content padding class="main-view">
