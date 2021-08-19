@@ -1,5 +1,4 @@
-exports.insertPhotoDir = (folderName: string, imageName: string, base64String: string) => {  
-
+exports.insertPhotoDir = (folderName: string, imageName: string, base64String: string) => { 
   
     const fs = require('fs');    
     try {

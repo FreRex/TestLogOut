@@ -245,26 +245,24 @@ exports.postCreateCaptphoto = (req: any, res: any, next: any) => {
     }
 
     // Fine ciclo-esame json => operazione da compiere
-    if(messageErrore==''){     
-       
-       //Inserimento foto in directory       
-       const insertPhDir = require('../assets/functionInsertPhotoDir');
-       let namePhoto = req.body['nomelemento'];   
-       console.log(namePhoto)   
-       if (namePhoto != 0 || namePhoto != ''){
-           console.log('aaa');
-          namePhoto = req.body['nomelemento']+'.jpg';
-       }
-       else
-       {
-        console.log('bbbb');
-          namePhoto = req.body['nameimg']+'.jpg';
-       }
-       insertPhDir.insertPhotoDir(req.body['progettoselezionato'],namePhoto, req.body['img']);      
+    if(messageErrore==''){        
         
        //Inserimento foto in db;           
        let sql: any = "INSERT INTO collaudolive (id,prodnumber,progettoselezionato,collaudatoreufficio,nameimg,latitu,longitu,nomelemento,noteimg,img,onlynota) VALUES (?,?,?,?,?,?,?,?,?,?,?)";      
        esecuzioneQuery(sql);
+
+       //Inserimento foto in directory       
+       const insertPhDir = require('../assets/functionInsertPhotoDir');
+       let namePhoto = req.body['nomelemento'];   
+       console.log(namePhoto)   
+       if (namePhoto != 0 || namePhoto != ''){          
+          namePhoto = req.body['nomelemento']+'.jpg';
+       }
+       else
+       {        
+          namePhoto = req.body['nameimg']+'.jpg';
+       }
+       insertPhDir.insertPhotoDir(req.body['progettoselezionato'],namePhoto, req.body['img']);  
 
     }
     else
