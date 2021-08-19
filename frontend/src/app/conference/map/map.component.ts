@@ -19,7 +19,7 @@ import { MapService } from './map.service';
 
 import VectorSource from 'ol/source/Vector';
 import { Vector as VectorLayer } from 'ol/layer';
-import { Fill, Icon, Stroke, Style } from 'ol/style';
+import { Circle, Fill, Icon, Stroke, Style } from 'ol/style';
 import Feature, { FeatureLike } from 'ol/Feature';
 import Point from 'ol/geom/Point';
 import { fromLonLat } from 'ol/proj.js';
@@ -478,11 +478,15 @@ export class MapComponent implements OnInit {
 
       this.marker2.setStyle(
         new Style({
-          image: new Icon({
-            color: '#03477e',
-            crossOrigin: 'anonymous',
-            src: '../../../assets/markerDot2.svg',
-            imgSize: [20, 20],
+          image: new CircleStyle({
+            radius: 6,
+            fill: new Fill({
+              color: '#028ffa',
+            }),
+            stroke: new Stroke({
+              color: '#fff',
+              width: 2,
+            }),
           }),
         })
       );

@@ -14,12 +14,12 @@ ion-content {
   object-fit: contain;
   .form-fields {
     .canvas {
+      margin: 0 auto;
+      padding-top: 12px;
       height: 100%;
       width: 100%;
       object-fit: contain;
-    }
-    .testoData {
-      margin-top: -10%;
+      max-width: 300px;
     }
   }
   .coordinates {
