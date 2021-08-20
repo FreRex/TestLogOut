@@ -62,6 +62,7 @@ export class PlayerComponent implements OnInit {
     let video = isLocal
       ? this.localVideo.nativeElement
       : this.remoteVideo.nativeElement;
+
     console.log('🐱‍👤 : video', video);
     this.gps.coordinate$.pipe(take(1)).subscribe((coordinates) => {
       console.log('🐱‍👤 : coordinates', coordinates);

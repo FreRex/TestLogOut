@@ -363,7 +363,9 @@ export class MapComponent implements OnInit {
             latitudine: coordinates[1].toString(),
             longitudine: coordinates[0].toString(),
           });
-          this.mappa.getView().setCenter(position);
+          if (this.followOperator) {
+            this.mappa.getView().setCenter(position);
+          }
           this.positionFeature.setGeometry(
             position ? new Point(position) : null
           );
@@ -423,9 +425,11 @@ export class MapComponent implements OnInit {
         // );
         //this.updateMarkerOperatore(gpsRemote.longitudine, gpsRemote.latitudine);
         let coordinates = [gpsRemote.longitudine, gpsRemote.latitudine];
-        this.mappa
-          .getView()
-          .setCenter(olProj.transform(coordinates, 'EPSG:4326', 'EPSG:3857'));
+        if (this.followOperator) {
+          this.mappa
+            .getView()
+            .setCenter(olProj.transform(coordinates, 'EPSG:4326', 'EPSG:3857'));
+        }
         this.positionFeature.setGeometry(
           fromLonLat(coordinates) ? new Point(fromLonLat(coordinates)) : null
         );
