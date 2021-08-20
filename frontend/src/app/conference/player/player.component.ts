@@ -20,7 +20,7 @@ const IDEAL_HEIGHT = 360;
 const MAX_WIDTH = 1920;
 const MAX_HEIGHT = 1080;
 
-const VIDEO_FRAMERATE = 15;
+const VIDEO_FRAMERATE = 30;
 const AUDIO_BITRATE = 44100;
 
 @Component({
@@ -156,7 +156,7 @@ export class PlayerComponent implements OnInit {
           lazyLoad: true,
           lazyLoadMaxDuration: 3 * 60,
           lazyLoadRecoverDuration: 30,
-          // deferLoadAfterSourceOpen: true,
+          deferLoadAfterSourceOpen: true,
           autoCleanupSourceBuffer: true,
           autoCleanupMaxBackwardDuration: 3 * 60,
           autoCleanupMinBackwardDuration: 2 * 60,
