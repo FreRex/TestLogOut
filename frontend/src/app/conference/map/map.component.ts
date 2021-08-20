@@ -403,27 +403,16 @@ export class MapComponent implements OnInit {
 
           /// --------------------------------------
         });
-      }, 1000);
 
-      this.gps.ConfigIdRoom(this.roomId);
-    });
-
-    /* SUBSCRIBE ALLE COORDINATE DEI MARKER DELLA MAPPA E TRASMISSIONE POSIZIONI TRAMITE SOCKET */
-    // this.gps.coordinate$.subscribe((coords) => {
-    //   if (coords && coords.length > 0) {
-    //     let index = coords.length - 1;
-    //     this.updateMarkerOperatore(coords[index].long, coords[index].lat);
-    //   }
-    // });
-    this.socket
+        this.socket
       .fromEvent<any>('gpsUtente_idroom_' + this.roomId)
       .subscribe((gpsRemote) => {
-        // console.log(
-        //   '🐱‍👤 : gpsRemote',
-        //   date.format(new Date(), 'HH:mm:ss'),
-        //   gpsRemote
-        // );
-        //this.updateMarkerOperatore(gpsRemote.longitudine, gpsRemote.latitudine);
+          console.log(
+           '🐱‍👤 : gpsRemote',
+           date.format(new Date(), 'HH:mm:ss'),
+           gpsRemote
+          );
+        //this.updateMarkerOperatore(gpsRemote.longitudine, gpsRemote.latitudine)        
         let coordinates = [gpsRemote.longitudine, gpsRemote.latitudine];
         if (this.followOperator) {
           this.mappa
@@ -439,6 +428,20 @@ export class MapComponent implements OnInit {
       .subscribe((markerBlu) => {
         this.updateMarkerBlu(markerBlu.longitudine, markerBlu.latitudine);
       });
+
+      }, 1000);
+
+      this.gps.ConfigIdRoom(this.roomId);
+    });
+
+    /* SUBSCRIBE ALLE COORDINATE DEI MARKER DELLA MAPPA E TRASMISSIONE POSIZIONI TRAMITE SOCKET */
+    // this.gps.coordinate$.subscribe((coords) => {
+    //   if (coords && coords.length > 0) {
+    //     let index = coords.length - 1;
+    //     this.updateMarkerOperatore(coords[index].long, coords[index].lat);
+    //   }
+    // });
+    
   }
 
   /* DISPLAY INFO KML/KMZ */
