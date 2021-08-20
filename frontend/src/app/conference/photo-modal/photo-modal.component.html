@@ -1,14 +1,16 @@
 <ion-content>
-  <div class="padtot">
-  <div class="form-container form-padding">
-    <div *ngIf="coordinates" class="coordinates">
-      <p>{{ coordinates.latitude }}</p>
-      <p>{{ coordinates.longitude }}</p>
-    </div>
+
+  <div class="form-container form-padding ion-padding">
     <form class="form-fields" [formGroup]="form">
       <canvas #canvas id="canvas" class="canvas" [width]="WIDTH" [height]="HEIGHT">
       </canvas>
-      <ion-text class="testoData" color="dark">{{ date | date: 'HH:mm - dd/MM/yyyy' }}</ion-text>
+      <ion-text class="testoData" color="dark">{{ date | date: 'HH:mm - dd/MM/yyyy' }}
+
+        <div *ngIf="coordinates" class="testoData">
+          <p>{{ coordinates.latitude }} , {{ coordinates.longitude }}</p>
+        </div>
+
+      </ion-text>
       <ion-item class="nomeElemento">
         <ion-label color="dark" position="floating">Nome Elemento</ion-label>
         <ion-input formControlName="nomeElemento" type="text"></ion-input>
@@ -23,7 +25,7 @@
       <ion-button class="salva" type="submit" (click)="createPhoto()">Salva foto</ion-button>
     </div>
   </div>
-</div>
+
 </ion-content>
 
 <!-- <ion-content padding class="main-view">
