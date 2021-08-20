@@ -151,7 +151,7 @@ export class PlayerComponent implements OnInit {
           // stashInitialSize: 1,
           isLive: true,
           liveBufferLatencyChasing: true,
-          liveBufferLatencyMaxLatency: 3.0,
+          liveBufferLatencyMaxLatency: 5.0,
           liveBufferLatencyMinRemain: 0.5,
           lazyLoad: true,
           lazyLoadMaxDuration: 3 * 60,
