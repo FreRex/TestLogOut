@@ -32,7 +32,7 @@ export class AuthService implements OnDestroy {
   }
 
   /** currentUser DEVE essere un Osservabile perché altrimenti
-   * la direttiva *userIsAdmin non funziona correttamente e
+   * la direttiva ifRoleIs non funziona correttamente e
    * il template non viene aggiornato in tempo in base al ruolo*/
 
   private _user = new BehaviorSubject<AuthUser>(null);
@@ -217,7 +217,7 @@ export class AuthService implements OnDestroy {
           `guest`,
           'guest',
           'guest',
-          'guest',
+          'GUEST',
           token,
           expDate
         )
@@ -228,7 +228,7 @@ export class AuthService implements OnDestroy {
           payload.username,
           payload.idcommessa,
           payload.commessa,
-          payload.autorizzazione,
+          payload.autorizzazione == '1' ? 'ADMIN' : 'USER',
           token,
           expDate
         );
@@ -279,36 +279,4 @@ export class AuthService implements OnDestroy {
       clearTimeout(this.activeLogoutTimer);
     }
   }
-
-  // randomId(length: number): string {
-  //   var length = 12;
-  //   var result = '';
-  //   var characters =
-  //     'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  //   var charactersLength = characters.length;
-  //   for (var i = 0; i < length; i++) {
-  //     result += characters.charAt(Math.floor(Math.random() * charactersLength));
-  //   }
-  //   console.log('🐱‍👤 : AuthService : result', result);
-  //   return result;
-  // }
-
-  // signup(username: string, password: string) {
-  //   return this.http
-  //     .post(`${environment.apiUrl}/signup/`, {
-  //       usr: username,
-  //       pwd: password,
-  //     })
-  //     .pipe(
-  //       catchError((err) => {
-  //         return throwError(err);
-  //       }),
-  //       tap((token: string) => {
-  //         if (!token) {
-  //           throw new Error('Credenziali errate');
-  //         }
-  //         this.setUserData(token);
-  //       })
-  //     );
-  // }
 }

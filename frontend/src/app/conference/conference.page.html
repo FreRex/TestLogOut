@@ -22,6 +22,7 @@
     <ion-row *ngIf="!isMobile">
       <ion-col size-lg="2">
         <ion-item
+          *ifRoleIs="['ADMIN', 'USER']"
           lines="none"
           button="true"
           class="item-button"

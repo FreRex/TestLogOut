@@ -34,8 +34,6 @@ export class AuthPage implements OnInit, ViewWillEnter {
       }
       this.directLink = true;
       const parsedData = JSON.parse(storedData.value);
-      // this.roomId = parsedData.roomId;
-      // console.log('parsedData', parsedData);
       this.roomInfo = {
         roomId: parsedData.roomId,
         session: parsedData.session,

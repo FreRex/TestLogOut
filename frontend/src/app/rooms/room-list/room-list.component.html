@@ -6,7 +6,7 @@
   ></ion-searchbar>
   <!-- Create Room Button -->
   <ion-button
-    *userIsAdmin
+    *ifRoleIs="['ADMIN']"
     color="secondary"
     (click)="this.roomFunctions.createRoom()"
   >

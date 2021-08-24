@@ -18,7 +18,7 @@
             <ion-text>Rooms</ion-text>
           </ion-item>
         </ion-menu-toggle>
-        <ion-menu-toggle auto-hide="false" *userIsAdmin>
+        <ion-menu-toggle auto-hide="false" *ifRoleIs="['ADMIN']">
           <ion-item lines="none" button="true" routerLink="/admin">
             <ion-text>Backoffice</ion-text>
           </ion-item>

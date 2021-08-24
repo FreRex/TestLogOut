@@ -51,7 +51,7 @@ export class AuthGuard implements CanLoad, CanActivate {
           if (segments[0].path == 'conference' && segments[1]) {
             let roomData;
             let roomDataString = `"roomId":"${segments[1].path}"`;
-            if (location.search.substring(1) != '') {
+            if (location.search.substring(1) !== '') {
               let query = decodeURI(location.search.substring(1));
               roomDataString += `,"${query
                 .replace(/&/g, '","')

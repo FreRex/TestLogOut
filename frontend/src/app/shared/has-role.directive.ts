@@ -1,5 +1,6 @@
 import {
   Directive,
+  Input,
   OnInit,
   TemplateRef,
   ViewContainerRef,
@@ -8,9 +9,11 @@ import {
 import { AuthService } from '../auth/auth.service';
 
 @Directive({
-  selector: '[userIsAdmin]',
+  selector: '[ifRoleIs]',
 })
 export class HasRoleDirective implements OnInit {
+  @Input('ifRoleIs') roles: string[];
+
   constructor(
     private authService: AuthService,
     private templateRef: TemplateRef<any>,
@@ -18,13 +21,14 @@ export class HasRoleDirective implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.authService.currentUser$ /* .pipe(take(1)) */
-      .subscribe((user) => {
-        if (user && user.autorizzazione == '1') {
-          this.viewContainer.createEmbeddedView(this.templateRef);
-        } else {
-          this.viewContainer.clear();
-        }
-      });
+    this.authService.currentUser$.subscribe((user) => {
+      if (user && this.roles.includes(user.autorizzazione)) {
+        console.log('🐱‍👤 : user.autorizzazione', user.autorizzazione);
+        this.viewContainer.clear();
+        this.viewContainer.createEmbeddedView(this.templateRef);
+      } else {
+        this.viewContainer.clear();
+      }
+    });
   }
 }

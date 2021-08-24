@@ -15,7 +15,7 @@
       </ion-text>
     </ion-label>
   </ion-item>
-  <ion-item-options side="start" *userIsAdmin>
+  <ion-item-options side="start" *ifRoleIs="['ADMIN']">
     <ion-item-option
       color="primary"
       (click)="this.roomFunctions.editRoom(room, slidingItem)"

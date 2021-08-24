@@ -4,7 +4,6 @@ import { RouterModule, Routes } from '@angular/router';
 import { ConferencePage } from './conference.page';
 
 const routes: Routes = [
-  // * se uso i parametri della url
   {
     path: ':roomId',
     component: ConferencePage,
@@ -13,11 +12,6 @@ const routes: Routes = [
     path: '',
     redirectTo: '/not-found',
   },
-  // * se uso i queryParams
-  // {
-  //   path: '',
-  //   component: ConferencePage,
-  // },
 ];
 
 @NgModule({
