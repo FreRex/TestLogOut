@@ -19,7 +19,7 @@ import { MapService } from './map.service';
 
 import VectorSource from 'ol/source/Vector';
 import { Vector as VectorLayer } from 'ol/layer';
-import { Fill, Icon, Stroke, Style } from 'ol/style';
+import { Circle, Fill, Icon, Stroke, Style } from 'ol/style';
 import Feature, { FeatureLike } from 'ol/Feature';
 import Point from 'ol/geom/Point';
 import { fromLonLat } from 'ol/proj.js';
@@ -363,7 +363,9 @@ export class MapComponent implements OnInit {
             latitudine: coordinates[1].toString(),
             longitudine: coordinates[0].toString(),
           });
-          this.mappa.getView().setCenter(position);
+          if (this.followOperator) {
+            this.mappa.getView().setCenter(position);
+          }
           this.positionFeature.setGeometry(
             position ? new Point(position) : null
           );
@@ -401,6 +403,35 @@ export class MapComponent implements OnInit {
 
           /// --------------------------------------
         });
+
+        this.socket
+          .fromEvent<any>('gpsUtente_idroom_' + this.roomId)
+          .subscribe((gpsRemote) => {
+            console.log(
+              '🐱‍👤 : gpsRemote',
+              date.format(new Date(), 'HH:mm:ss'),
+              gpsRemote
+            );
+            //this.updateMarkerOperatore(gpsRemote.longitudine, gpsRemote.latitudine)
+            let coordinates = [gpsRemote.longitudine, gpsRemote.latitudine];
+            if (this.followOperator) {
+              this.mappa
+                .getView()
+                .setCenter(
+                  olProj.transform(coordinates, 'EPSG:4326', 'EPSG:3857')
+                );
+            }
+            this.positionFeature.setGeometry(
+              fromLonLat(coordinates)
+                ? new Point(fromLonLat(coordinates))
+                : null
+            );
+          });
+        this.socket
+          .fromEvent<any>('posMkrBckEnd_' + this.roomId)
+          .subscribe((markerBlu) => {
+            this.updateMarkerBlu(markerBlu.longitudine, markerBlu.latitudine);
+          });
       }, 1000);
 
       this.gps.ConfigIdRoom(this.roomId);
@@ -413,28 +444,6 @@ export class MapComponent implements OnInit {
     //     this.updateMarkerOperatore(coords[index].long, coords[index].lat);
     //   }
     // });
-    this.socket
-      .fromEvent<any>('gpsUtente_idroom_' + this.roomId)
-      .subscribe((gpsRemote) => {
-        // console.log(
-        //   '🐱‍👤 : gpsRemote',
-        //   date.format(new Date(), 'HH:mm:ss'),
-        //   gpsRemote
-        // );
-        //this.updateMarkerOperatore(gpsRemote.longitudine, gpsRemote.latitudine);
-        let coordinates = [gpsRemote.longitudine, gpsRemote.latitudine];
-        this.mappa
-          .getView()
-          .setCenter(olProj.transform(coordinates, 'EPSG:4326', 'EPSG:3857'));
-        this.positionFeature.setGeometry(
-          fromLonLat(coordinates) ? new Point(fromLonLat(coordinates)) : null
-        );
-      });
-    this.socket
-      .fromEvent<any>('posMkrBckEnd_' + this.roomId)
-      .subscribe((markerBlu) => {
-        this.updateMarkerBlu(markerBlu.longitudine, markerBlu.latitudine);
-      });
   }
 
   /* DISPLAY INFO KML/KMZ */
@@ -478,11 +487,15 @@ export class MapComponent implements OnInit {
 
       this.marker2.setStyle(
         new Style({
-          image: new Icon({
-            color: '#03477e',
-            crossOrigin: 'anonymous',
-            src: '../../../assets/markerDot2.svg',
-            imgSize: [20, 20],
+          image: new CircleStyle({
+            radius: 6,
+            fill: new Fill({
+              color: '#028ffa',
+            }),
+            stroke: new Stroke({
+              color: '#fff',
+              width: 2,
+            }),
           }),
         })
       );

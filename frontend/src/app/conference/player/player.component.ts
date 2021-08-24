@@ -20,7 +20,7 @@ const IDEAL_HEIGHT = 360;
 const MAX_WIDTH = 1920;
 const MAX_HEIGHT = 1080;
 
-const VIDEO_FRAMERATE = 15;
+const VIDEO_FRAMERATE = 30;
 const AUDIO_BITRATE = 44100;
 
 @Component({
@@ -62,6 +62,7 @@ export class PlayerComponent implements OnInit {
     let video = isLocal
       ? this.localVideo.nativeElement
       : this.remoteVideo.nativeElement;
+
     console.log('🐱‍👤 : video', video);
     this.gps.coordinate$.pipe(take(1)).subscribe((coordinates) => {
       console.log('🐱‍👤 : coordinates', coordinates);
@@ -151,12 +152,12 @@ export class PlayerComponent implements OnInit {
           // stashInitialSize: 1,
           isLive: true,
           liveBufferLatencyChasing: true,
-          liveBufferLatencyMaxLatency: 1.5,
+          liveBufferLatencyMaxLatency: 5.0,
           liveBufferLatencyMinRemain: 0.5,
           lazyLoad: true,
           lazyLoadMaxDuration: 3 * 60,
           lazyLoadRecoverDuration: 30,
-          // deferLoadAfterSourceOpen: true,
+          deferLoadAfterSourceOpen: true,
           autoCleanupSourceBuffer: true,
           autoCleanupMaxBackwardDuration: 3 * 60,
           autoCleanupMinBackwardDuration: 2 * 60,

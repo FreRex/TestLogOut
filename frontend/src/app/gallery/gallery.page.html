@@ -75,6 +75,10 @@
               class="foto-thumbnail-mobile"
               (click)="editPhoto(photo)"
             >
+              <div class="data-id">
+                <p>ID: {{ photo.idPhoto }}</p>
+                <p>Data: {{ photo.dataimg | date: 'dd/MM/yyyy - HH:mm' }}</p>
+              </div>
               <img
                 [src]="'data:image/png;base64,'+photo.imageBase64 | safeHtml"
               />
@@ -184,6 +188,12 @@
                     <img
                       [src]="'data:image/png;base64,'+photo.imageBase64 | safeHtml"
                     />
+                    <div class="data-id">
+                      <p>ID: {{ photo.idPhoto }}</p>
+                      <p>
+                        Data: {{ photo.dataimg | date: 'dd/MM/yyyy - HH:mm' }}
+                      </p>
+                    </div>
                     <div class="note-yes" *ngIf="photo.noteimg">
                       <ion-icon
                         class="note-ico"

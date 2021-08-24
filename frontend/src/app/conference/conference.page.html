@@ -58,14 +58,16 @@
           class="button"
           [ngClass]="{'button-active' : isVideoVisible}"
           (click)="toggleVideo()"
-          ><ion-icon slot="icon-only" name="call-sharp"></ion-icon
-        ></ion-button>
+        >
+          <ion-icon slot="icon-only" name="call-sharp"></ion-icon>
+        </ion-button>
         <ion-button
           class="button"
           [ngClass]="{'button-active' : isMapVisible}"
           (click)="toggleMappa()"
-          ><ion-icon slot="icon-only" name="map-sharp"></ion-icon
-        ></ion-button>
+        >
+          <ion-icon slot="icon-only" name="map-sharp"></ion-icon>
+        </ion-button>
         <!-- <ion-button class="button"
           ><ion-icon slot="icon-only" name="people-sharp"></ion-icon
         ></ion-button> -->
@@ -119,9 +121,9 @@
             [isInfo]="isInfo"
           ></app-map>
         </div>
-        <div class="btn-map">
+        <div class="btn-map ion-padding">
           <div class="box-toggle">
-            <ion-label>Segui Operatore</ion-label>
+            <ion-icon color="primary" name="locate"></ion-icon>
             <ion-toggle
               color="success"
               (click)="followOperator()"
@@ -129,14 +131,14 @@
             ></ion-toggle>
           </div>
           <div class="box-toggle">
-            <ion-label>Indicazioni</ion-label>
+            <ion-icon color="primary" name="flag"></ion-icon>
             <ion-toggle
               color="success"
               (click)="mappa.toggleMarkerBlu()"
             ></ion-toggle>
           </div>
           <div class="box-toggle">
-            <ion-label>KML/Z Info</ion-label>
+            <img src="./../../assets/Google_Earth_icon.svg" />
             <ion-toggle
               color="success"
               (click)="showDisplayInfo()"

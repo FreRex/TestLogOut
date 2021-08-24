@@ -33,11 +33,27 @@
   --size: 120px;
   margin: 0 auto;
   position: relative;
+  .data-id {
+    position: absolute;
+    bottom: 0;
+    font-size: 6px;
+    color: #fff;
+    background-color: #0000006b;
+    padding: 0 2px 0 2px;
+  }
 }
 .foto-thumbnail-desktop {
   --size: 260px;
   margin: 40px 20px;
   position: relative;
+  .data-id {
+    position: absolute;
+    bottom: 0;
+    font-size: 10px;
+    color: #fff;
+    background-color: #0000006b;
+    padding: 0 4px 0 4px;
+  }
 }
 .note-yes {
   background-color: var(--ion-color-light-shade);
