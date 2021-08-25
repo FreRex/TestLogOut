@@ -1,5 +1,11 @@
 <ion-header>
   <ion-toolbar color="primary">
+    <ion-buttons slot="start" *ifRoleIs="['ADMIN', 'USER']">
+      <ion-button (click)="goBack()">
+        <ion-icon slot="icon-only" name="chevron-back-sharp"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Conference</ion-title>
     <ion-buttons slot="end">
       <ion-menu-toggle auto-hide="false" class="ion-padding-end">
         <ion-button>
@@ -7,9 +13,6 @@
         </ion-button>
       </ion-menu-toggle>
     </ion-buttons>
-    <div class="header">
-      <ion-title>Conference</ion-title>
-    </div>
   </ion-toolbar>
 </ion-header>
 
@@ -17,16 +20,22 @@
   <div *ngIf="isLoading" class="ion-text-center ion-padding">
     <ion-spinner></ion-spinner>
   </div>
-  <ion-grid *ngIf="!isLoading" [class.ion-margin-horizontal]="!isMobile">
+  <ion-grid *ngIf="!isLoading" [class.grid-padding]="!isMobile">
     <!-- BTN CHE RIMANDA INDIETRO ALL'INGRESSO DELLA CONFERENCE -->
-    <ion-row *ngIf="!isMobile">
+    <!--<ion-row *ngIf="!isMobile">
       <ion-col size-lg="2">
-        <ion-item *ifRoleIs="['ADMIN', 'USER']" lines="none" button="true" class="item-button" (click)="goBack()">
+        <ion-item
+          *ifRoleIs="['ADMIN', 'USER']"
+          lines="none"
+          button="true"
+          class="item-button"
+          (click)="goBack()"
+        >
           <ion-icon slot="start" name="chevron-back-sharp"></ion-icon>
           <ion-text>Lista Room</ion-text>
         </ion-item>
-      </ion-col>
-    </ion-row>
+      </ion-col> 
+    </ion-row> -->
     <ion-row class="ion-align-items-center">
       <ion-col size-lg="4.5">
         <div class="conference-title">
@@ -48,24 +57,45 @@
         <ion-button class="button" (click)="this.roomFunctions.copyLink(room)">
           <ion-icon slot="icon-only" name="share-social"></ion-icon>
         </ion-button>
-        <ion-button class="button" [ngClass]="{'button-active' : isVideoVisible}" (click)="toggleVideo()">
+        <ion-button
+          class="button"
+          [ngClass]="{'button-active' : isVideoVisible}"
+          (click)="toggleVideo()"
+        >
           <ion-icon slot="icon-only" name="call-sharp"></ion-icon>
         </ion-button>
-        <ion-button class="button" [ngClass]="{'button-active' : isMapVisible}" (click)="toggleMappa()">
+        <ion-button
+          class="button"
+          [ngClass]="{'button-active' : isMapVisible}"
+          (click)="toggleMappa()"
+        >
           <ion-icon slot="icon-only" name="map-sharp"></ion-icon>
         </ion-button>
-        <ion-button class="button" [ngClass]="{'button-active' : isPartecipantVisible}" (click)="toggleParticipant()">
+        <ion-button
+          class="button"
+          [ngClass]="{'button-active' : isPartecipantVisible}"
+          (click)="toggleParticipant()"
+        >
           <ion-icon slot="icon-only" name="people-sharp"></ion-icon>
         </ion-button>
-        <ion-button class="button" [ngClass]="{'button-active' : isChatVisible}" (click)="toggleChat()">
+        <ion-button
+          class="button"
+          [ngClass]="{'button-active' : isChatVisible}"
+          (click)="toggleChat()"
+        >
           <ion-icon slot="icon-only" name="chatbox"></ion-icon>
         </ion-button>
       </ion-col>
     </ion-row>
-    <ion-row>
-      <ion-col [hidden]="!isVideoVisible" [sizeLg]="isMapVisible ? '4.5' : '9'" size-xs="12">
+    <ion-row style="flex-grow: 1">
+      <ion-col
+        [hidden]="!isVideoVisible"
+        [sizeLg]="isMapVisible ? '4.5' : '9'"
+        size-xs="12"
+      >
         <!-- QUI DENTRO VA IL VIDEO PLAYER -->
-        <div class="spazio-vuoto-dimensione-fissa">
+        <app-player #player [room]="room" [user]="user"></app-player>
+        <!-- <div class="spazio-vuoto-dimensione-fissa">
           <span *ngIf="streamingUser" class="label">
             <ion-text *ngIf="streamingUser.idutente == user.idutcas">
               stai trasmettendo
@@ -75,25 +105,37 @@
               {{streamingUser.nome}}
             </ion-text>
           </span>
-          <app-player [isStreaming]="isStreaming" [isPlaying]="isPlaying" [room]="room" [user]="user"></app-player>
-        </div>
-        <app-streaming-bar [isStreaming]="isStreaming" [isPlaying]="isPlaying" (togglePlay)="togglePlay()"
-          (toggleStream)="toggleStream()" (capturePhoto)="capturePhoto()" [roomId]="room?.id.toString()"
-          [userId]="user?.idutcas"></app-streaming-bar>
+        </div> -->
       </ion-col>
-      <ion-col [hidden]="!isMapVisible" [sizeLg]="isVideoVisible ? '4.5' : '9'" size-xs="12">
+      <ion-col
+        [hidden]="!isMapVisible"
+        [sizeLg]="isVideoVisible ? '4.5' : '9'"
+        size-xs="12"
+      >
         <!-- QUI DENTRO VA LA MAPPA -->
         <div class="spazio-vuoto-dimensione-fissa">
-          <app-map #mappa [roomId]="room?.id" [followOperator]="followOperatorOnMap" [isInfo]="isInfo"></app-map>
+          <app-map
+            #mappa
+            [roomId]="room?.id"
+            [followOperator]="followOperatorOnMap"
+            [isInfo]="isInfo"
+          ></app-map>
         </div>
         <div class="btn-map ion-padding">
           <div class="box-toggle">
             <ion-icon color="primary" name="locate"></ion-icon>
-            <ion-toggle color="success" (click)="followOperator()" checked></ion-toggle>
+            <ion-toggle
+              color="success"
+              (click)="followOperator()"
+              checked
+            ></ion-toggle>
           </div>
           <div class="box-toggle">
             <ion-icon color="primary" name="flag"></ion-icon>
-            <ion-toggle color="success" (click)="mappa.toggleMarkerBlu()"></ion-toggle>
+            <ion-toggle
+              color="success"
+              (click)="mappa.toggleMarkerBlu()"
+            ></ion-toggle>
           </div>
           <div class="box-toggle">
             <img src="./../../assets/Google_Earth_icon.svg" />
@@ -104,15 +146,11 @@
       <ion-col size-lg="3" size-xs="12">
         <!-- QUI DENTRO VA LA LISTA PARTECIPANTI con SWITCH su CHAT-->
         <div [hidden]="!isPartecipantVisible">
-
-
-          <app-users-list [usersInRoom]="usersInRoom" [watchers$]="watchers$"></app-users-list>
+          <app-users-list></app-users-list>
         </div>
-
         <div [hidden]="!isChatVisible">
           <app-chat [roomId]="room.id" [user]="user"></app-chat>
         </div>
-
       </ion-col>
     </ion-row>
   </ion-grid>

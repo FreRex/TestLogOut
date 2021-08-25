@@ -35,6 +35,12 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    var orientation = screen.orientation;
+    console.log('🐱‍👤 : orientation', orientation);
+    // window.screen.orientation.lock('portrait');
+    screen.orientation.addEventListener('change', (orientation) => {
+      console.log('🐱‍👤 : orientation', orientation);
+    });
     if (this.platform.is('mobile')) {
       App.addListener('appStateChange', this.checkAuthOnResume.bind(this));
     }

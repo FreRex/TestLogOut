@@ -10,7 +10,6 @@ import { ConferencePage } from './conference.page';
 import { MapComponent } from './map/map.component';
 import { PhotoModalComponent } from './photo-modal/photo-modal.component';
 import { PlayerComponent } from './player/player.component';
-import { StreamingBarComponent } from './streaming-bar/streaming-bar.component';
 import { UsersListComponent } from './users-list/users-list.component';
 
 @NgModule({
@@ -25,7 +24,6 @@ import { UsersListComponent } from './users-list/users-list.component';
   declarations: [
     ConferencePage,
     PlayerComponent,
-    StreamingBarComponent,
     UsersListComponent,
     MapComponent,
     PhotoModalComponent,

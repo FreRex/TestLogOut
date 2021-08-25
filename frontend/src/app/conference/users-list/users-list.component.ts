@@ -1,16 +1,10 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { combineLatest, forkJoin, Observable, pipe, zip } from 'rxjs';
-import {
-  distinctUntilChanged,
-  filter,
-  map,
-  startWith,
-  take,
-  tap,
-} from 'rxjs/operators';
-import { AudioRTCService, Listener } from 'src/app/conference/audiortc.service';
+import { Component, OnInit } from '@angular/core';
+import { combineLatest, Observable } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
+import { AudioRTCService, Listener } from 'src/app/conference/audio-rtc.service';
 
-import { RoomUser } from '../conference.service';
+import { RoomUser } from '../room-user';
+import { StreamingRtmpService } from '../streaming-rtmp.service';
 
 @Component({
   selector: 'app-users-list',
@@ -18,12 +12,15 @@ import { RoomUser } from '../conference.service';
   styleUrls: ['./users-list.component.scss'],
 })
 export class UsersListComponent implements OnInit {
-  @Input() usersInRoom: RoomUser[];
-  @Input() watchers$: Observable<RoomUser[]>;
+  // @Input() usersInRoom: RoomUser[];
+  // @Input() watchers$: Observable<RoomUser[]>;
 
   roomUsers$: Observable<RoomUser[]>;
 
-  constructor(public audioService: AudioRTCService) {}
+  constructor(
+    public audioService: AudioRTCService,
+    public streamService: StreamingRtmpService
+  ) {}
 
   ngOnInit() {
     // this.isAudioOn;
@@ -37,7 +34,7 @@ export class UsersListComponent implements OnInit {
 
     this.roomUsers$ = combineLatest([
       this.audioService.listeners$,
-      this.watchers$,
+      this.streamService.watchers$,
     ]).pipe(
       map(([listeners, watchers]) => {
         // console.log('🐱‍👤 : watchers', watchers);
