@@ -42,7 +42,9 @@
     "dback": "tsc --build && NODE_ENV=development node ./build/server.js",
     "pback": "tsc --build && NODE_ENV=production node -r dotenv/config ./build/server.js",
     "dev": "tsc --build && cd frontend && ionic build && cd .. && NODE_ENV=development node ./build/server.js",
-    "prod": "tsc --build && cd frontend && ionic build --prod && cd .. && NODE_ENV=production node -r dotenv/config ./build/server.js"
+    "prod": "tsc --build && cd frontend && ionic build --prod && cd .. && NODE_ENV=production node -r dotenv/config ./build/server.js",
+    "nodemo": "nodemon -e ts  --exec \"npm run myapp\"", 
+    "myapp": "tsc -p . && node build/server.js"
   },
   "author": "",
   "license": "ISC"

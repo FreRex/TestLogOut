@@ -81,17 +81,24 @@ spawn('ffmpeg', ['-h']).on('error', function (m: any) {
 
 // Connessione socket.io
 io.on('connection', function (socket: any) {
-  //SOCKET PER CHAT TESTUALE
-  //Connected/Disconnect
-  console.log('a user connected');
+  
+  
+  //Connected/Disconnect  
   socket.on('disconnect', () => {
     console.log('user disconnected');
   });
 
+  //SOCKET PER CHAT TESTUALE
   //Message
   socket.on('chat message', (msg: any) => {
-    io.emit('chat message', msg);
-    console.log('message: ' + msg);
+    console.log(msg.room);
+    console.log(msg.nominativo);    
+    console.log(msg.messaggio);
+    io.emit('chat message_' + msg.room, {      
+      nominativo: msg.nominativo,       
+      messaggio: msg.messaggio
+    });
+    //console.log('message: ' + msg);
   });
 
   //SOCKET PER KMZ
