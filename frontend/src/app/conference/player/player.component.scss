@@ -1,3 +1,31 @@
+/* sotto da cancellare una volta sostituite le parti */
+.spazio-vuoto-dimensione-fissa {
+  position: relative;
+  height: 480px;
+  background-color: black;
+  span {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    z-index: 9;
+    background-color: white;
+    border-radius: 50px;
+    opacity: 60%;
+    padding: 6px 12px 6px 12px;
+    ion-text {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--ion-color-dark);
+      ion-icon {
+        padding-left: 12px;
+      }
+    }
+  }
+}
+
 .video-container {
   position: relative;
   height: 100%;
@@ -22,4 +50,45 @@
   text-transform: uppercase;
   overflow: hidden;
   width: 100%;
+}
+
+.btn-trasparent {
+  --background: none;
+  --color: --var(--ion-color-dark);
+  --border-radius: 0;
+  --padding-bottom: 0px;
+  --padding-end: 0px;
+  --padding-top: 0px;
+  --padding-start: 0px;
+  margin: 0%;
+  height: 36px;
+  width: 36px;
+  ion-icon {
+    font-size: 1.2rem;
+  }
+}
+
+.gray-bar {
+  background-color: var(--ion-color-light-tint);
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 6px;
+  .dots {
+    display: block;
+  }
+  .btnCommand {
+    width: 80%;
+    display: flex;
+    justify-content: space-between;
+  }
+}
+
+.white-bar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 6px;
 }

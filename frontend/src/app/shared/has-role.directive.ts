@@ -23,7 +23,6 @@ export class HasRoleDirective implements OnInit {
   ngOnInit() {
     this.authService.currentUser$.subscribe((user) => {
       if (user && this.roles.includes(user.autorizzazione)) {
-        console.log('🐱‍👤 : user.autorizzazione', user.autorizzazione);
         this.viewContainer.clear();
         this.viewContainer.createEmbeddedView(this.templateRef);
       } else {

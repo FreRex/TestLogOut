@@ -94,7 +94,8 @@
         size-xs="12"
       >
         <!-- QUI DENTRO VA IL VIDEO PLAYER -->
-        <div class="spazio-vuoto-dimensione-fissa">
+        <app-player #player [room]="room" [user]="user"></app-player>
+        <!-- <div class="spazio-vuoto-dimensione-fissa">
           <span *ngIf="streamingUser" class="label">
             <ion-text *ngIf="streamingUser.idutente == user.idutcas">
               stai trasmettendo
@@ -104,22 +105,7 @@
               {{streamingUser.nome}}
             </ion-text>
           </span>
-          <app-player
-            [isStreaming]="isStreaming"
-            [isPlaying]="isPlaying"
-            [room]="room"
-            [user]="user"
-          ></app-player>
-        </div>
-        <app-streaming-bar
-          [isStreaming]="isStreaming"
-          [isPlaying]="isPlaying"
-          (togglePlay)="togglePlay()"
-          (toggleStream)="toggleStream()"
-          (capturePhoto)="capturePhoto()"
-          [roomId]="room?.id.toString()"
-          [userId]="user?.idutcas"
-        ></app-streaming-bar>
+        </div> -->
       </ion-col>
       <ion-col
         [hidden]="!isMapVisible"
@@ -153,22 +139,15 @@
           </div>
           <div class="box-toggle">
             <img src="./../../assets/Google_Earth_icon.svg" />
-            <ion-toggle
-              color="success"
-              (click)="showDisplayInfo()"
-            ></ion-toggle>
+            <ion-toggle color="success" (click)="showDisplayInfo()"></ion-toggle>
           </div>
         </div>
       </ion-col>
       <ion-col size-lg="3" size-xs="12">
         <!-- QUI DENTRO VA LA LISTA PARTECIPANTI con SWITCH su CHAT-->
         <div [hidden]="!isPartecipantVisible">
-          <app-users-list
-            [usersInRoom]="usersInRoom"
-            [watchers$]="watchers$"
-          ></app-users-list>
+          <app-users-list></app-users-list>
         </div>
-
         <div [hidden]="!isChatVisible">
           <app-chat [roomId]="room.id" [user]="user"></app-chat>
         </div>

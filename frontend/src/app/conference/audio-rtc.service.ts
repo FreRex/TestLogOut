@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { take, tap } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
 
 declare let WebRTCAdaptor: any;
 
@@ -36,12 +35,14 @@ export class AudioRTCService {
   public isJoined: boolean = false;
 
   public toggleMic() {
-    if (!this.isMicOn) {
-      this.webRTCInstance.unmuteLocalMic();
-      this.isMicOn = true;
-    } else {
-      this.webRTCInstance.muteLocalMic();
-      this.isMicOn = false;
+    if (this.webRTCInstance) {
+      if (!this.isMicOn) {
+        this.webRTCInstance.unmuteLocalMic();
+        this.isMicOn = true;
+      } else {
+        this.webRTCInstance.muteLocalMic();
+        this.isMicOn = false;
+      }
     }
   }
 
