@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Socket } from 'ngx-socket-io';
+import { AuthUser } from 'src/app/auth/auth-user.model';
 
 @Component({
   selector: 'app-chat',
@@ -17,6 +18,7 @@ export class ChatComponent implements OnInit {
   };
 
   @Input() roomId: number;
+  @Input() user: AuthUser;
 
   msg: string;
   element: HTMLElement;
@@ -39,7 +41,7 @@ export class ChatComponent implements OnInit {
     this.socket.on('chat message_' + '1187', function (msg) {
       var textHead = document.createElement('li');
       let date = new Date();
-      this.nome = msg.nome + ' ' + msg.cognome;
+      this.nome = msg.nome;
 
       textHead.textContent =
         this.nome +
@@ -70,7 +72,7 @@ export class ChatComponent implements OnInit {
 
   sendMsg() {
     this.msgChat.room = this.roomId;
-    this.msgChat.nome = 'Daniele';
+    this.msgChat.nome = this.user.nomecognome;
     this.msgChat.cognome = 'Bambini';
     this.msgChat.messaggio = this.msg;
 
