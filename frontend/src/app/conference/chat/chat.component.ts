@@ -10,11 +10,11 @@ import { AuthUser } from 'src/app/auth/auth-user.model';
 export class ChatComponent implements OnInit {
   constructor(private socket: Socket) {}
 
-  msgChat: {
+  /*   msgChat: {
     room: number;
     nominativo: string;
     messaggio: string;
-  };
+  }; */
 
   @Input() roomId: number;
   @Input() user: AuthUser;
@@ -70,11 +70,11 @@ export class ChatComponent implements OnInit {
   }
 
   sendMsg() {
-    this.msgChat.room = this.roomId;
-    this.msgChat.nominativo = this.user.nomecognome;
-    this.msgChat.messaggio = this.msg;
-
-    this.socket.emit('chat message_' + this.roomId, this.msgChat);
+    this.socket.emit('chat message_' + this.roomId, {
+      room: this.roomId,
+      nominativo: this.user.nomecognome,
+      messaggio: this.msg,
+    });
     this.msg = '';
   }
 
