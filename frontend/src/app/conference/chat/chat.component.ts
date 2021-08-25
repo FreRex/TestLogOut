@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Socket } from 'ngx-socket-io';
 
 @Component({
@@ -10,11 +10,14 @@ export class ChatComponent implements OnInit {
   constructor(private socket: Socket) {}
 
   msgChat: {
-    room: string;
+    room: number;
     nome: string;
     cognome: string;
     messaggio: string;
   };
+
+  @Input() roomId: number;
+
   msg: string;
   element: HTMLElement;
   nome: string;
@@ -66,7 +69,7 @@ export class ChatComponent implements OnInit {
   }
 
   sendMsg() {
-    this.msgChat.room = '1187';
+    this.msgChat.room = this.roomId;
     this.msgChat.nome = 'Daniele';
     this.msgChat.cognome = 'Bambini';
     this.msgChat.messaggio = this.msg;

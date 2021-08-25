@@ -21,13 +21,7 @@
     <!-- BTN CHE RIMANDA INDIETRO ALL'INGRESSO DELLA CONFERENCE -->
     <ion-row *ngIf="!isMobile">
       <ion-col size-lg="2">
-        <ion-item
-          *ifRoleIs="['ADMIN', 'USER']"
-          lines="none"
-          button="true"
-          class="item-button"
-          (click)="goBack()"
-        >
+        <ion-item *ifRoleIs="['ADMIN', 'USER']" lines="none" button="true" class="item-button" (click)="goBack()">
           <ion-icon slot="start" name="chevron-back-sharp"></ion-icon>
           <ion-text>Lista Room</ion-text>
         </ion-item>
@@ -54,18 +48,10 @@
         <ion-button class="button" (click)="this.roomFunctions.copyLink(room)">
           <ion-icon slot="icon-only" name="share-social"></ion-icon>
         </ion-button>
-        <ion-button
-          class="button"
-          [ngClass]="{'button-active' : isVideoVisible}"
-          (click)="toggleVideo()"
-        >
+        <ion-button class="button" [ngClass]="{'button-active' : isVideoVisible}" (click)="toggleVideo()">
           <ion-icon slot="icon-only" name="call-sharp"></ion-icon>
         </ion-button>
-        <ion-button
-          class="button"
-          [ngClass]="{'button-active' : isMapVisible}"
-          (click)="toggleMappa()"
-        >
+        <ion-button class="button" [ngClass]="{'button-active' : isMapVisible}" (click)="toggleMappa()">
           <ion-icon slot="icon-only" name="map-sharp"></ion-icon>
         </ion-button>
         <ion-button class="button" [ngClass]="{'button-active' : isPartecipantVisible}" (click)="toggleParticipant()">
@@ -77,11 +63,7 @@
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col
-        [hidden]="!isVideoVisible"
-        [sizeLg]="isMapVisible ? '4.5' : '9'"
-        size-xs="12"
-      >
+      <ion-col [hidden]="!isVideoVisible" [sizeLg]="isMapVisible ? '4.5' : '9'" size-xs="12">
         <!-- QUI DENTRO VA IL VIDEO PLAYER -->
         <div class="spazio-vuoto-dimensione-fissa">
           <span *ngIf="streamingUser" class="label">
@@ -93,59 +75,29 @@
               {{streamingUser.nome}}
             </ion-text>
           </span>
-          <app-player
-            [isStreaming]="isStreaming"
-            [isPlaying]="isPlaying"
-            [room]="room"
-            [user]="user"
-          ></app-player>
+          <app-player [isStreaming]="isStreaming" [isPlaying]="isPlaying" [room]="room" [user]="user"></app-player>
         </div>
-        <app-streaming-bar
-          [isStreaming]="isStreaming"
-          [isPlaying]="isPlaying"
-          (togglePlay)="togglePlay()"
-          (toggleStream)="toggleStream()"
-          (capturePhoto)="capturePhoto()"
-          [roomId]="room?.id.toString()"
-          [userId]="user?.idutcas"
-        ></app-streaming-bar>
+        <app-streaming-bar [isStreaming]="isStreaming" [isPlaying]="isPlaying" (togglePlay)="togglePlay()"
+          (toggleStream)="toggleStream()" (capturePhoto)="capturePhoto()" [roomId]="room?.id.toString()"
+          [userId]="user?.idutcas"></app-streaming-bar>
       </ion-col>
-      <ion-col
-        [hidden]="!isMapVisible"
-        [sizeLg]="isVideoVisible ? '4.5' : '9'"
-        size-xs="12"
-      >
+      <ion-col [hidden]="!isMapVisible" [sizeLg]="isVideoVisible ? '4.5' : '9'" size-xs="12">
         <!-- QUI DENTRO VA LA MAPPA -->
         <div class="spazio-vuoto-dimensione-fissa">
-          <app-map
-            #mappa
-            [roomId]="room?.id"
-            [followOperator]="followOperatorOnMap"
-            [isInfo]="isInfo"
-          ></app-map>
+          <app-map #mappa [roomId]="room?.id" [followOperator]="followOperatorOnMap" [isInfo]="isInfo"></app-map>
         </div>
         <div class="btn-map ion-padding">
           <div class="box-toggle">
             <ion-icon color="primary" name="locate"></ion-icon>
-            <ion-toggle
-              color="success"
-              (click)="followOperator()"
-              checked
-            ></ion-toggle>
+            <ion-toggle color="success" (click)="followOperator()" checked></ion-toggle>
           </div>
           <div class="box-toggle">
             <ion-icon color="primary" name="flag"></ion-icon>
-            <ion-toggle
-              color="success"
-              (click)="mappa.toggleMarkerBlu()"
-            ></ion-toggle>
+            <ion-toggle color="success" (click)="mappa.toggleMarkerBlu()"></ion-toggle>
           </div>
           <div class="box-toggle">
             <img src="./../../assets/Google_Earth_icon.svg" />
-            <ion-toggle
-              color="success"
-              (click)="showDisplayInfo()"
-            ></ion-toggle>
+            <ion-toggle color="success" (click)="showDisplayInfo()"></ion-toggle>
           </div>
         </div>
       </ion-col>
@@ -158,7 +110,7 @@
         </div>
 
         <div [hidden]="!isChatVisible">
-          <app-chat></app-chat>
+          <app-chat [roomId]="room.id"></app-chat>
         </div>
 
       </ion-col>
