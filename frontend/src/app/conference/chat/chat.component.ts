@@ -56,9 +56,13 @@ export class ChatComponent implements OnInit {
         ':' +
         date.getMinutes().toString();
 
-      textHead.style.cssText =
-        'font-size: 8px; margin-bottom:-18px; color:#aeaeae; text-transform:uppercase; text-align: right;';
-
+      if (this.nomeCheck == msg.nominativo) {
+        textHead.style.cssText =
+          'font-size: 8px; margin-bottom:-18px; color:#aeaeae; text-transform:uppercase; text-align: right;';
+      } else {
+        textHead.style.cssText =
+          'font-size: 8px; margin-bottom:-18px; color:#aeaeae; text-transform:uppercase;';
+      }
       var item = document.createElement('li');
 
       if (this.nomeCheck == msg.nominativo) {
