@@ -1,27 +1,14 @@
-.btn-trasparent {
-  --color: var(--ion-color-dark);
-  --background: none;
+ion-grid {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
-
-.item-button {
-  // color: var(--ion-color-dark);
-  display: inline-block;
-  --background: none;
-  --border-radius: 0;
-  --padding-start: 0px;
-  ion-icon {
-    margin-left: 8px;
-    margin-right: 8px;
-    color: var(--ion-color-dark);
-  }
-  ion-text {
-    font-size: 0.8rem;
-    font-weight: 500;
-  }
+.grid-padding {
+  padding: 96px 16px 96px 16px;
 }
-.none {
-  --background: none;
-  color: transparent;
+ion-col {
+  padding-left: 16px;
+  padding-right: 16px;
 }
 
 .conference-title {
@@ -53,22 +40,10 @@
     font-size: 1.3rem;
   }
 }
+
 .button-active {
   --background: var(--ion-color-primary);
   --color: var(--ion-color-primary-contrast);
-}
-
-.cards-container {
-  box-shadow: none !important;
-}
-.video-head {
-  display: flex !important;
-  justify-content: space-between !important;
-}
-
-ion-col {
-  padding-left: 16px;
-  padding-right: 16px;
 }
 
 /* sotto da cancellare una volta sostituite le parti */
@@ -76,63 +51,8 @@ ion-col {
   position: relative;
   height: 480px;
   background-color: black;
-  span {
-    position: absolute;
-    top: 16px;
-    left: 16px;
-    z-index: 9;
-    background-color: white;
-    border-radius: 50px;
-    opacity: 60%;
-    padding: 6px 12px 6px 12px;
-    ion-text {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      font-size: 0.8rem;
-      font-weight: 500;
-      color: var(--ion-color-dark);
-      ion-icon {
-        padding-left: 12px;
-      }
-    }
-  }
-  div {
-    height: 100%;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-transform: uppercase;
-    color: aliceblue;
-  }
 }
 
-/*  */
-.audio-video-ctrl {
-  background-color: var(--ion-color-light-tint);
-  width: 90%;
-  margin: 2% auto 0 auto;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  .left-ctrl {
-    display: flex;
-    flex-direction: row;
-    justify-content: left;
-  }
-  .dots {
-    position: relative;
-    align-self: center;
-    justify-self: center;
-  }
-}
-.btn-video {
-  display: flex !important;
-  justify-content: space-between !important;
-}
 .btn-map {
   display: flex !important;
   justify-content: space-around !important;
@@ -159,3 +79,98 @@ ion-col {
     }
   }
 }
+
+// .spazio-vuoto-dimensione-fissa {
+//   position: relative;
+//   height: 480px;
+//   background-color: black;
+//   span {
+//     position: absolute;
+//     top: 16px;
+//     left: 16px;
+//     z-index: 9;
+//     background-color: white;
+//     border-radius: 50px;
+//     opacity: 60%;
+//     padding: 6px 12px 6px 12px;
+//     ion-text {
+//       display: flex;
+//       flex-direction: row;
+//       align-items: center;
+//       font-size: 0.8rem;
+//       font-weight: 500;
+//       color: var(--ion-color-dark);
+//       ion-icon {
+//         padding-left: 12px;
+//       }
+//     }
+//   }
+//   div {
+//     height: 100%;
+//     width: 100%;
+//     display: flex;
+//     flex-direction: column;
+//     align-items: center;
+//     justify-content: center;
+//     text-transform: uppercase;
+//     color: aliceblue;
+//   }
+// }
+
+// .cards-container {
+//   box-shadow: none !important;
+// }
+// .video-head {
+//   display: flex !important;
+//   justify-content: space-between !important;
+// }
+
+// .audio-video-ctrl {
+//   background-color: var(--ion-color-light-tint);
+//   width: 90%;
+//   margin: 2% auto 0 auto;
+//   display: flex;
+//   flex-direction: row;
+//   justify-content: space-between;
+//   align-items: center;
+//   .left-ctrl {
+//     display: flex;
+//     flex-direction: row;
+//     justify-content: left;
+//   }
+//   .dots {
+//     position: relative;
+//     align-self: center;
+//     justify-self: center;
+//   }
+// }
+// .btn-video {
+//   display: flex !important;
+//   justify-content: space-between !important;
+// }
+
+// .btn-trasparent {
+//   --color: var(--ion-color-dark);
+//   --background: none;
+// }
+
+// .item-button {
+//   display: inline-block;
+//   --background: none;
+//   --border-radius: 0;
+//   --padding-start: 0px;
+//   ion-icon {
+//     margin-left: 8px;
+//     margin-right: 8px;
+//     color: var(--ion-color-dark);
+//   }
+//   ion-text {
+//     font-size: 0.8rem;
+//     font-weight: 500;
+//   }
+// }
+
+// .none {
+//   --background: none;
+//   color: transparent;
+// }
