@@ -62,6 +62,8 @@ export class ConferencePage
   isMapVisible: boolean = true;
   isVideoVisible: boolean = true;
   isMobile: boolean = false;
+  isPartecipantVisible: boolean = true;
+  isChatVisible: boolean = false;
 
   public followOperatorOnMap: boolean = true;
   public marker2Delete: boolean = true;
@@ -87,6 +89,16 @@ export class ConferencePage
       this.isVideoVisible = !this.isVideoVisible;
       this.map.updateSize();
     }
+  }
+
+  toggleParticipant() {
+    this.isPartecipantVisible = !this.isPartecipantVisible;
+    this.isChatVisible = !this.isChatVisible;
+  }
+
+  toggleChat() {
+    this.isChatVisible = !this.isChatVisible;
+    this.isPartecipantVisible = !this.isPartecipantVisible;
   }
 
   ngOnInit() {
@@ -236,7 +248,7 @@ export class ConferencePage
             break;
           case 'info':
             // console.log(msg.data) // da decommentare per controllare il Framerate
-           
+
             break;
           case 'fatal':
             break;
