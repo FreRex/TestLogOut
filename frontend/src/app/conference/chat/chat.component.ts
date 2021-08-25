@@ -28,6 +28,7 @@ export class ChatComponent implements OnInit {
   }
 
   ngOnInit() {
+    let nome: string = this.user.nomecognome;
     let messages = document.getElementById('messages');
     /*     form.addEventListener('submit', function(e) {
       e.preventDefault();
@@ -38,8 +39,6 @@ export class ChatComponent implements OnInit {
     }); */
 
     this.socket.on('chat message_' + this.roomId, (msg) => {
-      console.log('questo qua', msg.nominativo);
-
       var textHead = document.createElement('li');
       let date = new Date();
       this.nome = msg.nominativo;
@@ -60,8 +59,13 @@ export class ChatComponent implements OnInit {
 
       var item = document.createElement('li');
 
-      item.style.cssText =
-        'margin: 20px 8px; padding:3px;border-bottom-style: groove;border-color: #aeaeae;border-bottom-width: 2px; font-weight: 600;';
+      if ((nome = msg.nominativo)) {
+        item.style.cssText =
+          'text-align: right; color:#03477e; margin: 20px 8px; padding:3px;border-bottom-style: groove;border-color: #aeaeae;border-bottom-width: 2px; font-weight: 600;';
+      } else {
+        item.style.cssText =
+          'margin: 20px 8px; padding:3px;border-bottom-style: groove;border-color: #aeaeae;border-bottom-width: 2px; font-weight: 600;';
+      }
 
       item.textContent = msg.messaggio;
 
