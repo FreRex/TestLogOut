@@ -30,6 +30,7 @@ export class ChatComponent implements OnInit {
 
   ngOnInit() {
     this.nomeCheck = this.user.nomecognome;
+
     let messages = document.getElementById('messages');
     /*     form.addEventListener('submit', function(e) {
       e.preventDefault();
@@ -60,7 +61,7 @@ export class ChatComponent implements OnInit {
 
       var item = document.createElement('li');
 
-      if ((this.nomeCheck = msg.nominativo)) {
+      if (this.nomeCheck == msg.nominativo) {
         item.style.cssText =
           'text-align: right; color:#03477e; margin: 20px 8px; padding:3px;border-bottom-style: groove;border-color: #aeaeae;border-bottom-width: 2px; font-weight: 600;';
       } else {
