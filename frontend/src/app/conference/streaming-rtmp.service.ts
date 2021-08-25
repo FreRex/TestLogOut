@@ -245,7 +245,7 @@ export class StreamingRtmpService {
   player: mpegts.Player;
 
   togglePlayer(roomId: number, idutente: string) {
-    // if (this.streamingService.isStreaming) {
+    // if (this.streamService.isStreaming) {
     //   this.toggleStream;
     // }
     if (this.isPlaying) {

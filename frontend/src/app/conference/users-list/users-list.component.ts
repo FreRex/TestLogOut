@@ -19,7 +19,7 @@ export class UsersListComponent implements OnInit {
 
   constructor(
     public audioService: AudioRTCService,
-    public streamingService: StreamingRtmpService
+    public streamService: StreamingRtmpService
   ) {}
 
   ngOnInit() {
@@ -34,7 +34,7 @@ export class UsersListComponent implements OnInit {
 
     this.roomUsers$ = combineLatest([
       this.audioService.listeners$,
-      this.streamingService.watchers$,
+      this.streamService.watchers$,
     ]).pipe(
       map(([listeners, watchers]) => {
         // console.log('🐱‍👤 : watchers', watchers);

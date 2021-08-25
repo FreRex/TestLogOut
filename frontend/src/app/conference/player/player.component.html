@@ -1,23 +1,21 @@
-<div class="spazio-vuoto-dimensione-fissa">
-  <span *ngIf="this.streamingService.streamingUser" class="label">
-    <ion-text *ngIf="this.streamingService.streamingUser.idutente == user.idutcas">
-      stai trasmettendo
-      <ion-icon name="ellipse" color="primary"></ion-icon>
-    </ion-text>
-    <ion-text *ngIf="this.streamingService.streamingUser.idutente != user.idutcas">
-      {{ this.streamingService.streamingUser.nome }}
-    </ion-text>
-  </span>
+<div #player class="player-container">
   <div class="video-container">
-    <div
-      [hidden]="this.streamingService.isStreaming || this.streamingService.isPlaying"
-    >
+    <span *ngIf="this.streamService.streamingUser" class="label">
+      <ion-text *ngIf="this.streamService.streamingUser.idutente == user.idutcas">
+        stai trasmettendo
+        <ion-icon name="ellipse" color="primary"></ion-icon>
+      </ion-text>
+      <ion-text *ngIf="this.streamService.streamingUser.idutente != user.idutcas">
+        {{ this.streamService.streamingUser.nome }}
+      </ion-text>
+    </span>
+    <div [hidden]="this.streamService.isStreaming || this.streamService.isPlaying">
       <img src="assets/icons/mockup-icons/wait.svg" />
     </div>
     <video
       id="localVideo"
       class="videoElementBase"
-      [hidden]="!this.streamingService.isStreaming"
+      [hidden]="!this.streamService.isStreaming"
       #localVideo
       [autoplay]="true"
       [muted]="true"
@@ -25,7 +23,7 @@
     <video
       id="remoteVideo"
       class="videoElementBase"
-      [hidden]="!this.streamingService.isPlaying"
+      [hidden]="!this.streamService.isPlaying"
       #remoteVideo
       [autoplay]="true"
       [muted]="true"
@@ -36,15 +34,15 @@
     <div class="btnCommand">
       <ion-button
         class="btn-trasparent"
-        (click)="this.streamingService.toggleStreaming(user.idutcas, cameraSide)"
+        (click)="this.streamService.toggleStreaming(user.idutcas, cameraSide)"
       >
         <ion-icon
-          *ngIf="this.streamingService.isStreaming"
+          *ngIf="this.streamService.isStreaming"
           slot="icon-only"
           src="assets/icons/mockup-icons/cam-on.svg"
         ></ion-icon>
         <ion-icon
-          *ngIf="!this.streamingService.isStreaming"
+          *ngIf="!this.streamService.isStreaming"
           slot="icon-only"
           src="assets/icons/mockup-icons/cam-off.svg"
         ></ion-icon>
@@ -77,16 +75,16 @@
         ></ion-icon>
       </ion-button>
     </div>
-    <div class="dots">
+    <!-- <div class="dots">
       <ion-button class="btn-trasparent">
         <ion-icon
           slot="icon-only"
           src="assets/icons/mockup-icons/dots.svg"
         ></ion-icon>
       </ion-button>
-    </div>
+    </div> -->
     <div>
-      <ion-button class="btn-trasparent">
+      <ion-button class="btn-trasparent" (click)="toggleFullscreen()">
         <ion-icon
           slot="icon-only"
           src="assets/icons/mockup-icons/expand.svg"
@@ -105,10 +103,8 @@
       </ion-button>
       <ion-button
         class="btn-trasparent"
-        [disabled]="
-          !this.streamingService.isStreaming && !this.streamingService.isPlaying
-        "
-        (click)="this.capturePhoto(this.streamingService.isStreaming)"
+        [disabled]="!this.streamService.isStreaming && !this.streamService.isPlaying"
+        (click)="this.capturePhoto(this.streamService.isStreaming)"
       >
         <ion-icon
           slot="icon-only"
