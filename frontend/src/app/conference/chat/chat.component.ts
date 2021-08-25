@@ -37,7 +37,9 @@ export class ChatComponent implements OnInit {
       }
     }); */
 
-    this.socket.on('chat message_' + this.roomId, function (msg) {
+    this.socket.on('chat message_' + this.roomId, (msg) => {
+      console.log('questo qua', msg.nominativo);
+
       var textHead = document.createElement('li');
       let date = new Date();
       this.nome = msg.nominativo;
@@ -70,7 +72,7 @@ export class ChatComponent implements OnInit {
   }
 
   sendMsg() {
-    this.socket.emit('chat message_' + this.roomId, {
+    this.socket.emit('chat message', {
       room: this.roomId,
       nominativo: this.user.nomecognome,
       messaggio: this.msg,
