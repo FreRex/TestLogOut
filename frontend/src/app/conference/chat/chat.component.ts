@@ -13,7 +13,6 @@ export class ChatComponent implements OnInit {
   msgChat: {
     room: number;
     nominativo: string;
-    cognome: string;
     messaggio: string;
   };
 
@@ -75,7 +74,7 @@ export class ChatComponent implements OnInit {
     this.msgChat.nominativo = this.user.nomecognome;
     this.msgChat.messaggio = this.msg;
 
-    this.socket.emit('chat message', this.msgChat);
+    this.socket.emit('chat message_' + this.roomId, this.msgChat);
     this.msg = '';
   }
 
