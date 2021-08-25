@@ -12,7 +12,7 @@ export class ChatComponent implements OnInit {
 
   msgChat: {
     room: number;
-    nome: string;
+    nominativo: string;
     cognome: string;
     messaggio: string;
   };
@@ -38,10 +38,10 @@ export class ChatComponent implements OnInit {
       }
     }); */
 
-    this.socket.on('chat message_' + '1187', function (msg) {
+    this.socket.on('chat message_' + this.roomId, function (msg) {
       var textHead = document.createElement('li');
       let date = new Date();
-      this.nome = msg.nome;
+      this.nome = msg.nominativo;
 
       textHead.textContent =
         this.nome +
@@ -72,8 +72,7 @@ export class ChatComponent implements OnInit {
 
   sendMsg() {
     this.msgChat.room = this.roomId;
-    this.msgChat.nome = this.user.nomecognome;
-    this.msgChat.cognome = 'Bambini';
+    this.msgChat.nominativo = this.user.nomecognome;
     this.msgChat.messaggio = this.msg;
 
     this.socket.emit('chat message', this.msgChat);
