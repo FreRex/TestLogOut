@@ -1,0 +1,16 @@
+<div class="container">
+  <div class="gradient"></div>
+  <div class="msgArea" id="msgArea">
+
+    <ul id="messages"></ul>
+  </div>
+  <div class="input">
+    <ion-textarea id="txtArea" [(ngModel)]="msg">
+    </ion-textarea>
+    <ion-button size="small" class="btn" (click)="sendMsg()">
+      <ion-icon size="small" position="icon-only" color="tertiary" name="send"></ion-icon>
+    </ion-button>
+
+  </div>
+
+</div>

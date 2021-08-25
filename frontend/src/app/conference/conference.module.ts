@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { ChatComponent } from './chat/chat.component';
 
 import { ConferencePageRoutingModule } from './conference-routing.module';
 import { ConferencePage } from './conference.page';
@@ -16,6 +17,7 @@ import { UsersListComponent } from './users-list/users-list.component';
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    FormsModule,
     IonicModule,
     ConferencePageRoutingModule,
     SharedModule,
@@ -27,6 +29,7 @@ import { UsersListComponent } from './users-list/users-list.component';
     UsersListComponent,
     MapComponent,
     PhotoModalComponent,
+    ChatComponent,
   ],
 })
 export class ConferencePageModule {}
