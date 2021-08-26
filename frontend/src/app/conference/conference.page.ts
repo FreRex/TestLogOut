@@ -40,6 +40,7 @@ export class ConferencePage implements OnInit, OnDestroy {
 
   @ViewChild(PlayerComponent) private playerComponent: PlayerComponent;
   @ViewChild(MapComponent) private map: MapComponent;
+  @ViewChild(ChatComponent) private chat: ChatComponent;
 
   public room: Room;
   public user: AuthUser;
@@ -114,6 +115,7 @@ export class ConferencePage implements OnInit, OnDestroy {
     this.isChatVisible = !this.isChatVisible;
     this.isPartecipantVisible = !this.isPartecipantVisible;
     this.notificationCounter = 0;
+    this.chat.notificationCounter = 0;
   }
 
   ngOnInit() {

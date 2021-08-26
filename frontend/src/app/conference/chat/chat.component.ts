@@ -30,7 +30,7 @@ export class ChatComponent implements OnInit {
 
   ngAfterViewChecked() {
     this.updateScroll();
-    //this.notificationCounter = 0;
+    // this.notificationCounter = 0;
   }
 
   ngOnInit() {
@@ -88,6 +88,9 @@ export class ChatComponent implements OnInit {
   }
 
   sendMsg() {
+    if (!this.msg) {
+      return;
+    }
     this.socket.emit('chat message', {
       room: this.roomId,
       nominativo: this.user.nomecognome,

@@ -7,7 +7,7 @@
   <div class="input">
     <ion-textarea id="txtArea" [(ngModel)]="msg" (keyup.enter)="sendMsg()" (keydown.enter)="onKeydown($event)">
     </ion-textarea>
-    <ion-button size="small" class="btn" (click)="sendMsg()" #btnTxt>
+    <ion-button [disabled]="!msg" size="small" class="btn" (click)="sendMsg()" #btnTxt>
       <ion-icon size="small" position="icon-only" color="tertiary" name="send"></ion-icon>
     </ion-button>
 
