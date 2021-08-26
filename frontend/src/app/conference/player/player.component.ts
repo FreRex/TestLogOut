@@ -97,7 +97,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
       this.streamService.stopPlayer();
     }
     if (this.room) {
-      this.audioService.leaveRoom(this.room.id);
+      this.audioService.leaveRoom(this.room.id.toString());
     }
   }
 

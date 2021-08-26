@@ -46,7 +46,7 @@ export class AudioRTCService {
     }
   }
 
-  public toggleAudio(roomId, streamId) {
+  public toggleAudio(roomId: string, streamId: string) {
     if (!this.isJoined) {
       this.joinRoom(roomId, streamId);
     } else {
@@ -54,13 +54,13 @@ export class AudioRTCService {
     }
   }
 
-  public joinRoom(roomId, streamId) {
+  public joinRoom(roomId: string, streamId: string) {
     !this.webRTCInstance
       ? this.createWebRTCInstance(roomId, streamId)
       : this.webRTCInstance.joinRoom(roomId, streamId);
   }
 
-  public leaveRoom(roomId) {
+  public leaveRoom(roomId: string) {
     if (this.isJoined) {
       if (this.webRTCInstance) {
         this.webRTCInstance.leaveFromRoom(roomId);
@@ -160,7 +160,7 @@ export class AudioRTCService {
   // private userLeaved = new BehaviorSubject<string>(null);
   // userLeaved$ = this.userLeaved.asObservable();
 
-  createWebRTCInstance(roomId, streamId): void {
+  createWebRTCInstance(roomId: string, streamId: string): void {
     if (this.webRTCInstance) {
       return;
     }
@@ -169,12 +169,14 @@ export class AudioRTCService {
       mediaConstraints: this.mediaConstraints,
       peerconnection_config: this.pc_config,
       sdp_constraints: this.sdpConstraints,
-      // localVideoId: 'localVideo',
+      // localVideoId: 'localAudio',
+      // remoteVideoId: 'remoteAudio',
       // isPlayMode: this.playOnly,
       debug: true,
       callback: (info, data) => {
+        // console.log('🐱‍👤 : info', info, data);
         if (info == 'initialized') {
-          console.log('initialized');
+          console.log('🐱‍👤 : initialized');
           this.webRTCInstance.joinRoom(roomId, streamId);
         } else if (info == 'joinedTheRoom') {
           console.log('🐱‍👤 : joinedTheRoom', data);

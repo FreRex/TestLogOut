@@ -89,9 +89,9 @@
         ></ion-icon>
       </ion-button>
       <ion-button
-        color="danger"
+        [color]="this.audioService.isJoined ? 'danger' : 'secondary'"
         class="square-btn btn-trasparent"
-        (click)="this.audioService.toggleAudio(room.id, user.idutcas)"
+        (click)="this.audioService.toggleAudio(room.id.toString(), user.idutcas)"
       >
         <ion-icon
           *ngIf="this.audioService.isJoined"
