@@ -29,7 +29,13 @@
     ></video>
   </div>
   <div class="gray-bar">
-    <div class="btnCommand">
+    <div>
+      <ion-button color="secondary" class="btn-trasparent">
+        <ion-icon
+          slot="icon-only"
+          src="assets/icons/mockup-icons/smart-glasses.svg"
+        ></ion-icon>
+      </ion-button>
       <ion-button
         class="btn-trasparent"
         (click)="this.streamService.toggleStreaming(user.idutcas, cameraSide)"
@@ -45,21 +51,20 @@
           src="assets/icons/mockup-icons/cam-off.svg"
         ></ion-icon>
       </ion-button>
+    </div>
+    <div>
       <ion-button
         class="btn-trasparent"
-        (click)="this.audioService.toggleAudio(room.id, user.idutcas)"
+        [disabled]="!this.streamService.isStreaming && !this.streamService.isPlaying"
+        (click)="this.capturePhoto(this.streamService.isStreaming)"
       >
         <ion-icon
-          *ngIf="this.audioService.isJoined"
           slot="icon-only"
-          name="volume-high-sharp"
-        ></ion-icon>
-        <ion-icon
-          *ngIf="!this.audioService.isJoined"
-          slot="icon-only"
-          name="volume-mute-sharp"
+          src="assets/icons/mockup-icons/aperture.svg"
         ></ion-icon>
       </ion-button>
+    </div>
+    <div>
       <ion-button class="btn-trasparent" (click)="this.audioService.toggleMic()">
         <ion-icon
           *ngIf="this.audioService.isMicOn"
@@ -72,7 +77,47 @@
           name="mic-off"
         ></ion-icon>
       </ion-button>
+      <ion-button
+        color="danger"
+        class="btn-trasparent"
+        (click)="this.audioService.toggleAudio(room.id, user.idutcas)"
+      >
+        <ion-icon
+          *ngIf="this.audioService.isJoined"
+          slot="icon-only"
+          src="assets/icons/mockup-icons/termina-call.svg"
+        ></ion-icon>
+        <ion-icon
+          *ngIf="!this.audioService.isJoined"
+          slot="icon-only"
+          name="call"
+        ></ion-icon>
+      </ion-button>
     </div>
+  </div>
+  <!-- BOTTONI VIDEO -->
+  <div class="white-bar">
+    <ion-button
+      class="btn-trasparent"
+      (click)="this.audioService.toggleAudio(room.id, user.idutcas)"
+    >
+      <ion-icon
+        *ngIf="this.audioService.isJoined"
+        slot="icon-only"
+        name="volume-high-sharp"
+      ></ion-icon>
+      <ion-icon
+        *ngIf="!this.audioService.isJoined"
+        slot="icon-only"
+        name="volume-mute-sharp"
+      ></ion-icon>
+    </ion-button>
+    <ion-button class="btn-trasparent" (click)="toggleFullscreen()">
+      <ion-icon
+        slot="icon-only"
+        src="assets/icons/mockup-icons/expand.svg"
+      ></ion-icon>
+    </ion-button>
     <!-- <div class="dots">
       <ion-button class="btn-trasparent">
         <ion-icon
@@ -81,40 +126,5 @@
         ></ion-icon>
       </ion-button>
     </div> -->
-    <div>
-      <ion-button class="btn-trasparent" (click)="toggleFullscreen()">
-        <ion-icon
-          slot="icon-only"
-          src="assets/icons/mockup-icons/expand.svg"
-        ></ion-icon>
-      </ion-button>
-    </div>
-  </div>
-  <!-- BOTTONI VIDEO -->
-  <div class="white-bar">
-    <div>
-      <ion-button color="secondary" class="btn-trasparent">
-        <ion-icon
-          slot="icon-only"
-          src="assets/icons/mockup-icons/smart-glasses.svg"
-        ></ion-icon>
-      </ion-button>
-      <ion-button
-        class="btn-trasparent"
-        [disabled]="!this.streamService.isStreaming && !this.streamService.isPlaying"
-        (click)="this.capturePhoto(this.streamService.isStreaming)"
-      >
-        <ion-icon
-          slot="icon-only"
-          src="assets/icons/mockup-icons/aperture.svg"
-        ></ion-icon>
-      </ion-button>
-    </div>
-    <ion-button color="danger" class="btn-trasparent">
-      <ion-icon
-        slot="icon-only"
-        src="assets/icons/mockup-icons/termina-call.svg"
-      ></ion-icon>
-    </ion-button>
   </div>
 </div>
