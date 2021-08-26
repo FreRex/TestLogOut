@@ -1,6 +1,6 @@
 <div #player class="player-container">
   <div class="video-container">
-    <span *ngIf="this.streamService.streamingUser" class="label">
+    <span *ngIf="this.streamService.streamingUser">
       <ion-text *ngIf="this.streamService.streamingUser.idutente == user.idutcas">
         stai trasmettendo
         <ion-icon name="ellipse" color="primary"></ion-icon>
@@ -14,7 +14,6 @@
     </div>
     <video
       id="localVideo"
-      class="videoElementBase"
       [hidden]="!this.streamService.isStreaming"
       #localVideo
       [autoplay]="true"
@@ -22,7 +21,6 @@
     ></video>
     <video
       id="remoteVideo"
-      class="videoElementBase"
       [hidden]="!this.streamService.isPlaying"
       #remoteVideo
       [autoplay]="true"

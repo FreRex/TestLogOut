@@ -23,7 +23,7 @@
   <ion-grid *ngIf="!isLoading" [class.grid-padding]="!isMobile">
     <!-- BTN CHE RIMANDA INDIETRO ALL'INGRESSO DELLA CONFERENCE -->
     <!--<ion-row *ngIf="!isMobile">
-      <ion-col size-lg="2">
+      <ion-col sizeLg="2">
         <ion-item
           *ifRoleIs="['ADMIN', 'USER']"
           lines="none"
@@ -37,7 +37,7 @@
       </ion-col> 
     </ion-row> -->
     <ion-row class="ion-align-items-center">
-      <ion-col size-lg="4.5">
+      <ion-col sizeLg="4.5">
         <div class="conference-title">
           <div class="title">
             <ion-text class="bold">{{room?.progetto}}</ion-text>
@@ -91,7 +91,7 @@
       <ion-col
         [hidden]="!isVideoVisible"
         [sizeLg]="isMapVisible ? '4.5' : '9'"
-        size-xs="12"
+        sizeXs="12"
       >
         <!-- QUI DENTRO VA IL VIDEO PLAYER -->
         <app-player #player [room]="room" [user]="user"></app-player>
@@ -110,7 +110,7 @@
       <ion-col
         [hidden]="!isMapVisible"
         [sizeLg]="isVideoVisible ? '4.5' : '9'"
-        size-xs="12"
+        sizeXs="12"
       >
         <!-- QUI DENTRO VA LA MAPPA -->
         <div class="spazio-vuoto-dimensione-fissa">
@@ -143,7 +143,7 @@
           </div>
         </div>
       </ion-col>
-      <ion-col size-lg="3" size-xs="12">
+      <ion-col sizeLg="3" sizeXs="12">
         <!-- QUI DENTRO VA LA LISTA PARTECIPANTI con SWITCH su CHAT-->
         <div [hidden]="!isPartecipantVisible">
           <app-users-list></app-users-list>
