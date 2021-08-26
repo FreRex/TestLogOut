@@ -57,39 +57,25 @@
         <ion-button class="button" (click)="this.roomFunctions.copyLink(room)">
           <ion-icon slot="icon-only" name="share-social"></ion-icon>
         </ion-button>
-        <ion-button
-          class="button"
-          [ngClass]="{'button-active' : isVideoVisible}"
-          (click)="toggleVideo()"
-        >
+        <ion-button class="button" [ngClass]="{'button-active' : isVideoVisible}" (click)="toggleVideo()">
           <ion-icon slot="icon-only" name="call-sharp"></ion-icon>
         </ion-button>
-        <ion-button
-          class="button"
-          [ngClass]="{'button-active' : isMapVisible}"
-          (click)="toggleMappa()"
-        >
+        <ion-button class="button" [ngClass]="{'button-active' : isMapVisible}" (click)="toggleMappa()">
           <ion-icon slot="icon-only" name="map-sharp"></ion-icon>
         </ion-button>
-        <ion-button
-          class="button"
-          [ngClass]="{'button-active' : isPartecipantVisible}"
-          (click)="toggleParticipant()"
-        >
+        <ion-button class="button" [ngClass]="{'button-active' : isPartecipantVisible}" (click)="toggleParticipant()">
           <ion-icon slot="icon-only" name="people-sharp"></ion-icon>
         </ion-button>
         <ion-button class="button chatBtn" [ngClass]="{'button-active' : isChatVisible}" (click)="toggleChat()">
+          <div class="notification noti2" *ngIf="notificationCounter >= 1"></div>
+          <div class="notification noti3" *ngIf="notificationCounter >= 1"></div>
           <div class="notification" *ngIf="notificationCounter >= 1">{{notificationCounter}}</div>
           <ion-icon slot="icon-only" name="chatbox"></ion-icon>
         </ion-button>
       </ion-col>
     </ion-row>
     <ion-row style="flex-grow: 1">
-      <ion-col
-        [hidden]="!isVideoVisible"
-        [sizeLg]="isMapVisible ? '4.5' : '9'"
-        size-xs="12"
-      >
+      <ion-col [hidden]="!isVideoVisible" [sizeLg]="isMapVisible ? '4.5' : '9'" size-xs="12">
         <!-- QUI DENTRO VA IL VIDEO PLAYER -->
         <app-player #player [room]="room" [user]="user"></app-player>
         <!-- <div class="spazio-vuoto-dimensione-fissa">
@@ -104,35 +90,19 @@
           </span>
         </div> -->
       </ion-col>
-      <ion-col
-        [hidden]="!isMapVisible"
-        [sizeLg]="isVideoVisible ? '4.5' : '9'"
-        size-xs="12"
-      >
+      <ion-col [hidden]="!isMapVisible" [sizeLg]="isVideoVisible ? '4.5' : '9'" size-xs="12">
         <!-- QUI DENTRO VA LA MAPPA -->
         <div class="spazio-vuoto-dimensione-fissa">
-          <app-map
-            #mappa
-            [roomId]="room?.id"
-            [followOperator]="followOperatorOnMap"
-            [isInfo]="isInfo"
-          ></app-map>
+          <app-map #mappa [roomId]="room?.id" [followOperator]="followOperatorOnMap" [isInfo]="isInfo"></app-map>
         </div>
         <div class="btn-map ion-padding">
           <div class="box-toggle">
             <ion-icon color="primary" name="locate"></ion-icon>
-            <ion-toggle
-              color="success"
-              (click)="followOperator()"
-              checked
-            ></ion-toggle>
+            <ion-toggle color="success" (click)="followOperator()" checked></ion-toggle>
           </div>
           <div class="box-toggle">
             <ion-icon color="primary" name="flag"></ion-icon>
-            <ion-toggle
-              color="success"
-              (click)="mappa.toggleMarkerBlu()"
-            ></ion-toggle>
+            <ion-toggle color="success" (click)="mappa.toggleMarkerBlu()"></ion-toggle>
           </div>
           <div class="box-toggle">
             <img src="./../../assets/Google_Earth_icon.svg" />
