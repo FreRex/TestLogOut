@@ -48,6 +48,7 @@ export class StreamingRtmpService {
       rtmp: `${environment.urlRTMP}/${roomId}/${localUser.idutcas}`,
       nome: localUser.nomecognome,
     });
+
     this.socket.fromEvent<any>('message').subscribe(
       (msg) => {
         switch (msg.type) {
@@ -199,21 +200,21 @@ export class StreamingRtmpService {
 
   startMediaRecorder() {
     this.mediaRecorder = new MediaRecorder(this.localStream);
-    // this.mediaRecorder.onstop = (event: Event) => {
-    //   console.log('media recorder stopped: ', event);
-    // };
-    // this.mediaRecorder.onstart = (event: Event) => {
-    //   console.log('media recorder started: ', event);
-    // };
-    // this.mediaRecorder.onpause = (event: Event) => {
-    //   console.log('media recorder paused: ', event);
-    // };
-    // this.mediaRecorder.onresume = (event: Event) => {
-    //   console.log('media recorder resumed: ', event);
-    // };
-    // this.mediaRecorder.onerror = (event: MediaRecorderErrorEvent) => {
-    //   console.log('error', event.error);
-    // };
+    this.mediaRecorder.onstop = (event: Event) => {
+      console.log('media recorder stopped: ', event);
+    };
+    this.mediaRecorder.onstart = (event: Event) => {
+      console.log('media recorder started: ', event);
+    };
+    this.mediaRecorder.onpause = (event: Event) => {
+      console.log('media recorder paused: ', event);
+    };
+    this.mediaRecorder.onresume = (event: Event) => {
+      console.log('media recorder resumed: ', event);
+    };
+    this.mediaRecorder.onerror = (event: MediaRecorderErrorEvent) => {
+      console.log('error', event.error);
+    };
     this.mediaRecorder.ondataavailable = (event: BlobEvent) => {
       // console.log('🐱‍👤 : PlayerComponent : event.data', event.data);
       // this.socket.emit('message', {type: 'binarystream', data: event.data});
@@ -226,11 +227,11 @@ export class StreamingRtmpService {
   stopMediaRecorder(): void {
     if (this.mediaRecorder) {
       this.mediaRecorder.stop();
-      // this.mediaRecorder.onstop = null;
-      // this.mediaRecorder.onstart = null;
-      // this.mediaRecorder.onpause = null;
-      // this.mediaRecorder.onresume = null;
-      // this.mediaRecorder.onerror = null;
+      this.mediaRecorder.onstop = null;
+      this.mediaRecorder.onstart = null;
+      this.mediaRecorder.onpause = null;
+      this.mediaRecorder.onresume = null;
+      this.mediaRecorder.onerror = null;
       this.mediaRecorder.ondataavailable = null;
       this.mediaRecorder = null;
     }

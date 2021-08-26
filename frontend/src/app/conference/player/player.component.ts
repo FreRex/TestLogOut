@@ -50,6 +50,9 @@ export class PlayerComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    screen.orientation.addEventListener('change', (orientation) => {
+      console.log('🐱‍👤 : orientation', screen.orientation);
+    });
     if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
       console.log('enumerateDevices() not supported.');
       return;
@@ -94,20 +97,28 @@ export class PlayerComponent implements OnInit, OnDestroy {
       this.streamService.stopPlayer();
     }
     if (this.room) {
-      this.audioService.leaveRoom(this.room.id);
+      this.audioService.leaveRoom(this.room.id.toString());
     }
   }
 
+  isFullscreen: boolean = false;
   toggleFullscreen() {
     if (!document.fullscreenElement) {
-      this.player.nativeElement.requestFullscreen().catch((err) => {
-        this.alertService.presentAlert(
-          'Error attempting to enable full-screen mode:',
-          `${err.message} (${err.name})`
-        );
-      });
+      this.player.nativeElement
+        .requestFullscreen()
+        .then((res) => {
+          this.isFullscreen = true;
+        })
+        .catch((err) => {
+          this.alertService.presentAlert(
+            'Error attempting to enable full-screen mode:',
+            `${err.message} (${err.name})`
+          );
+        });
     } else {
-      document.exitFullscreen();
+      document.exitFullscreen().then((res) => {
+        this.isFullscreen = false;
+      });
     }
   }
 

@@ -7,16 +7,10 @@ import {
   ViewChild,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import {
-  NavController,
-  Platform,
-  ViewWillEnter,
-  ViewWillLeave,
-} from '@ionic/angular';
+import { NavController, Platform } from '@ionic/angular';
 import { Socket } from 'ngx-socket-io';
-import { BehaviorSubject, iif, Observable, of, Subscription } from 'rxjs';
+import { iif, Observable, of, Subscription } from 'rxjs';
 import { map, retryWhen, switchMap, take, tap } from 'rxjs/operators';
-import { environment } from 'src/environments/environment';
 
 import { AuthUser } from '../auth/auth-user.model';
 import { AuthService } from '../auth/auth.service';
@@ -28,6 +22,7 @@ import { RoomUser } from './room-user';
 import { GpsService } from './gps.service';
 import { MapComponent } from './map/map.component';
 import { PlayerComponent } from './player/player.component';
+import { RoomUser } from './room-user';
 import { StreamingRtmpService } from './streaming-rtmp.service';
 
 @Component({
@@ -61,7 +56,7 @@ export class ConferencePage implements OnInit, OnDestroy {
     private router: Router,
     public platform: Platform,
     public roomFunctions: RoomFunctionsService,
-    public audioService: AudioRTCService,
+    // public audioService: AudioRTCService,
     public streamingService: StreamingRtmpService,
     public gps: GpsService
   ) {}
