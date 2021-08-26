@@ -1,18 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import {
-  AlertController,
-  ModalController,
-  ToastController,
-} from '@ionic/angular';
+import { AlertController, ModalController, ToastController } from '@ionic/angular';
 import { Photo, MediaService } from '../media.service';
-import {
-  trigger,
-  state,
-  style,
-  animate,
-  transition,
-} from '@angular/animations';
+import { trigger, state, style, animate, transition } from '@angular/animations';
 import { delay } from 'rxjs/operators';
 
 @Component({
@@ -23,10 +13,7 @@ import { delay } from 'rxjs/operators';
     trigger('inOutAnimation', [
       transition(':enter', [
         style({ transform: 'rotateY(-90deg)', opacity: 0 }),
-        animate(
-          '.5s ease-in',
-          style({ transform: 'rotateY(0deg)', opacity: 1 })
-        ),
+        animate('.5s ease-in', style({ transform: 'rotateY(0deg)', opacity: 1 })),
       ]),
       transition(':leave', [
         style({ transform: 'scale(1)', opacity: 1 }),
@@ -78,11 +65,12 @@ export class PhotoDetailsComponent implements OnInit {
   dowloadSinglePhoto() {
     const link = document.createElement('a');
 
-    link.setAttribute(
-      'href',
-      `data:image/jpeg;base64,${this.foto.imageBase64}`
-    );
-    link.setAttribute('download', `${this.foto.nomelemento}.jpeg`);
+    link.setAttribute('href', `data:image/jpeg;base64,${this.foto.imageBase64}`);
+    if (this.foto.nomelemento == '') {
+      link.setAttribute('download', `${this.foto.idPhoto}.jpeg`);
+    } else {
+      link.setAttribute('download', `${this.foto.nomelemento}.jpeg`);
+    }
     document.body.appendChild(link);
     link.click();
     link.remove();
@@ -147,10 +135,7 @@ export class PhotoDetailsComponent implements OnInit {
               this.mediaService.deleteFoto(fotoID).subscribe((res) => {
                 this.presentToast('Foto Eliminata', 'secondary');
                 this.closeModal();
-                this.modalController.dismiss(
-                  { message: 'ok' },
-                  'Foto cancellata'
-                );
+                this.modalController.dismiss({ message: 'ok' }, 'Foto cancellata');
               }),
           },
         ],

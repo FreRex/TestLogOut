@@ -74,10 +74,10 @@ export class ChatComponent implements OnInit {
 
       if (this.nomeCheck == msg.nominativo) {
         item.style.cssText =
-          'text-align: right; color:#03477e; margin: 20px 8px; padding:3px;border-bottom-style: groove;border-color: #aeaeae;border-bottom-width: 2px; font-weight: 600;';
+          'animation: msgMe forwards 0.2s; text-align: right; color:#03477e; margin: 20px 8px; padding:3px;border-bottom-style: groove;border-color: #aeaeae;border-bottom-width: 2px; font-weight: 600;';
       } else {
         item.style.cssText =
-          'margin: 20px 8px; padding:3px;border-bottom-style: groove;border-color: #aeaeae;border-bottom-width: 2px; font-weight: 600;';
+          'animation: msgYou forwards 0.2s; margin: 20px 8px; padding:3px;border-bottom-style: groove;border-color: #aeaeae;border-bottom-width: 2px; font-weight: 600;';
       }
 
       item.textContent = msg.messaggio;
