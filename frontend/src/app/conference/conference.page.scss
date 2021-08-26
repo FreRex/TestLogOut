@@ -80,97 +80,22 @@ ion-col {
   }
 }
 
-// .spazio-vuoto-dimensione-fissa {
-//   position: relative;
-//   height: 480px;
-//   background-color: black;
-//   span {
-//     position: absolute;
-//     top: 16px;
-//     left: 16px;
-//     z-index: 9;
-//     background-color: white;
-//     border-radius: 50px;
-//     opacity: 60%;
-//     padding: 6px 12px 6px 12px;
-//     ion-text {
-//       display: flex;
-//       flex-direction: row;
-//       align-items: center;
-//       font-size: 0.8rem;
-//       font-weight: 500;
-//       color: var(--ion-color-dark);
-//       ion-icon {
-//         padding-left: 12px;
-//       }
-//     }
-//   }
-//   div {
-//     height: 100%;
-//     width: 100%;
-//     display: flex;
-//     flex-direction: column;
-//     align-items: center;
-//     justify-content: center;
-//     text-transform: uppercase;
-//     color: aliceblue;
-//   }
-// }
-
-// .cards-container {
-//   box-shadow: none !important;
-// }
-// .video-head {
-//   display: flex !important;
-//   justify-content: space-between !important;
-// }
-
-// .audio-video-ctrl {
-//   background-color: var(--ion-color-light-tint);
-//   width: 90%;
-//   margin: 2% auto 0 auto;
-//   display: flex;
-//   flex-direction: row;
-//   justify-content: space-between;
-//   align-items: center;
-//   .left-ctrl {
-//     display: flex;
-//     flex-direction: row;
-//     justify-content: left;
-//   }
-//   .dots {
-//     position: relative;
-//     align-self: center;
-//     justify-self: center;
-//   }
-// }
-// .btn-video {
-//   display: flex !important;
-//   justify-content: space-between !important;
-// }
-
-// .btn-trasparent {
-//   --color: var(--ion-color-dark);
-//   --background: none;
-// }
-
-// .item-button {
-//   display: inline-block;
-//   --background: none;
-//   --border-radius: 0;
-//   --padding-start: 0px;
-//   ion-icon {
-//     margin-left: 8px;
-//     margin-right: 8px;
-//     color: var(--ion-color-dark);
-//   }
-//   ion-text {
-//     font-size: 0.8rem;
-//     font-weight: 500;
-//   }
-// }
-
-// .none {
-//   --background: none;
-//   color: transparent;
-// }
+.chatBtn {
+  z-index: 10;
+  position: relative;
+  .notification {
+    width: 12px;
+    height: 12px;
+    font-size: 6px;
+    font-weight: 800;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: red;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}

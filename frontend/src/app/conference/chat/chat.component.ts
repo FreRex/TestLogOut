@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { Socket } from 'ngx-socket-io';
 import { AuthUser } from 'src/app/auth/auth-user.model';
 
@@ -18,32 +18,39 @@ export class ChatComponent implements OnInit {
 
   @Input() roomId: number;
   @Input() user: AuthUser;
+  @Input() isChatVisible: boolean;
 
   msg: string;
   element: HTMLElement;
   nome: string;
   nomeCheck: string;
 
+  @Input() notificationCounter: number;
+  @Output() nCounter: EventEmitter<number> = new EventEmitter();
+
   ngAfterViewChecked() {
     this.updateScroll();
+    //this.notificationCounter = 0;
   }
 
   ngOnInit() {
     this.nomeCheck = this.user.nomecognome;
 
+    this.notificationCounter = 0;
+
     let messages = document.getElementById('messages');
-    /*     form.addEventListener('submit', function(e) {
-      e.preventDefault();
-      if (input.value) {
-        this.socket.emit('chat message', input.value);
-        input.value = '';
-      }
-    }); */
 
     this.socket.on('chat message_' + this.roomId, (msg) => {
       var textHead = document.createElement('li');
       let date = new Date();
       this.nome = msg.nominativo;
+
+      if (!this.isChatVisible) {
+        this.notificationCounter++;
+        this.nCounter.emit(this.notificationCounter);
+      } else {
+        this.notificationCounter = 0;
+      }
 
       textHead.textContent =
         this.nome +
@@ -77,7 +84,6 @@ export class ChatComponent implements OnInit {
 
       messages.appendChild(textHead);
       messages.appendChild(item);
-      //window.scrollTo(0, document.body.scrollHeight);
     });
   }
 
@@ -88,6 +94,10 @@ export class ChatComponent implements OnInit {
       messaggio: this.msg,
     });
     this.msg = '';
+  }
+
+  onKeydown(event: Event): void {
+    event.preventDefault();
   }
 
   updateScroll() {
