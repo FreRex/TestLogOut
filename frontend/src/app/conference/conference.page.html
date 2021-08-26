@@ -57,7 +57,8 @@
         <ion-button class="button" [ngClass]="{'button-active' : isPartecipantVisible}" (click)="toggleParticipant()">
           <ion-icon slot="icon-only" name="people-sharp"></ion-icon>
         </ion-button>
-        <ion-button class="button" [ngClass]="{'button-active' : isChatVisible}" (click)="toggleChat()">
+        <ion-button class="button chatBtn" [ngClass]="{'button-active' : isChatVisible}" (click)="toggleChat()">
+          <div class="notification" *ngIf="notificationCounter >= 1">{{notificationCounter}}</div>
           <ion-icon slot="icon-only" name="chatbox"></ion-icon>
         </ion-button>
       </ion-col>
@@ -110,7 +111,8 @@
         </div>
 
         <div [hidden]="!isChatVisible">
-          <app-chat [roomId]="room.id" [user]="user"></app-chat>
+          <app-chat [roomId]="room.id" [user]="user" [isChatVisible]="isChatVisible"
+            (nCounter)="nCounterHandler($event)"></app-chat>
         </div>
 
       </ion-col>

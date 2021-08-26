@@ -1,4 +1,11 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   NavController,
@@ -16,6 +23,7 @@ import { AuthService } from '../auth/auth.service';
 import { RoomFunctionsService } from '../rooms/room-list/room-functions.service';
 import { Room, RoomService } from '../rooms/room.service';
 import { AudioRTCService } from './audiortc.service';
+import { ChatComponent } from './chat/chat.component';
 import { RoomUser } from './conference.service';
 import { GpsService } from './gps.service';
 import { MapComponent } from './map/map.component';
@@ -65,9 +73,16 @@ export class ConferencePage
   isPartecipantVisible: boolean = true;
   isChatVisible: boolean = false;
 
+  notificationCounter: number;
+
   public followOperatorOnMap: boolean = true;
   public marker2Delete: boolean = true;
   isInfo: boolean = false;
+
+  nCounterHandler(count: number) {
+    this.notificationCounter = count;
+    console.log(count);
+  }
 
   toggleMappa() {
     if (this.isMobile) {
@@ -99,6 +114,7 @@ export class ConferencePage
   toggleChat() {
     this.isChatVisible = !this.isChatVisible;
     this.isPartecipantVisible = !this.isPartecipantVisible;
+    this.notificationCounter = 0;
   }
 
   ngOnInit() {
