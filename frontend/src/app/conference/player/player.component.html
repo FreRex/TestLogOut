@@ -1,6 +1,6 @@
 <div #player class="player-container">
   <div class="video-container">
-    <span *ngIf="this.streamService.streamingUser">
+    <span class="label" *ngIf="this.streamService.streamingUser">
       <ion-text *ngIf="this.streamService.streamingUser.idutente == user.idutcas">
         stai trasmettendo
         <ion-icon name="ellipse" color="primary"></ion-icon>
@@ -8,6 +8,14 @@
       <ion-text *ngIf="this.streamService.streamingUser.idutente != user.idutcas">
         {{ this.streamService.streamingUser.nome }}
       </ion-text>
+    </span>
+    <span class="fullscreen">
+      <ion-button class="square-btn btn-trasparent" (click)="toggleFullscreen()">
+        <ion-icon
+          slot="icon-only"
+          src="assets/icons/mockup-icons/expand.svg"
+        ></ion-icon>
+      </ion-button>
     </span>
     <div [hidden]="this.streamService.isStreaming || this.streamService.isPlaying">
       <img src="assets/icons/mockup-icons/wait.svg" />
@@ -30,14 +38,14 @@
   </div>
   <div class="gray-bar">
     <div>
-      <ion-button color="secondary" class="btn-trasparent">
+      <ion-button color="secondary" class="square-btn btn-trasparent">
         <ion-icon
           slot="icon-only"
           src="assets/icons/mockup-icons/smart-glasses.svg"
         ></ion-icon>
       </ion-button>
       <ion-button
-        class="btn-trasparent"
+        class="square-btn btn-trasparent"
         (click)="this.streamService.toggleStreaming(user.idutcas, cameraSide)"
       >
         <ion-icon
@@ -54,7 +62,7 @@
     </div>
     <div>
       <ion-button
-        class="btn-trasparent"
+        class="square-btn btn-trasparent"
         [disabled]="!this.streamService.isStreaming && !this.streamService.isPlaying"
         (click)="this.capturePhoto(this.streamService.isStreaming)"
       >
@@ -65,7 +73,10 @@
       </ion-button>
     </div>
     <div>
-      <ion-button class="btn-trasparent" (click)="this.audioService.toggleMic()">
+      <ion-button
+        class="square-btn btn-trasparent"
+        (click)="this.audioService.toggleMic()"
+      >
         <ion-icon
           *ngIf="this.audioService.isMicOn"
           slot="icon-only"
@@ -79,7 +90,7 @@
       </ion-button>
       <ion-button
         color="danger"
-        class="btn-trasparent"
+        class="square-btn btn-trasparent"
         (click)="this.audioService.toggleAudio(room.id, user.idutcas)"
       >
         <ion-icon
@@ -97,8 +108,8 @@
   </div>
   <!-- BOTTONI VIDEO -->
   <div class="white-bar">
-    <ion-button
-      class="btn-trasparent"
+    <!-- <ion-button
+      class="square-btn btn-trasparent"
       (click)="this.audioService.toggleAudio(room.id, user.idutcas)"
     >
       <ion-icon
@@ -111,15 +122,15 @@
         slot="icon-only"
         name="volume-mute-sharp"
       ></ion-icon>
-    </ion-button>
-    <ion-button class="btn-trasparent" (click)="toggleFullscreen()">
+    </ion-button> -->
+    <!-- <ion-button class="square-btn btn-trasparent" (click)="toggleFullscreen()">
       <ion-icon
         slot="icon-only"
         src="assets/icons/mockup-icons/expand.svg"
       ></ion-icon>
-    </ion-button>
+    </ion-button> -->
     <!-- <div class="dots">
-      <ion-button class="btn-trasparent">
+      <ion-button class="square-btn btn-trasparent">
         <ion-icon
           slot="icon-only"
           src="assets/icons/mockup-icons/dots.svg"
