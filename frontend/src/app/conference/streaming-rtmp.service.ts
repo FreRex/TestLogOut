@@ -43,7 +43,7 @@ export class StreamingRtmpService {
   public configureSocket(localUser: AuthUser, roomId: number): void {
     this.localVideo = document.getElementById('localVideo') as HTMLMediaElement;
     this.remoteVideo = document.getElementById('remoteVideo') as HTMLMediaElement;
-
+    console.log('localUser', localUser);    
     this.socket.emit('config_rtmpDestination', {
       rtmp: `${environment.urlRTMP}/${roomId}/${localUser.idutcas}`,
       nome: localUser.nomecognome,
@@ -53,15 +53,21 @@ export class StreamingRtmpService {
       (msg) => {
         switch (msg.type) {
           case 'welcome':
+            console.log('welcome');
             break;
           case 'info':
+            console.log('info');
             // console.log(msg.data) // da decommentare per controllare il Framerate
             break;
           case 'fatal':
+            console.log('fatal');
             break;
           case `${roomId}`: //FREXXXXXXXXXXXXX
             let usersInRoom = [];
-            msg.data.slice(1).forEach((user) => {
+            console.log('idroom');            
+            console.log(msg.data);
+
+            msg.data.slice(1).forEach((user) => {              
               if (user.stream) {
                 this.streamingUser = user;
                 usersInRoom.unshift(user);
@@ -80,6 +86,7 @@ export class StreamingRtmpService {
             this.watchersSubject.next(usersInRoom);
             break;
           case 'stopWebCam': // TODO: cambiare in stopWebCam_${roomId}
+            console.log('stopWebCam');
             // if (msg.data == roomId) {
             if (this.isStreaming) {
               // this.socket.emit('disconnectStream', '');
@@ -90,6 +97,7 @@ export class StreamingRtmpService {
             // }
             break;
           case `startPlayer_${roomId}`:
+            console.log('startPlayer');
             //if (!this.isPlaying) {
             this.startPlayer(roomId, this.streamingUser.idutente);
             this.isPlaying = true;
@@ -97,6 +105,7 @@ export class StreamingRtmpService {
             break;
 
           case `stopPlayer_${roomId}`:
+            console.log('stopPlayer_');
             // console.log('🐱‍👤 : stopPlayer_', msg);
             if (this.isPlaying) {
               this.stopPlayer();

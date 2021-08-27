@@ -60,14 +60,12 @@ child_process_1.spawn('ffmpeg', ['-h']).on('error', function (m) {
 //-----------------------------------------------------------------------------------------
 // Connessione socket.io
 io.on('connection', function (socket) {
+    console.log(functionListaConference.utentiInConference);
     //Connected/Disconnect
     console.log('Utente connesso tramite socketio con socket.id: ' + socket.id);
     //SOCKET PER CHAT TESTUALE
     //Message
     socket.on('chat message', (msg) => {
-        console.log(msg.room);
-        console.log(msg.nominativo);
-        console.log(msg.messaggio);
         io.emit('chat message_' + msg.room, {
             nominativo: msg.nominativo,
             messaggio: msg.messaggio
@@ -79,17 +77,15 @@ io.on('connection', function (socket) {
         console.log('kmz_data: ' + kmz_data.kmz);
         socket.broadcast.emit('kmzon', { kmz: kmz_data.kmz });
     });
-    //SOCKET PER POSIZIONAMENTO / GPS / COORDINATE
+    //SOCKET PER GPS / COORDINATE
     socket.on('gps', function (gps_data) {
-        console.log('gps_data.idroom: ' + gps_data.idroom);
-        console.log('gps_data.latitudine: ' + gps_data.latitudine);
-        console.log('gps_data.longitudine: ' + gps_data.longitudine);
         socket.broadcast.emit('gpsUtente_idroom_' + gps_data.idroom, {
             idroom: gps_data.idroom,
             latitudine: gps_data.latitudine,
             longitudine: gps_data.longitudine,
         });
     });
+    //SOCKET PER POSIZIONAMENTO
     socket.on('posizioneMarker', function (posMkr) {
         /*   */
         socket.broadcast.emit('posMkrBckEnd_' + posMkr.idroom, {
@@ -99,7 +95,7 @@ io.on('connection', function (socket) {
         });
     });
     //----------------------------
-    // Socket per streaming
+    //SOCKET PER STREAMING
     socket.emit('message', {
         type: 'welcome',
         data: 'Hello from mediarecorder-to-rtmp server!',
@@ -108,16 +104,27 @@ io.on('connection', function (socket) {
         type: 'welcome',
         data: 'Please set rtmp destination before start streaming.',
     });
+    //SOCKET PRIMA ROOM
     socket.on('first_idroom', function (first_idroom) {
         let indexSingleRoom = functionListaConference.checkPresenzaIdRoom(Number(first_idroom));
         socket.emit('lista_utenti', functionListaConference.utentiInConference[indexSingleRoom]);
+        console.log('First idroom');
+        console.log(first_idroom);
+        console.log(indexSingleRoom);
+        console.log(functionListaConference.utentiInConference[indexSingleRoom]);
     });
     let ffmpeg_process;
     let feedStream = false;
+    //----------------------------------------------------------------------------------------
     // Ricezione tramite socket url_rtmp, socket.id e relativa elaborazione
+    //----------------------------------------------------------------------------------------
     socket.on('config_rtmpDestination', function (m) {
+        console.log('config_rtmpDestination');
+        console.log(m.rtmp);
+        //Lavorazione socket.id
         let socketid = socket.id;
         let regexValidator = /^rtmp:\/\/[^\s]*$/; //TODO: should read config
+        //Lavorazione rtmp_url
         if (typeof m.rtmp != 'string') {
             socket.emit('message', {
                 type: 'welcome',
@@ -135,16 +142,13 @@ io.on('connection', function (socket) {
             socket._rtmpDestination = m.rtmp;
             let nomeUtente = m.nome;
             let dataforsocket = 'rtmp destination set to: ' + m.rtmp;
-            //console.log(socket._rtmpDestination);
             let numberRoom = functionListaConference.idroomsplit(socket._rtmpDestination);
             let identificativoUtente = functionListaConference.idutentesplit(socket._rtmpDestination);
             //Inserimento in array generale dei dati del nuovo utente in conference
             let insertArray = functionListaConference.userInConferenceVideo(Number(numberRoom), identificativoUtente, 'entrance', socketid, nomeUtente);
             //Determinazione singolo array specifico per il nuovo utente
             let indexSingleRoom = functionListaConference.checkPresenzaIdRoom(Number(numberRoom));
-            console.log('Index room: ' + indexSingleRoom);
             let insertArraySingleRoom = functionListaConference.utentiInConference[indexSingleRoom];
-            console.log(insertArraySingleRoom);
             //Invio messaggi di benvenuto
             //invio lista utenti presenti in conference
             socket.emit('message', { type: 'welcome', data: dataforsocket });
@@ -503,10 +507,22 @@ io.on('connection', function (socket) {
         feedStream = false;
         console.log('Browser closed --> streaming  disconnected ! ' + socketid);
         //Eliminazione utente in conference
-        let arrayUser = functionListaConference.userInConferenceVideo(numberRoom, '', 'exitUser', socketid);
-        console.log('_________________');
+        console.log('q1111111111111111111');
+        console.log(functionListaConference.utentiInConference);
+        //let arrayUser = functionListaConference.deleteUser(socketid);
+        functionListaConference.deleteUser(socketid);
+        console.log(functionListaConference.utentiInConference);
+        console.log('a22222222222222222222222');
+        let arrayUser = functionListaConference.utentiInConference;
+        /*  let arrayUser = functionListaConference.userInConferenceVideo(
+           numberRoom,
+           '',
+           'exitUser',
+           socketid
+         ); */
+        console.log('_________________!');
         console.log(arrayUser);
-        console.log('_________________');
+        console.log('_________________!!');
         if (ffmpeg_process) {
             //invio lista utenti presenti in conference
             socket.emit('message', { type: numberRoom, data: arrayUser });
@@ -519,7 +535,12 @@ io.on('connection', function (socket) {
             //invio lista utenti presenti in conference
             socket.emit('message', { type: numberRoom, data: arrayUser });
             socket.broadcast.emit('message', { type: numberRoom, data: arrayUser });
+            console.log('_________________?');
+            console.log(arrayUser);
+            console.log(functionListaConference.utentiInConference);
+            console.log('_________________??');
             console.warn('killing ffmpeg process attempt failed... (DISCONNECT DA CHIUSURA BROWSER)');
+            console.log(functionListaConference.utentiInConference);
             console.log('-----------------------------------------------------------------------------------------------------');
         }
     });

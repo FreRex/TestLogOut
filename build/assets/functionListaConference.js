@@ -78,8 +78,11 @@ let insertArray = function (idroom, idutente, socketid, nomeUtente) {
 };
 //----------------------------- ELIMINAZIONE ELEMENTO
 let deleteRow = function (arr, row) {
+    console.log('del 1: ' + arr);
     arr = arr.slice(0); // make copy
     arr.splice(row - 1, 1);
+    console.log('elimina room');
+    console.log('del 2: ' + arr);
     return arr;
 };
 let deleteUser = function (socketid) {
@@ -88,17 +91,22 @@ let deleteUser = function (socketid) {
     console.log('Index room del socketid: ' + socketidCoo);
     console.log("Eliminare partecipante dall'array");
     //Eliminazione oggetto 
-    let el = utentiInConference[socketidCoo.y].splice(socketidCoo.x, 1);
+    //let el = utentiInConference[socketidCoo.y].splice(socketidCoo.x,1);
+    utentiInConference[socketidCoo.y].splice(socketidCoo.x, 1);
     //Verificare se la room è vuota e nel caso eliminarla
     if (utentiInConference[socketidCoo.y].length == 1) {
         console.log("Eliminazione Room");
-        userInConferenceVideo = deleteRow(utentiInConference, socketidCoo.y + 1);
+        //userInConferenceVideo=deleteRow(utentiInConference,socketidCoo.y+1); 
+        //utentiInConference=deleteRow(utentiInConference,socketidCoo.y+1);
+        utentiInConference[socketidCoo.y].splice(socketidCoo.x - 1, 1);
+        console.log('userInConferenceVideo: ' + utentiInConference);
     }
     else {
         //La room non è vuota e si seleziona l'array monodimensionale specifico della stanza
-        userInConferenceVideo = utentiInConference[socketidCoo.y];
+        //userInConferenceVideo =  utentiInConference[socketidCoo.y];
     }
-    return userInConferenceVideo;
+    console.log('deleteUderrrrrrrr:' + utentiInConference);
+    //return userInConferenceVideo; 
 };
 //----------------- UPDATE STREAM FALSE/TRUE -----------------------------------
 function updatePidStream(socketid, pidstream) {

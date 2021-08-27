@@ -151,6 +151,8 @@ export class ConferencePage implements OnInit, OnDestroy {
           this.user = user;
           this.socket.emit('first_idroom', this.room.id);
           this.isLoading = false;
+          console.log('ttt');
+          console.log(this.room.id);       
         },
         (err) => {
           this.navController.navigateBack(['/not-found']);
@@ -159,8 +161,9 @@ export class ConferencePage implements OnInit, OnDestroy {
       );
 
     this.socket
-      .fromEvent<any>('lista_utenti')
+      .fromEvent<any>('lista_utenti')           
       .pipe(
+        tap((utentiInConference) => { console.log('Listautenti: ', utentiInConference)}),
         // tap((utentiInConference) => {
         //   if (utentiInConference) {
         //     utentiInConference.slice(1).forEach((user) => {
@@ -170,6 +173,7 @@ export class ConferencePage implements OnInit, OnDestroy {
         //     });
         //   }
         // }),
+        
         switchMap((utentiInConference) =>
           iif(
             () => this.user.idutcas !== 'guest',
