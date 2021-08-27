@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { IonMenu } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/auth/auth.service';
-
+import { Socket } from 'ngx-socket-io';
 import { AuthUser } from '../auth/auth-user.model';
 import { Room, RoomService } from '../rooms/room.service';
 
@@ -19,7 +19,8 @@ export class MenuComponent implements OnInit {
 
   constructor(
     public authService: AuthService,
-    public roomService: RoomService
+    public roomService: RoomService,
+    public socket: Socket
   ) {}
 
   ngOnInit() {
@@ -31,5 +32,9 @@ export class MenuComponent implements OnInit {
 
   onLogout() {
     this.authService.logout();
+    this.socket.disconnect(); 
+    setTimeout(() => {
+      this.socket.connect();
+    }, 1000);
   }
 }

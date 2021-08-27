@@ -175,19 +175,18 @@ let userInConferenceVideo = function (idroom: number, idutente: string, dataActi
     switch (dataAction) {
         case 'entrance':
             //INSERIRE UTENTE E/O ROOM
-            console.table(insertArray(idroom, idutente, socketid, nomeUtente));           
+            insertArray(idroom, idutente, socketid, nomeUtente);           
         break;
 
         case 'exitUser':
             //ELIMINARE UTENTE e/o ROOM            
-			userInConferenceVideo = deleteUser(socketid);
-			console.table(userInConferenceVideo);
+			deleteUser(socketid);
+			
         break;  
         
         /* case 'updateUserStream':
             //UPDATE STREAM UTENTE            
-			userInConferenceVideo = updateArray(socketid);
-			console.table(userInConferenceVideo);
+			updateArray(socketid);			
         break; */
     
         default:

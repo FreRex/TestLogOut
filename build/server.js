@@ -17,7 +17,7 @@ if (process.env.NODE_ENV == 'production') {
     port = process.env.PORT_PROD || 9666;
 }
 else {
-    port = 9187;
+    port = 9222;
 }
 //app.use(express.json());
 app.use(express_1.default.json({ limit: '50mb' }));
@@ -60,10 +60,8 @@ child_process_1.spawn('ffmpeg', ['-h']).on('error', function (m) {
 //-----------------------------------------------------------------------------------------
 // Connessione socket.io
 io.on('connection', function (socket) {
-    //Connected/Disconnect  
-    socket.on('disconnect', () => {
-        console.log('user disconnected');
-    });
+    //Connected/Disconnect
+    console.log('Utente connesso tramite socketio con socket.id: ' + socket.id);
     //SOCKET PER CHAT TESTUALE
     //Message
     socket.on('chat message', (msg) => {
@@ -472,8 +470,6 @@ io.on('connection', function (socket) {
         numberRoom = numberRoom.toString();
         console.log('----------------------------------------');
         console.log('Chiusura stream per il seguente id: ' + socketid);
-        //console.table('NumberRoom: ' + numberRoom);
-        //feedStream=false;
         //Update stream da true a false
         let arrayUser = functionListaConference.updateStreamFalse(socketid);
         //Verifica
@@ -498,17 +494,19 @@ io.on('connection', function (socket) {
         console.log('----------------------------------------');
         console.log('----------------------------------------');
     });
-    //Ricezione segnale di disconnessione per chiusura browser.
+    //Ricezione segnale di disconnessione per chiusura browser/logout.
     socket.on('disconnect', function (m) {
         let socketid = socket.id;
         let socketidCoo = functionListaConference.checkPresenzaSocketid(socketid);
         let numberRoom = functionListaConference.utentiInConference[socketidCoo.y][0];
         numberRoom = numberRoom.toString();
-        //console.table('NumberRoom: ' + numberRoom);
         feedStream = false;
         console.log('Browser closed --> streaming  disconnected ! ' + socketid);
         //Eliminazione utente in conference
         let arrayUser = functionListaConference.userInConferenceVideo(numberRoom, '', 'exitUser', socketid);
+        console.log('_________________');
+        console.log(arrayUser);
+        console.log('_________________');
         if (ffmpeg_process) {
             //invio lista utenti presenti in conference
             socket.emit('message', { type: numberRoom, data: arrayUser });
@@ -522,6 +520,7 @@ io.on('connection', function (socket) {
             socket.emit('message', { type: numberRoom, data: arrayUser });
             socket.broadcast.emit('message', { type: numberRoom, data: arrayUser });
             console.warn('killing ffmpeg process attempt failed... (DISCONNECT DA CHIUSURA BROWSER)');
+            console.log('-----------------------------------------------------------------------------------------------------');
         }
     });
     socket.on('error', function (e) {

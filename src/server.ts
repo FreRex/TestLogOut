@@ -16,7 +16,7 @@ if (process.env.NODE_ENV == 'production') {
   require('dotenv').config();
   port = process.env.PORT_PROD || 9666;
 } else {
-  port = 9187;
+  port = 9222;
 }
 
 //app.use(express.json());
@@ -80,13 +80,10 @@ spawn('ffmpeg', ['-h']).on('error', function (m: any) {
 //-----------------------------------------------------------------------------------------
 
 // Connessione socket.io
-io.on('connection', function (socket: any) {
+io.on('connection', function (socket: any) {  
   
-  
-  //Connected/Disconnect  
-  socket.on('disconnect', () => {
-    console.log('user disconnected');
-  });
+  //Connected/Disconnect
+  console.log('Utente connesso tramite socketio con socket.id: ' + socket.id);
 
   //SOCKET PER CHAT TESTUALE
   //Message
@@ -128,7 +125,7 @@ io.on('connection', function (socket: any) {
   });
   //----------------------------
 
-  // Socket per streaming
+  //SOCKET PER STREAMING
   socket.emit('message', {
     type: 'welcome',
     data: 'Hello from mediarecorder-to-rtmp server!',
@@ -138,6 +135,7 @@ io.on('connection', function (socket: any) {
     data: 'Please set rtmp destination before start streaming.',
   });
 
+  //SOCKET PRIMA ROOM
   socket.on('first_idroom', function (first_idroom: any) {
     let indexSingleRoom = functionListaConference.checkPresenzaIdRoom(
       Number(first_idroom)
@@ -151,11 +149,16 @@ io.on('connection', function (socket: any) {
   let ffmpeg_process: any;
   let feedStream: any = false;
 
+  //----------------------------------------------------------------------------------------
   // Ricezione tramite socket url_rtmp, socket.id e relativa elaborazione
+  //----------------------------------------------------------------------------------------
   socket.on('config_rtmpDestination', function (m: any) {
+
+    //Lavorazione socket.id
     let socketid: any = socket.id;
     let regexValidator = /^rtmp:\/\/[^\s]*$/; //TODO: should read config
-
+    
+    //Lavorazione rtmp_url
     if (typeof m.rtmp != 'string') {
       socket.emit('message', {
         type: 'welcome',
@@ -172,8 +175,7 @@ io.on('connection', function (socket: any) {
       let nomeUtente = m.nome;
       let dataforsocket: string = 'rtmp destination set to: ' + m.rtmp;
 
-      //console.log(socket._rtmpDestination);
-
+      
       let numberRoom = functionListaConference.idroomsplit(
         socket._rtmpDestination
       );
@@ -201,7 +203,6 @@ io.on('connection', function (socket: any) {
 
       //Invio messaggi di benvenuto
       //invio lista utenti presenti in conference
-
       socket.emit('message', { type: 'welcome', data: dataforsocket });
       socket.emit('message', { type: numberRoom, data: insertArraySingleRoom });
       socket.broadcast.emit('message', {
@@ -568,9 +569,6 @@ io.on('connection', function (socket: any) {
 
     console.log('----------------------------------------');
     console.log('Chiusura stream per il seguente id: ' + socketid);
-    //console.table('NumberRoom: ' + numberRoom);
-
-    //feedStream=false;
 
     //Update stream da true a false
     let arrayUser = functionListaConference.updateStreamFalse(socketid);
@@ -604,14 +602,14 @@ io.on('connection', function (socket: any) {
     console.log('----------------------------------------');
   });
 
-  //Ricezione segnale di disconnessione per chiusura browser.
-  socket.on('disconnect', function (m: any) {
+  //Ricezione segnale di disconnessione per chiusura browser/logout.
+  socket.on('disconnect', function (m: any) {    
+
     let socketid: any = socket.id;
     let socketidCoo = functionListaConference.checkPresenzaSocketid(socketid);
     let numberRoom =
       functionListaConference.utentiInConference[socketidCoo.y][0];
-    numberRoom = numberRoom.toString();
-    //console.table('NumberRoom: ' + numberRoom);
+    numberRoom = numberRoom.toString();    
 
     feedStream = false;
 
@@ -624,6 +622,10 @@ io.on('connection', function (socket: any) {
       'exitUser',
       socketid
     );
+
+    console.log('_________________');    
+    console.log(arrayUser);
+    console.log('_________________');
 
     if (ffmpeg_process) {
       //invio lista utenti presenti in conference
@@ -644,6 +646,7 @@ io.on('connection', function (socket: any) {
       console.warn(
         'killing ffmpeg process attempt failed... (DISCONNECT DA CHIUSURA BROWSER)'
       );
+      console.log('-----------------------------------------------------------------------------------------------------');
     }
   });
 
