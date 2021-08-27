@@ -89,7 +89,7 @@
         ></ion-icon>
       </ion-button>
       <ion-button
-        [color]="this.audioService.isJoined ? 'danger' : 'secondary'"
+        [color]="this.audioService.isJoined ? 'danger' : 'success'"
         class="square-btn btn-trasparent"
         (click)="this.audioService.toggleAudio(room.id.toString(), user.idutcas)"
       >

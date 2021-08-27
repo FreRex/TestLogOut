@@ -22,7 +22,6 @@ import { RoomUser } from './room-user';
 import { GpsService } from './gps.service';
 import { MapComponent } from './map/map.component';
 import { PlayerComponent } from './player/player.component';
-import { RoomUser } from './room-user';
 import { StreamingRtmpService } from './streaming-rtmp.service';
 
 @Component({
