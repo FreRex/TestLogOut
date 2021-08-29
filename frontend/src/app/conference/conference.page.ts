@@ -150,9 +150,7 @@ export class ConferencePage implements OnInit, OnDestroy {
         (user: AuthUser) => {
           this.user = user;
           this.socket.emit('first_idroom', this.room.id);
-          this.isLoading = false;
-          console.log('ttt');
-          console.log(this.room.id);       
+          this.isLoading = false;                
         },
         (err) => {
           this.navController.navigateBack(['/not-found']);

@@ -17,7 +17,7 @@ if (process.env.NODE_ENV == 'production') {
     port = process.env.PORT_PROD || 9666;
 }
 else {
-    port = 9222;
+    port = 9333;
 }
 //app.use(express.json());
 app.use(express_1.default.json({ limit: '50mb' }));
@@ -152,11 +152,8 @@ io.on('connection', function (socket) {
             //Invio messaggi di benvenuto
             //invio lista utenti presenti in conference
             socket.emit('message', { type: 'welcome', data: dataforsocket });
-            socket.emit('message', { type: numberRoom, data: insertArraySingleRoom });
-            socket.broadcast.emit('message', {
-                type: numberRoom,
-                data: insertArraySingleRoom,
-            });
+            //socket.emit('message', { type: numberRoom, data: insertArraySingleRoom });
+            socket.broadcast.emit('message', { type: numberRoom, data: insertArraySingleRoom });
         }
     });
     //Configurazione codec
@@ -379,8 +376,8 @@ io.on('connection', function (socket) {
             console.log('numberoom per update: ' + numberRoom);
             let arrayStream = functionListaConference.updateStream(socket.id, ffmpeg_process.pid);
             console.log(arrayStream);
-            socket.emit('message', { type: numberRoom, data: arrayStream });
-            socket.broadcast.emit('message', { type: numberRoom, data: arrayStream });
+            socket.emit('message1', { type: numberRoom, data: arrayStream });
+            socket.broadcast.emit('message1', { type: numberRoom, data: arrayStream });
             //Riavvio player (start.player)
             socket.broadcast.emit('message', {
                 type: 'startPlayer_' + numberRoom,
@@ -482,14 +479,14 @@ io.on('connection', function (socket) {
             ffmpeg_process.kill('SIGINT');
             console.log('ffmpeg process ended ! (CHIUSURA STREAMING DA DISCONNECTSTREAM');
             //invio lista utenti presenti in conference
-            socket.emit('message', { type: numberRoom, data: arrayUser });
-            socket.broadcast.emit('message', { type: numberRoom, data: arrayUser });
+            socket.emit('message1', { type: numberRoom, data: arrayUser });
+            socket.broadcast.emit('message1', { type: numberRoom, data: arrayUser });
         }
         else {
             console.warn('killing ffmpeg process attempt failed...(DA DISCONNECTSTREAM")');
             //invio lista utenti presenti in conference
-            socket.emit('message', { type: numberRoom, data: arrayUser });
-            socket.broadcast.emit('message', { type: numberRoom, data: arrayUser });
+            socket.emit('message1', { type: numberRoom, data: arrayUser });
+            socket.broadcast.emit('message1', { type: numberRoom, data: arrayUser });
         }
         socket.broadcast.emit('message', {
             type: 'stopPlayer_' + numberRoom,
@@ -525,16 +522,16 @@ io.on('connection', function (socket) {
         console.log('_________________!!');
         if (ffmpeg_process) {
             //invio lista utenti presenti in conference
-            socket.emit('message', { type: numberRoom, data: arrayUser });
-            socket.broadcast.emit('message', { type: numberRoom, data: arrayUser });
+            socket.emit('message1', { type: numberRoom, data: arrayUser });
+            socket.broadcast.emit('message1', { type: numberRoom, data: arrayUser });
             ffmpeg_process.stdin.end();
             ffmpeg_process.kill('SIGINT');
             console.log('ffmpeg process ended ! (DISCONNECT DA CHIUSURA BROWSER)');
         }
         else {
             //invio lista utenti presenti in conference
-            socket.emit('message', { type: numberRoom, data: arrayUser });
-            socket.broadcast.emit('message', { type: numberRoom, data: arrayUser });
+            socket.emit('message1', { type: numberRoom, data: arrayUser });
+            socket.broadcast.emit('message1', { type: numberRoom, data: arrayUser });
             console.log('_________________?');
             console.log(arrayUser);
             console.log(functionListaConference.utentiInConference);
